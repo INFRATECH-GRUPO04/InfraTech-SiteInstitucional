@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 *{
     margin: 0;
@@ -36,3 +36,27 @@ body{
     font-family: "JetBrains Mono", monospace;
     color: #E8F4F850;
 }
+
+.titulo_popup{
+    display: flex;
+    justify-content: center;
+    color: #00CFFF;
+}
+
+.titulo_popup, .corzinha{
+    background-color: #0A0D14;
+    font-family: "Orbitron", sans-serif;
+    font-size: 16px;
+}
+
+.corzinha{
+    color: #E8F4F8;
+}
+
+.texto_popup{
+    font-size: 11px;
+    background-color: #00CFFF10;
+    padding: 10px;
+    border-bottom: 2px #00CFFF solid;
+}
+
