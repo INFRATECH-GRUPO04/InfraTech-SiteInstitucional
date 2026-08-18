@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="css.css" />
+    <link
+      href="https://googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container header">
+        <div class="logo-header">
+          <img src="image4.png" width="100px" />
+          <h3>INFRA<span style="color: #00cfff">TECH</span></h3>
+        </div>
+
+        <nav>
+          <a href="#">INÍCIO</a>
+          <a href="#">SOBRE</a>
+          <a href="#">FUNCIONALIDADES</a>
+          <a href="#">EQUIPE</a>
+          <a href="#">CONTATO</a>
+        </nav>
+
+        <div>
+          <button class="btn-entrar">Entrar</button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div>
+        <div class="container sptech-item">
+          <h2 class="fs-6">
+            <span style="color: #4a6070">Projeto PI | </span> São Paulo Tech
+            School
+          </h2>
+        </div>
+
+        <div class="container logo-banner">
+          <img src="image4.png" alt="" />
+          <h1>INFRA<span style="color: #00cfff">TECH</span></h1>
+        </div>
+        <div class="container frase-banner">
+          <p>
+            Uma plataforma inteligente para monitoramento de hardware em
+            servidores de jogos online desenvolvida para garantir visibilidade,
+            estabilidade e alta disponibilidade em ambientes de gaming.
+          </p>
+        </div>
+
+        <div class="botoes-banner ">
+            <button class="btn-entrar">CRIAR CONTA</button>
+            <button class="btn-funcionalidades">VER FUNCIONALIDADES</button>
+        </div>
+      </div>
+
+      <div class="secao_sobre">
+        <div class="container conteudo_sobre">
+          <div class="texto_sobre">
+            <p class="etiqueta_secao">// SOBRE O PROJETO</p>
+            <h2 class="titulo_principal">O QUE É A <span class="titulo_destaque">INFRATECH</span>?</h2>
+            
+            <p class="descricao_texto">
+              A INFRATECH é um sistema de monitoramento de hardware voltado para 
+              servidores de jogos online. O projeto foi idealizado e desenvolvido como trabalho 
+              de conclusão de curso na <span class="realce_destaque">São Paulo Tech School</span>, com foco em resolver um 
+              problema real enfrentado por operadores de servidores de games: a falta de 
+              visibilidade sobre o estado da infraestrutura física.
+            </p>
+
+            <p class="descricao_texto">
+              Através de nossa solução nos servidores, o sistema coleta métricas de CPU, 
+              memória, rede e armazenamento, consolidada dos dados em um painel centralizado 
+              e emite alertas quando limites críticos são atingidos.
+            </p>
+          </div>
+
+          <div class="area_imagem">
+            <div class="imagem-empresa">
+                <img src="watermarked_img_16092516649286935180.jpg" class="imagem-empresa">
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      const header = document.querySelector("header");
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+    </script>
+  </body>
+</html>
