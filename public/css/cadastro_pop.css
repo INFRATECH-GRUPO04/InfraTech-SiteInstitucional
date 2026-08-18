@@ -3,7 +3,6 @@
 *{
     margin: 0;
     padding: 0;
-    background-color: #000000;
 }
 
 body{
@@ -12,6 +11,7 @@ body{
     align-items: center;
     max-width: 100vw;
     min-height: 100vh;
+    background-color: #000000;
 }
 
 .div_popup{
@@ -49,7 +49,6 @@ body{
 }
 
 .titulo_popup, .corzinha{
-    background-color: #0A0D14;
     font-family: "Orbitron", sans-serif;
     font-size: 16px;
 }
@@ -68,11 +67,37 @@ body{
 .btn_cadastro{
     padding: 13px;
     background-color: #00CFFF;
-    color: #0A0D14;
     border: transparent;
     border-radius: 4px;
     font-family: "Orbitron", sans-serif;
     font-weight: bold;
     font-size: 12px;
     box-shadow: 0px 0px 24px #00CFFF25;
+}
+
+.texto{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: #2A4050;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    background: transparent;
+}
+
+.div_btn_criarConta{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.texto_dif{
+    color: #00CFFF;
+    margin-left: 2px;
+    text-decoration: none;
+}
+
+.texto_dif:hover{
+    color: #00d0ff9d;
 }
