@@ -14,18 +14,34 @@ body{
     background-color: #000000;
 }
 
-.div_popup{
+.div_popup {
+    position: relative;
     width: fit-content;
     background-color: #0A0D14;
     display: flex;
     flex-direction: column;
     padding: 30px;
-    border: 1px #00d0ff20 solid;
-    gap: 30px;
+    gap: 5px;
+    border: 1px solid #00d0ff20;
+    border-top: none; 
+}
+
+.div_popup::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px; 
+    background: linear-gradient(0.25turn, #00d0ff20, #00CFFF, #00d0ff20);
 }
 
 .ipt_separado{
     background-color: #0A0D14;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-top: 30px;
 }
 
 .campoTexto{
@@ -86,7 +102,7 @@ body{
 }
 
 .div_btn_criarConta{
-    margin-top: 20px;
+    margin-top: 40px;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -100,4 +116,17 @@ body{
 
 .texto_dif:hover{
     color: #00d0ff9d;
+}
+
+p{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: #2A4050;
+    letter-spacing: 1.8px;
+}
+
+.div_titulo{
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
 }
