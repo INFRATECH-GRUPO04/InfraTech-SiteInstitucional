@@ -208,3 +208,21 @@ p{
     width: 16px;
     height: 16px;
 }
+
+/*A partir daqui são as modificações para o Login*/
+
+.div_componentes_login{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.campo_login{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.espaco{
+    margin-top: 36px;
+}
