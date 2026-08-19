@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - InfraTech</title>
     <link rel="stylesheet" href="css/cadastro_pop.css">
 </head>
+
 <body>
     <div class="div_popup">
         <div class="div_titulo">
-            <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+            <div>
+                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+            </div>
             <p class="titulo_popup texto_popup">CADASTRAR</p>
         </div>
         <div class="ipt_separado">
-            <div>
+            <div class="metade">
                 <p>NOME COMPLETO</p>
                 <input type="text" id="ipt_nome" class="campoTexto" placeholder="João Silva">
             </div>
-            <div>
+            <div class="metade">
                 <p>CÓDIGO DA EMPRESA</p>
                 <input type="text" id="ipt-codigo" class="campoTexto" placeholder="A44FSF">
             </div>
@@ -33,8 +38,9 @@
 
         <div class="div_btn_criarConta">
             <button id="btn_cadastro" class="btn_cadastro">CRIAR CONTA</button>
-            <p class="texto">Já tem conta?  <a href="login.html" class="texto_dif"> Entrar</a></p>
+            <p class="texto">Já tem conta? <a href="login.html" class="texto_dif"> Entrar</a></p>
         </div>
     </div>
 </body>
+
 </html>
