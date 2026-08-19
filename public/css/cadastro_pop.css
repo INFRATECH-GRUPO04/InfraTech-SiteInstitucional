@@ -226,3 +226,103 @@ p{
 .espaco{
     margin-top: 36px;
 }
+
+.btn_login{
+    cursor: pointer;
+    padding: 13px;
+    background-color: #00CFFF;
+    border: 1px transparent solid;
+    border-radius: 4px;
+    font-family: "Orbitron", sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0px 0px 24px #00CFFF25;
+    transition: 1s ease;
+}
+
+.btn_login:hover{
+    background-color: transparent;
+    color: #00CFFF;
+    border: 1px #00CFFF solid;
+}
+
+.div_btn_entrarSistema{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.senha{
+    margin-top: 18px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.senha > input[type="checkbox"]{
+    -webkit-appearance: none;
+    cursor: pointer;
+    margin-right: 8px;
+    position: relative;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #00CFFF20;
+    border-radius: 2px;
+    vertical-align: middle;
+    transition: 0.2s ease;
+}
+
+.senha > input[type="checkbox"]:checked{
+    background-color: #00CFFF;
+    border-color: #019ec2;
+}
+
+.senha > input[type="checkbox"]:checked::after{
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border: solid #0A0D14;
+    border-width: 0px 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.senha > label{
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: #4A6070;
+}
+
+.senha > span{
+    margin-left: auto;
+    font-family: "JetBrains Mono", monospace;
+    color: #00CFFF;
+    font-size: 11px;
+}
+
+.divisoria{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #2A4050;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+}
+
+.divisoria::before,
+.divisoria::after{
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #2A4050;
+}
+
+.divisoria::after{
+    margin-left: 20px;
+}
+.divisoria::before{
+    margin-right: 20px;
+}
