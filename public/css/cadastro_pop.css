@@ -3,6 +3,7 @@
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body{
@@ -16,7 +17,8 @@ body{
 
 .div_popup {
     position: relative;
-    width: fit-content;
+    width: 100%;
+    max-width: 600px;
     background-color: #0A0D14;
     display: flex;
     flex-direction: column;
@@ -42,11 +44,19 @@ body{
     flex-direction: row;
     gap: 15px;
     margin-top: 30px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.metade{
+    flex: 1;
+    min-width: 180px;
 }
 
 .campoTexto{
     background-color: #00d0ff13;
     border: 1px #00d0ff15 solid;
+    width: 100%;
     padding-top: 11px;
     padding-bottom: 11px;
     padding-right: 14px;
@@ -130,3 +140,9 @@ p{
     flex-direction: column;
     gap: 32px;
 }
+
+.img-icon{
+    width:120px;
+    height: 100px;
+}
+
