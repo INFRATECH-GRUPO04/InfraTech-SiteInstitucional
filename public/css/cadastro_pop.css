@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 *{
     margin: 0;
@@ -91,14 +91,22 @@ body{
 }
 
 .btn_cadastro{
+    cursor: pointer;
     padding: 13px;
     background-color: #00CFFF;
-    border: transparent;
+    border: 1px transparent solid;
     border-radius: 4px;
     font-family: "Orbitron", sans-serif;
     font-weight: bold;
     font-size: 12px;
     box-shadow: 0px 0px 24px #00CFFF25;
+    transition: 1s ease;
+}
+
+.btn_cadastro:hover{
+    background-color: transparent;
+    color: #00CFFF;
+    border: 1px #00CFFF solid;
 }
 
 .texto{
@@ -146,3 +154,57 @@ p{
     height: 100px;
 }
 
+.div_canto_superior, .div_canto_inferior{
+    display: flex;
+    justify-content: space-between;
+}
+
+.div_canto_superior > .borda_esquerda{
+    width: 16px;
+    height: 16px;
+    border-top: 1px solid #00CFFF40;
+    border-left: 1px solid #00CFFF40;
+}
+
+.div_canto_superior > .borda_direita{
+    position: relative;
+    border-right: 1px solid #00d0ff40;
+    padding-right: 20px;
+    width: 16px;
+    height: 16px;
+    border-top: 1px solid #00CFFF40;
+}
+
+.div_canto_superior > .borda_direita > button{
+    cursor: pointer;
+    position: absolute;
+    background: transparent;
+    border: none;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    color: #2A4050;
+    font-family: "Inter", sans-serif;
+    font-size: 25px;
+    padding: 0;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 3px;
+}
+
+.div_canto_inferior > .borda_direita{
+    border-bottom: 1px solid #00CFFF40;
+    border-right: 1px solid #00CFFF40;
+    width: 16px;
+    height: 16px;
+}
+
+.div_canto_inferior > .borda_esquerda{
+    border-left: 1px solid #00CFFF40;
+    border-bottom: 1px solid #00CFFF40;
+    width: 16px;
+    height: 16px;
+}
