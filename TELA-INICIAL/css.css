@@ -274,8 +274,8 @@ main {
 }
 
 .caixa-funcionalidade {
-  border: 1px #00d0ff69 solid;
-  padding: 30px;
+  border: 1px #00d0ff34 solid;
+  padding: 20px;
 }
 
 .sub-titulo-func {
@@ -312,4 +312,10 @@ main {
 .text-func{
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.719);
+}
+
+.como-funciona{
+  margin-top: 30px;
+  background-color: #1C2332;
+  height: 90vh;
 }
