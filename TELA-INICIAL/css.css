@@ -314,8 +314,66 @@ main {
   color: rgba(255, 255, 255, 0.719);
 }
 
-.como-funciona{
+.como-funciona {
   margin-top: 30px;
-  background-color: #1C2332;
-  height: 90vh;
+  padding: 80px 8%;
+  background-color: #1c2332;
+  text-align: center;
 }
+
+.como-funciona .etiqueta {
+  color: #00cfff;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+}
+
+.como-funciona h1 {
+  margin: 25px 0 70px;
+  font-family: "Orbitron";
+  font-size: 2.5rem;
+}
+
+.como-funciona h1 span {
+  color: #00cfff;
+}
+
+.etapas {
+  display: flex;
+}
+
+.etapa {
+  flex: 1;
+  min-height: 280px;
+  padding: 35px 30px;
+  border-left: 1px solid #00cfff20;
+}
+
+.etapa:last-child {
+  border-right: 1px solid #00cfff20;
+}
+
+.numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
+  margin: 0 auto 25px;
+  border: 1px solid #00cfff80;
+  border-radius: 50%;
+  color: #00cfff;
+  font-weight: bold;
+}
+
+.etapa h2 {
+  font-family: "Orbitron";
+  font-size: 0.8rem;
+}
+
+.etapa p {
+  color: #b9bec6;
+  font-family: "Inter";
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
