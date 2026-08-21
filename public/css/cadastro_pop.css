@@ -144,7 +144,7 @@ dialog#modal-cadastro::backdrop {
     color: #00d0ff9d;
 }
 
-p{
+dialog p{
     font-family: "JetBrains Mono", monospace;
     font-size: 10px;
     color: #2A4050;
