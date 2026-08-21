@@ -15,6 +15,7 @@
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
   </style>
+  <link rel="stylesheet" href="css/cadastro_pop.css">
   <link rel="stylesheet" href="css/fale_conosco.css">
 </head>
 
@@ -28,32 +29,107 @@
       </div>
 
       <nav>
-        <a href="#">INÍCIO</a>
-        <a href="#">SOBRE</a>
-        <a href="#">FUNCIONALIDADES</a>
+        <a href="index.html">INÍCIO</a>
+        <a href="index.html">SOBRE</a>
+        <a href="index.html">FUNCIONALIDADES</a>
         <a href="#">EQUIPE</a>
         <a href="#">CONTATO</a>
       </nav>
 
       <div>
-        <button class="btn-entrar">Entrar</button>
+        <button class="btn-entrar open-modal" data-modal="modal-entrar">Entrar</button>
       </div>
     </div>
   </header>
-
-  <script>
-    const header = document.querySelector("header");
-
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 50) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
-    });
-  </script>
-
   <main>
+
+    <dialog id="modal-entrar">
+        <div class="div_popup">
+        <div class="div_canto_superior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita">
+                <button class="close-modal" id="close-entrar-modal">x</button>
+            </div>
+        </div>
+        <div class="div_titulo">
+            <div>
+                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+            </div>
+            <p class="titulo_popup texto_popup">ENTRAR</p>
+        </div>
+        <div class="div_componentes_login">
+            <div class="campo_login espaco">
+                <p>E-MAIL</p>
+                <input type="text" id="ipt_email_corporativo" class="campoTexto" placeholder="voce@empresa.com">
+            </div>
+            <div class="campo_login">
+                <p>SENHA</p>
+                <input type="text" id="ipt_senha" class="campoTexto" placeholder="Mínimo 8 caracteres">
+                <div class="senha">
+                    <input type="checkbox" name="lembrar">
+                    <label for="lembrar">Lembrar Acesso</label>
+                    <span>Esqueci a senha</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="div_btn_entrarSistema">
+            <button id="btn_login" class="btn_login">ENTRAR NO SISTEMA</button>
+            <div class="divisoria">OU</div>
+            <button id="btn_redirecionar" class="btn_redirecionar switch-modal" type="button" data-modal="modal-cadastro">CRIAR NOVA CONTA</button>
+        </div>
+        <div class="div_canto_inferior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita"></div>
+        </div>
+    </div>
+      </dialog>
+      <dialog id="modal-cadastro">
+        <div class="div_popup">
+        <div class="div_canto_superior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita">
+                <button class="close-modal" type="button">x</button>
+            </div>
+        </div>
+        <div class="div_titulo">
+            <div>
+                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+            </div>
+            <p class="titulo_popup texto_popup">CADASTRAR</p>
+        </div>
+        <div class="ipt_separado">
+            <div class="metade">
+                <p>NOME COMPLETO</p>
+                <input type="text" id="ipt_nome" class="campoTexto" placeholder="João Silva">
+            </div>
+            <div class="metade">
+                <p>CÓDIGO DA EMPRESA</p>
+                <input type="text" id="ipt-codigo" class="campoTexto" placeholder="A44FSF">
+            </div>
+        </div>
+        <p>CPF</p>
+        <input type="text" id="ipt_cpf" class="campoTexto" placeholder="000.003.444-41">
+        <p>E-MAIL CORPORATIVO</p>
+        <input type="text" id="ipt_email_corporativo" class="campoTexto" placeholder="voce@empresa.com">
+        <p>SENHA</p>
+        <input type="text" id="ipt_senha" class="campoTexto" placeholder="Mínimo 8 caracteres">
+        <p>CONFIRMAR SENHA</p>
+        <input type="text" id="ipt_confirmar_senha" class="campoTexto" placeholder="Repita a senha">
+
+        <div class="div_btn_criarConta">
+            <button id="btn_cadastro" class="btn_cadastro">CRIAR CONTA</button>
+            <p class="texto">Já tem conta? <a href="#" class="texto_dif switch-modal" data-modal="modal-entrar">Entrar</a></p>
+        </div>
+        <div class="div_canto_inferior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita"></div>
+        </div>
+    </div>
+      </dialog>
+
     <div class="div_texto">
       <div>
         <h3 class="sub_titulo_azul">// FALE CONOSCO</h3>
@@ -67,7 +143,7 @@
         <span class="texto2">Para acessar o painel de monitoramento, crie sua conta gratuitamente. O acesso é restrito a
           usuários cadastrados.</span>
 
-        <button class="btn-entrar botao_box">Entrar</button>
+        <button class="btn-entrar botao_box open-modal" data-modal="modal-entrar" type="button">Entrar</button>
       </div>
 
       <div class="div_contato">
@@ -121,6 +197,20 @@
     </div>
 
 </footer>
+
+<script src="js/script-modal.js"></script>
+
+<script>
+  const header = document.querySelector("header");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 50) {
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
+    }
+  });
+</script>
 
 </body>
 
