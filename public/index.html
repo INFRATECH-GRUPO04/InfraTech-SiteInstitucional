@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -15,6 +16,7 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="css/cadastro_pop.css">
     <link rel="stylesheet" href="css/tela-inicial.css" />
     <link
       href="https://googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
@@ -23,12 +25,13 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
     </style>
+    
   </head>
   <body>
     <header>
       <div class="container header">
         <div class="logo-header">
-          <img src="image4.png" width="100px" />
+          <img src="assets/icon/logo.png" width="100px" />
           <h3>INFRA<span style="color: #00cfff">TECH</span></h3>
         </div>
 
@@ -41,12 +44,99 @@
         </nav>
 
         <div>
-          <button class="btn-entrar">Entrar</button>
+          <button class="btn-entrar open-modal" data-modal="modal-entrar">Entrar</button>
         </div>
       </div>
     </header>
     <main>
+      <dialog id="modal-entrar">
+        <div class="div_popup">
+        <div class="div_canto_superior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita">
+                <button class="close-modal" id="close-entrar-modal">x</button>
+            </div>
+        </div>
+        <div class="div_titulo">
+            <div>
+                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+            </div>
+            <p class="titulo_popup texto_popup">ENTRAR</p>
+        </div>
+        <div class="div_componentes_login">
+            <div class="campo_login espaco">
+                <p>E-MAIL</p>
+                <input type="text" id="ipt_email_corporativo" class="campoTexto" placeholder="voce@empresa.com">
+            </div>
+            <div class="campo_login">
+                <p>SENHA</p>
+                <input type="text" id="ipt_senha" class="campoTexto" placeholder="Mínimo 8 caracteres">
+                <div class="senha">
+                    <input type="checkbox" name="lembrar">
+                    <label for="lembrar">Lembrar Acesso</label>
+                    <span>Esqueci a senha</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="div_btn_entrarSistema">
+            <button id="btn_login" class="btn_login">ENTRAR NO SISTEMA</button>
+            <div class="divisoria">OU</div>
+            <button id="btn_redirecionar" class="btn_redirecionar switch-modal" type="button" data-modal="modal-cadastro">CRIAR NOVA CONTA</button>
+        </div>
+        <div class="div_canto_inferior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita"></div>
+        </div>
+    </div>
+      </dialog>
+      <dialog id="modal-cadastro">
+        <div class="div_popup">
+        <div class="div_canto_superior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita">
+                <button class="close-modal" type="button">x</button>
+            </div>
+        </div>
+        <div class="div_titulo">
+            <div>
+                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+            </div>
+            <p class="titulo_popup texto_popup">CADASTRAR</p>
+        </div>
+        <div class="ipt_separado">
+            <div class="metade">
+                <p>NOME COMPLETO</p>
+                <input type="text" id="ipt_nome" class="campoTexto" placeholder="João Silva">
+            </div>
+            <div class="metade">
+                <p>CÓDIGO DA EMPRESA</p>
+                <input type="text" id="ipt-codigo" class="campoTexto" placeholder="A44FSF">
+            </div>
+        </div>
+        <p>CPF</p>
+        <input type="text" id="ipt_cpf" class="campoTexto" placeholder="000.003.444-41">
+        <p>E-MAIL CORPORATIVO</p>
+        <input type="text" id="ipt_email_corporativo" class="campoTexto" placeholder="voce@empresa.com">
+        <p>SENHA</p>
+        <input type="text" id="ipt_senha" class="campoTexto" placeholder="Mínimo 8 caracteres">
+        <p>CONFIRMAR SENHA</p>
+        <input type="text" id="ipt_confirmar_senha" class="campoTexto" placeholder="Repita a senha">
+
+        <div class="div_btn_criarConta">
+            <button id="btn_cadastro" class="btn_cadastro">CRIAR CONTA</button>
+            <p class="texto">Já tem conta? <a href="#" class="texto_dif switch-modal" data-modal="modal-entrar">Entrar</a></p>
+        </div>
+        <div class="div_canto_inferior">
+            <div class="borda_esquerda"></div>
+            <div class="borda_direita"></div>
+        </div>
+    </div>
+      </dialog>
       <div>
+
         <div class="container sptech-item">
           <h2 class="fs-6">
             <span style="color: #4a6070">Projeto PI | </span> São Paulo Tech
@@ -55,7 +145,7 @@
         </div>
 
         <div class="container logo-banner">
-          <img src="image4.png" alt="" />
+          <img src="assets/icon/logo.png" alt="" />
           <h1>INFRA<span style="color: #00cfff">TECH</span></h1>
         </div>
         <div class="container frase-banner">
@@ -67,7 +157,7 @@
         </div>
 
         <div class="botoes-banner">
-          <button class="btn-entrar">CRIAR CONTA</button>
+          <button class="btn-entrar open-modal" data-modal="modal-cadastro">CRIAR CONTA</button>
           <button class="btn-funcionalidades">VER FUNCIONALIDADES</button>
         </div>
       </div>
@@ -101,7 +191,7 @@
           <div class="area_imagem">
             <div class="imagem-empresa">
               <img
-                src="watermarked_img_16092516649286935180.jpg"
+                src="assets/imgs/watermarked_img_16092516649286935180.jpg"
                 class="imagem-empresa"
               />
             </div>
@@ -261,5 +351,6 @@
         }
       });
     </script>
+    <script src="js/script-modal.js"></script>
   </body>
 </html>
