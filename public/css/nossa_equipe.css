@@ -1,0 +1,419 @@
+body {
+    color: white;
+    font-family: "JetBrains Mono";
+    min-height: 100vh;
+    background-image: linear-gradient(0deg,
+            hsl(206, 100%, 7%) 0%,
+            hsl(205deg 100% 8%) 7%,
+            hsl(206deg 100% 7%) 16%,
+            hsl(205deg 100% 6%) 27%,
+            hsl(208deg 100% 5%) 42%,
+            hsl(207deg 100% 4%) 61%,
+            hsl(205deg 100% 2%) 79%,
+            hsl(210deg 100% 1%) 92%,
+            hsl(0deg 0% 0%) 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    border-bottom: 2px transparent solid;
+    background-color: transparent;
+    backdrop-filter: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+header.scrolled {
+    border-bottom: 1px #00d0ff41 solid;
+    background-color: rgba(7, 9, 15, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+
+.logo-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.logo-header img {
+    width: 50px;
+    height: auto;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    flex: 1;
+    margin: 0 40px;
+}
+
+nav a {
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #00CFFF;
+    text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
+}
+
+.btn-entrar {
+    font-family: "Orbitron";
+    font-weight: bold;
+    background-color: #00CFFF;
+    color: #07090F;
+    border: none;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.btn-entrar:hover {
+    background-color: transparent;
+    color: #00CFFF;
+    border: 2px solid #00CFFF;
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+}
+
+
+
+
+main {
+    width: 100%;
+    margin-top: 150px;
+}
+
+.texto_main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    
+}
+
+.texto {
+    text-align: center;
+}
+
+.sub_titulo_azul {
+    font-size: 12px;
+    color: #00cfff;
+}
+
+.titulo {
+    margin-top: 22px;
+}
+
+.div_img_texto {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    max-width: 80%;
+
+    margin: 200px auto 0;
+    gap: 4%;
+}
+
+.div_img {
+    position: relative;
+
+    width: 1000px;
+
+    overflow: hidden;
+
+    border: 1px solid #00cfff45;
+    border-radius: 3px;
+}
+
+.div_img::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(to right,
+            transparent,
+            #00cfff55,
+            #00cfff);
+}
+
+.div_img img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    opacity: 0.5;
+}
+
+.div_img::before {
+    content: "";
+
+    position: absolute;
+
+    top: 20px;
+    left: 20px;
+
+    width: 38px;
+    height: 25px;
+
+
+    border-top: 2px solid #00cfff;
+    border-left: 2px solid #00cfff;
+
+    z-index: 2;
+}
+
+.info_img {
+    position: absolute;
+
+    left: 25px;
+    bottom: 25px;
+
+    z-index: 2;
+}
+
+.info_img span {
+    display: block;
+    text-align: left;
+
+    margin-bottom: 2px;
+
+    color: #00cfff;
+
+    font-size: 10px;
+    letter-spacing: 4px;
+}
+
+.info_img h2 {
+    margin: 0;
+    text-align: left;
+
+    color: #e8f4fa;
+
+    font-family: "Orbitron", sans-serif;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.div_texto {
+    width: 100%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+
+
+
+.contato_todos{
+    display: grid;
+    grid-template-columns: 0.3fr 0.3fr 0.3fr;
+    justify-content: center;
+    place-items: center;
+}
+
+.contato{
+    margin-top: 140px;
+    margin-left: 100px;
+    width: 250px;
+    text-align: center;
+}
+
+.contato span{
+    font-size: 10px;
+    color: #00d0ff8d;
+}
+
+.contato p{
+    font-size: 20px;
+}
+
+.foto{
+    width: 150px;
+    height: 150px;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    border: 2px solid #00cfff;
+    box-shadow: 0 0 15px #00cfff33;
+
+    margin: 0 auto 20px;
+}
+
+.foto img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.informacoes_contato{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 250px;
+    margin: 10px auto 0;
+    text-align: center;
+    margin-top: 10px;
+    color: #5A7080;
+}
+
+.informacoes_contato img{
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.informacoes_contato span{
+    font-size: 16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.rodape {
+    margin-top: 80px;
+    background-color: #061018;
+    border-top: 1px solid #00d0ff45;
+    padding: 30px 60px 10px;
+}
+
+.rodape-conteudo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.rodape-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rodape-logo img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.rodape-logo h2 {
+    margin: 0;
+    color: #00d0ff;
+    letter-spacing: 3px;
+    font-size: 20px;
+}
+
+.rodape-logo p {
+    margin: 5px 0 0;
+    color: #5A7080;
+    font-size: 13px;
+}
+
+.rodape-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rodape-links h3 {
+    margin: 0 0 5px;
+    color: #00d0ff;
+    font-size: 13px;
+}
+
+.rodape-links a {
+    color: #5A7080;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.rodape-links a:hover {
+    color: #00d0ff;
+}
+
+.rodape-final {
+    max-width: 1100px;
+    margin: 15px auto 0;
+    padding-top: 10px;
+
+    border-top: 1px solid #00d0ff20;
+
+    text-align: center;
+    color: #405563;
+    font-size: 11px;
+}
+
+.rodape-final p {
+    margin: 0;
+}
+
