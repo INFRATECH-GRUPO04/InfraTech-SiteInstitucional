@@ -1,20 +1,17 @@
--- -----------------------------------------------------
--- Schema InfraTech
--- -----------------------------------------------------
+ 
 CREATE DATABASE InfraTech;
-USE InfraTech;
+USE InfraTech ;
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`empresa`
 -- -----------------------------------------------------
 CREATE TABLE empresa (
   idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45)NOT NULL,
-  cnpj CHAR(13)NOT NULL,
-  dtCadastro DATETIME NOT NULL
+  nome VARCHAR(45) NULL,
+  cnpj CHAR(14) NULL,
+  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
-show tables;
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`funcionario`
@@ -22,50 +19,63 @@ show tables;
 CREATE TABLE funcionario (
   idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
   fkEmpresa INT NOT NULL,
-  tipoAcesso VARCHAR(45) NOT NULL,
-  email VARCHAR(60) NOT NULL,
-  senhaHash VARCHAR(45) NOT NULL,
-  nome VARCHAR(60) NOT NULL,
-  dtCadastro DATETIME NOT NULL,
+  tipoAcesso VARCHAR(45) NULL,
+  email VARCHAR(45) NULL,
+  senha VARCHAR(45) NULL,
+  nome VARCHAR(45) NULL,
+  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
     FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa));
+    REFERENCES empresa (idEmpresa)
+    );
 
 
 -- -----------------------------------------------------
--- Table `InfraTech`.`vm`
+-- Table `InfraTech`.`servidor`
 -- -----------------------------------------------------
-CREATE TABLE vm (
-  idVm INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
+CREATE TABLE servidor (
+  idServidor INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(45) NULL,
+  localizacao VARCHAR(45) NULL,
+  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+
+
+-- -----------------------------------------------------
+-- Table `InfraTech`.`instancia`
+-- -----------------------------------------------------
+CREATE TABLE instancia (
+  idInstancia INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   instanceUUID VARCHAR(45) NULL,
   dtCadastro DATETIME NULL,
   nome VARCHAR(45) NULL,
-  CONSTRAINT fk_servidor_empresa1
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa));
+  fkServidor INT NOT NULL,
+  CONSTRAINT fk_vm_servidor1
+    FOREIGN KEY (fkServidor)
+    REFERENCES servidor (idServidor));
 
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`servidor_has_funcionario`
 -- -----------------------------------------------------
-CREATE TABLE servidor_has_funcionario(
-  fkServidor INT NOT NULL,
+CREATE TABLE servidor_has_funcionario (
   fkFuncionario INT NOT NULL,
-  PRIMARY KEY (fkServidor, fkFuncionario),
-  CONSTRAINT fk_servidor_has_funcionario_servidor1
-    FOREIGN KEY (fkServidor)
-    REFERENCES vm (idVm),
+  fkServidor INT NOT NULL,
+  PRIMARY KEY (fkFuncionario,fkServidor),
   CONSTRAINT fk_servidor_has_funcionario_funcionario1
     FOREIGN KEY (fkFuncionario)
-    REFERENCES funcionario (idFuncionario));
+    REFERENCES funcionario (idFuncionario),
+  CONSTRAINT fk_servidor_has_funcionario_servidor1
+    FOREIGN KEY (fkServidor)
+    REFERENCES servidor (idServidor)
+);
 
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`convite`
 -- -----------------------------------------------------
 CREATE TABLE convite (
-  idConvite INT PRIMARY KEY AUTO_INCREMENT,
+  idConvite INT PRIMARY KEY NOT NULL,
   codigo VARCHAR(100) NOT NULL,
   tipoAcesso VARCHAR(45) NULL,
   usado TINYINT NULL,
@@ -77,39 +87,43 @@ CREATE TABLE convite (
 
 
 -- -----------------------------------------------------
--- Table `InfraTech`.`ram`
+-- Table `InfraTech`.`componente`
 -- -----------------------------------------------------
-CREATE TABLE ram (
-  idRam INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE componente (
+  idComponente INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(45) NULL
+  );
+
+
+-- -----------------------------------------------------
+-- Table `InfraTech`.`instancia_has_componente`
+-- -----------------------------------------------------
+CREATE TABLE instancia_has_componente (
+  fkInstancia INT NOT NULL,
+  fkComponente INT NOT NULL,
   capacidade FLOAT NULL,
   limiteAlerta FLOAT NULL,
-  fkVm INT NOT NULL,
-  CONSTRAINT fk_ram_vm1
-    FOREIGN KEY (fkVm)
-    REFERENCES vm (idVm));
+  PRIMARY KEY (fkInstancia, fkComponente),
+  CONSTRAINT fk_vm_has_componente_vm1
+    FOREIGN KEY (fkInstancia)
+    REFERENCES instancia (idInstancia),
+  CONSTRAINT fk_vm_has_componente_componente1
+    FOREIGN KEY (fkComponente)
+    REFERENCES componente (idComponente));
 
 
 -- -----------------------------------------------------
--- Table `InfraTech`.`cpu`
+-- Table `InfraTech`.`servidor_has_componente`
 -- -----------------------------------------------------
-CREATE TABLE cpu (
-  idCpu INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE servidor_has_componente (
+  fkServidor INT NOT NULL,
+  fkComponente INT NOT NULL,
   capacidade FLOAT NULL,
   limiteAlerta FLOAT NULL,
-  fkVm INT NOT NULL,
-  CONSTRAINT fk_Cpu_vm1
-    FOREIGN KEY (fkVm)
-    REFERENCES vm (idVm));
-
-
--- -----------------------------------------------------
--- Table `InfraTech`.`disco`
--- -----------------------------------------------------
-CREATE TABLE disco (
-  idDisco INT PRIMARY KEY AUTO_INCREMENT,
-  capacidade FLOAT NULL,
-  limiteAlerta FLOAT NULL,
-  fkVm INT NOT NULL,
-  CONSTRAINT fk_Disco_vm1
-    FOREIGN KEY (fkVm)
-    REFERENCES vm (idVm));
+  PRIMARY KEY (fkServidor, fkComponente),
+  CONSTRAINT fk_servidor_has_componente_servidor1
+    FOREIGN KEY (fkServidor)
+    REFERENCES servidor (idServidor),
+  CONSTRAINT fk_servidor_has_componente_componente1
+    FOREIGN KEY (fkComponente)
+    REFERENCES componente (idComponente));
