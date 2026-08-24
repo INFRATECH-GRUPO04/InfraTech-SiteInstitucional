@@ -1,5 +1,60 @@
+@media (max-width: 768px) {
+    .logo-header h3 {
+        font-size: 1.2rem;
+    }
+
+    nav {
+        gap: 20vh;
+        margin: 0 20vh;
+    }
+
+    .btn-entrar {
+        padding: 8vh 20vh;
+        font-size: 0.8rem;
+    }
+
+    main {
+        flex-direction: column;
+        margin-top: 100vh;
+        margin-left: 0;
+    }
+
+    .div_texto,
+    .div_logo {
+        width: 100%;
+        text-align: center;
+    }
+
+    .box {
+        width: 100%;
+        padding: 15vh;
+    }
+
+    .rodape-conteudo {
+        flex-direction: column;
+        align-items: center;
+        gap: 20vh;
+    }
+}
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+}
+
 body{
-    color: white;
+
+    margin-top: 130px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    /* color: white;
     font-family: "JetBrains Mono";
     min-height: 100vh;
     background-image: linear-gradient(
@@ -15,7 +70,8 @@ body{
         hsl(0deg 0% 0%) 100%
     );
     background-attachment: fixed;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
+    overflow-x: hidden;
 }
 
 a{
@@ -29,39 +85,39 @@ header {
     right: 0;
     width: 100%;
     height: auto;
-    border-bottom: 2px transparent solid;
+    border-bottom: 2vh transparent solid;
     background-color: transparent;
     backdrop-filter: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 0;
+    padding: 20vh 0;
     z-index: 1000;
     transition: all 0.3s ease;
 }
 
 header.scrolled {
-    border-bottom: 1px #00d0ff41 solid;
+    border-bottom: 1vh #00d0ff41 solid;
     background-color: rgba(7, 9, 15, 0.5);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10vh);
 }
 
 
 .logo-header{
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 15vh;
 }
 
 .logo-header h3 {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    letter-spacing: 1px;
+    letter-spacing: 1vh;
 }
 
 .logo-header img {
-    width: 50px;
+    width: 50vh;
     height: auto;
 }
 
@@ -75,20 +131,20 @@ nav{
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
+    gap: 30vh;
     flex: 1;
-    margin: 0 40px;
+    margin: 0 40vh;
 }
 
 nav a {
     font-size: 0.9rem;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.5vh;
     transition: color 0.3s ease;
 }
 
 nav a:hover {
     color: #00CFFF;
-    text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
+    text-shadow: 0 0 10vh rgba(0, 207, 255, 0.5);
 }
 
 .btn-entrar {
@@ -97,25 +153,25 @@ nav a:hover {
     background-color: #00CFFF;
     color: #07090F;
     border: none;
-    padding: 10px 30px;
+    padding: 10vh 30vh;
     font-size: 0.9rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.5vh;
     cursor: pointer;
     transition: all 0.3s ease;
-    border-radius: 4px;
+    border-radius: 4vh;
 }
 
 .btn-entrar:hover {
     background-color: transparent;
     color: #00CFFF;
-    border: 2px solid #00CFFF;
-    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+    border: 2vh solid #00CFFF;
+    box-shadow: 0 0 15vh rgba(0, 207, 255, 0.5);
 }
 
 main {
-    margin-top: 150px;
-    margin-left: 100px;
+    margin-top: 150vh;
+    margin-left: 100vh;
     display: flex;
     width: 100%;
 }
@@ -127,13 +183,13 @@ main {
 
 
 .sub_titulo_azul{
-    font-size: 12px;
+    font-size: 12vh;
     color: #00cfff;
 }
 
 .titulo {
-    margin-top: 25px;
-    margin-bottom: 30px;
+    margin-top: 25vh;
+    margin-bottom: 30vh;
 }
 
 .texto {
@@ -145,33 +201,33 @@ main {
 .box{
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 20vh;
 
-    margin-top: 50px;
+    margin-top: 50vh;
     width: 80%;
-    padding: 20px;
+    padding: 20vh;
     box-sizing: border-box;
-    border: 0.1px solid #00d0ff45; /* erro*/
-    border-radius: 2px;
+    border: 0.1vh solid #00d0ff45; /* erro*/
+    border-radius: 2vh;
     /* background-color: ; erro */
 }
 
 .texto2{
     color: #5A7080;
-    font-size: 14px;
+    font-size: 14vh;
 }
 
 .botao_box {
-    margin-top: 13px;
+    margin-top: 13vh;
 }
 
 .div_contato{
-    margin-top: 55px;
-    font-size: 13px;
+    margin-top: 55vh;
+    font-size: 13vh;
 }
 
 .bloco_contato{
-    margin-bottom: 30px;
+    margin-bottom: 30vh;
 }
 
 .bloco_contato p{
@@ -184,18 +240,18 @@ main {
 
 
 .div_logo{
-    margin-right: 100px;
+    margin-right: 100vh;
 }
 
 .img_logo{
-    width: 600px;
+    width: 600vh;
 }
 
 .rodape {
-    margin-top: 80px;
+    margin-top: 80vh;
     background-color: #061018;
-    border-top: 1px solid #00d0ff45;
-    padding: 30px 60px 10px;
+    border-top: 1vh solid #00d0ff45;
+    padding: 30vh 60vh 10vh;
 }
 
 .rodape-conteudo {
@@ -203,51 +259,51 @@ main {
     justify-content: space-between;
     align-items: flex-start;
 
-    max-width: 1100px;
+    max-width:100%;
     margin: 0 auto;
 }
 
 .rodape-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 12vh;
 }
 
 .rodape-logo img {
-    width: 45px;
-    height: 45px;
+    width: 45vh;
+    height: 45vh;
     object-fit: contain;
 }
 
 .rodape-logo h2 {
     margin: 0;
     color: #00d0ff;
-    letter-spacing: 3px;
-    font-size: 20px;
+    letter-spacing: 3vh;
+    font-size: 20vh;
 }
 
 .rodape-logo p {
-    margin: 5px 0 0;
+    margin: 5vh 0 0;
     color: #5A7080;
-    font-size: 13px;
+    font-size: 13vh;
 }
 
 .rodape-links {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 8vh;
 }
 
 .rodape-links h3 {
-    margin: 0 0 5px;
+    margin: 0 0 5vh;
     color: #00d0ff;
-    font-size: 13px;
+    font-size: 13vh;
 }
 
 .rodape-links a {
     color: #5A7080;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 13vh;
 }
 
 .rodape-links a:hover {
@@ -255,15 +311,15 @@ main {
 }
 
 .rodape-final {
-    max-width: 1100px;
-    margin: 15px auto 0;
-    padding-top: 10px;
+    max-width: 1100vh;
+    margin: 15vh auto 0;
+    padding-top: 10vh;
 
-    border-top: 1px solid #00d0ff20;
+    border-top: 1vh solid #00d0ff20;
 
     text-align: center;
     color: #405563;
-    font-size: 11px;
+    font-size: 11vh;
 }
 
 .rodape-final p {
