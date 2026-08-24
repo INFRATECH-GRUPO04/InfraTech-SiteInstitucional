@@ -79,12 +79,6 @@ nav {
     margin: 0 40px;
 }
 
-nav a {
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-}
-
 nav a:hover {
     color: #00CFFF;
     text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);

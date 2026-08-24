@@ -32,3 +32,4 @@ closeModalButtons.forEach(button => {
         modal.close();
     });
 });
+

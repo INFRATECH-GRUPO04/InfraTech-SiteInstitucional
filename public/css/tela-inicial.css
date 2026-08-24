@@ -30,9 +30,20 @@ a {
 }
 
 header {
-    border-bottom: 2px solid transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    border-bottom: 2px transparent solid;
     background-color: transparent;
     backdrop-filter: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    z-index: 1000;
     transition: all 0.3s ease;
 }
 
@@ -46,32 +57,34 @@ header.scrolled {
     letter-spacing: 1px;
 }
 
-.nav-link {
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
+.nav-link a{
+    transition: .2s;
 }
 
-.nav-link:hover {
-    color: #00cfff !important;
+.nav-link a:hover {
+    color: #00cfff;
     text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
 }
 
 .btn-cyan {
     font-family: "Orbitron";
     font-weight: bold;
-    background-color: #00cfff;
-    color: #07090f;
-    border: 2px solid #00cfff;
-    border-radius: 4px;
+    background-color: #00CFFF;
+    color: #07090F;
+    border: none;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
     letter-spacing: 0.5px;
+    cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 4px;
 }
 
 .btn-cyan:hover {
     background-color: transparent;
     color: #00cfff;
-    border-color: #00cfff;
+    border: 2px solid #00cfff;
     box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
 }
 
@@ -314,6 +327,7 @@ header.scrolled {
     color: white;
     padding: 30px;
     border-radius: 8px;
+    width: min(90vw, 600px);
 }
 
 .div_titulo {
@@ -409,7 +423,7 @@ header.scrolled {
 }
 
 .modal-dialog {
-    max-width: 550px;
+    max-width: 600px;
 }
 
 @media (max-width: 991.98px) {
