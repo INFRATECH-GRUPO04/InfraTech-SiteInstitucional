@@ -15,6 +15,46 @@ body {
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
+
+
+.div_texto {
+    width: 40%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+.div_img_texto {
+    display: flex;
+    align-items: center;
+    flex-wrap:wrap;
+    justify-content: center;
+    flex-direction: row;
+
+
+    width: 100%;
+    max-width: 80%;
+    margin: 200px auto 0;
+    gap: 4%;
+}
+
+.contato_todos{
+    display: grid;
+    grid-template-columns: 0.3fr 0.3fr 0.3fr;
+    justify-content: center;
+    place-items: center;
+    gap:20px;
+}
+
+.contato{
+    margin-top: 140px;
+    width: 250px;
+    text-align: center;
+}
+
 .btn-cyan {
     font-family: "Orbitron";
     font-weight: bold;
@@ -37,12 +77,59 @@ body {
     box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
 }
 
+
+@media (max-width: 1150px) {
+    
+.div_texto {
+    width: 80%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+}
+@media (max-width: 900px) {
+    .contato_todos{
+        display: grid;
+        grid-template-columns: 0.3fr 0.3fr;
+        justify-content: center;
+        place-items: center;
+        gap:20px;
+    }
+
+    
+.div_texto {
+    width: 80%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+}
 @media (max-width: 767.98px) {
+    
+.div_texto {
+    width: 100%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+    
+
 
     .div_img {
     position: relative;
 
-    max-width: 50%;
+    max-width: 80%;
 
     overflow: hidden;
 
@@ -64,10 +151,10 @@ body {
     flex-direction: column; 
 
 
-    width: 80%;
+   width: 100%;
     max-width: 80%;
 
-    margin: 200px auto 0;
+    margin: 100px auto 0;
     gap: 4%;
     }
 
@@ -123,10 +210,31 @@ body {
 }
 
 @media (max-width: 575.98px) {
+
+
+.div_texto {
+    width: 100%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+
+.contato_todos{
+    display: grid;
+    grid-template-columns: 0.3fr;
+    justify-content: center;
+    place-items: center;
+    /* gap:10px; */
+}
+
 .div_img {
     position: relative;
 
-    max-width: 50%;
+    max-width: 80%;
 
     overflow: hidden;
 
@@ -146,11 +254,10 @@ body {
     justify-content: center;
     flex-direction: column; 
 
+    width: 100%;
+    /* max-width: 80%; */
 
-    width: 80%;
-    max-width: 80%;
-
-    margin: 200px auto 0;
+    margin: 100px auto 0;
     gap: 4%;
     }
 
@@ -321,19 +428,7 @@ main {
 }
 
 
-.div_img_texto {
-    display: flex;
-    align-items: center;
-    flex-wrap:wrap;
-    justify-content: center;
-    flex-direction: row;
 
-
-    width: 100%;
-    max-width: 80%;
-    margin: 200px auto 0;
-    gap: 4%;
-}
 
 
 .div_img {
@@ -429,32 +524,12 @@ main {
 }
 
 
-.div_texto {
-    max-width: 40%;
-
-    color: #5A7080;
-
-    font-size: 20px;
-
-    text-align: left;
-}
 
 
 
 
-.contato_todos{
-    display: grid;
-    grid-template-columns: 0.3fr 0.3fr 0.3fr;
-    justify-content: center;
-    place-items: center;
-}
 
-.contato{
-    margin-top: 140px;
-    margin-left: 100px;
-    width: 250px;
-    text-align: center;
-}
+
 
 .contato span{
     font-size: 10px;
@@ -491,6 +566,7 @@ main {
     align-items: center;
     gap: 10px;
     width: 250px;
+    height: 30px;
     margin: 10px auto 0;
     text-align: center;
     margin-top: 10px;
@@ -506,28 +582,6 @@ main {
 .informacoes_contato span{
     font-size: 16px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .rodape {
