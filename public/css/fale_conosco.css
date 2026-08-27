@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
 body{
     color: white;
     font-family: "JetBrains Mono";
@@ -37,10 +40,14 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+<<<<<<< HEAD
  
     /* padding: 20px 0; */  
      max-width: 1100px;
      margin: 0 auto;
+=======
+    padding: 20px 0;
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
     z-index: 1000;
     transition: all 0.3s ease;
 }
@@ -102,9 +109,13 @@ nav a:hover {
     background-color: #00CFFF;
     color: #07090F;
     border: none;
+<<<<<<< HEAD
     /* padding: 10px 30px; */
       max-width: 1100px;
      margin: 0 auto;
+=======
+    padding: 10px 30px;
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
     font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -124,7 +135,11 @@ main {
     margin-top: 150px;
     margin-left: 100px;
     display: flex;
+<<<<<<< HEAD
   
+=======
+    width: 100%;
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
 }
 
 .div_texto,
@@ -156,9 +171,13 @@ main {
 
     margin-top: 50px;
     width: 80%;
+<<<<<<< HEAD
     /* padding: 20px; */
       max-width: 1100px;
      margin: 0 auto;
+=======
+    padding: 20px;
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
     box-sizing: border-box;
     border: 0.1px solid #00d0ff45; /* erro*/
     border-radius: 2px;
@@ -200,8 +219,11 @@ main {
     width: 600px;
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
 .rodape {
     margin-top: 80px;
     background-color: #061018;
@@ -279,6 +301,7 @@ main {
 
 .rodape-final p {
     margin: 0;
+<<<<<<< HEAD
 }
 
 
@@ -370,4 +393,6 @@ main {
     .rodape-links {
         width: 100%;
     }
+=======
+>>>>>>> 1aa0bdd3df8f61dd2e2c27008714b65f2db8842b
 }
