@@ -16,6 +16,297 @@ body {
     background-repeat: no-repeat;
 }
 
+
+.div_texto {
+    width: 40%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+.div_img_texto {
+    display: flex;
+    align-items: center;
+    flex-wrap:wrap;
+    justify-content: center;
+    flex-direction: row;
+
+
+    width: 100%;
+    max-width: 80%;
+    margin: 200px auto 0;
+    gap: 4%;
+}
+
+.contato_todos{
+    display: grid;
+    grid-template-columns: 0.3fr 0.3fr 0.3fr;
+    justify-content: center;
+    place-items: center;
+    gap:20px;
+}
+
+.contato{
+    margin-top: 140px;
+    width: 250px;
+    text-align: center;
+}
+
+.btn-cyan {
+    font-family: "Orbitron";
+    font-weight: bold;
+    background-color: #00CFFF;
+    color: #07090F;
+    border: none;
+    padding: 10px 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.btn-cyan:hover {
+    background-color: transparent;
+    color: #00cfff;
+    border: 2px solid #00cfff;
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+}
+
+
+@media (max-width: 1150px) {
+    
+.div_texto {
+    width: 80%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+}
+@media (max-width: 900px) {
+    .contato_todos{
+        display: grid;
+        grid-template-columns: 0.3fr 0.3fr;
+        justify-content: center;
+        place-items: center;
+        gap:20px;
+    }
+
+    
+.div_texto {
+    width: 80%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+}
+@media (max-width: 767.98px) {
+    
+.div_texto {
+    width: 100%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+    
+
+
+    .div_img {
+    position: relative;
+
+    max-width: 80%;
+
+    overflow: hidden;
+
+    border: 1px solid #00cfff45;
+    border-radius: 3px;
+}
+
+    main {
+    max-width: 100%;
+    /* margin-top: 20px; */
+}
+
+
+    .div_img_texto {
+    display: flex;
+    align-items: center;
+    flex-wrap:wrap;
+    justify-content: center;
+    flex-direction: column; 
+
+
+   width: 100%;
+    max-width: 80%;
+
+    margin: 100px auto 0;
+    gap: 4%;
+    }
+
+    .logo-header h3 {
+        font-size: 1.2rem !important;
+    }
+
+    .logo-header img {
+        width: 40px;
+    }
+
+    .sptech-item {
+        width: 90%;
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .frase-banner {
+        width: 90%;
+    }
+
+    .botoes-banner {
+        flex-direction: column;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .botoes-banner button {
+        width: 100%;
+    }
+
+    .titulo_principal {
+        font-size: 2rem;
+    }
+
+    .descricao_texto {
+        font-size: 0.9rem;
+    }
+
+    .imagem-empresa {
+        height: 300px;
+    }
+
+    .rodape {
+        text-align: center;
+    }
+
+    .rodape-links {
+        align-items: center;
+    }
+
+}
+
+@media (max-width: 575.98px) {
+
+
+.div_texto {
+    width: 100%;
+
+    color: #5A7080;
+
+    font-size: 20px;
+
+    text-align: left;
+}
+
+
+.contato_todos{
+    display: grid;
+    grid-template-columns: 0.3fr;
+    justify-content: center;
+    place-items: center;
+    /* gap:10px; */
+}
+
+.div_img {
+    position: relative;
+
+    max-width: 80%;
+
+    overflow: hidden;
+
+    border: 1px solid #00cfff45;
+    border-radius: 3px;
+}
+    
+    main {
+    max-width: 100%;
+    /* margin-top: 20px; */
+}
+    
+    .div_img_texto {
+    display: flex;
+    align-items: center;
+    flex-wrap:wrap;
+    justify-content: center;
+    flex-direction: column; 
+
+    width: 100%;
+    /* max-width: 80%; */
+
+    margin: 100px auto 0;
+    gap: 4%;
+    }
+
+    .logo-header h3 {
+        font-size: 1rem !important;
+    }
+
+    .logo-header img {
+        width: 35px;
+    }
+
+    .logo-banner h1 {
+        font-size: 2rem;
+    }
+
+    .frase-banner p {
+        font-size: 0.8rem;
+    }
+
+    .titulo_principal {
+        font-size: 1.7rem;
+    }
+
+    .descricao_texto {
+        font-size: 0.85rem;
+    }
+
+    .imagem-empresa {
+        height: 250px;
+    }
+
+    .titulo-func {
+        font-size: 1.2rem;
+    }
+
+    .text-func {
+        font-size: 0.8rem;
+    }
+
+    .como-funciona h1 {
+        font-size: 1.7rem;
+    }
+
+    .div_popup {
+        padding: 20px;
+    }
+
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -107,12 +398,11 @@ nav a:hover {
 }
 
 
-
-
 main {
     width: 100%;
-    margin-top: 150px;
+    margin-top: 100px;
 }
+
 
 .texto_main {
     width: 100%;
@@ -121,40 +411,37 @@ main {
     
 }
 
+
 .texto {
     text-align: center;
 }
+
 
 .sub_titulo_azul {
     font-size: 12px;
     color: #00cfff;
 }
 
+
 .titulo {
     margin-top: 22px;
 }
 
-.div_img_texto {
-    display: flex;
-    align-items: center;
 
-    width: 100%;
-    max-width: 80%;
 
-    margin: 200px auto 0;
-    gap: 4%;
-}
+
 
 .div_img {
     position: relative;
 
-    width: 1000px;
+    width: 500px;
 
     overflow: hidden;
 
     border: 1px solid #00cfff45;
     border-radius: 3px;
 }
+
 
 .div_img::after {
     content: "";
@@ -169,6 +456,7 @@ main {
             #00cfff55,
             #00cfff);
 }
+
 
 .div_img img {
     width: 100%;
@@ -199,6 +487,7 @@ main {
     z-index: 2;
 }
 
+
 .info_img {
     position: absolute;
 
@@ -207,6 +496,7 @@ main {
 
     z-index: 2;
 }
+
 
 .info_img span {
     display: block;
@@ -220,6 +510,7 @@ main {
     letter-spacing: 4px;
 }
 
+
 .info_img h2 {
     margin: 0;
     text-align: left;
@@ -232,32 +523,13 @@ main {
     font-weight: 600;
 }
 
-.div_texto {
-    width: 100%;
-
-    color: #5A7080;
-
-    font-size: 20px;
-
-    text-align: left;
-}
 
 
 
 
-.contato_todos{
-    display: grid;
-    grid-template-columns: 0.3fr 0.3fr 0.3fr;
-    justify-content: center;
-    place-items: center;
-}
 
-.contato{
-    margin-top: 140px;
-    margin-left: 100px;
-    width: 250px;
-    text-align: center;
-}
+
+
 
 .contato span{
     font-size: 10px;
@@ -267,6 +539,7 @@ main {
 .contato p{
     font-size: 20px;
 }
+
 
 .foto{
     width: 150px;
@@ -293,6 +566,7 @@ main {
     align-items: center;
     gap: 10px;
     width: 250px;
+    height: 30px;
     margin: 10px auto 0;
     text-align: center;
     margin-top: 10px;
@@ -308,28 +582,6 @@ main {
 .informacoes_contato span{
     font-size: 16px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .rodape {
