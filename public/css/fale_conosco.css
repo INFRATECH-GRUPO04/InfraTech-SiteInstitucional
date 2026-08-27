@@ -1,3 +1,5 @@
+
+
 body{
     color: white;
     font-family: "JetBrains Mono";
@@ -35,7 +37,10 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px 0;
+ 
+    /* padding: 20px 0; */  
+     max-width: 1100px;
+     margin: 0 auto;
     z-index: 1000;
     transition: all 0.3s ease;
 }
@@ -97,7 +102,9 @@ nav a:hover {
     background-color: #00CFFF;
     color: #07090F;
     border: none;
-    padding: 10px 30px;
+    /* padding: 10px 30px; */
+      max-width: 1100px;
+     margin: 0 auto;
     font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -117,7 +124,7 @@ main {
     margin-top: 150px;
     margin-left: 100px;
     display: flex;
-    width: 100%;
+  
 }
 
 .div_texto,
@@ -149,7 +156,9 @@ main {
 
     margin-top: 50px;
     width: 80%;
-    padding: 20px;
+    /* padding: 20px; */
+      max-width: 1100px;
+     margin: 0 auto;
     box-sizing: border-box;
     border: 0.1px solid #00d0ff45; /* erro*/
     border-radius: 2px;
@@ -190,6 +199,8 @@ main {
 .img_logo{
     width: 600px;
 }
+
+
 
 .rodape {
     margin-top: 80px;
@@ -268,4 +279,95 @@ main {
 
 .rodape-final p {
     margin: 0;
+}
+
+
+
+/* alteraçoes isaac */
+
+.btn-menu-hamburguer {
+    display: none !important;
+    background: none;
+    border: none;
+    color: #00CFFF;
+    font-size: 28px;
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+    /*headeer */
+    header {
+        padding: 15px 20px;
+    }
+
+    nav {
+        display: none;
+    }
+
+    nav.ativo {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /
+        left: 0;
+        width: 100%;
+        background-color: rgba(7, 9, 15, 0.95);
+        padding: 20px 0;
+        gap: 15px;
+        border-top: 1px solid #00d0ff45;
+    }
+
+    .btn-menu-hamburguer {
+        display: block !important;
+    }
+
+  /* principal */
+    main {
+        flex-direction: column;
+        margin-top: 100px;
+        margin-left: 0;
+        padding: 0 20px;
+        align-items: center;
+    }
+
+    .div_texto,
+    .div_logo {
+        width: 100%;
+    }
+
+    .texto {
+        width: 100%;
+    }
+
+    .box {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .div_logo {
+        margin-right: 0;
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .img_logo {
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+    }
+
+    /*  Responsivo */
+    .rodape {
+        padding: 30px 20px 10px;
+    }
+
+    .rodape-conteudo {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .rodape-logo,
+    .rodape-links {
+        width: 100%;
+    }
 }

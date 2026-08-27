@@ -30,6 +30,8 @@
         <h3>INFRA<span style="color: #00cfff">TECH</span></h3>
       </div>
 
+      <button class="btn-menu-hamburguer"aria-label="Menu">&#9776;</button>
+
       <nav>
         <a href="index.html">INÍCIO</a>
         <a href="index.html">SOBRE</a>
@@ -44,6 +46,7 @@
     </div>
   </header>
   <main>
+
 
     <dialog id="modal-entrar">
         <div class="div_popup">
@@ -211,6 +214,15 @@
     } else {
       header.classList.remove("scrolled");
     }
+  });
+
+
+  let btnHamburguer = document.querySelector(".btn-menu-hamburguer");
+  let menuNav = document.querySelector("nav");
+
+  
+  btnHamburguer.addEventListener("click", () => {
+    menuNav.classList.toggle("ativo");
   });
 </script>
 
