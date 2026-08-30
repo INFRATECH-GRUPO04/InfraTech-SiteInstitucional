@@ -3,83 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+      <link rel="stylesheet" href="css/cadastro_instancia.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+      <title>Document</title>
 </head>
 <body>
-    <div class="sidebar"></div>
+    <div class="sidebar">
+     aa   
+
+    </div>
+
         <div class="content">
-            
             <header>
                 <div>
-                    <p>INSTANCIAS - CADASTRAR</p>
+                    <p>INSTÂNCIAS - CADASTRAR</p>
                 </div>
-                <div>
-                    <img src="" alt="">
+                <div style="display: flex;">
+                    <!-- <img src="" alt=""> -->
                     <p>Admin</p>
                 </div>
             </header>
+            
             <div class="layout">
-                <h1><span style="color:#00CFFF;">CADASTRAR</span> INSTANCIA</h1>
+                <h1><span style="color:#00CFFF;">CADASTRAR</span> INSTÂNCIA</h1>
                 <div class="buttons">
-                    <button>Servidores Físicos</button>
+                    <button id="servidor">Servidores Físicos</button>
                     <button>Instâncias virtuais</button>
                 </div>
-            </div>
+           
             <div class="forms">
                 <div class="header-forms">
-                    <img src="" alt="">
+                    <img src="./assets/icon/Container.png" alt="">
                     <div class="texto-header-forms">
-                        <h2>Cadastrar infraestrutura</h2>
+                        <h3>Cadastrar infraestrutura</h3>
                         <p>Provisione novos servidores físicos ou instâncias virtuais</p>
                     </div>
                 </div>
-                <hr>
+                
                 <div class="insert-forms">
                     <div class="servidor-pai">
                         <p>SERVIDOR HOST PAI</p>
-                        <select name="" id=""></select>
+                        <select name="" id="">
+                            <!-- pega do banco -->
+                            <option value="">serverA</option>
+                        </select>
                     </div>
                     <div class="nome-instancia">
                         <p>NOME DA INSTÂNCIA</p>
                         <input type="text">
                     </div>
-                    <h2><span>ALOCAÇÃO DE RECURSOS (COMPONENTES)</span></h2>
                     
                     <div class="componentes">
-                        <!-- <div class="box-componente">
+                        <p><span>ALOCAÇÃO DE RECURSOS (COMPONENTES)</span></p>
+                        <div class="box-componente">
                             <div class="box-recursos">
                                 <div class="header-recursos">
                                     <p>nomeRecurso</p>
-                                    <div>
+                                    <div style="display: flex; text-align: center; align-items: center; justify-content: flex-end; gap: 20px;">
                                         <input type="text">
                                         <p>complemento</p>
                                     </div>
                                 </div>
                                 <div class="linha-porcentagem">
+                                    <div style="background-color:greenyellow; width: 20%; border-radius: 10px;height: 100%;"></div>
 
                                 </div>
                                 <div class="footer-recursos">
                                     <p><span>numero</span>% alocado</p>
-                                    <div>
+                                    <div style="display: flex; text-align: center; align-items: center; justify-content: flex-end; gap: 20px;">
                                         <p>Limite Alerta:</p>
                                         <input type="text">
                                     </div>
                                 </div>
                             </div>
                             <div class="box-excluir">
-                                <p>lixo</p>
+                                <!-- <p>lixo</p> -->
+                                <img src="./assets/icon/Button.png" alt="">
                             </div>
-                        </div> -->
+                        </div>
                         <!-- pegar por js -->
+                        <p>Adicionar recurso: </p>
                         <div class="adicionar-componente">
-                            <select name="" id=""></select>
+                            <!-- <div style="display: flex;"> -->
+                            <select name="" id="">
+                                <option value="">CPU</option>
+                                <option value="">RAM</option>
+                                <option value="">DISCO</option>
+                            </select>
+                            <!-- </div> -->
                             <button>adicionar</button>
                         </div>
                     </div>
-                
+                 </div>
+                 
+                 <div class="adicionar-instancia">
+
+                     <button>Adicionar Instância</button>
+                 </div>
                 </div>
-                <hr>
-                <button>Adicionar Instância</button>
             </div>
         </div>
     </div>
