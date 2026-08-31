@@ -20,7 +20,6 @@ body {
 .div_texto {
     width: 40%;
 
-    color: #5A7080;
 
     font-size: 20px;
 
@@ -77,6 +76,9 @@ body {
     box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
 }
 
+.text-cyan {
+    color: #00cfff;
+}
 
 @media (max-width: 1150px) {
     
@@ -161,6 +163,7 @@ body {
     .logo-header h3 {
         font-size: 1.2rem !important;
     }
+    
 
     .logo-header img {
         width: 40px;
