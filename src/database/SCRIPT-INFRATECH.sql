@@ -19,9 +19,10 @@ CREATE TABLE funcionario (
   idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
   fkEmpresa INT NOT NULL,
   tipoAcesso VARCHAR(45) NULL,
+  nome VARCHAR(45) NULL,
   email VARCHAR(45) NULL,
   senha VARCHAR(45) NULL,
-  nome VARCHAR(45) NULL,
+  cpf CHAR(11) NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
     FOREIGN KEY (fkEmpresa)
@@ -77,10 +78,10 @@ CREATE TABLE convite (
   idConvite INT PRIMARY KEY NOT NULL,
   codigo VARCHAR(100) NOT NULL,
   tipoAcesso VARCHAR(45) NULL,
-  usado TINYINT NULL,
-  criado DATETIME NULL,
+  quantidadeUso INT NULL,
+  criado DATETIME DEFAULT NOW(),
   fkEmpresa INT NOT NULL,
-  CONSTRAINT fk_convite_empresa1
+  CONSTRAINT fk_convite_empresa
     FOREIGN KEY (fkEmpresa)
     REFERENCES empresa (idEmpresa));
 
