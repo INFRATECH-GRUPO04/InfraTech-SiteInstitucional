@@ -18,7 +18,7 @@ var app = express();
 var indexRouter = require("./src/routes/index");
 var login_cadastroRouter = require("./src/routes/login_cadastro");
 var servidorRouter = require("./src/routes/servidor")
-var componenteRouter = require("./src/routes/componente")
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,7 +29,6 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/login_cadastro", login_cadastroRouter);
 app.use("/servidor", servidorRouter);
-app.use("/componente", servidorRouter);
 
 
 app.listen(PORTA_APP, function () {

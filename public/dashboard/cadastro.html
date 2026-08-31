@@ -10,8 +10,6 @@
     <h1>Cadastrar Infraestrutura</h1>
     <p>Provisione novos servidores físicos ou instâncias virtuais</p>
 
-    <form action="/api/servidores" method="POST" id="form-infraestrutura">
-
         <fieldset>
             <legend>Identificação do Servidor</legend>
 
@@ -19,7 +17,7 @@
                 <label for="nome_servidor">Nome do Servidor:</label><br>
                 <input 
                     type="text" 
-                    id="nome_servidor" 
+                    id="nome_servidor_id" 
                     name="nome_servidor" 
                     placeholder="Ex: SRV-SP-PROD-01" 
                     required
@@ -32,7 +30,7 @@
                 <label for="localizacao">Localização:</label><br>
                 <input 
                     type="text" 
-                    id="localizacao" 
+                    id="localizacao_id" 
                     name="localizacao" 
                     placeholder="Ex: Rack 04 - Data Center SP" 
                     required
@@ -81,9 +79,8 @@
         <br>
 
         <button type="button" id="btn-voltar">Voltar</button>
-        <button type="submit">Finalizar Cadastro do Servidor</button>
+        <button onclick="cadastrar()">Finalizar Cadastro do Servidor</button>
 
-    </form>
 
     <script>
         let indexComponente = 1;
@@ -113,5 +110,47 @@
         });
     </script>
 
+    <script>
+        function cadastrar() {
+        
+    var nomeServidorVar = nome_servidor_id.value;
+    var localizacaoServidorVar = localizacao_id.value;
+    
+    if (
+      nomeServidorVar == "" ||
+      localizacaoServidorVar == ""
+    ){
+        console.log("Preencha todos os campos!");
+        return;
+    }
+
+      fetch("/servidor/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // crie um atributo que recebe o valor recuperado aqui
+        // Agora vá para o arquivo routes/servidor.js
+        nomeServer: nomeServidorVar,
+        localizacaoServer: localizacaoServidorVar
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          console.log("Servidor cadastrado com sucesso!");
+          
+
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        
+      })};
+    </script>
 </body>
 </html>
