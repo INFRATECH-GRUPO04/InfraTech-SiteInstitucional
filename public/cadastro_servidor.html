@@ -30,7 +30,7 @@
                     <button id="servidor"> <a href="./cadastro_instancia.html">Instâncias virtuais</a></button>
                 </div>
            
-            <div class="forms">
+            <div class="forms" id="forms1">
                 <div class="header-forms">
                     <img src="./assets/icon/logo_server.png" alt="">
                     <div class="texto-header-forms">
@@ -39,6 +39,13 @@
                     </div>
                 </div>
                 
+                <div class="progresso">
+                    <img src="./assets/icon/num1cadastro1.png" alt="">
+                    <p>Dados Básicos</p>
+                    <div class="linha"></div>
+                    <img src="./assets/icon/num2cadastro1.png" alt="">
+                    <p>Componentes</p>
+                </div>
                 <div class="insert-forms">
                     <div class=" linha-identificacao">
                         <img id="logo_user" src="./assets/icon/Screen1CadastrarHardware.png" alt="">
@@ -58,10 +65,52 @@
                 </div>
                 <div class="componentes">
 
-                    <button>Próximo: Componentes  →</button>
+                    <button onclick="trocarDisplay()">Próximo: Componentes  →</button>
+                </div>
+            </div>
+
+            <div class="forms" id="forms2">
+                <div class="header-forms">
+                    <img src="./assets/icon/logo_server.png" alt="">
+                    <div class="texto-header-forms">
+                        <h3>Cadastrar infraestrutura</h3>
+                        <p>Provisione novos servidores físicos ou instâncias virtuais</p>
+                    </div>
+                </div>
+                
+                <div class="progresso">
+                    <img src="./assets/icon/num1cadastro2.png" alt="">
+                    <p>Dados Básicos</p>
+                    <div class="linha2"></div>
+                    <img src="./assets/icon/num2cadastro2.png" alt="">
+                    <p>Componentes</p>
+                </div>
+                <div class="insert-forms">
+                    <div class=" linha-identificacao">
+                        <img id="logo_user" src="./assets/icon/Screen1CadastrarHardware2.png" alt="">
+                        <p>COMPONENTES DE HARDWARE</p>
+                    </div>
+                    
+                    
+                 
+                 
+                </div>
+                <div class="componentes">
+
+                    <button onclick="trocarDisplay()">Próximo: Componentes  →</button>
                 </div>
             </div>
         </div>
     </div>
 </body>
 </html>
+<script>
+    document.getElementById('forms2').style.display="none";
+
+    function trocarDisplay(){
+        document.getElementById('forms1').style.display="none";
+        document.getElementById('forms2').style.display="block";
+    }
+
+
+</script>

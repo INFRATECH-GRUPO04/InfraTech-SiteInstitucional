@@ -12,6 +12,37 @@ header{
     color: white;
 }
 
+.progresso{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid gray;
+    padding: 20px;
+}
+
+.linha{
+    height: 2px;
+    border-radius: 1px;
+    background-color: gray;
+    width: 100px;
+}
+.linha2{
+    height: 2px;
+    border-radius: 1px;
+    background-color:#00CFFF;
+    width: 100px;
+}
+
+.progresso p{
+    margin: 0px;
+}
+
+.progresso img{
+    height: 25px;
+    width: 25px;
+}
+
 .sidebar{
     border-right: 1px solid #00CFFF25;
     display: flex;
@@ -59,6 +90,7 @@ body{
         hsl(210deg 100% 1%) 92%,
         hsl(0deg 0% 0%) 100%
     );
+
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
@@ -91,7 +123,7 @@ img{
 
 .forms{
     background-color: #2A4050;
-    border-radius: 20px;
+    border-radius: 10px;
     border:1px, #00CFFF, solid;
     
 }
@@ -131,7 +163,7 @@ a{
 input{
     color: white;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color:#00CFFF25;
     border:1px solid gray;
     padding: 5px;
@@ -141,7 +173,7 @@ input{
 }
 
 input::placeholder {
-color: lightgrey; 
+    color: lightgrey; 
 }
 
 .componentes{
