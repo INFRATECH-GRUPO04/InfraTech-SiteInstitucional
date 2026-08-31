@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Infraestrutura</title>
+</head>
+<body>
+
+    <h1>Cadastrar Infraestrutura</h1>
+    <p>Provisione novos servidores físicos ou instâncias virtuais</p>
+
+    <form action="/api/servidores" method="POST" id="form-infraestrutura">
+
+        <fieldset>
+            <legend>Identificação do Servidor</legend>
+
+            <div>
+                <label for="nome_servidor">Nome do Servidor:</label><br>
+                <input 
+                    type="text" 
+                    id="nome_servidor" 
+                    name="nome_servidor" 
+                    placeholder="Ex: SRV-SP-PROD-01" 
+                    required
+                >
+            </div>
+
+            <br>
+
+            <div>
+                <label for="localizacao">Localização:</label><br>
+                <input 
+                    type="text" 
+                    id="localizacao" 
+                    name="localizacao" 
+                    placeholder="Ex: Rack 04 - Data Center SP" 
+                    required
+                >
+            </div>
+        </fieldset>
+
+        <br>
+
+        <fieldset>
+            <legend>Componentes de Hardware</legend>
+
+            <div id="container-componentes">
+                <div class="linha-componente">
+                    <label>Tipo de Componente:</label>
+                    <select name="componentes[0][tipo]">
+                        <option value="CPU">CPU</option>
+                        <option value="RAM">Memória RAM</option>
+                        <option value="DISCO">Disco SSD</option>
+                    </select>
+
+                    <label>Capacidade:</label>
+                    <input 
+                        type="text" 
+                        name="componentes[0][capacidade]" 
+                        placeholder="Ex: 32 Cores / 128 GB / 2 TB"
+                    >
+
+                    <label>Limite de Alerta (%):</label>
+                    <input 
+                        type="number" 
+                        name="componentes[0][limite_alerta]" 
+                        placeholder="80" 
+                        min="1" 
+                        max="100"
+                    >
+
+                    <button type="button" onclick="this.parentElement.remove()">Remover</button>
+                </div>
+            </div>
+
+            <br>
+            <button type="button" id="btn-adicionar">+ Adicionar Componente</button>
+        </fieldset>
+
+        <br>
+
+        <button type="button" id="btn-voltar">Voltar</button>
+        <button type="submit">Finalizar Cadastro do Servidor</button>
+
+    </form>
+
+    <script>
+        let indexComponente = 1;
+        document.getElementById('btn-adicionar').addEventListener('click', () => {
+            const container = document.getElementById('container-componentes');
+            const novaLinha = document.createElement('div');
+            novaLinha.className = 'linha-componente';
+            novaLinha.style.marginTop = '10px';
+            novaLinha.innerHTML = `
+                <label>Tipo de Componente:</label>
+                <select name="componentes[${indexComponente}][tipo]">
+                    <option value="CPU">CPU</option>
+                    <option value="RAM">Memória RAM</option>
+                    <option value="DISCO">Disco SSD</option>
+                </select>
+
+                <label>Capacidade:</label>
+                <input type="text" name="componentes[${indexComponente}][capacidade]" placeholder="Ex: 32 Cores / 128 GB">
+
+                <label>Limite de Alerta (%):</label>
+                <input type="number" name="componentes[${indexComponente}][limite_alerta]" placeholder="80" min="1" max="100">
+
+                <button type="button" onclick="this.parentElement.remove()">Remover</button>
+            `;
+            container.appendChild(novaLinha);
+            indexComponente++;
+        });
+    </script>
+
+</body>
+</html>
