@@ -1,5 +1,6 @@
 var login_cadastroModel = require("../models/login_cadastroModel");
 
+
 function autenticar(req, res) {
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
@@ -36,43 +37,54 @@ function autenticar(req, res) {
 
 }
 
-function cadastrar(req, res) {
+async function cadastrar(req, res) {
     var nome = req.body.nomeServer;
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
-    var fkEmpresa = 1;
+    var codigo = req.body.codigoServer;
     var cpf = req.body.cpfServer;
-    // var cpf = req.body.cpfServer;
 
     // Faça as validações dos valores
     if (nome == undefined) {
-        res.status(400).send("Seu nome está indefinido");
+        res.status(400).send("Seu nome está indefinido!");
     } else if (email == undefined) {
-        res.status(400).send("Seu email está indefinido");
+        res.status(400).send("Seu email está indefinido!");
     } else if (senha == undefined) {
-        res.status(400).send("Sua senha está indefinida");
-    } else if (fkEmpresa == undefined) {
-        res.status(400).send("Sua empresa a vincular está indefinida");
+        res.status(400).send("Sua senha está indefinida!");
+    } else if (codigo == undefined) {
+        res.status(400).send("Este código de empresa está indefinido!");
     } else if (cpf == undefined) {
         res.status(400).send("Seu cpf está indefinido!");
     } else {
 
-        // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        login_cadastroModel.cadastrar(nome, email, senha, cpf, fkEmpresa)
-            .then(
-                function (resultado) {
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao realizar o cadastro! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+        try {
+            var verificacaoOut = await login_cadastroModel.verificar(codigo);
+
+             if (verificacaoOut.length < 1) {
+            return res.status(400).send("Esse código de empresa não é válido.")
+            }
+
+            // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
+            login_cadastroModel.cadastrar(nome, email, senha, cpf, verificacaoOut[0].fkEmpresa)
+                .then(
+                    function (resultado) {
+                        res.json(resultado);
+                    }
+                ).catch(
+                    function (erro) {
+                        console.log(erro);
+                        console.log(
+                            "\nHouve um erro ao realizar o cadastro! Erro: ",
+                            erro.sqlMessage
+                        );
+                        res.status(500).json(erro.sqlMessage);
+                    }
+                );
+        } catch (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao verificar o código da empresa.");
+            res.status(500).json(erro.sqlMessage);
+        }
     }
 }
 
