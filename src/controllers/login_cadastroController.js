@@ -48,7 +48,7 @@ async function cadastrar(req, res) {
     if (nome == undefined) {
         res.status(400).send("Seu nome está indefinido!");
     } else if (email == undefined) {
-        res.status(400).send("Seu email está indefinid!");
+        res.status(400).send("Seu email está indefinido!");
     } else if (senha == undefined) {
         res.status(400).send("Sua senha está indefinida!");
     } else if (codigo == undefined) {
