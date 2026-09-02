@@ -150,7 +150,7 @@ width: auto;
     display: flex;
     align-items: center;
     text-align: center;
-    gap: 10px;
+    gap: 13px;
     justify-content: center;
 }
 .especificacao-componente p{
@@ -158,12 +158,34 @@ width: auto;
 }
 
 
-.especificacao-componente input{
-    width: 80%;
+.titulo-componentes{
+    color: white;
+    display: flex;
 }
-.linha-componente select{
-    width: 30%;
+.titulo-componentes p{
+    margin-right: 10%;
 }
+
+.juncao{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+}
+
+.juncao p{
+    font-size: 0.8vw;
+    text-align: start;
+    margin: 0px;
+}
+.juncao input{
+    width: 100%;
+}
+
+
+
+
+
 
 .adicionar-server{
     padding: 20px;
@@ -260,4 +282,8 @@ input::placeholder {
     display: flex;
     justify-content: flex-end;
     border-top: 1px solid #00CFFF;
+}
+
+.juncao select{
+    width: 100%;
 }
