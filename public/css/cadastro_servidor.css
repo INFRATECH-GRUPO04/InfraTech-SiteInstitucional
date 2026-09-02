@@ -60,6 +60,7 @@ header{
     display: flex;
     align-items: center;
     color: #00CFFF;
+    width: 80%;
 }
 .linha-identificacao p{
     margin: 0px;
@@ -113,10 +114,88 @@ img{
     width: 60px;
     height: 60px;
 }
+select{
+    color: white;
+    padding: 3px;
+    width: 20%;
+    border-radius: 5px;
+    background-color:#00CFFF25;
+    border:1px solid gray;
+}
+
+.container-adicionar img{
+height: 20px;
+width: auto;
+}
+.alinhar{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.linha-componente {
+    display: flex;
+    height: 30px;
+    gap: 20px;
+    align-items: center;
+    background-color: #ffffff07;
+    border-radius: 5px;
+    border:1px solid gray;
+    padding: 20px;
+    justify-content:space-between;
+}
+
+.especificacao-componente{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    justify-content: center;
+}
+.especificacao-componente p{
+    margin: 0px;
+}
+
+
+.especificacao-componente input{
+    width: 80%;
+}
+.linha-componente select{
+    width: 30%;
+}
+
+.adicionar-server{
+    padding: 20px;
+    display: flex;
+    justify-content:space-between;
+    border-top: 1px solid #00CFFF;
+}
+
+#voltar{
+    background-color: #ffffff07;
+    border-radius: 5px;
+    border:1px solid gray;
+    color: white;
+
+}
+
+#adicionar-recurso{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    width:100%;
+    color: #00CFFF;
+    border: #00CFFF 2px dotted;
+    background-color: #2A4050;
+    /* border-style: solid dotted; */
+}
 
 .insert-forms{
     padding: 20px;
     display: flex;
+    width: 80%;
     flex-direction: column;
     gap: 20px;
 }

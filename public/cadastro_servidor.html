@@ -90,14 +90,41 @@
                         <img id="logo_user" src="./assets/icon/Screen1CadastrarHardware2.png" alt="">
                         <p>COMPONENTES DE HARDWARE</p>
                     </div>
+                    <div class="alinhar">
+                        <div class="linha-componente">
+                            <select name="" id="">
+                                <option value="">CPU</option>
+                                <option value="">Memória RAM</option>
+                                <option value="">Disco SSD</option>
+                            </select>
+                            <div class="especificacao-componente">
+                            <input type="text">
+                            <p>Cores</p> 
+                            </div>
+                            <div class="especificacao-componente">
+                            <input type="text">
+                            <p>GB</p>
+                            </div>
+                            <img src="./assets/icon/Button.png" alt="">
+
+                        </div>
+                        <div class="container-adicionar">
+                            
+                            <button id="adicionar-recurso">
+                                <img src="./assets/icon/Icon.png" alt="">
+                                
+                                Adicionar Componente</button>
+                        </div>
+                    </div>
                     
                     
                  
                  
                 </div>
-                <div class="componentes">
+                <div class="adicionar-server">
 
-                    <button onclick="trocarDisplay()">Próximo: Componentes  →</button>
+                    <button id="voltar" onclick="trocarDisplay()">Voltar</button>
+                    <button onclick="trocarDisplay()">Finalizar Cadastro do Servidor</button>
                 </div>
             </div>
         </div>
@@ -108,8 +135,15 @@
     document.getElementById('forms2').style.display="none";
 
     function trocarDisplay(){
-        document.getElementById('forms1').style.display="none";
-        document.getElementById('forms2').style.display="block";
+        if(document.getElementById('forms2').style.display=="none"){
+            document.getElementById('forms1').style.display="none";
+            document.getElementById('forms2').style.display="block";
+            
+        }else{
+            document.getElementById('forms1').style.display="block";
+            document.getElementById('forms2').style.display="none";
+
+        }
     }
 
 
