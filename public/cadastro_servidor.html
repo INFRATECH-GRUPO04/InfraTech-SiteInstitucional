@@ -32,7 +32,7 @@
            
             <div class="forms" id="forms1">
                 <div class="header-forms">
-                    <img src="./assets/icon/logo_server.png" alt="">
+                    <img onclick="" src="./assets/icon/logo_server.png" alt="">
                     <div class="texto-header-forms">
                         <h3>Cadastrar infraestrutura</h3>
                         <p>Provisione novos servidores físicos ou instâncias virtuais</p>
@@ -90,8 +90,51 @@
                         <img id="logo_user" src="./assets/icon/Screen1CadastrarHardware2.png" alt="">
                         <p>COMPONENTES DE HARDWARE</p>
                     </div>
-                    <div class="alinhar">
-                        <div class="titulo-componentes">
+                    <div class="alinhar" >
+                        <div id="alinhar"></div>
+                       <div class="container-adicionar">
+                            
+                            <button id="adicionar-recurso" onclick="adicionarComponente()">
+                                <img src="./assets/icon/Icon.png" alt="">
+                                
+                                Adicionar Componente</button>
+                        </div>
+                    </div>
+                    
+                    
+                 
+                 
+                </div>
+                <div class="adicionar-server">
+
+                    <button id="voltar" onclick="trocarDisplay()">Voltar</button>
+                    <button onclick="trocarDisplay()">Finalizar Cadastro do Servidor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    document.getElementById('forms2').style.display="none";
+    
+    function trocarDisplay(){
+        if(document.getElementById('forms2').style.display=="none"){
+            document.getElementById('forms1').style.display="none";
+            document.getElementById('forms2').style.display="block";
+            
+        }else{
+            document.getElementById('forms1').style.display="block";
+            document.getElementById('forms2').style.display="none";
+            
+        }
+    }
+    let contador=0
+    function adicionarComponente(){
+        console.log(`a${contador}`)
+        alinhar.innerHTML+=`
+        <div id="a${contador}"> 
+                        <div class="titulo-componentes" ">
                             
                         </div>
                         <div class="linha-componente">
@@ -122,45 +165,22 @@
                             </div>
                             <p>%</p>
                             </div>
-                            <img src="./assets/icon/Button.png" alt="">
-
-                        </div>
-                        <div class="container-adicionar">
                             
-                            <button id="adicionar-recurso">
-                                <img src="./assets/icon/Icon.png" alt="">
-                                
-                                Adicionar Componente</button>
+                            <img onclick="removerComponente(a${contador})"  src="./assets/icon/Button.png" alt="">
+
                         </div>
-                    </div>
-                    
-                    
-                 
-                 
-                </div>
-                <div class="adicionar-server">
+                        </div>
+                        `
+                        
+            contador++ 
+        
+    }
 
-                    <button id="voltar" onclick="trocarDisplay()">Voltar</button>
-                    <button onclick="trocarDisplay()">Finalizar Cadastro do Servidor</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-<script>
-    document.getElementById('forms2').style.display="none";
-
-    function trocarDisplay(){
-        if(document.getElementById('forms2').style.display=="none"){
-            document.getElementById('forms1').style.display="none";
-            document.getElementById('forms2').style.display="block";
-            
-        }else{
-            document.getElementById('forms1').style.display="block";
-            document.getElementById('forms2').style.display="none";
-
-        }
+    function removerComponente(id){
+        console.log(id)
+        // id.display+="none";
+    document.getElementById(id.id).remove();
+        
     }
 
 
