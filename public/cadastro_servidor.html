@@ -90,8 +90,11 @@
                         <img id="logo_user" src="./assets/icon/Screen1CadastrarHardware2.png" alt="">
                         <p>COMPONENTES DE HARDWARE</p>
                     </div>
-                    <div class="alinhar" >
-                        <div id="alinhar"></div>
+                    <div class="alinhar">
+                        <div id="alinhar">
+
+
+                        </div>
                        <div class="container-adicionar">
                             
                             <button id="adicionar-recurso" onclick="adicionarComponente()">
@@ -108,7 +111,7 @@
                 <div class="adicionar-server">
 
                     <button id="voltar" onclick="trocarDisplay()">Voltar</button>
-                    <button onclick="trocarDisplay()">Finalizar Cadastro do Servidor</button>
+                    <button>Finalizar Cadastro do Servidor</button>
                 </div>
             </div>
         </div>
@@ -131,23 +134,24 @@
     }
     let contador=0
     function adicionarComponente(){
-        console.log(`a${contador}`)
-        alinhar.innerHTML+=`
-        <div id="a${contador}"> 
-                        <div class="titulo-componentes" ">
+        const divPai=document.getElementById("alinhar")
+        const div = document.createElement("div");
+        div.id=`a${contador}`
+        div.innerHTML=`
+        
+                    <div class="titulo-componentes">
                             
                         </div>
                         <div class="linha-componente">
-                             <div class="especificacao-componente">
-                            <div class="juncao">
-                                
-                                <p>TIPO DE COMPONENTES</p>
-                                <select name="" id="">
-                                    <option value="">CPU</option>
-                                    <option value="">Memória RAM</option>
-                                    <option value="">Disco SSD</option>
-                                </select>
-                            </div>
+                            <div class="especificacao-componente">
+                                <div class="juncao">                                    
+                                    <p>TIPO DE COMPONENTES</p>
+                                    <select id="input${contador}" oninput="trocarComplemento(b${contador},input${contador})">
+                                        <option value="cpu">CPU</option>
+                                        <option value="ram">Memória RAM</option>
+                                        <option value="disco">Disco SSD</option>
+                                    </select>
+                                </div>
                             </div>
                             
                             <div class="especificacao-componente">
@@ -155,31 +159,46 @@
                                     <p>CAPACIDADE</p>
                                     <input type="text">
                                 </div>
-                                <p>Cores</p> 
+                                <p id="b${contador}">CORES</p> 
                             </div>
                             <div class="especificacao-componente">
                                 <div class="juncao">
                                     <p>LIMITE DE ALERTA</p>
-                            <input type="text">
+                                    <input type="text">
 
+                                </div>
+                                <p>%</p>
                             </div>
-                            <p>%</p>
-                            </div>
+                        <img onclick="removerComponente(a${contador})"  src="./assets/icon/Button.png" alt="">
                             
-                            <img onclick="removerComponente(a${contador})"  src="./assets/icon/Button.png" alt="">
 
                         </div>
-                        </div>
+                    
                         `
                         
-            contador++ 
-        
+                        divPai.append(div)
+                        // let id=`a${contador}`
+                        // div.innerHTML+=`
+                        // <img onclick="removerComponente(a${contador})"  src="./assets/icon/Button.png" alt="">
+                        // `
+                        contador++ 
     }
 
-    function removerComponente(id){
-        console.log(id)
-        // id.display+="none";
-    document.getElementById(id.id).remove();
+    function removerComponente(div){
+        console.log(div.id);
+        document.getElementById(div.id).remove();
+    }
+    
+    function trocarComplemento(p, select){
+        let valor=document.getElementById(select.id).value;
+        
+        if(select.value=="cpu"){
+            p.innerHTML="CORES"
+            
+        }else{
+            p.innerHTML="GB"   
+        }
+
         
     }
 
