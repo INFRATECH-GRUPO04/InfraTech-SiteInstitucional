@@ -279,6 +279,13 @@ button{
     flex-direction: column;
     gap: 10px;
 }
+
+a{
+    
+    text-decoration: none;
+    color: white;
+}
+
 .box-recursos p{
     margin: 0px;
 }
