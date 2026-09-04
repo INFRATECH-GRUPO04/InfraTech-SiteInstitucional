@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -19,59 +19,63 @@
         href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
 
-    <!-- scripts do Chart.js - 2022-1 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!--FONT AWESOME-->
     <script src="https://kit.fontawesome.com/9f7414eb10.js" crossorigin="anonymous"></script>
 </head>
 
 <!-- <body onload=" atualizarFeed()"> -->
 
 <body>
+<div class="header-left">
+ 
+    <div class="logo">
+        <img src="./assets/icon/logo.png" alt="Logo">
+    </div>
 
-    <div class="janela">
-        <div class="header-left">
-            <h1><img src="./assets/icon/logo.png" alt=""></h1>
+    <hr class="linha">
 
-            <div class="hello">
-                <h3>Olá, <span id="b_usuario">usuário</span>!</h3>
-            </div>
+   
+    <h3 class="nav-categoria">
+        <img src="./assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Servidores
+    </h3>
+     <hr class="linha">
 
-            <div class="btn-nav-white">
-                <a href="./cards.html">
-                    <h3>Aquários e Terrários</h3>
-                </a>
-            </div>
+    <a href="./cards.html" class="nav-item">
+        <img src="./assets/imgs/dashboards.png" alt="" class="menu-icon">
+        Dashboard
+    </a>
+    <a href="#" class="nav-item">
+        <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+    </a>
+    <a href="./mural.html" class="nav-item">
+        <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar
+    </a>
+     
 
-            <div class="btn-nav">
+    <!-- Seção Funcionários -->
+    <h3 class="nav-categoria secao-funcionarios">
+        <img src="./assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+        Funcionarios
+    </h3>
+<hr class="linha">
+    <a href="./mural.html" class="nav-item ativo">
+        <img src="./assets/imgs/token.png" alt="" class="menu-icon">
+        Cadastrar Token
+    </a>
+    <a href="./mural.html" class="nav-item">
+        <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+    </a>
 
-                <h3>Gráficos</h3>
-
-            </div>
-
-            <div class="btn-nav-white">
-                <a href="./mural.html">
-                    <h3>Mural de Avisos</h3>
-                </a>
-            </div>
-
-            <div class="btn-logout" onclick="limparSessao()">
-                <h3>Sair</h3>
-            </div>
-
-        </div>
-
-        <div class="dash">
-            <div id="alerta">
-            </div>
-
-            <div class="btns-dash" id="btnAquario">
-                <!-- O gráfico é chamado de acordo com o id (fk_aquario) do banco  -->
-            </div>
-            <div id="graficos">
-            </div>
-        </div>
+    <!-- Botão Sair no Rodapé -->
+    <div class="btn-logout" onclick="limparSessao()" title="Sair">
+        <img src="./assets/imgs/logout.png" alt="" class="logout-icon">
+    </div>
+</div>
     </div>
 
 
