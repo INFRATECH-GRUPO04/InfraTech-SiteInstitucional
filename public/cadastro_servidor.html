@@ -53,11 +53,11 @@
                     </div>
                     <div class="input-server">
                         <p>NOME DO SERVIDOR</p>
-                        <input type="text" placeholder="Ex: SRV-SP-PROD-01">
+                        <input type="text" placeholder="Ex: SRV-SP-PROD-01" id="nome_servidor_id">
                     </div>
                     <div class="input-server">
                         <p>LOCALIZAÇÃO</p>
-                        <input type="text" placeholder="Ex: Rack 04 - Data Center SP">
+                        <input type="text" placeholder="Ex: Rack 04 - Data Center SP" id="localizacao_id">
                     </div>
                     
                  
@@ -65,10 +65,10 @@
                 </div>
                 <div class="componentes">
 
-                    <button onclick="trocarDisplay()">Próximo: Componentes  →</button>
+                    <button onclick="cadastrar()">Próximo: Componentes  →</button>
                 </div>
             </div>
-
+ 
             <div class="forms" id="forms2">
                 <div class="header-forms">
                     <img src="./assets/icon/logo_server.png" alt="">
@@ -111,7 +111,7 @@
                 <div class="adicionar-server">
 
                     <button id="voltar" onclick="trocarDisplay()">Voltar</button>
-                    <button>Finalizar Cadastro do Servidor</button>
+                    <button onclick="cadastrarComponente()">Finalizar Cadastro do Servidor</button>
                 </div>
             </div>
         </div>
@@ -133,10 +133,14 @@
         }
     }
     let contador=0
+    let idServidorCadastrado;
+    let inputsLista = [];
+
     function adicionarComponente(){
         const divPai=document.getElementById("alinhar")
         const div = document.createElement("div");
         div.id=`a${contador}`
+        inputsLista.push(div.id)
         div.innerHTML=`
         
                     <div class="titulo-componentes">
@@ -157,14 +161,14 @@
                             <div class="especificacao-componente">
                                 <div class="juncao">
                                     <p>CAPACIDADE</p>
-                                    <input type="text">
+                                    <input type="text" id="input-capacidade${contador}">
                                 </div>
                                 <p id="b${contador}">CORES</p> 
                             </div>
                             <div class="especificacao-componente">
                                 <div class="juncao">
                                     <p>LIMITE DE ALERTA</p>
-                                    <input type="text">
+                                    <input type="text" id="input-alerta${contador}">
 
                                 </div>
                                 <p>%</p>
@@ -181,12 +185,19 @@
                         // div.innerHTML+=`
                         // <img onclick="removerComponente(a${contador})"  src="./assets/icon/Button.png" alt="">
                         // `
-                        contador++ 
+                        contador++
+                        console.log(inputsLista);
     }
 
     function removerComponente(div){
         console.log(div.id);
         document.getElementById(div.id).remove();
+        for (let i = 0; i < inputsLista.length; i++) {
+            if(inputsLista[i]==div.id){
+                inputsLista.splice(i,1)
+            }
+        }
+        console.log(inputsLista);
     }
     
     function trocarComplemento(p, select){
@@ -202,5 +213,120 @@
         
     }
 
+    function cadastrar() {
+        
+    var nomeServidorVar = nome_servidor_id.value.trim();
+    var localizacaoServidorVar = localizacao_id.value.trim();
+    
+    if (nomeServidorVar.length == 0 || nomeServidorVar.length > 45) {
+        console.log("O nome deve ter entre 1 e 45 caracteres!");
+        return;
+    }
+
+    if (localizacaoServidorVar.length == 0 || localizacaoServidorVar.length > 45) {
+        console.log("A localização deve ter entre 1 e 45 caracteres!");
+        return;
+    }
+
+      fetch("/servidor/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // crie um atributo que recebe o valor recuperado aqui
+        // Agora vá para o arquivo routes/servidor.js
+        nomeServer: nomeServidorVar,
+        localizacaoServer: localizacaoServidorVar
+      }),
+    })
+            .then(function (resposta) {
+                if (!resposta.ok) {
+                    throw "Houve um erro ao tentar realizar o cadastro!";
+                }
+
+                return resposta.json();
+            })
+            .then(function (dados) {
+                idServidorCadastrado = dados.idServidor;
+                console.log("Servidor cadastrado com sucesso! ID:", idServidorCadastrado);
+                trocarDisplay();
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        
+      })};
+
+      function cadastrarComponente() {
+ 
+
+
+        for (let i = 0; i < inputsLista.length; i++) {
+        let indice = inputsLista[i].substring(1);
+        let componente = document.getElementById(`input${indice}`).value;
+        let capacidade = Number(document.getElementById(`input-capacidade${indice}`).value);
+        let limiteAlerta = Number(document.getElementById(`input-alerta${indice}`).value);
+        let valorComponente = 0;
+
+        if (
+          componente == "" ||
+          capacidade == "" ||
+          limiteAlerta == ""
+        ){
+            console.log("Preencha todos os campos!");
+            return;
+        }
+        if(capacidade <= 0 || limiteAlerta < 0 || limiteAlerta > 100){
+            console.log("Valores inválidos!");
+            return;
+        }
+
+           if(componente == "cpu"){
+            valorComponente = 1;
+        } else if(componente == "ram"){
+            valorComponente = 2;
+        } else if(componente == "disco"){
+            valorComponente = 3;
+        } else {
+            console.log("Componente inválido!");
+            return;
+        }
+
+        for (let j = 0; j < i; j++) {
+            let indiceAnterior = inputsLista[j].substring(1);
+            if (document.getElementById(`input${indiceAnterior}`).value == componente) {
+                console.log("Não é possível cadastrar o mesmo componente duas vezes!");
+                return;
+            }
+        }
+
+          fetch("/servidor/cadastrar/componente", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fkServidorServer: idServidorCadastrado,
+            fkComponenteServer: valorComponente,
+            capacidadeServer: capacidade,
+            limiteAlertaServer: limiteAlerta
+          }),
+        })
+                .then(function (resposta) {
+                    if (!resposta.ok) {
+                        throw "Houve um erro ao tentar realizar o cadastro!";
+                    }
+
+                    return resposta.json();
+                })
+                .then(function (dados) {
+                    console.log("Componente cadastrado com sucesso!");
+          })
+          .catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            
+          })
+        }
+    };
 
 </script>

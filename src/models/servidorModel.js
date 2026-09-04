@@ -12,6 +12,13 @@ function cadastrar(nome, localizacao) {
     return database.executar(instrucaoSql);
 }
 
+    function cadastrarComponente(fkServidor, fkComponente, capacidade,limiteAlerta) {
+    const instrucaoSql = `
+        INSERT INTO servidor_has_componente (fkServidor, fkComponente, capacidade, limiteAlerta) VALUES(${fkServidor}, ${fkComponente}, ${capacidade}, ${limiteAlerta});`;
+
+    return database.executar(instrucaoSql);
+}
 module.exports = {
-    cadastrar
+    cadastrar,
+    cadastrarComponente
 };
