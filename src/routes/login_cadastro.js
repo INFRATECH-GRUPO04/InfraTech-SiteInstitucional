@@ -15,4 +15,8 @@ router.post("/autenticar", function (req, res) {
     login_cadastroController.autenticar(req, res);
 });
 
+router.post("/verificar", function (req, res) {
+    usuarioController.verificar(req, res);
+});
+
 module.exports = router;

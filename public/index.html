@@ -1,5 +1,5 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -117,7 +117,7 @@
 
                             <div class="col-12 col-md-6">
                                 <p>CÓDIGO DA EMPRESA</p>
-                                <input type="text" id="ipt-codigo" class="form-control campoTexto" placeholder="A44FSF">
+                                <input type="text" id="ipt_codigo" class="form-control campoTexto" placeholder="A44FSF">
                             </div>
                         </div>
 
@@ -137,8 +137,6 @@
                             <button onclick="cadastrar()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
 
                             <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
-
-                            <p class="texto mt-3">Já tem conta? <a href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
 
                         </div>
 
@@ -383,7 +381,7 @@
     var emailVar = ipt_email_corporativo_cadastro.value;
     var senhaVar = ipt_senha_cadastro.value;
     var confirmacaoSenhaVar = ipt_confirmar_senha.value;
-    // var codigoVar = ipt-codigo.value;
+    var codigoVar = ipt_codigo.value;
     var cpfVar = ipt_cpf.value;
     // var idEmpresaVincular
 
@@ -393,7 +391,7 @@
       emailVar == "" ||
       senhaVar == "" ||
       confirmacaoSenhaVar == ""
-    //   codigoVar == "" 
+     ||codigoVar == "" 
      || cpfVar == ""
     ){
         console.log("Preencha todos os campos!");
@@ -431,6 +429,7 @@
         emailServer: emailVar,
         senhaServer: senhaVar,
         cpfServer: cpfVar,
+        codigoServer: codigoVar
         // idEmpresaVincularServer: idEmpresaVincular
       }),
     })

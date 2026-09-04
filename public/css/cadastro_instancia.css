@@ -1,3 +1,5 @@
+@import url('https://googleapis.com');
+
 header{
     display: flex;
     flex-direction: row;
@@ -24,10 +26,19 @@ header{
     padding: 100px;
     padding-top: 20px;
 }
+
+/* Solução temporária */
+.block_token{
+    width: calc(100% - 100px);
+    display: flex;
+    justify-content:center;
+    margin-top: 15vh;
+}
 body{
     display: flex;
-        color: white;
-    font-family: "JetBrains Mono";
+    color: white;
+    font-family: "JetBrains Mono", monospace;
+    line-height: 21px;
     min-height: 100vh;
     margin: 0;
     overflow-x: hidden;
@@ -51,10 +62,64 @@ body{
     background-color: #2A4050;
     border-radius: 20px;
     border:1px, #00CFFF, solid;
-    
+}
+.bg_token {
+    background-image: linear-gradient(
+        0deg,
+        hsl(206, 100%, 7%) 0%,
+        hsl(205deg 100% 8%) 7%,
+        hsl(206deg 100% 7%) 16%,
+        hsl(205deg 100% 6%) 27%,
+        hsl(208deg 100% 5%) 42%,
+        hsl(207deg 100% 4%) 61%,
+        hsl(205deg 100% 2%) 79%,
+        hsl(210deg 100% 1%) 92%,
+        hsl(0deg 0% 0%) 100%
+    );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    max-width: 50%;
+    justify-self: center;
 }
 .content{
     width: 100%;
+}
+
+.div_admin{
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    align-items:last baseline;
+    gap: 0.3vw;
+}
+.img_online{
+    width: 8px;
+    height: 8px;
+    background: #05DF72;
+    opacity: 0.55;
+    border-radius: 3.35544e+07px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.circulo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    left: 560px;
+    top: 253px;
+    background: #1E3040;
+    border-radius: 50px;
+}
+
+.span_token{
+    font-size: 17px;
+    word-spacing:0.1vw;
+    color: #90E5F9;
 }
 
 .insert-forms{
@@ -111,24 +176,46 @@ button{
     margin-left: 0px;
 }
 
-.adicionar-instancia{
+.adicionar-instancia, .continuar-cadastro{
     padding: 20px;
     display: flex;
     justify-content: flex-end;
     border-top: 1px solid #00CFFF;
 }
 
-.texto-header-forms h3{
-    margin: 0px;
+.continuar-cadastro{
+    border: none;
 }
-.texto-header-forms p{
+.continuar-cadastro button{
+    width: 100%;
+}
+
+.texto-header-forms h3, p {
     margin: 0px;
 }
 
+.texto-header-forms-token {
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.texto-header-forms-token h3{
+    margin: 0px;
+}
+.texto-header-forms-token p{
+    margin: 0px;
+    color: #63ADBE;
+}
+
+.token_gap {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+}
 .adicionar-componente{
     display: flex;
     justify-content: space-between;
-    
 }
 
 .adicionar-componente select{
@@ -136,6 +223,32 @@ button{
     width: 30%;
 }
 
+.ipt_token {
+    width: 5vw;
+    height: 3vh;
+    border-color: #63ADBE;
+}
+
+.radios {
+    display: flex;
+    gap: 2vw;
+}
+
+.radios label {
+    background-color: #2A4050;
+    padding: 8px 10px;
+    border-radius: 5px;
+    color: #00d0ff7e;
+
+}
+
+.radios input {
+    display: none;
+}
+.radios input:checked + label{
+    background-color: #35444e;
+    color: #00d0ffb9;
+}
 
 
 .box-componente{
