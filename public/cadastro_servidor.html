@@ -65,7 +65,7 @@
                 </div>
                 <div class="componentes">
 
-                    <button onclick="cadastrar()">Próximo: Componentes  →</button>
+                    <button onclick="proximo()">Próximo: Componentes  →</button>
                 </div>
             </div>
  
@@ -122,7 +122,11 @@
     document.getElementById('forms2').style.display="none";
     
     function trocarDisplay(){
+                
+      
+
         if(document.getElementById('forms2').style.display=="none"){
+
             document.getElementById('forms1').style.display="none";
             document.getElementById('forms2').style.display="block";
             
@@ -135,6 +139,10 @@
     let contador=0
     let idServidorCadastrado;
     let inputsLista = [];
+    let nomeServidorCadastrado;
+    let localizacaoServidorCadastrada;
+            
+  
 
     function adicionarComponente(){
         const divPai=document.getElementById("alinhar")
@@ -213,36 +221,51 @@
         
     }
 
-    function cadastrar() {
-        
-    var nomeServidorVar = nome_servidor_id.value.trim();
-    var localizacaoServidorVar = localizacao_id.value.trim();
+    function proximo() {
+
+    var nomeServidor = nome_servidor_id.value.trim();
+    var localizacaoServidor = localizacao_id.value.trim();
     
-    if (nomeServidorVar.length == 0 || nomeServidorVar.length > 45) {
+    if (nomeServidor.length == 0 || nomeServidor.length > 45) {
         console.log("O nome deve ter entre 1 e 45 caracteres!");
         return;
     }
 
-    if (localizacaoServidorVar.length == 0 || localizacaoServidorVar.length > 45) {
+    if (localizacaoServidor.length == 0 || localizacaoServidor.length > 45) {
         console.log("A localização deve ter entre 1 e 45 caracteres!");
         return;
     }
 
-      fetch("/servidor/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // crie um atributo que recebe o valor recuperado aqui
-        // Agora vá para o arquivo routes/servidor.js
-        nomeServer: nomeServidorVar,
-        localizacaoServer: localizacaoServidorVar
-      }),
-    })
+        nomeServidorCadastrado = nomeServidor;
+        localizacaoServidorCadastrada = localizacaoServidor;
+        trocarDisplay();
+        };
+
+      function cadastrarComponente() {
+        if (nomeServidorCadastrado == undefined || localizacaoServidorCadastrada == undefined) {
+            console.log("Preencha os dados do servidor antes dos componentes!");
+            trocarDisplay();
+            return;
+        }
+
+        if (inputsLista.length == 0) {
+            console.log("Adicione pelo menos um componente!");
+            return;
+        }
+
+        fetch("/servidor/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nomeServer: nomeServidorCadastrado,
+                localizacaoServer: localizacaoServidorCadastrada
+            })
+        })
             .then(function (resposta) {
                 if (!resposta.ok) {
-                    throw "Houve um erro ao tentar realizar o cadastro!";
+                    throw new Error("Houve um erro ao cadastrar o servidor!");
                 }
 
                 return resposta.json();
@@ -250,16 +273,6 @@
             .then(function (dados) {
                 idServidorCadastrado = dados.idServidor;
                 console.log("Servidor cadastrado com sucesso! ID:", idServidorCadastrado);
-                trocarDisplay();
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-        
-      })};
-
-      function cadastrarComponente() {
- 
-
 
         for (let i = 0; i < inputsLista.length; i++) {
         let indice = inputsLista[i].substring(1);
@@ -311,22 +324,25 @@
             capacidadeServer: capacidade,
             limiteAlertaServer: limiteAlerta
           }),
-        })
+          })
                 .then(function (resposta) {
                     if (!resposta.ok) {
-                        throw "Houve um erro ao tentar realizar o cadastro!";
+                        throw new Error("Houve um erro ao cadastrar o componente!");
                     }
 
                     return resposta.json();
                 })
-                .then(function (dados) {
+                .then(function () {
                     console.log("Componente cadastrado com sucesso!");
-          })
-          .catch(function (resposta) {
-            console.log(`#ERRO: ${resposta}`);
-            
-          })
+                })
+                .catch(function (erro) {
+                    console.log("#ERRO:", erro);
+                });
         }
+            })
+            .catch(function (erro) {
+                console.log("#ERRO:", erro);
+            });
     };
 
 </script>
