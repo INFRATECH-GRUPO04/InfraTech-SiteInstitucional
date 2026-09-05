@@ -117,7 +117,8 @@ dialog#modal-cadastro::backdrop {
     border: 1px #00CFFF solid;
 }
 
-.texto{
+/* Remova o comentário se houver algum texto não estilizado */
+/* .texto{
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
@@ -125,7 +126,7 @@ dialog#modal-cadastro::backdrop {
     font-family: "JetBrains Mono", monospace;
     font-size: 11px;
     background: transparent;
-}
+} */
 
 .div_btn_criarConta{
     margin-top: 40px;
