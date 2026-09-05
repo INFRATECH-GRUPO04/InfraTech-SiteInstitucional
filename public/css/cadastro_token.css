@@ -144,9 +144,19 @@ input{
     
 }
 
+.container{
+    display: flex; 
+    gap: 10px; 
+    width: 100%;
+    justify-content: space-between;
+}
+
 img{
-    width: 60px;
-    height: 60px;
+    width: 20px;
+    height: 20px;
+}
+.pg2{
+    width: 45%;
 }
 
 p{
@@ -166,6 +176,8 @@ button{
     border:1px solid gray;
     color: white;
 }
+
+
 
 
 .adicionar-instancia, .continuar-cadastro{
