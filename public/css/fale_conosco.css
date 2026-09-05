@@ -139,7 +139,10 @@ main {
 }
 
 .texto {
+
     color: #b6cfdb;
+
+    color: #FFFFFF;
     display: block;
     line-height: 1.6;
     font-size: 0.95rem;
@@ -158,9 +161,14 @@ main {
 }
 
 .texto2 {
+
     color: #a0a0a0;
     font-size: 0.9rem;
     line-height: 1.6;
+
+    color: #FFFFFF;
+    font-size: 14px;
+
 }
 
 .botao_box {
@@ -175,10 +183,14 @@ main {
 }
 
 .bloco_contato p {
+
     color: rgba(0, 207, 255, 0.5);
     margin: 0 0 5px 0;
     font-size: 0.8rem;
     letter-spacing: 1px;
+
+    color: #00d0ff7a;
+
 }
 
 .bloco_contato span {
