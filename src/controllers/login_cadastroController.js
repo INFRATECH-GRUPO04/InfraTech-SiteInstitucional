@@ -14,12 +14,20 @@ function autenticar(req, res) {
         login_cadastroModel.autenticar(email, senha)
             .then(
                 function (resultadoAutenticar) {
-                    res.json(resultadoAutenticar);
                     console.log(`\nResultados encontrados: ${resultadoAutenticar.length}`);
                     console.log(`Resultados: ${JSON.stringify(resultadoAutenticar)}`);
                     
                     if (resultadoAutenticar.length == 1) {
-                        console.log(resultadoAutenticar);
+                        var funcionario = resultadoAutenticar[0];
+
+                        res.json({
+                            idFuncionario: funcionario.idFuncionario,
+                            idEmpresa: funcionario.fkEmpresa,
+                            nome: funcionario.nome,
+                            email: funcionario.email,
+                            senha: funcionario.senha,
+                            tipoAcesso: funcionario.tipoAcesso
+                        });
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
                     } else {
