@@ -1,0 +1,295 @@
+header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 2px solid #00CFFF25;
+    padding-bottom: 20px;
+}
+#servidor{
+    background-color:#00CFFF25;
+    border:1px solid gray;
+    color: white;
+}
+
+.progresso{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    border-bottom: 1px solid gray;
+    padding: 20px;
+}
+
+.linha{
+    height: 2px;
+    border-radius: 1px;
+    background-color: gray;
+    width: 100px;
+}
+.linha2{
+    height: 2px;
+    border-radius: 1px;
+    background-color:#00CFFF;
+    width: 100px;
+}
+
+.progresso p{
+    margin: 0px;
+}
+
+.progresso img{
+    height: 25px;
+    width: 25px;
+}
+
+.sidebar{
+    border-right: 1px solid #00CFFF25;
+    display: flex;
+    width: 100px;
+    padding: 30px;
+    background-color: #00CFFF25;
+}
+
+#logo_user{
+    height:25px ;
+    width: 25px;
+}
+
+.linha-identificacao{
+    display: flex;
+    align-items: center;
+    color: #00CFFF;
+    width: 80%;
+}
+.linha-identificacao p{
+    margin: 0px;
+}
+
+.input-server{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+}
+
+body{
+    display: flex;
+        color: white;
+    font-family: "JetBrains Mono";
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    background-image: linear-gradient(
+        0deg,
+        hsl(206, 100%, 7%) 0%,
+        hsl(205deg 100% 8%) 7%,
+        hsl(206deg 100% 7%) 16%,
+        hsl(205deg 100% 6%) 27%,
+        hsl(208deg 100% 5%) 42%,
+        hsl(207deg 100% 4%) 61%,
+        hsl(205deg 100% 2%) 79%,
+        hsl(210deg 100% 1%) 92%,
+        hsl(0deg 0% 0%) 100%
+    );
+
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+p{
+    margin-bottom: 0px;
+}
+
+.content{
+    width: 100%;
+}
+
+.layout{
+    padding: 100px;
+    padding-top: 20px;
+}
+
+
+img{
+    width: 60px;
+    height: 60px;
+}
+select{
+    color: white;
+    padding: 3px;
+    width: 20%;
+    border-radius: 5px;
+    background-color:#00CFFF25;
+    border:1px solid gray;
+}
+
+.container-adicionar img{
+height: 20px;
+width: auto;
+}
+.alinhar{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.linha-componente {
+    display: flex;
+    height: 30px;
+    gap: 20px;
+    align-items: center;
+    background-color: #ffffff07;
+    border-radius: 5px;
+    border:1px solid gray;
+    padding: 20px;
+    justify-content:space-between;
+}
+
+.especificacao-componente{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    gap: 13px;
+    justify-content: center;
+}
+.especificacao-componente p{
+    margin: 0px;
+}
+
+
+.titulo-componentes{
+    color: white;
+    display: flex;
+}
+.titulo-componentes p{
+    margin-right: 10%;
+}
+
+.juncao{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+}
+
+.juncao p{
+    font-size: 0.8vw;
+    text-align: start;
+    margin: 0px;
+}
+.juncao input{
+    width: 100%;
+}
+
+
+
+
+
+
+.adicionar-server{
+    padding: 20px;
+    display: flex;
+    justify-content:space-between;
+    border-top: 1px solid #00CFFF;
+}
+
+#voltar{
+    background-color: #ffffff07;
+    border-radius: 5px;
+    border:1px solid gray;
+    color: white;
+
+}
+
+#adicionar-recurso{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    width:100%;
+    color: #00CFFF;
+    border: #00CFFF 2px dotted;
+    background-color: #2A4050;
+    /* border-style: solid dotted; */
+}
+
+.insert-forms{
+    padding: 20px;
+    display: flex;
+    width: 80%;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.forms{
+    background-color: #2A4050;
+    border-radius: 10px;
+    border:1px, #00CFFF, solid;
+    
+}
+
+.header-forms{
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border-bottom: 1px solid #00CFFF;
+    align-items: center;
+}
+
+button{
+    border-radius: 10px;
+    border:1px, black;
+    background-color: #00CFFF;
+    padding: 10px;
+}
+
+.buttons{
+    margin: 20px;
+    margin-left: 0px;
+}
+
+a{
+    
+    text-decoration: none;
+    color: white;
+}
+.texto-header-forms h3{
+    margin: 0px;
+}
+.texto-header-forms p{
+    margin: 0px;
+}
+
+input{
+    color: white;
+    width: 100%;
+    border-radius: 5px;
+    background-color:#00CFFF25;
+    border:1px solid gray;
+    padding: 5px;
+    padding-right: 0px;
+    
+    
+}
+
+#alinhar{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input::placeholder {
+    color: lightgrey; 
+}
+
+.componentes{
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #00CFFF;
+}
+
+.juncao select{
+    width: 100%;
+}
