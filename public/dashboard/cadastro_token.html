@@ -101,4 +101,40 @@
         </div>
     </div>
 </body>
+
+<script>
+    function gerarToken() {
+        var qtdVar = ipt_qtd.value;
+        var permVar = ipt_perm.value;
+        
+
+        fetch("/crypto/gerar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            // crie um atributo que recebe o valor recuperado aqui
+            // Agora vá para o arquivo routes/usuario.js
+            qtdServer: qtdVar,
+            permServer: permVar,
+            // idEmpresaVincularServer: idEmpresaVincular
+        }),
+        })
+           .then(function (resposta) {
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+            console.log("código gerado com sucesso!");
+        
+
+            } else {
+            throw "Houve um erro ao tentar gerar o código!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+            
+    })};
+</script>
 </html>
