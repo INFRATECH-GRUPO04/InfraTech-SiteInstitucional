@@ -1,4 +1,4 @@
-<img src="./TELA-INICIAL/logo.png">
+<img src="./public/assets/icon/logo.png">
 # Sistema Inteligente de Monitoramento de Infraestrutura de Jogos Online e Microtransações 
 
 > **Projeto do 2º Semestre (2026.2)** — Desenvolvimento de uma aplicação *client* e *web* voltada ao monitoramento em tempo real de hardware/sistemas operacionais, alinhada às melhores práticas de ITIL (Gestão de Incidentes, Problemas e Monitoramento de Serviços).

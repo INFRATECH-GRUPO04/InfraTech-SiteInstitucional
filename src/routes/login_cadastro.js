@@ -15,7 +15,7 @@ router.post("/autenticar", function (req, res) {
     login_cadastroController.autenticar(req, res);
 });
 
-router.post("/verificar", function (req, res) {
+router.get("/verificar", function (req, res) {
     usuarioController.verificar(req, res);
 });
 
