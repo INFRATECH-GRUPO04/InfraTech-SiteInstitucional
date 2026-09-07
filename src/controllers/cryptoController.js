@@ -24,7 +24,10 @@ function gerarCodigo(req, res) {
   cryptoModel.gerarCodigo(token_final, perm_funcionario, qtd_funcionario, fkEmpresa)
               .then(
                   function (resultado) {
-                      res.json(resultado);
+                      res.json({ 
+                        mensagem: "Código gerado com sucesso!",
+                        token: token_final 
+                    });
                   }
               ).catch(
                   function (erro) {

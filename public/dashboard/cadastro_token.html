@@ -136,7 +136,7 @@
 
                         </div>
                         <div class="linha">
-                            <p>Funcionários: <span style="color: #00CFFF;">10</span></p>
+                            <p>Funcionários: <span id="qtd_user" style="color: #00CFFF;"></span></p>
                         </div>
                         
                         <div class="componentes token_gap">
@@ -145,10 +145,10 @@
                             <!-- pegar por js -->
                   
                             <div class="radios">
-                                <input type="radio" id="qtd1" name="func_qtd" value="Administrador">
+                                <input type="radio" id="qtd1" name="func_qtd" value="ADMIN">
                                 <label for="qtd1">Administrador</label>
 
-                                <input type="radio" id="qtd5" name="func_qtd" value="Comum">
+                                <input type="radio" id="qtd5" name="func_qtd" value="COMUM">
                                 <label for="qtd5">Comum</label>
 
                             </div>
@@ -204,10 +204,10 @@
                         </div>
                         <div class="container">
                             <div class="linha pg2">
-                                <p>Funcionários: <span style="color: #00CFFF;">10</span></p>
+                                <p>Funcionários: <span id="qtd_users" style="color: #00CFFF;">10</span></p>
                             </div>
                             <div class="linha pg2">
-                                <p>Tipo usuário: <span style="color: #00CFFF;">ADMIN</span></p>
+                                <p>Tipo usuário: <span id="tipo_user" style="color: #00CFFF;">ADMIN</span></p>
                             </div>
                         </div>
                         
@@ -215,8 +215,8 @@
                             <p><span class="span_token">Token Gerado</span></p>
                   
                             <div class="linha">
-                                <p>tokenn</p>
-                                <img src="../assets/icon/copiar.png" alt="">
+                                <p id="token">tokenn</p>
+                                <img  onclick="copiarCodigo()" src="../assets/icon/copiar.png" alt="">
                             </div>
                             <!-- pegar por js -->
                   
@@ -226,7 +226,7 @@
                     
                     <div class="continuar-cadastro">
                     
-                        <button id="voltar" onclick="novoToken()" >  Gerar novo token</button>
+                        <button id="voltar" onclick="novoToken()" >+  Gerar novo token</button>
                         
                     </div>
                 </div>
@@ -238,9 +238,11 @@
 </html>
 
 <script>
+
+
     function gerarToken() {
-        var qtdVar = ipt_qtd.value;
-        var permVar = ipt_perm.value;
+        var qtdVar = ipt_qtd_token.value;
+        var permVar = radioSelecionado = document.querySelector('input[name="func_qtd"]:checked').value;
         
 
         fetch("/crypto/gerar", {
@@ -262,16 +264,20 @@
             if (resposta.ok) {
             console.log("código gerado com sucesso!");
         
-
+                return resposta.json();
             } else {
             throw "Houve um erro ao tentar gerar o código!";
             }
-        })
+        }).then(function (dados) {
+        console.log("Token recebido:", dados.token);
+        
+        document.getElementById("token").innerHTML = dados.token;
+    })
         .catch(function (resposta) {
             console.log(`#ERRO: ${resposta}`);
             
     })};
-        let pg1=document.getElementById("cadastro1");
+    let pg1=document.getElementById("cadastro1");
     let pg2=document.getElementById("cadastro2");
     let pg3=document.getElementById("cadastro3");
 
@@ -280,19 +286,52 @@
     function passarPagina1(){
         pg1.style.display="flex";
         pg2.style.display="none";
+        
     }
     
     function passarPagina2(){
-        pg1.style.display="none";
-        pg2.style.display="flex";
+        try{
+            let qtdVar = Number(ipt_qtd_token.value);
+            if(qtdVar>0){
+                pg1.style.display="none";
+                pg2.style.display="flex";
+                qtd_user.innerHTML=qtdVar;
+
+            }else{
+                alert("Número inválido")
+            }
+            
+
+        }catch(error){
+            alert("Digite somente números!")
+            
+        }
     }
     function passarPagina3(){
-        pg2.style.display="none";
-        pg3.style.display="flex";
+        let qtdVar = ipt_qtd_token.value;
+        const radioSelecionado = document.querySelector('input[name="func_qtd"]:checked');
+        if(radioSelecionado!=null){
+            gerarToken()
+            pg2.style.display="none";
+            pg3.style.display="flex";
+            qtd_users.innerHTML=qtdVar;
+            tipo_user.innerHTML=radioSelecionado.value;
+        }else{
+            alert("Escolha uma opção!")
+        }
+        
     }
 
     function novoToken(){
         window.location.href="./cadastro_token.html";
     }  
+
+
+    function copiarCodigo() {
+        const token = document.getElementById("token").innerText;
+
+        navigator.clipboard.writeText(token);
+        alert("Código copiado com sucesso!!");
+}
 </script>
 </html>
