@@ -198,14 +198,13 @@
     }
 
     function removerComponente(div){
-        console.log(div.id);
         document.getElementById(div.id).remove();
         for (let i = 0; i < inputsLista.length; i++) {
             if(inputsLista[i]==div.id){
                 inputsLista.splice(i,1)
             }
         }
-        console.log(inputsLista);
+
     }
     
     function trocarComplemento(p, select){
@@ -227,12 +226,12 @@
     var localizacaoServidor = localizacao_id.value.trim();
     
     if (nomeServidor.length == 0 || nomeServidor.length > 45) {
-        console.log("O nome deve ter entre 1 e 45 caracteres!");
+        alert("O nome deve ter entre 1 e 45 caracteres!");
         return;
     }
 
     if (localizacaoServidor.length == 0 || localizacaoServidor.length > 45) {
-        console.log("A localização deve ter entre 1 e 45 caracteres!");
+        alert("A localização deve ter entre 1 e 45 caracteres!");
         return;
     }
 
@@ -243,13 +242,13 @@
 
       function cadastrarComponente() {
         if (nomeServidorCadastrado == undefined || localizacaoServidorCadastrada == undefined) {
-            console.log("Preencha os dados do servidor antes dos componentes!");
+            alert("Preencha os dados do servidor antes dos componentes!");
             trocarDisplay();
             return;
         }
 
         if (inputsLista.length == 0) {
-            console.log("Adicione pelo menos um componente!");
+            alert("Adicione pelo menos um componente!");
             return;
         }
 
@@ -286,11 +285,11 @@
           capacidade == "" ||
           limiteAlerta == ""
         ){
-            console.log("Preencha todos os campos!");
+            alert("Preencha todos os campos!");
             return;
         }
         if(capacidade <= 0 || limiteAlerta < 0 || limiteAlerta > 100){
-            console.log("Valores inválidos!");
+            alert("Valores inválidos!");
             return;
         }
 
@@ -301,14 +300,14 @@
         } else if(componente == "disco"){
             valorComponente = 3;
         } else {
-            console.log("Componente inválido!");
+            alert("Componente inválido!");
             return;
         }
 
         for (let j = 0; j < i; j++) {
             let indiceAnterior = inputsLista[j].substring(1);
             if (document.getElementById(`input${indiceAnterior}`).value == componente) {
-                console.log("Não é possível cadastrar o mesmo componente duas vezes!");
+                alert("Não é possível cadastrar o mesmo componente duas vezes!");
                 return;
             }
         }

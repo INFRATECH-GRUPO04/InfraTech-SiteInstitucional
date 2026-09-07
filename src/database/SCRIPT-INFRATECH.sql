@@ -6,8 +6,8 @@ USE InfraTech ;
 -- -----------------------------------------------------
 CREATE TABLE empresa (
   idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45) NULL,
-  cnpj CHAR(14) NULL,
+  nome VARCHAR(45) NOT NULL,
+  cnpj CHAR(14) NOT NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -18,11 +18,11 @@ CREATE TABLE empresa (
 CREATE TABLE funcionario (
   idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
   fkEmpresa INT NOT NULL,
-  tipoAcesso VARCHAR(45) NULL,
-  nome VARCHAR(45) NULL,
-  email VARCHAR(45) NULL,
-  senha VARCHAR(45) NULL,
-  cpf CHAR(11) NULL,
+  tipoAcesso VARCHAR(45) NOT NULL,
+  nome VARCHAR(45) NOT NULL,
+  email VARCHAR(45) NOT NULL,
+  senha VARCHAR(45) NOT NULL,
+  cpf CHAR(11) NOT NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
     FOREIGN KEY (fkEmpresa)
@@ -35,8 +35,8 @@ CREATE TABLE funcionario (
 -- -----------------------------------------------------
 CREATE TABLE servidor (
   idServidor INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45) NULL,
-  localizacao VARCHAR(45) NULL,
+  nome VARCHAR(45) NOT NULL,
+  localizacao VARCHAR(45) NOT NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -46,9 +46,9 @@ CREATE TABLE servidor (
 -- -----------------------------------------------------
 CREATE TABLE instancia (
   idInstancia INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  instanceUUID VARCHAR(45) NULL,
-  dtCadastro DATETIME NULL,
-  nome VARCHAR(45) NULL,
+  instanceUUID VARCHAR(45) NOT NULL,
+  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  nome VARCHAR(45) NOT NULL,
   fkServidor INT NOT NULL,
   CONSTRAINT fk_vm_servidor1
     FOREIGN KEY (fkServidor)
@@ -77,8 +77,9 @@ CREATE TABLE servidor_has_funcionario (
 CREATE TABLE convite (
   idConvite INT PRIMARY KEY NOT NULL,
   codigo VARCHAR(100) NOT NULL,
-  tipoAcesso VARCHAR(45) NULL,
-  quantidadeUso INT NULL,
+  tipoAcesso VARCHAR(45) NOT NULL,
+  quantidade_uso INT NOT NULL,
+  quantidade_usada INT NOT NULL,
   criado DATETIME DEFAULT NOW(),
   fkEmpresa INT NOT NULL,
   CONSTRAINT fk_convite_empresa
@@ -91,7 +92,7 @@ CREATE TABLE convite (
 -- -----------------------------------------------------
 CREATE TABLE componente (
   idComponente INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45) NULL
+  nome VARCHAR(45) NOT NULL
   );
 
 
@@ -101,8 +102,8 @@ CREATE TABLE componente (
 CREATE TABLE instancia_has_componente (
   fkInstancia INT NOT NULL,
   fkComponente INT NOT NULL,
-  capacidade FLOAT NULL,
-  limiteAlerta FLOAT NULL,
+  capacidade FLOAT NOT NULL,
+  limiteAlerta FLOAT NOT NULL,
   PRIMARY KEY (fkInstancia, fkComponente),
   CONSTRAINT fk_vm_has_componente_vm1
     FOREIGN KEY (fkInstancia)
@@ -118,8 +119,8 @@ CREATE TABLE instancia_has_componente (
 CREATE TABLE servidor_has_componente (
   fkServidor INT NOT NULL,
   fkComponente INT NOT NULL,
-  capacidade FLOAT NULL,
-  limiteAlerta FLOAT NULL,
+  capacidade FLOAT NOT NULL,
+  limiteAlerta FLOAT NOT NULL,
   PRIMARY KEY (fkServidor, fkComponente),
   CONSTRAINT fk_servidor_has_componente_servidor1
     FOREIGN KEY (fkServidor)
@@ -176,7 +177,7 @@ INSERT INTO servidor_has_funcionario
 (6, 5);
 
 INSERT INTO convite 
-(idConvite, codigo, tipoAcesso, quantidadeUso, fkEmpresa) VALUES
+(idConvite, codigo, tipoAcesso, quantidade_uso, fkEmpresa) VALUES
 (1, 'INFRA-ADM-001', 'Administrador', 5, 1),
 (2, 'INFRA-ANA-001', 'Analista', 10, 1),
 (3, 'GAME-ADM-001', 'Administrador', 5, 2),
