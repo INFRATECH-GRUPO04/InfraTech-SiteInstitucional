@@ -75,7 +75,7 @@ header.scrolled {
     text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
 }
 
-.btn-entrar {
+.btn-cyan {
     font-family: "Orbitron";
     font-weight: bold;
     background-color: #00CFFF;
@@ -89,11 +89,17 @@ header.scrolled {
     border-radius: 4px;
 }
 
-.btn-entrar:hover {
+.btn-cyan:hover {
     background-color: transparent;
-    color: #00CFFF;
-    border: 2px solid #00CFFF;
+    color: #00cfff;
+    border: 2px solid #00cfff;
     box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+}
+
+.nav-container .btn-cyan {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px auto 0 auto;
 }
 
 .btn-menu-hamburguer {
@@ -298,12 +304,7 @@ main {
         display: flex;
     }
 
-    .nav-container .btn-entrar {
-        width: 100%;
-        max-width: 250px;
-        margin: 10px auto 0 auto;
-    }
-
+ 
     .conteudo-principal {
         flex-direction: column;
         padding: 0 20px;
