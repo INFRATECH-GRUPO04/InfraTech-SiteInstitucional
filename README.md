@@ -8,11 +8,11 @@
 
 ### **Integrantes:**
 
-* Maria Eduarda —
-* Jefferson Palma —
-* Isaac Azevedo — 
-* Arthur Martins —
-* Amanda Tavares —
+* Maria Eduarda Nogueiro
+* Jefferson Palma
+* Isaac Azevedo
+* Arthur Martins
+* Amanda Tavares
 * Guilherme Lima
  
 ---
