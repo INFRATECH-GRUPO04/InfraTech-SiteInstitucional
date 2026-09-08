@@ -270,7 +270,6 @@
                                 <p id="token">tokenn</p>
                                 <img  onclick="copiarCodigo()" src="../assets/icon/copiar.png" alt="">
                             </div>
-                            <!-- pegar por js -->
                   
 
                         </div>
@@ -291,11 +290,12 @@
 
 <script>
 
+    idEmpresaVincular.innerHTML = sessionStorage.fkEmpresa;
 
     function gerarToken() {
         var qtdVar = ipt_qtd_token.value;
         var permVar = radioSelecionado = document.querySelector('input[name="func_qtd"]:checked').value;
-        
+        var idEmpresaVincular = sessionStorage.fkEmpresa
 
         fetch("/crypto/gerar", {
         method: "POST",
