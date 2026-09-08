@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@100;200;300;400;500;600;700;800&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Barlow', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #02070c;
+}
+
+/* MENU LATERAL */
+
+.header-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 100vh;
+    width: 240px;
+    background-color: #030a10;
+    border-right: 1px solid #142a35;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    padding: 30px 22px;
+    box-sizing: border-box;
+}
+
+/* LOGO */
+
+.header-left .logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.header-left .logo img {
+    width: 135px;
+    height: auto;
+}
+
+/* LINHAS */
+
+.linha {
+    width: 100%;
+    height: 0;
+    border: 0;
+    border-top: 1px solid #122832;
+    margin: 0 0 32px 0;
+    padding: 0;
+}
+
+/* CATEGORIAS */
+
+.nav-categoria {
+    color: #5ed6ea;
+    font-size: 15px;
+    font-weight: 500;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin: 0 0 18px 0;
+}
+
+.nav-categoria.secao-funcionarios {
+    margin-top: 36px;
+}
+
+/* ÍCONE DO TÍTULO */
+
+.menu-icon-title {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* LINKS DO MENU */
+
+.nav-item {
+    color: #4a9cae;
+    text-decoration: none;
+    font-size: 13.5px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 10px 0;
+    width: 100%;
+
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-item:hover,
+.nav-item.ativo {
+    color: #79ebff;
+}
+
+/* ÍCONES DOS LINKS */
+
+.menu-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+/* BOTÃO SAIR */
+
+.btn-logout {
+    width: 44px;
+    height: 44px;
+
+    background-color: #271419;
+    border: 1px solid #4a1924;
+    border-radius: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    margin-top: auto;
+    margin-bottom: 10px;
+
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #3d1720;
+    border-color: #6e2433;
+}
+
+/* ÍCONE DO LOGOUT */
+
+.logout-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
