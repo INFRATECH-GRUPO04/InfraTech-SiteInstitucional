@@ -75,7 +75,7 @@ CREATE TABLE servidor_has_funcionario (
 -- Table `InfraTech`.`convite`
 -- -----------------------------------------------------
 CREATE TABLE convite (
-  idConvite INT PRIMARY KEY NOT NULL,
+  idConvite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   codigo VARCHAR(100) NOT NULL,
   tipoAcesso VARCHAR(45) NOT NULL,
   quantidade_uso INT NOT NULL,
