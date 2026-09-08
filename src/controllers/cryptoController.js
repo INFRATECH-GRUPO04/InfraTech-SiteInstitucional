@@ -17,7 +17,7 @@ function gerarCodigoToken() {
 function gerarCodigo(req, res) {
   var qtd_funcionario = req.body.qtdServer;
   var perm_funcionario = req.body.permServer;
-  var fkEmpresa = 1;
+  var fkEmpresa = req.body.idEmpresaVincularServer;
 
   var token_final = gerarCodigoToken();
 
