@@ -79,7 +79,7 @@ CREATE TABLE convite (
   codigo VARCHAR(100) NOT NULL,
   tipoAcesso VARCHAR(45) NOT NULL,
   quantidade_uso INT NOT NULL,
-  quantidade_usada INT DEFAULT 0,
+  quantidade_usada INT NOT NULL DEFAULT 0,
   criado DATETIME DEFAULT NOW(),
   fkEmpresa INT NOT NULL,
   CONSTRAINT fk_convite_empresa

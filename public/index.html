@@ -474,6 +474,8 @@
                 resposta.json().then(function (resposta) {
                     console.log(resposta)
                     cadastrar(resposta[0].quantidade_usada, resposta[0].quantidade_uso, resposta[0].tipoAcesso, resposta[0].fkEmpresa)
+
+                    atualizarCodigo(resposta[0].idConvite)
                 });
 
             } else {
@@ -487,43 +489,30 @@
 
 }
 
-function atualizarCodigo() {
-    console.log('Atualizando tentativa com ACERTOS...')
+function atualizarCodigo(idConvite) {
 
-    var fk_usuario = sessionStorage.ID_USUARIO;
-
-    // Verificando se há usuario logado
-    if (!fk_usuario || fk_usuario == "") {
-        console.log("Erro: Usuário não está logado!");
-        alert("Erro: Usuário não está logado!");
-        return false;
-    }
-
-    // Enviando o UPDATE com acertos
-    fetch("/quiz/atualizar", {
+    fetch("/crypto/atualizar", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            fk_usuarioServer: fk_usuario,
-            acertosServer: certas,
+            idConviteServer: idConvite
         }),
     })
         .then(function (resposta) {
             console.log("resposta atualizar: ", resposta);
 
             if (resposta.ok) {
-                console.log("Tentativa atualizada com sucesso!");
-                // alert("Tentativa concluída e salva com sucesso!");
+                console.log("Convite atualizado com sucesso!");
 
             } else {
-                throw "Houve um erro ao tentar atualizar a tentativa!";
+                throw "Houve um erro ao tentar atualizar o convite!";
             }
         })
         .catch(function (resposta) {
             console.log(`#ERRO ao atualizar: ${resposta}`);
-            alert("Erro ao salvar a tentativa: " + resposta);
+            alert("Erro ao salvar o convite: " + resposta);
         });
 
     return false;

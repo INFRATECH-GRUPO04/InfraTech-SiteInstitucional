@@ -42,7 +42,7 @@ function gerarCodigo(req, res) {
 }
 
 function atualizarCodigo(req, res) {
-    var id = req.params.idConvite;
+    var id = req.body.idConviteServer;
 
     cryptoModel.atualizarCodigo(id)
         .then(function (resultado) {
