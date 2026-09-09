@@ -36,6 +36,18 @@ body {
   text-decoration: none;
   color: #e3b062;
 }
+.header-left .logo {
+  width: 100% ;
+  
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.header-left .logo img {
+  width: 80vs;
+  height: auto;
+}
 
 .agora {
   font-weight: 800;

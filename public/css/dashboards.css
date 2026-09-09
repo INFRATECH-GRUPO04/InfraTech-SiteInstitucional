@@ -426,6 +426,15 @@ canvas {
   overflow: auto;
 }
 
+.linha {
+  width: 100%;
+  border: none;
+  height: 1px;
+  background-color: #122832;
+  margin: 0 0 32px 0;
+}
+
+
 .header-left h1 {
   color: #32b9cd;
 }

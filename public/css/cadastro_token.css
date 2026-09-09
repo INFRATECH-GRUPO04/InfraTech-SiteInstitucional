@@ -311,16 +311,103 @@ a{
     justify-content: space-between;
 } */
 
+
+
+
+.header-left .logo {
+  width: 100% ;
+  
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.header-left .logo img {
+  width: 80vs;
+  height: auto;
+}
+
+.header-left {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  height: 100vh;
+  width: 240px;
+  background-color: #030a10;
+  border-right: 1px solid #142a35;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 30px 22px;
+  box-sizing: border-box;
+}
+
+.header-left .logo {
+  width: 100% ;
+  
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.header-left .logo img {
+  width: 80vs;
+  height: auto;
+}
+
 .linha {
-    display: flex;
-    height: 30px;
-    gap: 20px;
-    align-items: center;
-    background-color: #ffffff07;
-    border-radius: 10px;
-    border:1px solid gray;
-    padding: 10px;
-    justify-content:space-between;
+  width: 100%;
+  border: none;
+  height: 1px;
+  background-color: #122832;
+  margin: 0 0 32px 0;
 }
 
 
+.nav-categoria {
+  color: #5ed6ea;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px 0;
+}
+
+.nav-categoria.secao-funcionarios {
+  margin-top: 36px;
+}
+
+.menu-icon-title {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.nav-item {
+  color: #4a9cae;
+  text-decoration: none;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  width: 100%;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.menu-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.nav-item:hover,
+.nav-item.ativo {
+  color: #79ebff;
+}
+
+.header-left h1 {
+  color: #32b9cd;
+}
