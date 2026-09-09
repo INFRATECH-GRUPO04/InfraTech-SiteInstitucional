@@ -7,6 +7,9 @@ var caminho_env = ambiente_processo === 'producao' ? '.env' : '.env.dev';
 
 require("dotenv").config({ path: caminho_env });
 
+console.log("ARQUIVO ENV:", caminho_env);
+console.log("BANCO CARREGADO:", process.env.DB_DATABASE);
+
 var express = require("express");
 var cors = require("cors");
 var path = require("path");
