@@ -135,7 +135,7 @@
                         <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto" placeholder="Repita a senha">
 
                         <div class="div_btn_criarConta text-center mt-4">
-                            <button onclick="cadastrar()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
+                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
 
                             <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
 
@@ -389,13 +389,12 @@
         })
     }
 
-    function cadastrar() {
+    function cadastrar(quantidade_usada, quantidade_uso, tipoAcesso, fkEmpresa) {
         
     var nomeVar = ipt_nome.value;
     var emailVar = ipt_email_corporativo_cadastro.value;
     var senhaVar = ipt_senha_cadastro.value;
     var confirmacaoSenhaVar = ipt_confirmar_senha.value;
-    var codigoVar = ipt_codigo.value;
     var cpfVar = ipt_cpf.value;
   
     if (
@@ -403,7 +402,6 @@
       emailVar == "" ||
       senhaVar == "" ||
       confirmacaoSenhaVar == ""
-     ||codigoVar == "" 
      || cpfVar == ""
     ){
         console.log("Preencha todos os campos!");
@@ -415,33 +413,24 @@
         return;
     }
 
-    //  Verificando se o código de ativação é de alguma empresa cadastrada
-    //  for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
-    //    if (listaEmpresasCadastradas[i].codigo_ativacao == codigoVar) {
-    //      idEmpresaVincular = listaEmpresasCadastradas[i].id
-    //      console.log("Código de ativação válido.");
-    //      break;
-    //    } else {
-    //      cardErro.style.display = "block";
-    //     console.log("Mensagem de erro para código inválido");
-    //     }
-    
+    if(quantidade_usada >= quantidade_uso){
+        console.log("Limite excedido do token");
+        return
+    }
 
 
-    // Enviando o valor da nova input
     fetch("/login_cadastro/cadastrar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        // crie um atributo que recebe o valor recuperado aqui
-        // Agora vá para o arquivo routes/usuario.js
         nomeServer: nomeVar,
         emailServer: emailVar,
         senhaServer: senhaVar,
         cpfServer: cpfVar,
-        codigoServer: codigoVar
+        tipoAcessoServer: tipoAcesso,
+        fkEmpresaServer: fkEmpresa
       }),
     })
       .then(function (resposta) {
@@ -449,7 +438,7 @@
 
         if (resposta.ok) {
           console.log("Usuário cadastro com sucesso!");
-
+        
           
           
           setTimeout(() => {
@@ -464,7 +453,82 @@
       .catch(function (resposta) {
         console.log(`#ERRO: ${resposta}`);
         
-      })};
+      })}
+
+    function buscarCodigo() {
+    var codigo = ipt_codigo.value;
+
+    console.log(codigo);
+    
+
+    fetch(`crypto/buscar/${codigo}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+        .then(function (resposta) {
+            console.log("resposta atualizar: ", resposta);
+
+            if (resposta.ok) {
+                resposta.json().then(function (resposta) {
+                    console.log(resposta)
+                    cadastrar(resposta[0].quantidade_usada, resposta[0].quantidade_uso, resposta[0].tipoAcesso, resposta[0].fkEmpresa)
+                });
+
+            } else {
+                throw "Houve um erro ao tentar buscar a tentativa!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO ao atualizar: ${resposta}`);
+            alert("Erro ao buscar tentativa: " + resposta);
+        });
+
+}
+
+function atualizarCodigo() {
+    console.log('Atualizando tentativa com ACERTOS...')
+
+    var fk_usuario = sessionStorage.ID_USUARIO;
+
+    // Verificando se há usuario logado
+    if (!fk_usuario || fk_usuario == "") {
+        console.log("Erro: Usuário não está logado!");
+        alert("Erro: Usuário não está logado!");
+        return false;
+    }
+
+    // Enviando o UPDATE com acertos
+    fetch("/quiz/atualizar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            fk_usuarioServer: fk_usuario,
+            acertosServer: certas,
+        }),
+    })
+        .then(function (resposta) {
+            console.log("resposta atualizar: ", resposta);
+
+            if (resposta.ok) {
+                console.log("Tentativa atualizada com sucesso!");
+                // alert("Tentativa concluída e salva com sucesso!");
+
+            } else {
+                throw "Houve um erro ao tentar atualizar a tentativa!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO ao atualizar: ${resposta}`);
+            alert("Erro ao salvar a tentativa: " + resposta);
+        });
+
+    return false;
+}
+
     </script>
 </body>
 

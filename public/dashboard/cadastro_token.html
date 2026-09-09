@@ -290,12 +290,14 @@
 
 <script>
 
-    idEmpresaVincular.innerHTML = sessionStorage.fkEmpresa;
 
     function gerarToken() {
         var qtdVar = ipt_qtd_token.value;
         var permVar = radioSelecionado = document.querySelector('input[name="func_qtd"]:checked').value;
-        var idEmpresaVincular = sessionStorage.fkEmpresa
+        var idEmpresaVincular = sessionStorage.ID_EMPRESA;
+
+        console.log("ID_EMPRESA:", sessionStorage.getItem("ID_EMPRESA"));
+        console.log("idEmpresaVincular:", idEmpresaVincular);
 
         fetch("/crypto/gerar", {
         method: "POST",
@@ -303,8 +305,6 @@
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            // crie um atributo que recebe o valor recuperado aqui
-            // Agora vá para o arquivo routes/usuario.js
             qtdServer: qtdVar,
             permServer: permVar,
             idEmpresaVincularServer: idEmpresaVincular

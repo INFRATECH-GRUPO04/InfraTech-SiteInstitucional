@@ -13,7 +13,7 @@ router.get("/buscar/:codigo", function (req, res){
     cryptoController.buscarCodigo(req, res);
 })
 
-router.put("/aualizar/:idConvite", function (req, res){
+router.put("/atualizar/:idConvite", function (req, res){
     cryptoController.atualizarCodigo(req, res);
 })
 
