@@ -107,10 +107,6 @@
                         <p>NOME DO SERVIDOR</p>
                         <input type="text" placeholder="Ex: SRV-SP-PROD-01" id="nome_servidor_id">
                     </div>
-                    <div class="input-server">
-                        <p>LOCALIZAÇÃO</p>
-                        <input type="text" placeholder="Ex: Rack 04 - Data Center SP" id="localizacao_id">
-                    </div>
                     
                  
                  
@@ -275,25 +271,21 @@
     function proximo() {
 
     var nomeServidor = nome_servidor_id.value.trim();
-    var localizacaoServidor = localizacao_id.value.trim();
+  
     
     if (nomeServidor.length == 0 || nomeServidor.length > 45) {
         alert("O nome deve ter entre 1 e 45 caracteres!");
         return;
     }
 
-    if (localizacaoServidor.length == 0 || localizacaoServidor.length > 45) {
-        alert("A localização deve ter entre 1 e 45 caracteres!");
-        return;
-    }
 
         nomeServidorCadastrado = nomeServidor;
-        localizacaoServidorCadastrada = localizacaoServidor;
+      
         trocarDisplay();
         };
 
       function cadastrarComponente() {
-        if (nomeServidorCadastrado == undefined || localizacaoServidorCadastrada == undefined) {
+        if (nomeServidorCadastrado == undefined) {
             alert("Preencha os dados do servidor antes dos componentes!");
             trocarDisplay();
             return;
@@ -311,7 +303,7 @@
             },
             body: JSON.stringify({
                 nomeServer: nomeServidorCadastrado,
-                localizacaoServer: localizacaoServidorCadastrada
+            
             })
         })
             .then(function (resposta) {
@@ -384,7 +376,9 @@
                     return resposta.json();
                 })
                 .then(function () {
-                    console.log("Componente cadastrado com sucesso!");
+                    console.log("Componente cadastrado com sucesso!");~
+                    alert("Servidor cadastrado com sucesso!")
+                    trocarDisplay()
                 })
                 .catch(function (erro) {
                     console.log("#ERRO:", erro);

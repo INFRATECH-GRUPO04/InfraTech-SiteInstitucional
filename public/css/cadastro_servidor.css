@@ -297,7 +297,11 @@ width: auto;
     width: 100%;
 }
 
-
+select option {
+  background-color: #1a252f; /* Cor de fundo */
+  color: #ffffff;            /* Cor do texto */
+  font-family: sans-serif;
+}
 
 
 
