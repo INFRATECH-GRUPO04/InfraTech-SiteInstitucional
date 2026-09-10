@@ -147,12 +147,12 @@ INSERT INTO funcionario
 
 
 
-INSERT INTO servidor (nome, localizacao) VALUES
-('Servidor Principal', 'São Paulo'),
-('Servidor Backup', 'Rio de Janeiro'),
-('Servidor Game 01', 'São Paulo'),
-('Servidor Game 02', 'Curitiba'),
-('Servidor Game 03', 'Belo Horizonte');
+INSERT INTO servidor (nome) VALUES
+('Servidor Principal'),
+('Servidor Backup'),
+('Servidor Game 01'),
+('Servidor Game 02'),
+('Servidor Game 03');
 
 
 
@@ -176,7 +176,7 @@ INSERT INTO servidor_has_funcionario
 (6, 5);
 
 INSERT INTO convite 
-(idConvite, codigo, tipoAcesso, quantidade_uso, fkEmpresa) VALUES
+(idConvite, codigo, tipoAcesso, quantidadeUso, fkEmpresa) VALUES
 (1, 'INFRA-ADM-001', 'Administrador', 5, 1),
 (2, 'INFRA-ANA-001', 'Analista', 10, 1),
 (3, 'GAME-ADM-001', 'Administrador', 5, 2),
