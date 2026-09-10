@@ -161,15 +161,33 @@ body {
     gap: 4%;
     }
 
-    .logo-header h3 {
-        font-size: 1.2rem !important;
-    }
-    
 
-    .logo-header img {
-        width: 40px;
-    }
+.logo-header h3 {
+    letter-spacing: 1px;
+}
 
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-container a {
+    color: #b6cfdb;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.nav-container a:hover {
+    color: #00cfff;
+    text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
+}
+
+.nav-container .btn-cyan {
+    width: 100%;
+    max-width: 250px;
+    margin: 10px auto 0 auto;
+}
     .sptech-item {
         width: 90%;
         text-align: center;
@@ -320,44 +338,28 @@ header {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
     width: 100%;
     height: auto;
-    border-bottom: 2px transparent solid;
-    background-color: transparent;
-    backdrop-filter: none;
+    border-bottom: 1px solid rgba(0, 207, 255, 0.15);
+    background-color: rgba(7, 9, 15, 0.85);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px 0;
+    padding: 15px 0;
     z-index: 1000;
     transition: all 0.3s ease;
 }
 
 header.scrolled {
-    border-bottom: 1px #00d0ff41 solid;
-    background-color: rgba(7, 9, 15, 0.5);
-    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #00d0ff41;
+    background-color: rgba(7, 9, 15, 0.95);
 }
 
 
-.logo-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.logo-header h3{
+ letter-spacing: 1px;
 }
 
-.logo-header h3 {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
-.logo-header img {
-    width: 50px;
-    height: auto;
-}
 
 .header {
     display: flex;
@@ -365,14 +367,7 @@ header.scrolled {
     justify-content: space-between;
 }
 
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    flex: 1;
-    margin: 0 40px;
-}
+
 
 nav a:hover {
     color: #00CFFF;
