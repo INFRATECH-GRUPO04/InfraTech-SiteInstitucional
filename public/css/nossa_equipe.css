@@ -84,12 +84,11 @@ body {
     
 .div_texto {
     width: 80%;
-
-    color: #5A7080;
-
-    font-size: 20px;
-
     text-align: left;
+    color: #c2c7d7;
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
 }
 }
 @media (max-width: 900px) {
@@ -104,12 +103,12 @@ body {
     
 .div_texto {
     width: 80%;
-
-    color: #5A7080;
-
-    font-size: 20px;
-
     text-align: left;
+
+    color: #c2c7d7;
+    font-size: 1rem;
+    line-height: 1.8;
+    margin: 0;
 }
 
 }
@@ -118,7 +117,7 @@ body {
 .div_texto {
     width: 100%;
 
-    color: #5A7080;
+    color: #c2c7d7;
 
     font-size: 20px;
 
@@ -220,7 +219,7 @@ body {
 .div_texto {
     width: 100%;
 
-    color: #5A7080;
+    color: #c2c7d7;
 
     font-size: 20px;
 

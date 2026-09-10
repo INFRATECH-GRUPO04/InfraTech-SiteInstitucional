@@ -41,98 +41,120 @@
 
   <main>
     <div class="modal fade" id="modalEntrar" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-transparent border-0">
-      <div class="div_popup">
-        <div class="div_canto_superior d-flex justify-content-between">
-          <div class="borda_esquerda"></div>
-          <div class="borda_direita">
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-        </div>
-        <div class="div_titulo">
-          <div>
-            <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-            <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-          </div>
-          <p class="titulo_popup texto_popup">ENTRAR</p>
-        </div>
-        <div class="div_componentes_login">
-          <div class="campo_login mb-4">
-            <p>E-MAIL</p>
-            <input type="text" id="ipt_email_corporativo" class="form-control campoTexto" placeholder="voce@empresa.com">
-          </div>
-          <div class="campo_login">
-            <p>SENHA</p>
-            <input type="password" id="ipt_senha" class="form-control campoTexto" placeholder="Mínimo 8 caracteres">
-            <div class="senha d-flex justify-content-between align-items-center mt-2">
-              <div class="form-check">
-                <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
-                <label for="lembrar" class="form-check-label">Lembrar Acesso</label>
-              </div>
-              <span>Esqueci a senha</span>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="div_popup">
+                        <div class="div_canto_superior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                        </div>
+
+                        <div class="div_titulo">
+                            <div>
+                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+                            </div>
+                            <p class="titulo_popup texto_popup">ENTRAR</p>
+                        </div>
+
+                        <div class="div_componentes_login">
+                            <div class="campo_login mb-4">
+                                <p>E-MAIL</p>
+                                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto" placeholder="voce@empresa.com">
+                            </div>
+
+                            <div class="campo_login">
+                                <p>SENHA</p>
+                                <input type="password" id="ipt_senha" class="form-control campoTexto" placeholder="Mínimo 8 caracteres">
+
+                                <div class="senha d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
+                                        <label for="lembrar" class="form-check-label">Lembrar Acesso</label>
+                                    </div>
+                                    <span>Esqueci a senha</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="div_btn_entrarSistema">
+                            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO SISTEMA</button>
+                            <div class="divisoria my-3 text-center">OU</div>
+                            <button id="btn_redirecionar" class="btn btn_redirecionar w-100" type="button" data-bs-toggle="modal" data-bs-target="#modalCadastro" data-bs-dismiss="modal">CRIAR NOVA CONTA</button>
+                        </div>
+
+                        <div class="div_canto_inferior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
 
-        <div class="div_btn_entrarSistema">
-          <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO SISTEMA</button>
-          <div class="divisoria my-3 text-center">OU</div>
-          <button id="btn_redirecionar" class="btn_redirecionar switch-modal" type="button" data-modal="modal-cadastro">CRIAR NOVA CONTA</button>
-        </div>
-        <div class="div_canto_inferior d-flex justify-content-between">
-          <div class="borda_esquerda"></div>
-          <div class="borda_direita"></div>
-        </div>
-      </div>
-        </div>
-      </div>
-    </div>
+    <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="div_popup">
+                        <div class="div_canto_superior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                        </div>
 
-    <dialog id="modal-cadastro">
-      <div class="div_popup">
-        <div class="div_canto_superior">
-          <div class="borda_esquerda"></div>
-          <div class="borda_direita">
-            <button class="close-modal" type="button">x</button>
-          </div>
-        </div>
-        <div class="div_titulo">
-          <div>
-            <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-            <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-          </div>
-          <p class="titulo_popup texto_popup">CADASTRAR</p>
-        </div>
-        <div class="ipt_separado">
-          <div class="metade">
-            <p>NOME COMPLETO</p>
-            <input type="text" id="ipt_nome" class="campoTexto" placeholder="João Silva">
-          </div>
-          <div class="metade">
-            <p>CÓDIGO DA EMPRESA</p>
-            <input type="text" id="ipt-codigo" class="campoTexto" placeholder="A44FSF">
-          </div>
-        </div>
-        <p>CPF</p>
-        <input type="text" id="ipt_cpf" class="campoTexto" placeholder="000.003.444-41">
-        <p>E-MAIL CORPORATIVO</p>
-        <input type="text" id="ipt_email_corporativo_cadastro" class="campoTexto" placeholder="voce@empresa.com">
-        <p>SENHA</p>
-        <input type="password" id="ipt_senha_cadastro" class="campoTexto" placeholder="Mínimo 8 caracteres">
-        <p>CONFIRMAR SENHA</p>
-        <input type="password" id="ipt_confirmar_senha" class="campoTexto" placeholder="Repita a senha">
+                        <div class="div_titulo">
+                            <div>
+                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
 
-        <div class="div_btn_criarConta">
-          <button id="btn_cadastro" class="btn_cadastro">CRIAR CONTA</button>
-          <p class="texto">Já tem conta? <a href="#" class="texto_dif switch-modal" data-modal="modal-entrar">Entrar</a></p>
+                                
+                            </div>
+                            <p class="titulo_popup texto_popup">CADASTRAR</p>
+                        </div>
+                        
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <p>NOME COMPLETO</p>
+                                <input type="text" id="ipt_nome" class="form-control campoTexto" placeholder="João Silva">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <p>CÓDIGO DA EMPRESA</p>
+                                <input type="text" id="ipt_codigo" class="form-control campoTexto" placeholder="A44FSF">
+                            </div>
+                        </div>
+
+                        <p>CPF</p>
+                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3" placeholder="000.003.444-41">
+
+                        <p>E-MAIL CORPORATIVO</p>
+                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3" placeholder="voce@empresa.com">
+
+                        <p>SENHA</p>
+                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3" placeholder="Mínimo 8 caracteres">
+
+                        <p>CONFIRMAR SENHA</p>
+                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto" placeholder="Repita a senha">
+
+                        <div class="div_btn_criarConta text-center mt-4">
+                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
+
+                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
+
+                        </div>
+
+                        <div class="div_canto_inferior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="div_canto_inferior">
-          <div class="borda_esquerda"></div>
-          <div class="borda_direita"></div>
-        </div>
-      </div>
-    </dialog>
 
     <div class="container conteudo-principal">
       <div class="div_texto">
@@ -217,6 +239,69 @@
     btnHamburguer.addEventListener("click", () => {
       navContainer.classList.toggle("ativo");
     });
+
+    function buscarCodigo() {
+    var codigo = ipt_codigo.value;
+
+    console.log(codigo);
+    
+
+    fetch(`crypto/buscar/${codigo}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+        .then(function (resposta) {
+            console.log("resposta atualizar: ", resposta);
+
+            if (resposta.ok) {
+                resposta.json().then(function (resposta) {
+                    console.log(resposta)
+                    cadastrar(resposta[0].quantidade_usada, resposta[0].quantidade_uso, resposta[0].tipoAcesso, resposta[0].fkEmpresa)
+
+                    atualizarCodigo(resposta[0].idConvite)
+                });
+
+            } else {
+                throw "Houve um erro ao tentar buscar a tentativa!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO ao atualizar: ${resposta}`);
+            alert("Erro ao buscar tentativa: " + resposta);
+        });
+
+}
+function atualizarCodigo(idConvite) {
+
+    fetch("/crypto/atualizar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            idConviteServer: idConvite
+        }),
+    })
+        .then(function (resposta) {
+            console.log("resposta atualizar: ", resposta);
+
+            if (resposta.ok) {
+                console.log("Convite atualizado com sucesso!");
+
+            } else {
+                throw "Houve um erro ao tentar atualizar o convite!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO ao atualizar: ${resposta}`);
+            alert("Erro ao salvar o convite: " + resposta);
+        });
+
+    return false;
+}
+
   </script>
 </body>
 
