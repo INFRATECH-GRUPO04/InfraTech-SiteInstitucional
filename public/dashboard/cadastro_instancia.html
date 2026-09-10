@@ -6,11 +6,61 @@
       <link rel="stylesheet" href="../css/cadastro_instancia.css">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
       <title>Document</title>
+      <link rel="stylesheet" href="../css/barralateral.css">
+
+          <script src="../js/sessao.js"></script>
+    <script src="./../js/alerta.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-     aa   
+   
+<div class="header-left">
+    <div class="logo">
+        <img src="../assets/icon/logo.png" alt="Logo">
+    </div>
 
+    <hr class="linha">
+
+    <!-- Seção Servidores -->
+    <h3 class="nav-categoria">
+        <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Servidores
+    </h3>
+    <hr class="linha">
+
+    <a href="../dentro.html" class="nav-item">
+        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+        Dashboard
+    </a>
+    <a href="#" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+    </a>
+    <a href="./cadastro_servidor.html" class="nav-item ativo">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar
+    </a>
+
+    <!-- Seção Funcionários -->
+    <h3 class="nav-categoria secao-funcionarios">
+        <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+        Funcionários
+    </h3>
+    <hr class="linha">
+
+    <a href="./cadastro_token.html" class="nav-item">
+        <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+        Cadastrar Token
+    </a>
+    <a href="./mural.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+    </a>
+
+    <!-- Botão Sair -->
+    <div class="btn-logout" onclick="limparSessao()" title="Sair">
+        <img src="../assets/imgs/logout.png" alt="" class="logout-icon">
+    </div>
+</div>
     </div>
 
         <div class="content">
