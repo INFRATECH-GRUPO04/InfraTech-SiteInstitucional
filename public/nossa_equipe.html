@@ -48,53 +48,182 @@
     <main>
 
         <div class="modal fade" id="modalEntrar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-transparent border-0">
-        <div class="div_popup">
-        <div class="div_canto_superior d-flex justify-content-between">
-            <div class="borda_esquerda"></div>
-            <div class="borda_direita">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-        </div>
-        <div class="div_titulo">
-            <div>
-                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-            </div>
-            <p class="titulo_popup texto_popup">ENTRAR</p>
-        </div>
-        <div class="div_componentes_login">
-            <div class="campo_login mb-4">
-                <p>E-MAIL</p>
-                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto" placeholder="voce@empresa.com">
-            </div>
-            <div class="campo_login">
-                <p>SENHA</p>
-                <input type="password" id="ipt_senha" class="form-control campoTexto" placeholder="Mínimo 8 caracteres">
-                <div class="senha d-flex justify-content-between align-items-center mt-2">
-                    <div class="form-check">
-                    <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
-                    <label for="lembrar" class="form-check-label">Lembrar Acesso</label>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="div_popup">
+                        <div class="div_canto_superior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                        </div>
+
+                        <div class="div_titulo">
+                            <div>
+                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+                            </div>
+                            <p class="titulo_popup texto_popup">ENTRAR</p>
+                        </div>
+
+                        <div class="div_componentes_login">
+                            <div class="campo_login mb-4">
+                                <p>E-MAIL</p>
+                                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto" placeholder="voce@empresa.com">
+                            </div>
+
+                            <div class="campo_login">
+                                <p>SENHA</p>
+                                <input type="password" id="ipt_senha" class="form-control campoTexto" placeholder="Mínimo 8 caracteres">
+
+                                <div class="senha d-flex justify-content-between align-items-center mt-2">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
+                                        <label for="lembrar" class="form-check-label">Lembrar Acesso</label>
+                                    </div>
+                                    <span>Esqueci a senha</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="div_btn_entrarSistema">
+                            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO SISTEMA</button>
+                            <div class="divisoria my-3 text-center">OU</div>
+                            <button id="btn_redirecionar" class="btn btn_redirecionar w-100" type="button" data-bs-toggle="modal" data-bs-target="#modalCadastro" data-bs-dismiss="modal">CRIAR NOVA CONTA</button>
+                        </div>
+
+                        <div class="div_canto_inferior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita"></div>
+                        </div>
                     </div>
-                    <span>Esqueci a senha</span>
                 </div>
             </div>
         </div>
 
-        <div class="div_btn_entrarSistema">
-            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO SISTEMA</button>
-            <div class="divisoria my-3 text-center">OU</div>
-            <button id="btn_redirecionar" class="btn_redirecionar switch-modal" type="button" data-modal="modal-cadastro">CRIAR NOVA CONTA</button>
+        <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="div_popup">
+                        <div class="div_canto_superior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                        </div>
+
+                        <div class="div_titulo">
+                            <div>
+                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+
+                                
+                            </div>
+                            <p class="titulo_popup texto_popup">CADASTRAR</p>
+                        </div>
+                        
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <p>NOME COMPLETO</p>
+                                <input type="text" id="ipt_nome" class="form-control campoTexto" placeholder="João Silva">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <p>CÓDIGO DA EMPRESA</p>
+                                <input type="text" id="ipt_codigo" class="form-control campoTexto" placeholder="A44FSF">
+                            </div>
+                        </div>
+
+                        <p>CPF</p>
+                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3" placeholder="000.003.444-41">
+
+                        <p>E-MAIL CORPORATIVO</p>
+                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3" placeholder="voce@empresa.com">
+
+                        <p>SENHA</p>
+                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3" placeholder="Mínimo 8 caracteres">
+
+                        <p>CONFIRMAR SENHA</p>
+                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto" placeholder="Repita a senha">
+
+                        <div class="div_btn_criarConta text-center mt-4">
+                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
+
+                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
+
+                        </div>
+
+                        <div class="div_canto_inferior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="div_canto_inferior d-flex justify-content-between">
-            <div class="borda_esquerda"></div>
-            <div class="borda_direita"></div>
+
+        <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="div_popup">
+                        <div class="div_canto_superior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                        </div>
+
+                        <!-- <div class="div_titulo">
+                            <div>
+                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
+                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
+
+                                
+                            </div>
+                            <p class="titulo_popup texto_popup">CADASTRAR</p>
+                        </div>
+                        
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <p>NOME COMPLETO</p>
+                                <input type="text" id="ipt_nome" class="form-control campoTexto" placeholder="João Silva">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <p>CÓDIGO DA EMPRESA</p>
+                                <input type="text" id="ipt_codigo" class="form-control campoTexto" placeholder="A44FSF">
+                            </div>
+                        </div>
+
+                        <p>CPF</p>
+                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3" placeholder="000.003.444-41">
+
+                        <p>E-MAIL CORPORATIVO</p>
+                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3" placeholder="voce@empresa.com">
+
+                        <p>SENHA</p>
+                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3" placeholder="Mínimo 8 caracteres">
+
+                        <p>CONFIRMAR SENHA</p>
+                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto" placeholder="Repita a senha">
+
+                        <div class="div_btn_criarConta text-center mt-4">
+                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
+
+                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
+
+                        </div> -->
+
+                        <div class="div_canto_inferior d-flex justify-content-between">
+                            <div class="borda_esquerda"></div>
+                            <div class="borda_direita"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-                </div>
-                </div>
-                </div>
 
 
         <div class="texto_main">
@@ -285,5 +414,198 @@
         btnHamburguer.addEventListener("click", () => {
         menuNav.classList.toggle("ativo");
         });
+
+
+
+
+
+        
+    function entrar() {
+
+        var emailVar = ipt_email_corporativo.value;
+        var senhaVar = ipt_senha.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            return false;
+        }
+
+        fetch("/login_cadastro/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+                console.log("Resposta ok");
+
+                resposta.json().then(json => {
+                    console.log("Resposta do json de login = ok. then(json)");
+
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.SENHA_USUARIO = json.senha;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.idFuncionario;
+                    sessionStorage.ID_EMPRESA = json.idEmpresa;
+                    sessionStorage.TIPO_ACESSO = json.tipoAcesso;
+
+
+                    setTimeout(() => {
+                        window.location.href = '../dashboard/cadastro_servidor.html';
+                    }, 2000);
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+    }
+
+    function cadastrar(quantidade_usada, quantidade_uso, tipoAcesso, fkEmpresa) {
+        
+    var nomeVar = ipt_nome.value;
+    var emailVar = ipt_email_corporativo_cadastro.value;
+    var senhaVar = ipt_senha_cadastro.value;
+    var confirmacaoSenhaVar = ipt_confirmar_senha.value;
+    var cpfVar = ipt_cpf.value;
+  
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == ""
+     || cpfVar == ""
+    ){
+        console.log("Preencha todos os campos!");
+        return;
+    }
+
+    if (senhaVar != confirmacaoSenhaVar) {
+        console.log("As senhas não são iguais!");
+        return;
+    }
+
+    if(quantidade_usada >= quantidade_uso){
+        console.log("Limite excedido do token");
+        return
+    }
+
+
+    fetch("/login_cadastro/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nomeServer: nomeVar,
+        emailServer: emailVar,
+        senhaServer: senhaVar,
+        cpfServer: cpfVar,
+        tipoAcessoServer: tipoAcesso,
+        fkEmpresaServer: fkEmpresa
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          console.log("Usuário cadastro com sucesso!");
+        
+          
+          
+          setTimeout(() => {
+            let link_entrar = document.getElementById('link_entrar');
+            link_entrar.click();
+          }, 1000);
+
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        
+      })}
+
+    function buscarCodigo() {
+    var codigo = ipt_codigo.value;
+
+    console.log(codigo);
+    
+
+    fetch(`crypto/buscar/${codigo}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+        .then(function (resposta) {
+            console.log("resposta atualizar: ", resposta);
+
+            if (resposta.ok) {
+                resposta.json().then(function (resposta) {
+                    console.log(resposta)
+                    cadastrar(resposta[0].quantidade_usada, resposta[0].quantidade_uso, resposta[0].tipoAcesso, resposta[0].fkEmpresa)
+
+                    atualizarCodigo(resposta[0].idConvite)
+                });
+
+            } else {
+                throw "Houve um erro ao tentar buscar a tentativa!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO ao atualizar: ${resposta}`);
+            alert("Erro ao buscar tentativa: " + resposta);
+        });
+
+}
+
+function atualizarCodigo(idConvite) {
+
+    fetch("/crypto/atualizar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            idConviteServer: idConvite
+        }),
+    })
+        .then(function (resposta) {
+            console.log("resposta atualizar: ", resposta);
+
+            if (resposta.ok) {
+                console.log("Convite atualizado com sucesso!");
+
+            } else {
+                throw "Houve um erro ao tentar atualizar o convite!";
+            }
+        })
+        .catch(function (resposta) {
+            console.log(`#ERRO ao atualizar: ${resposta}`);
+            alert("Erro ao salvar o convite: " + resposta);
+        });
+
+    return false;
+}
+
 </script>
 </html>

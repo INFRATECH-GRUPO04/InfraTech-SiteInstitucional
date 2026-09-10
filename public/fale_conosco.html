@@ -40,7 +40,7 @@
   </header>
 
   <main>
-    <div class="modal fade" id="modalEntrar" tabindex="-1" aria-hidden="true">
+    <<div class="modal fade" id="modalEntrar" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content bg-transparent border-0">
                     <div class="div_popup">
@@ -94,7 +94,7 @@
             </div>
         </div>
 
-    <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content bg-transparent border-0">
                     <div class="div_popup">
@@ -240,6 +240,133 @@
       navContainer.classList.toggle("ativo");
     });
 
+
+
+   
+        function entrar() {
+
+        var emailVar = ipt_email_corporativo.value;
+        var senhaVar = ipt_senha.value;
+
+        if (emailVar == "" || senhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+            return false;
+        }
+
+        fetch("/login_cadastro/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+                console.log("Resposta ok");
+
+                resposta.json().then(json => {
+                    console.log("Resposta do json de login = ok. then(json)");
+
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.SENHA_USUARIO = json.senha;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    sessionStorage.ID_USUARIO = json.idFuncionario;
+                    sessionStorage.ID_EMPRESA = json.idEmpresa;
+                    sessionStorage.TIPO_ACESSO = json.tipoAcesso;
+
+
+                    setTimeout(() => {
+                        window.location.href = './dentro.html';
+                    }, 2000);
+
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+    }
+
+    function cadastrar(quantidade_usada, quantidade_uso, tipoAcesso, fkEmpresa) {
+        
+    var nomeVar = ipt_nome.value;
+    var emailVar = ipt_email_corporativo_cadastro.value;
+    var senhaVar = ipt_senha_cadastro.value;
+    var confirmacaoSenhaVar = ipt_confirmar_senha.value;
+    var cpfVar = ipt_cpf.value;
+  
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == ""
+     || cpfVar == ""
+    ){
+        console.log("Preencha todos os campos!");
+        return;
+    }
+
+    if (senhaVar != confirmacaoSenhaVar) {
+        console.log("As senhas não são iguais!");
+        return;
+    }
+
+    if(quantidade_usada >= quantidade_uso){
+        console.log("Limite excedido do token");
+        return
+    }
+
+
+    fetch("/login_cadastro/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nomeServer: nomeVar,
+        emailServer: emailVar,
+        senhaServer: senhaVar,
+        cpfServer: cpfVar,
+        tipoAcessoServer: tipoAcesso,
+        fkEmpresaServer: fkEmpresa
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          console.log("Usuário cadastro com sucesso!");
+        
+          
+          
+          setTimeout(() => {
+            let link_entrar = document.getElementById('link_entrar');
+            link_entrar.click();
+          }, 1000);
+
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        
+      })}
+
     function buscarCodigo() {
     var codigo = ipt_codigo.value;
 
@@ -273,6 +400,7 @@
         });
 
 }
+
 function atualizarCodigo(idConvite) {
 
     fetch("/crypto/atualizar", {
