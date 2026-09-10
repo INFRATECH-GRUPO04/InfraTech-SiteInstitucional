@@ -145,7 +145,7 @@ main {
 }
 
 .texto {
-    color: #b6cfdb;
+    color: white;
     display: block;
     line-height: 1.6;
     font-size: 0.95rem;
@@ -164,7 +164,7 @@ main {
 }
 
 .texto2 {
-    color: #a0a0a0;
+    color: white;
     font-size: 0.9rem;
     line-height: 1.6;
 }
