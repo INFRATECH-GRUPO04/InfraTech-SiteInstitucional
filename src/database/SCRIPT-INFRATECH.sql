@@ -36,7 +36,6 @@ CREATE TABLE funcionario (
 CREATE TABLE servidor (
   idServidor INT PRIMARY KEY AUTO_INCREMENT,
   nome VARCHAR(45) NOT NULL,
-  localizacao VARCHAR(45) NOT NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -78,8 +77,8 @@ CREATE TABLE convite (
   idConvite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   codigo VARCHAR(100) NOT NULL,
   tipoAcesso VARCHAR(45) NOT NULL,
-  quantidade_uso INT NOT NULL,
-  quantidade_usada INT NOT NULL DEFAULT 0,
+  quantidadeUso INT NOT NULL,
+  quantidadeUsada INT NOT NULL DEFAULT 0,
   criado DATETIME DEFAULT NOW(),
   fkEmpresa INT NOT NULL,
   CONSTRAINT fk_convite_empresa

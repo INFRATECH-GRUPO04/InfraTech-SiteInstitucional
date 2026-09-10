@@ -362,13 +362,6 @@ canvas {
   height: auto;
 }
 
-.linha {
-  width: 100%;
-  border: none;
-  height: 1px;
-  background-color: #122832;
-  margin: 0 0 32px 0;
-}
 
 .nav-categoria {
   color: #5ed6ea;
