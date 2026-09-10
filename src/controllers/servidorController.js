@@ -4,7 +4,7 @@ var servidorModel = require("../models/servidorModel");
 function cadastrar(req, res) {
     // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
     var nomeServidor = req.body.nomeServer;
- 
+    var idEmpresa = req.body.idEmpresaServer;
 
     // Faça as validações dos valores
     if (nomeServidor == undefined) {
@@ -12,7 +12,7 @@ function cadastrar(req, res) {
     } else {
 
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        servidorModel.cadastrar(nomeServidor)
+        servidorModel.cadastrar(nomeServidor,idEmpresa)
             .then(
                 function (resultado) {
                     var idServidor = resultado.insertId;
