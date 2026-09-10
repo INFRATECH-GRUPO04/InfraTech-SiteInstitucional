@@ -1,194 +1,138 @@
-
-
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700&display=swap');
+/* CONTAINER PRINCIPAL DA BARRA LATERAL */
 .header-left {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    height: 100vh;
-    width: 240px;
-    background-color: #030a10;
-    border-right: 1px solid #142a35;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 30px 22px;
-    box-sizing: border-box;
-    font-family: "JetBrains Mono", monospace;
-    overflow-y: auto;
+  position: relative;
+  width: 240px;
+  min-width: 240px;
+  height: 100vh;
+  background-color: #030a10 !important;
+  border-right: 1px solid #142a35 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 30px 20px !important;
+  box-sizing: border-box !important;
+  user-select: none;
+  z-index: 10;
 }
 
+/* LOGO */
 .header-left .logo {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 25px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
 }
 
 .header-left .logo img {
-    width: 65px;
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
+  max-width: 80%;
+  height: auto;
 }
 
-.header-left .linha {
-    width: 100%;
-    border: none;
-    height: 1px;
-    background-color: #122832;
-    margin: 0 0 24px 0;
+/* LINHAS DIVISÓRIAS */
+.linha {
+  width: 100%;
+  border: none;
+  height: 1px;
+  background-color: #122832;
+  margin: 12px 0 16px 0;
 }
 
-
+/* TÍTULOS DE CATEGORIA */
 .nav-categoria {
-    color: #5ed6ea;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 0 0 14px 0;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+  color: #5ed6ea;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 6px 0;
 }
 
 .nav-categoria.secao-funcionarios {
-    margin-top: 28px;
+  margin-top: 24px;
 }
 
 .menu-icon-title {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
 
-
+/* ITENS DO MENU */
 .nav-item {
-    color: #4a9cae;
-    text-decoration: none;
-    font-size: 13.5px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 9px 12px;
-    width: 100%;
-    border-radius: 6px;
-    transition: color 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
-    box-sizing: border-box;
+  color: #6b8a99;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease-in-out;
+  border-left: 3px solid transparent;
 }
 
 .menu-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-    opacity: 0.85;
-    transition: opacity 0.2s ease;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
 }
 
+/* HOVER DOS ITENS */
 .nav-item:hover {
-    color: #79ebff;
-    background-color: rgba(0, 207, 255, 0.06);
-    text-decoration: none;
+  color: #cdebf2;
+  background-color: rgba(94, 214, 234, 0.05);
 }
 
 .nav-item:hover .menu-icon {
-    opacity: 1;
+  opacity: 1;
 }
 
-
+/* ITEM ATIVO / SELECIONADO */
 .nav-item.ativo {
-    color: #00cfff;
-    font-weight: 600;
-    background-color: rgba(0, 207, 255, 0.12);
-    border-left: 3px solid #00cfff;
-    border-radius: 0 6px 6px 0;
+  color: #32b9cd !important;
+  background-color: rgba(50, 185, 205, 0.12) !important;
+  border-left: 3px solid #32b9cd !important;
+  font-weight: 600;
 }
 
 .nav-item.ativo .menu-icon {
-    opacity: 1;
-    filter: drop-shadow(0 0 6px rgba(0, 207, 255, 0.5));
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(50, 185, 205, 0.5));
 }
 
-
+/* BOTÃO DE LOGOUT */
 .btn-logout {
-    width: 44px;
-    height: 44px;
-    background-color: #271419;
-    border: 1px solid #4a1924;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin-top: auto;
-    margin-bottom: 5px;
-    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100% !important;
+  height: 42px !important;
+  background-color: #1a0f13 !important;
+  border: 1px solid #4a1924 !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px;
+  cursor: pointer;
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
 .btn-logout:hover {
-    background-color: #3d1720;
-    border-color: #6e2433;
-    box-shadow: 0 0 10px rgba(230, 0, 90, 0.3);
+  background-color: #2e1118 !important;
+  border-color: #8c2438 !important;
 }
 
 .logout-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-}
-
-
-.content,
-.dash,
-.dash-right {
-    margin-left: 240px !important;
-    width: calc(100% - 240px) !important;
-    box-sizing: border-box;
-}
-
-
-@media (max-width: 900px) {
-    .header-left {
-        width: 72px;
-        padding: 20px 12px;
-        align-items: center;
-    }
-
-    .header-left .logo img {
-        width: 40px;
-    }
-
-    
-    .nav-categoria,
-    .nav-item {
-        justify-content: center;
-        font-size: 0;
-        gap: 0;
-        padding: 12px 0;
-    }
-
-    .nav-categoria {
-        display: none;
-    }
-
-    .menu-icon,
-    .menu-icon-title {
-        width: 22px;
-        height: 22px;
-    }
-
-    .nav-item.ativo {
-        border-left: none;
-        border-bottom: 3px solid #00cfff;
-        border-radius: 6px;
-    }
-/* 
-    .content,
-    .dash,
-    .dash-right {
-        margin-left: 72px !important;
-        width: calc(100% - 72px) !important;
-    } */
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
