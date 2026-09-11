@@ -188,7 +188,7 @@
     let idServidorCadastrado;
     let inputsLista = [];
     let nomeServidorCadastrado;
-    let localizacaoServidorCadastrada;
+
             
   
 
@@ -303,7 +303,7 @@
             },
             body: JSON.stringify({
                 nomeServer: nomeServidorCadastrado,
-            
+                idEmpresaServer: sessionStorage.ID_EMPRESA,
             })
         })
             .then(function (resposta) {

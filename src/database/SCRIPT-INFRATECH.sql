@@ -35,10 +35,11 @@ CREATE TABLE funcionario (
 -- -----------------------------------------------------
 CREATE TABLE servidor (
   idServidor INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45) NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+  fkEmpresa INT NOT NULL,
+  nome VARCHAR(45) NULL,
+  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT cfkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
   );
-
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`instancia`
@@ -147,12 +148,12 @@ INSERT INTO funcionario
 
 
 
-INSERT INTO servidor (nome) VALUES
-('Servidor Principal'),
-('Servidor Backup'),
-('Servidor Game 01'),
-('Servidor Game 02'),
-('Servidor Game 03');
+INSERT INTO servidor (nome, fkEmpresa) VALUES
+('Servidor Principal', 1),
+('Servidor Backup', 1),
+('Servidor Game 01', 2),
+('Servidor Game 02', 3),
+('Servidor Game 03', 3);
 
 
 
