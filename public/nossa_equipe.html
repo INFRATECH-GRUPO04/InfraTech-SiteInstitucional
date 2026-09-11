@@ -19,31 +19,31 @@
     </style>
     <link rel="stylesheet" href="css/cadastro_pop.css">
     <link rel="stylesheet" href="css/nossa_equipe.css">
-    
+
 </head>
 
 <body>
 
 
-  <header>
-    <div class="container d-flex align-items-center justify-content-between">
-      <div class="logo-header d-flex align-items-center gap-3">
-        <img src="assets/icon/logo.png" width="45" class="img-fluid" />
-        <h3 class="m-0 fs-4 fw-semibold">INFRA<span style="color: #00cfff">TECH</span></h3>
-      </div>
+    <header>
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class="logo-header d-flex align-items-center gap-3">
+                <img src="assets/icon/logo.png" width="45" class="img-fluid" />
+                <h3 class="m-0 fs-4 fw-semibold">INFRA<span style="color: #00cfff">TECH</span></h3>
+            </div>
 
-      <button class="btn-menu-hamburguer" aria-label="Menu">&#9776;</button>
+            <button class="btn-menu-hamburguer" aria-label="Menu">&#9776;</button>
 
-      <nav class="nav-container">
-        <a href="index.html">INÍCIO</a>
-        <a href="index.html#sobre">SOBRE</a>
-        <a href="index.html#funcionalidades">FUNCIONALIDADES</a>
-        <a href="nossa_equipe.html">EQUIPE</a>
-        <a href="fale_conosco.html">CONTATO</a>
-        <button class="btn btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</button>
-      </nav>
-    </div>
-  </header>
+            <nav class="nav-container">
+                <a href="index.html">INÍCIO</a>
+                <a href="index.html#sobre">SOBRE</a>
+                <a href="index.html#funcionalidades">FUNCIONALIDADES</a>
+                <a href="nossa_equipe.html">EQUIPE</a>
+                <a href="fale_conosco.html">CONTATO</a>
+                <button class="btn btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</button>
+            </nav>
+        </div>
+    </header>
 
     <main>
 
@@ -54,7 +54,8 @@
                         <div class="div_canto_superior d-flex justify-content-between">
                             <div class="borda_esquerda"></div>
                             <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Fechar"></button>
                             </div>
                         </div>
 
@@ -69,12 +70,14 @@
                         <div class="div_componentes_login">
                             <div class="campo_login mb-4">
                                 <p>E-MAIL</p>
-                                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto" placeholder="voce@empresa.com">
+                                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto"
+                                    placeholder="voce@empresa.com">
                             </div>
 
                             <div class="campo_login">
                                 <p>SENHA</p>
-                                <input type="password" id="ipt_senha" class="form-control campoTexto" placeholder="Mínimo 8 caracteres">
+                                <input type="password" id="ipt_senha" class="form-control campoTexto"
+                                    placeholder="Mínimo 8 caracteres">
 
                                 <div class="senha d-flex justify-content-between align-items-center mt-2">
                                     <div class="form-check">
@@ -87,9 +90,12 @@
                         </div>
 
                         <div class="div_btn_entrarSistema">
-                            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO SISTEMA</button>
+                            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO
+                                SISTEMA</button>
                             <div class="divisoria my-3 text-center">OU</div>
-                            <button id="btn_redirecionar" class="btn btn_redirecionar w-100" type="button" data-bs-toggle="modal" data-bs-target="#modalCadastro" data-bs-dismiss="modal">CRIAR NOVA CONTA</button>
+                            <button id="btn_redirecionar" class="btn btn_redirecionar w-100" type="button"
+                                data-bs-toggle="modal" data-bs-target="#modalCadastro" data-bs-dismiss="modal">CRIAR
+                                NOVA CONTA</button>
                         </div>
 
                         <div class="div_canto_inferior d-flex justify-content-between">
@@ -108,7 +114,8 @@
                         <div class="div_canto_superior d-flex justify-content-between">
                             <div class="borda_esquerda"></div>
                             <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Fechar"></button>
                             </div>
                         </div>
 
@@ -117,16 +124,17 @@
                                 <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
                                 <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
 
-                                
+
                             </div>
                             <p class="titulo_popup texto_popup">CADASTRAR</p>
                         </div>
-                        
+
 
                         <div class="row g-3 mb-3">
                             <div class="col-12 col-md-6">
                                 <p>NOME COMPLETO</p>
-                                <input type="text" id="ipt_nome" class="form-control campoTexto" placeholder="João Silva">
+                                <input type="text" id="ipt_nome" class="form-control campoTexto"
+                                    placeholder="João Silva">
                             </div>
 
                             <div class="col-12 col-md-6">
@@ -136,21 +144,28 @@
                         </div>
 
                         <p>CPF</p>
-                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3" placeholder="000.003.444-41">
+                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3"
+                            placeholder="000.003.444-41">
 
                         <p>E-MAIL CORPORATIVO</p>
-                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3" placeholder="voce@empresa.com">
+                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3"
+                            placeholder="voce@empresa.com">
 
                         <p>SENHA</p>
-                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3" placeholder="Mínimo 8 caracteres">
+                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3"
+                            placeholder="Mínimo 8 caracteres">
 
                         <p>CONFIRMAR SENHA</p>
-                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto" placeholder="Repita a senha">
+                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto"
+                            placeholder="Repita a senha">
 
                         <div class="div_btn_criarConta text-center mt-4">
-                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
+                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100">CRIAR
+                                CONTA</button>
 
-                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
+                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif"
+                                    data-bs-toggle="modal" data-bs-target="#modalEntrar"
+                                    data-bs-dismiss="modal">Entrar</a></p>
 
                         </div>
 
@@ -170,7 +185,8 @@
                         <div class="div_canto_superior d-flex justify-content-between">
                             <div class="borda_esquerda"></div>
                             <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Fechar"></button>
                             </div>
                         </div>
 
@@ -236,7 +252,7 @@
 
                 <div class="div_img_texto">
                     <div class="div_img">
-                     <img src="assets/imgs/geral.jpeg" alt="">
+                        <img src="assets/imgs/geral.jpeg" alt="">
 
                         <div class="info_img">
                             <span>EQUIPE COMPLETA</span>
@@ -244,10 +260,13 @@
                         </div>
                     </div>
                     <div class="div_texto" style="    color: white;">
-                      Na InfraTech, unimos engenharia de software, observabilidade para proteger ecosisisemas  de alta demanda.
-                       nossa equipe desenvolve soluções inteligentes de monitoramento contínuo para servidores dedicados de jogos online e serviços críticos de microtransações.
-                         Combinamos monitoramento proativo de hardware, métricas de rede e integridade de
-                          transações para que panes silenciosas não se transformem em prejuízos financeiros ou quebra de confiança dos jogadores.  
+                        Na InfraTech, unimos engenharia de software, observabilidade para proteger ecosisisemas de alta
+                        demanda.
+                        nossa equipe desenvolve soluções inteligentes de monitoramento contínuo para servidores
+                        dedicados de jogos online e serviços críticos de microtransações.
+                        Combinamos monitoramento proativo de hardware, métricas de rede e integridade de
+                        transações para que panes silenciosas não se transformem em prejuízos financeiros ou quebra de
+                        confiança dos jogadores.
                     </div>
                 </div>
             </div>
@@ -263,11 +282,14 @@
                 <p>Amanda de Oliveira</p>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://www.linkedin.com/in/amanda-tavares-de-oliveira-7bb91542b/'" >Amanda Tavares de Oliveira</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://www.linkedin.com/in/amanda-tavares-de-oliveira-7bb91542b/'">Amanda
+                        Tavares de Oliveira</span>
                 </div>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://github.com/AmandaTavares-0802'"  >AmandaTavares-0802</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://github.com/AmandaTavares-0802'">AmandaTavares-0802</span>
                 </div>
             </div>
 
@@ -279,11 +301,14 @@
                 <p>Arthur Martins</p>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://www.linkedin.com/in/arthur-martins-a00706373/'" >Arthur Martins</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://www.linkedin.com/in/arthur-martins-a00706373/'">Arthur
+                        Martins</span>
                 </div>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://github.com/arthursptech'" >arthursptech</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://github.com/arthursptech'">arthursptech</span>
                 </div>
             </div>
 
@@ -295,64 +320,76 @@
                 <p>Guilherme Lima Pastorello</p>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://www.linkedin.com/in/guilherme-lima-pastorello-62a8b7284/'" >Guilherme Lima Pastorello</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://www.linkedin.com/in/guilherme-lima-pastorello-62a8b7284/'">Guilherme
+                        Lima Pastorello</span>
                 </div>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://github.com/GuiPastorello'" >GuiPastorello</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://github.com/GuiPastorello'">GuiPastorello</span>
                 </div>
             </div>
 
             <div class="contato">
                 <div class="foto">
-               <img src="assets/imgs/isaac1.jpeg" alt="">
+                    <img src="assets/imgs/isaac1.jpeg" alt="">
                 </div>
                 <span>TECNOLOGIA</span>
                 <p>Isaac Azevedo Pinheiro</p>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://www.linkedin.com/in/isaac-azevedo-041299341?utm_source=share_via&utm_content=profile&utm_medium=member_ios'" >Isaac Azevedo</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://www.linkedin.com/in/isaac-azevedo-041299341?utm_source=share_via&utm_content=profile&utm_medium=member_ios'">Isaac
+                        Azevedo</span>
                 </div>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://github.com/isaacazevedopinheiro'" >isaacazevedopinheiro</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://github.com/isaacazevedopinheiro'">isaacazevedopinheiro</span>
                 </div>
             </div>
 
             <div class="contato">
                 <div class="foto">
-                  <img src="assets/imgs/jeffersonbom.jpeg" alt="">
+                    <img src="assets/imgs/jeffersonbom.jpeg" alt="">
                 </div>
                 <span>TECNOLOGIA</span>
                 <p>Jefferson Alexandre Lima Palma</p>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_linkedin.png" alt="Jefferson Alexandre Palma">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://www.linkedin.com/in/jefferson-alexandre-lima-palma-a33568233?utm_source=share_via&utm_content=profile&utm_medium=member_android'" >Jefferson Alexandre Lima Palma</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://www.linkedin.com/in/jefferson-alexandre-lima-palma-a33568233?utm_source=share_via&utm_content=profile&utm_medium=member_android'">Jefferson
+                        Alexandre Lima Palma</span>
                 </div>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://github.com/Jefferson-Palma'" >Jefferson-Palma</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://github.com/Jefferson-Palma'">Jefferson-Palma</span>
                 </div>
             </div>
 
             <div class="contato">
                 <div class="foto">
-                   <img src="assets/imgs/duda.jpeg" alt="">
+                    <img src="assets/imgs/duda.jpeg" alt="">
                 </div>
                 <span>TECNOLOGIA</span>
                 <p>Maria Eduarda Fontana Nogueiro</p>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://www.linkedin.com/in/maria-eduarda-fontana-nogueiro-8642803a9?utm_source=share_via&utm_content=profile&utm_medium=member_android'" >Maria Eduarda Fontana Nogueiro</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://www.linkedin.com/in/maria-eduarda-fontana-nogueiro-8642803a9?utm_source=share_via&utm_content=profile&utm_medium=member_android'">Maria
+                        Eduarda Fontana Nogueiro</span>
                 </div>
                 <div class="informacoes_contato">
                     <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;" onclick="window.location.href='https://github.com/MariaEduardaFontanaNogueiro'" >MariaEduardaFontanaNogueiro</span>
+                    <span style="cursor: pointer;"
+                        onclick="window.location.href='https://github.com/MariaEduardaFontanaNogueiro'">MariaEduardaFontanaNogueiro</span>
                 </div>
             </div>
         </div>
-    </div>
-</main>
+        </div>
+    </main>
 
 
 
@@ -407,19 +444,19 @@
         }
     });
 
- let btnHamburguer = document.querySelector(".btn-menu-hamburguer");
-        let menuNav = document.querySelector("nav");
+    let btnHamburguer = document.querySelector(".btn-menu-hamburguer");
+    let menuNav = document.querySelector("nav");
 
-    
-        btnHamburguer.addEventListener("click", () => {
+
+    btnHamburguer.addEventListener("click", () => {
         menuNav.classList.toggle("ativo");
-        });
+    });
 
 
 
 
 
-        
+
     function entrar() {
 
         var emailVar = ipt_email_corporativo.value;
@@ -479,70 +516,83 @@
     }
 
     function cadastrar(quantidade_usada, quantidade_uso, tipoAcesso, fkEmpresa) {
-        
-    var nomeVar = ipt_nome.value;
-    var emailVar = ipt_email_corporativo_cadastro.value;
-    var senhaVar = ipt_senha_cadastro.value;
-    var confirmacaoSenhaVar = ipt_confirmar_senha.value;
-    var cpfVar = ipt_cpf.value;
-  
-    if (
-      nomeVar == "" ||
-      emailVar == "" ||
-      senhaVar == "" ||
-      confirmacaoSenhaVar == ""
-     || cpfVar == ""
-    ){
-        console.log("Preencha todos os campos!");
-        return;
-    }
 
-    if (senhaVar != confirmacaoSenhaVar) {
-        console.log("As senhas não são iguais!");
-        return;
-    }
+        var nomeVar = ipt_nome.value;
+        var emailVar = ipt_email_corporativo_cadastro.value;
+        var senhaVar = ipt_senha_cadastro.value;
+        var confirmacaoSenhaVar = ipt_confirmar_senha.value;
+        var cpfVar = ipt_cpf.value;
 
-    if(quantidade_usada >= quantidade_uso){
-        console.log("Limite excedido do token");
-        return
-    }
-
-
-    fetch("/login_cadastro/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        nomeServer: nomeVar,
-        emailServer: emailVar,
-        senhaServer: senhaVar,
-        cpfServer: cpfVar,
-        tipoAcessoServer: tipoAcesso,
-        fkEmpresaServer: fkEmpresa
-      }),
-    })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (resposta.ok) {
-          console.log("Usuário cadastro com sucesso!");
-        
-          
-          
-          setTimeout(() => {
-            let link_entrar = document.getElementById('link_entrar');
-            link_entrar.click();
-          }, 1000);
-
-        } else {
-          throw "Houve um erro ao tentar realizar o cadastro!";
+        if (
+            nomeVar == "" ||
+            emailVar == "" ||
+            senhaVar == "" ||
+            confirmacaoSenhaVar == ""
+            || cpfVar == ""
+        ) {
+            console.log("Preencha todos os campos!");
+            return;
         }
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-        
-      })}
+
+        if (
+            cpfVar.length !== 11
+        ) {
+            console.log("O CPF tem que ter 11 caracteres");
+            alert("O CPF tem que ter 11 caracteres!!!!!");
+            return;
+        }
+
+        if (senhaVar != confirmacaoSenhaVar) {
+            console.log("As senhas não são iguais!");
+            return;
+        } else if (senhaVar.length < 8) {
+            console.log("Mínimo de 8 caracteres");
+            alert("A senha tem que ser maior que 8 caracteres")
+            return
+        }
+
+        if (quantidade_usada >= quantidade_uso) {
+            console.log("Limite excedido do token");
+            return
+        }
+
+
+        fetch("/login_cadastro/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nomeServer: nomeVar,
+                emailServer: emailVar,
+                senhaServer: senhaVar,
+                cpfServer: cpfVar,
+                tipoAcessoServer: tipoAcesso,
+                fkEmpresaServer: fkEmpresa
+            }),
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok) {
+                    console.log("Usuário cadastro com sucesso!");
+
+
+
+                    setTimeout(() => {
+                        let link_entrar = document.getElementById('link_entrar');
+                        link_entrar.click();
+                    }, 1000);
+
+                } else {
+                    throw "Houve um erro ao tentar realizar o cadastro!";
+                }
+            })
+            .catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+
+            })
+    }
 
     function buscarCodigo() {
     var codigo = ipt_codigo.value;
@@ -578,34 +628,35 @@
 
 }
 
-function atualizarCodigo(idConvite) {
+    function atualizarCodigo(idConvite) {
 
-    fetch("/crypto/atualizar", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            idConviteServer: idConvite
-        }),
-    })
-        .then(function (resposta) {
-            console.log("resposta atualizar: ", resposta);
-
-            if (resposta.ok) {
-                console.log("Convite atualizado com sucesso!");
-
-            } else {
-                throw "Houve um erro ao tentar atualizar o convite!";
-            }
+        fetch("/crypto/atualizar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                idConviteServer: idConvite
+            }),
         })
-        .catch(function (resposta) {
-            console.log(`#ERRO ao atualizar: ${resposta}`);
-            alert("Erro ao salvar o convite: " + resposta);
-        });
+            .then(function (resposta) {
+                console.log("resposta atualizar: ", resposta);
 
-    return false;
-}
+                if (resposta.ok) {
+                    console.log("Convite atualizado com sucesso!");
+
+                } else {
+                    throw "Houve um erro ao tentar atualizar o convite!";
+                }
+            })
+            .catch(function (resposta) {
+                console.log(`#ERRO ao atualizar: ${resposta}`);
+                alert("Erro ao salvar o convite: " + resposta);
+            });
+
+        return false;
+    }
 
 </script>
+
 </html>

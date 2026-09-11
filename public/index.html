@@ -409,6 +409,14 @@
         return;
     }
 
+    if(
+        cpfVar.length !== 11
+    ){
+        console.log("O CPF tem que ter 11 caracteres");
+        alert("O CPF tem que ter 11 caracteres!!!!!");
+        return;
+    }
+
     if (senhaVar != confirmacaoSenhaVar) {
         console.log("As senhas não são iguais!");
         return;
