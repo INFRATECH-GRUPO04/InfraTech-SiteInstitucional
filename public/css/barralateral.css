@@ -28,14 +28,7 @@
   height: auto;
 }
 
-/* LINHAS DIVISÓRIAS */
-.linha {
-  width: 100%;
-  border: none;
-  height: 1px;
-  background-color: #122832;
-  margin: 12px 0 16px 0;
-}
+
 
 /* TÍTULOS DE CATEGORIA */
 .nav-categoria {
