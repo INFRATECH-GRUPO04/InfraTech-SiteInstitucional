@@ -2,13 +2,36 @@ CREATE DATABASE InfraTech;
 USE InfraTech ;
 
 -- -----------------------------------------------------
+-- Table `InfraTech`.`endereco`
+-- -----------------------------------------------------
+CREATE TABLE endereco (
+  id_endereco INT PRIMARY KEY AUTO_INCREMENT,
+  cep CHAR(8) NOT NULL,
+  logradouro VARCHAR(100) NOT NULL,
+  bairro VARCHAR(100) NOT NULL,
+  numero VARCHAR(20) NOT NULL,
+  complemento VARCHAR(100),
+  estado CHAR(2) NOT NULL,
+  cidade VARCHAR(100) NOT NULL
+);
+
+
+-- -----------------------------------------------------
 -- Table `InfraTech`.`empresa`
 -- -----------------------------------------------------
 CREATE TABLE empresa (
   idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(45) NOT NULL,
+  razaoSocial VARCHAR(100) NOT NULL,
+  nomeFantasia VARCHAR(100) NOT NULL,
   cnpj CHAR(14) NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+  segmento_atuacao VARCHAR(80) NOT NULL,
+  email VARCHAR(200) UNIQUE NOT NULL,
+  telefone VARCHAR(20) NOT NULL,
+  status_sistema TINYINT NOT NULL,
+  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  fk_endereco INT,
+    FOREIGN KEY (fk_endereco) 
+    REFERENCES endereco(id_endereco)
   );
 
 
@@ -18,16 +41,18 @@ CREATE TABLE empresa (
 CREATE TABLE funcionario (
   idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
   fkEmpresa INT NOT NULL,
-  tipoAcesso VARCHAR(45) NOT NULL,
+  adm TINYINT DEFAULT 0,
   nome VARCHAR(45) NOT NULL,
+  dataNascimento DATETIME NOT NULL,
   email VARCHAR(45) NOT NULL,
   senha VARCHAR(45) NOT NULL,
   cpf CHAR(11) NOT NULL,
+  status_sistema TINYINT NOT NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
     FOREIGN KEY (fkEmpresa)
     REFERENCES empresa (idEmpresa)
-    );
+  );
 
 
 -- -----------------------------------------------------
@@ -37,35 +62,27 @@ CREATE TABLE servidor (
   idServidor INT PRIMARY KEY AUTO_INCREMENT,
   fkEmpresa INT NOT NULL,
   nome VARCHAR(45) NULL,
+  status_sistema TINYINT NOT NULL,
   dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT cfkEmpresa FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)
+  CONSTRAINT cfkEmpresa 
+  FOREIGN KEY (fkEmpresa) 
+  REFERENCES empresa(idEmpresa)
   );
 
--- -----------------------------------------------------
--- Table `InfraTech`.`instancia`
--- -----------------------------------------------------
-CREATE TABLE instancia (
-  idInstancia INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  instanceUUID VARCHAR(45) NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  nome VARCHAR(45) NOT NULL,
-  fkServidor INT NOT NULL,
-  CONSTRAINT fk_vm_servidor1
-    FOREIGN KEY (fkServidor)
-    REFERENCES servidor (idServidor));
+
 
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`servidor_has_funcionario`
 -- -----------------------------------------------------
-CREATE TABLE servidor_has_funcionario (
+CREATE TABLE servidor_funcionario (
   fkFuncionario INT NOT NULL,
   fkServidor INT NOT NULL,
   PRIMARY KEY (fkFuncionario,fkServidor),
-  CONSTRAINT fk_servidor_has_funcionario_funcionario1
+  CONSTRAINT fk_servidor_funcionario_funcionario1
     FOREIGN KEY (fkFuncionario)
     REFERENCES funcionario (idFuncionario),
-  CONSTRAINT fk_servidor_has_funcionario_servidor1
+  CONSTRAINT fk_servidor_funcionario_servidor1
     FOREIGN KEY (fkServidor)
     REFERENCES servidor (idServidor)
 );
@@ -97,26 +114,9 @@ CREATE TABLE componente (
 
 
 -- -----------------------------------------------------
--- Table `InfraTech`.`instancia_has_componente`
--- -----------------------------------------------------
-CREATE TABLE instancia_has_componente (
-  fkInstancia INT NOT NULL,
-  fkComponente INT NOT NULL,
-  capacidade FLOAT NOT NULL,
-  limiteAlerta FLOAT NOT NULL,
-  PRIMARY KEY (fkInstancia, fkComponente),
-  CONSTRAINT fk_vm_has_componente_vm1
-    FOREIGN KEY (fkInstancia)
-    REFERENCES instancia (idInstancia),
-  CONSTRAINT fk_vm_has_componente_componente1
-    FOREIGN KEY (fkComponente)
-    REFERENCES componente (idComponente));
-
-
--- -----------------------------------------------------
 -- Table `InfraTech`.`servidor_has_componente`
 -- -----------------------------------------------------
-CREATE TABLE servidor_has_componente (
+CREATE TABLE servidor_componente (
   fkServidor INT NOT NULL,
   fkComponente INT NOT NULL,
   capacidade FLOAT NOT NULL,
@@ -156,16 +156,6 @@ INSERT INTO servidor (nome, fkEmpresa) VALUES
 ('Servidor Game 03', 3);
 
 
-
-INSERT INTO instancia 
-(instanceUUID, dtCadastro, nome, fkServidor) VALUES
-('550e8400-e29b-41d4-a716-446655440000', NOW(), 'Instancia Fortnite', 1),
-('550e8400-e29b-41d4-a716-446655440001', NOW(), 'Instancia Roblox', 1),
-('550e8400-e29b-41d4-a716-446655440002', NOW(), 'Instancia Genshin', 2),
-('550e8400-e29b-41d4-a716-446655440003', NOW(), 'Instancia League of Legends', 3),
-('550e8400-e29b-41d4-a716-446655440004', NOW(), 'Instancia Minecraft', 4);
-
-
 INSERT INTO servidor_has_funcionario 
 (fkFuncionario, fkServidor) VALUES
 (1, 1),
@@ -190,35 +180,6 @@ INSERT INTO componente (nome) VALUES
 ('RAM'),
 ('Disco'),
 ('Rede');
-
-
-
-INSERT INTO instancia_has_componente 
-(fkInstancia, fkComponente, capacidade, limiteAlerta) VALUES
-(1, 1, 100, 80),
-(1, 2, 32, 80),
-(1, 3, 500, 90),
-(1, 4, 1000, 80),
-
-(2, 1, 100, 80),
-(2, 2, 16, 80),
-(2, 3, 500, 90),
-(2, 4, 1000, 80),
-
-(3, 1, 100, 80),
-(3, 2, 32, 80),
-(3, 3, 1000, 90),
-(3, 4, 1000, 80),
-
-(4, 1, 100, 80),
-(4, 2, 16, 80),
-(4, 3, 500, 90),
-(4, 4, 1000, 80),
-
-(5, 1, 100, 80),
-(5, 2, 32, 80),
-(5, 3, 1000, 90),
-(5, 4, 1000, 80);
 
 
 INSERT INTO servidor_has_componente 
@@ -247,3 +208,14 @@ INSERT INTO servidor_has_componente
 (5, 2, 64, 80),
 (5, 3, 2000, 90),
 (5, 4, 1000, 80);
+
+--------------------------------------------------------
+---------- Mudanças feitas no Banco de Dados -----------
+--------------------------------------------------------
+
+-- Tabela endereço do servidor 
+-- Campos da tabela endereço:
+  -- sem nome
+  -- add razaoSocial
+  -- add nomeFantasia
+  -- 
