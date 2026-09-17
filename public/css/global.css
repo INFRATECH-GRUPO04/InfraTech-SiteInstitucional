@@ -1,0 +1,70 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  color: white;
+  font-family: "JetBrains Mono", monospace;
+  min-height: 100vh;
+  background-image: linear-gradient(
+    0deg,
+    hsl(206, 100%, 7%) 0%,
+    hsl(205deg 100% 8%) 7%,
+    hsl(206deg 100% 7%) 16%,
+    hsl(205deg 100% 6%) 27%,
+    hsl(208deg 100% 5%) 42%,
+    hsl(207deg 100% 4%) 61%,
+    hsl(205deg 100% 2%) 79%,
+    hsl(210deg 100% 1%) 92%,
+    hsl(0deg 0% 0%) 100%
+  );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.placeholder-content {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  user-select: none;
+  padding: 20px;
+}
+
+.placeholder-content .placeholder-title {
+  font-size: clamp(2rem, 8vw, 5rem);
+  font-weight: 800;
+  color: #32b9cd;
+  letter-spacing: 6px;
+  margin: 0;
+  text-shadow: 0 0 50px rgba(50, 185, 205, 0.4);
+}
+
+.placeholder-content .placeholder-text {
+  color: #a4b3bf;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 15px 0 0 0;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 480px) {
+  .placeholder-content .placeholder-title {
+    letter-spacing: 3px;
+  }
+}

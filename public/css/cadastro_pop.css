@@ -358,3 +358,8 @@ dialog p{
     background-color: #00CFFF;
     border: 1px solid #00CFFF;
 }
+@media (max-width: 575.98px) {
+    .div_popup {
+        padding: 18px;
+    }
+}
