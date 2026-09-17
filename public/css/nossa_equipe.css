@@ -1,3 +1,16 @@
+.div_img {
+    position: relative;
+
+    width: 500px;
+
+    overflow: hidden;
+
+    border: 1px solid #00cfff45;
+    border-radius: 3px;
+}
+
+
+
 .div_texto {
     width: 40%;
 
@@ -33,32 +46,6 @@
     margin-top: 140px;
     width: 250px;
     text-align: center;
-}
-
-.btn-cyan {
-    font-family: "Orbitron";
-    font-weight: bold;
-    background-color: #00CFFF;
-    color: #07090F;
-    border: none;
-    padding: 10px 30px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-}
-
-.btn-cyan:hover {
-    background-color: transparent;
-    color: #00cfff;
-    border: 2px solid #00cfff;
-    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
-}
-
-.text-cyan {
-    color: #00cfff;
 }
 
 @media (max-width: 1150px) {
@@ -144,32 +131,6 @@
     }
 
 
-.logo-header h3 {
-    letter-spacing: 1px;
-}
-
-.nav-container {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-}
-
-.nav-container a {
-    color: #b6cfdb;
-    font-size: 0.9rem;
-    transition: 0.2s;
-}
-
-.nav-container a:hover {
-    color: #00cfff;
-    text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
-}
-
-.nav-container .btn-cyan {
-    width: 100%;
-    max-width: 250px;
-    margin: 10px auto 0 auto;
-}
     .sptech-item {
         width: 90%;
         text-align: center;
@@ -201,14 +162,6 @@
 
     .imagem-empresa {
         height: 300px;
-    }
-
-    .rodape {
-        text-align: center;
-    }
-
-    .rodape-links {
-        align-items: center;
     }
 
 }
@@ -267,14 +220,6 @@
     gap: 4%;
     }
 
-    .logo-header h3 {
-        font-size: 1rem !important;
-    }
-
-    .logo-header img {
-        width: 35px;
-    }
-
     .logo-banner h1 {
         font-size: 2rem;
     }
@@ -313,74 +258,6 @@
 
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    border-bottom: 1px solid rgba(0, 207, 255, 0.15);
-    background-color: rgba(7, 9, 15, 0.85);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    padding: 15px 0;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-header.scrolled {
-    border-bottom: 1px solid #00d0ff41;
-    background-color: rgba(7, 9, 15, 0.95);
-}
-
-
-.logo-header h3{
- letter-spacing: 1px;
-}
-
-
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-
-
-nav a:hover {
-    color: #00CFFF;
-    text-shadow: 0 0 10px rgba(0, 207, 255, 0.5);
-}
-
-.btn-entrar {
-    font-family: "Orbitron";
-    font-weight: bold;
-    background-color: #00CFFF;
-    color: #07090F;
-    border: none;
-    padding: 10px 30px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-}
-
-.btn-entrar:hover {
-    background-color: transparent;
-    color: #00CFFF;
-    border: 2px solid #00CFFF;
-    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
-}
-
-
 main {
     width: 100%;
     margin-top: 100px;
@@ -412,18 +289,6 @@ main {
 
 
 
-
-
-.div_img {
-    position: relative;
-
-    width: 500px;
-
-    overflow: hidden;
-
-    border: 1px solid #00cfff45;
-    border-radius: 3px;
-}
 
 
 .div_img::after {
@@ -567,160 +432,10 @@ main {
 }
 
 
-.rodape {
-    margin-top: 80px;
-    background-color: #061018;
-    border-top: 1px solid #00d0ff45;
-    padding: 30px 60px 10px;
-}
-
-.rodape-conteudo {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.rodape-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.rodape-logo img {
-    width: 45px;
-    height: 45px;
-    object-fit: contain;
-}
-
-.rodape-logo h2 {
-    margin: 0;
-    color: #00d0ff;
-    letter-spacing: 3px;
-    font-size: 20px;
-}
-
-.rodape-logo p {
-    margin: 5px 0 0;
-    color: #5A7080;
-    font-size: 13px;
-}
-
-.rodape-links {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.rodape-links h3 {
-    margin: 0 0 5px;
-    color: #00d0ff;
-    font-size: 13px;
-}
-
-.rodape-links a {
-    color: #5A7080;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-.rodape-links a:hover {
-    color: #00d0ff;
-}
-
-.rodape-final {
-    max-width: 1100px;
-    margin: 15px auto 0;
-    padding-top: 10px;
-
-    border-top: 1px solid #00d0ff20;
-
-    text-align: center;
-    color: #405563;
-    font-size: 11px;
-}
-
-.rodape-final p {
-    margin: 0;
-}
-
-.btn-menu-hamburguer {
-    display: none;
-    background: none;
-    border: none;
-    color: #00cfff;
-    font-size: 28px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-}
-
-
 @media (max-width: 991.98px) {
-    .btn-menu-hamburguer {
-        display: block;
-    }
-
-    .nav-container {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background-color: rgba(7, 9, 15, 0.98);
-        padding: 25px 20px;
-        gap: 20px;
-        border-bottom: 1px solid #00cfff40;
-        text-align: center;
-        box-shadow: 0 15px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .nav-container.ativo {
-        display: flex;
-    }
-
-    .nav-container .btn-cyan {
-    width: 100%;
-    max-width: 250px;
-    margin: 10px auto 0 auto;
-}
-
-    .nav-container .btn-entrar {
-        width: 100%;
-        max-width: 250px;
-        margin: 10px auto 0 auto;
-    }
-
-    .conteudo-principal {
-        flex-direction: column;
-        padding: 0 20px;
-    }
-
     .div_texto {
         max-width: 100%;
         width: 100%;
-    }
-
-    .div_logo {
-        width: 100%;
-        margin-top: 30px;
-    }
-
-    .img_logo {
-        max-width: 320px;
-    }
-
-    .rodape-conteudo {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .rodape-links {
-        align-items: center;
     }
 }
 
