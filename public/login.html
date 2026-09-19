@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+    <div class="box-login">
+        <div class="posicao-titulo-formulario">
+            <div class="titulo-imagem">
+                <div class="posicao-imagem">
+                    <img src="" alt="">
+                </div>
+                <div class="titulo">
+                    <span>INFRATECH</span>
+                </div>
+            </div>
+            <div class="formulario-login">
+                <form class="login-formulario" id="loginFormulario">
+                    <div class="bloco-email">
+                        <label for="emailInput">E-mail corporativo</label>
+                        <input type="email" id="emailInput" placeholder="infratech@empresa.com" required>
+                        <span class="mensagem-erro" id="emailError"></span>
+                    </div>
+
+                    <div class="bloco-senha">
+                        <div class="titulo-senha">
+                            <label for="passwordInput">Senha</label>
+                        </div>
+                        <input type="password" id="passwordInput" placeholder="••••••••" required>
+                        <span class="mensagem-erro" id="passwordError"></span>
+                    </div>
+                    <button type="submit" class="botao-login" id="botao-enviar-login">Entrar no Sistema</button>
+                </form>
+
+            </div>
+            <span>ou</span>
+            <div class="criar-conta">
+                <a href="cadastro-funcionario.html">
+                    <button class="botao-login">Criar nova conta</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
