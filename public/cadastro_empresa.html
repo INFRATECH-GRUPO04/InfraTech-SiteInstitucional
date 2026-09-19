@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de empresa</title>
+    <link rel="stylesheet" href="css/barralateral.css">
+    <link rel="stylesheet" href="css/cadastro_empresa.css">
+</head>
+
+<body>
+    <div class="header-left">
+        <div class="logo">
+            <img src="./assets/icon/logo.png" alt="Logo">
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="./assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+        <hr class="linha">
+
+        <!-- Adicione a classe 'ativo' no link da página correspondente -->
+        <a href="./dentro.html" class="nav-item ativo">
+            <img src="./assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+        <a href="./dashboard/modificar_servidor.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+        <a href="./dashboard/cadastro_servidor.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="./assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionarios
+        </h3>
+        <hr class="linha">
+        <a href="./dashboard/cadastro_token.html" class="nav-item">
+            <img src="./assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="./dashboard/modificar_funcionario.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair">
+            <img src="./assets/imgs/logout.png" alt="" class="logout-icon">
+        </div>
+    </div>
+
+    <div class="main">
+
+        <div class="titulo">Cadastro de empresa</div>
+        <ol class="progress" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+            </li>
+
+            <li data-progress="2">
+                <span class="circle">2</span>
+                <span>Endereço</span>
+            </li>
+
+            <li data-progress="3">
+                <span class="circle">3</span>
+                <span>Responsável</span>
+            </li>
+
+            <li data-progress="4">
+                <span class="circle">4</span>
+                <span>Confirmação</span>
+            </li>
+        </ol>
+
+
+
+        <div class="container-cadastro">
+            <!-- <div class="subtitulo">Dados da Empresa</div>
+            <div class="container-campos">
+                <div class="campos">
+                    <div class="texto">Razão Social</div>
+                    <input type="text" class="input" id="razaoSocial">
+                </div>
+                <div class="campos">
+                    <div class="texto">Nome Fantasia</div>
+                    <input type="text" class="input" id="nomeFantasia">
+                </div>
+                <div class="campos">
+                    <div class="texto">CNPJ</div>
+                    <input type="text" class="input" id="cnpj">
+                </div>
+                <div class="campos">
+                    <div class="texto">Email</div>
+                    <input type="text" class="input" id="email">
+                </div>
+                <div class="campos">
+                    <div class="texto">Telefone</div>
+                    <input type="text" class="input" id="telefone">
+                </div>
+                <div class="campos">
+                    <div class="texto">Segmento de Atuação</div>
+                    <input type="text" class="input" id="segmentoAtuacao">
+                </div>
+            </div>
+            <div class="container-botoes1">
+                <button onclick="avancarP1()" class="botao-avancar">Próximo passo</button>
+            </div> -->
+
+            <div class="subtitulo">Endereço</div>
+            <div class="container-campos">
+                <div class="campos">
+                    <div class="texto">Razão Social</div>
+                    <input type="text" class="input" id="razaoSocial">
+                </div>
+                <div class="campos">
+                    <div class="texto">Nome Fantasia</div>
+                    <input type="text" class="input" id="nomeFantasia">
+                </div>
+                <div class="campos">
+                    <div class="texto">CNPJ</div>
+                    <input type="text" class="input" id="cnpj">
+                </div>
+                <div class="campos">
+                    <div class="texto">Email</div>
+                    <input type="text" class="input" id="email">
+                </div>
+                <div class="campos">
+                    <div class="texto">Telefone</div>
+                    <input type="text" class="input" id="telefone">
+                </div>
+                <div class="campos">
+                    <div class="texto">Segmento de Atuação</div>
+                    <input type="text" class="input" id="segmentoAtuacao">
+                </div>
+            </div>
+            <div class="container-botoes1">
+                <button onclick="avancarP1()" class="botao-avancar">Próximo passo</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

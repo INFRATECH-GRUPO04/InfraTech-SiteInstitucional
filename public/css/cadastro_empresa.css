@@ -1,0 +1,148 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+body{
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+}
+
+.main{
+    height: 100vh;
+    width: 88vw;
+    background-color: #030a10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2vw;
+
+}
+
+.container-cadastro{
+    width: 55vw;
+    height: 30vw;
+    border: solid 1px #00CFFF;
+    border-radius: 20px;
+    background-color: #2A4050;
+}
+
+.titulo{
+  color: white;
+  font-size: 2.3vw;
+  
+}
+.progress {
+  width: min(100%, 40vw);
+  margin: 16px auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  flex-shrink: 0;
+  list-style: none;
+}
+
+.progress li {
+  position: relative;
+  min-width: 0;
+  color: rgba(132, 134, 138, 0.6);
+  text-align: center;
+  font-size: 1vw;
+  font-weight: 700;
+}
+
+
+/* linha que liga uma etapa na outra */
+.progress li:not(:last-child)::after {
+  position: absolute;
+  z-index: 0;
+  top: 18px;
+  left: calc(50% + 25px);
+  width: calc(100% - 50px);
+  height: 2px;
+  content: "";
+  background: rgba(132, 134, 138, 0.6);
+}
+
+
+/* bolinha das etapas */
+.progress .circle {
+  position: relative;
+  z-index: 1;
+  width: 3vw;
+  height: 3vw;
+  margin: 0 auto 6px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #498f9f;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(107, 114, 128, 0.65);
+  font-size: 14px;
+}
+
+
+/* etapa atual e etapas concluidas */
+.progress li.active,
+.progress li.done {
+  color: white;
+}
+
+.progress li.active .circle,
+.progress li.done .circle {
+  border-color:#154955;
+  background: #498f9f;
+  color: white;
+}
+
+.progress li.done:not(:last-child)::after {
+  background: #498f9f;
+}
+
+.container-campos{
+  width: 55vw;
+  height: 23vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.subtitulo{
+  color: white;
+  font-size: 1.5vw;
+  width: 20vw;
+  margin-left: 1vw;
+  margin-top: 1vw;
+}
+.texto{
+  color: white;
+  margin-left: 7px;
+}
+
+.input{
+  width: 25vw;
+  height: 2.3vw;
+  border-radius: 10px;
+  border: 1px solid #00CFFF;
+  background-color: #00CFFF25;
+}
+
+.container-botoes1{
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: flex-end;
+}
+
+.botao-avancar{
+  width: 10vw;
+  height: 3vw;
+  border-radius: 20px;
+  background-color: #00CFFF;
+  border: none;
+  margin-right: 2vw;
+}

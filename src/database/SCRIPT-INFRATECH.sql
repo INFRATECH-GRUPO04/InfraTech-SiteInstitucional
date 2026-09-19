@@ -209,13 +209,3 @@ INSERT INTO servidor_has_componente
 (5, 3, 2000, 90),
 (5, 4, 1000, 80);
 
---------------------------------------------------------
----------- Mudanças feitas no Banco de Dados -----------
---------------------------------------------------------
-
--- Tabela endereço do servidor 
--- Campos da tabela endereço:
-  -- sem nome
-  -- add razaoSocial
-  -- add nomeFantasia
-  -- 
