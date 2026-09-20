@@ -105,14 +105,16 @@
 
 .caixa-funcionalidade {
     border: 1px solid #00d0ff34;
-    padding: 22px 20px;
+    padding: 16px 18px;
     display: flex;
     flex-direction: column;
 }
 
 .sub-titulo-func {
-    font-size: 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
     color: #00cfff;
+    margin-bottom: 4px;
 }
 
 .caixa-titulo-func p {
@@ -125,16 +127,17 @@
 }
 
 .titulo-func {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-family: "Orbitron";
-    padding: 10px 0;
+    padding: 4px 0 8px;
+    margin: 0;
 }
 
 .text-func {
     font-family: "Inter", sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     color: rgba(255,255,255,0.82);
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
 .como-funciona {
