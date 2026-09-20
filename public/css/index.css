@@ -31,12 +31,19 @@
     border-radius: 4px;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.3);
 }
 
 .btn-funcionalidades:hover {
     background-color: #00cfff;
     color: #07090f;
+    border-color: #00cfff;
+    box-shadow: 0 0 25px rgba(0, 207, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-funcionalidades:active {
+    transform: translateY(0);
 }
 
 .secao_sobre {
@@ -126,7 +133,6 @@
 }
 
 .como-funciona {
-    background-color: #1c2332;
     text-align: center;
 }
 
@@ -236,9 +242,13 @@
 .btn_cadastro {
     background-color: #00cfff;
     color: #07090f;
-    font-family: "Orbitron";
+    font-family: "Orbitron", sans-serif;
     font-weight: bold;
     border: 2px solid #00cfff;
+    border-radius: 4px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.3);
 }
 
 .btn_login:hover,
@@ -246,17 +256,37 @@
     background-color: transparent;
     color: #00cfff;
     border-color: #00cfff;
+    box-shadow: 0 0 20px rgba(0, 207, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn_login:active,
+.btn_cadastro:active {
+    transform: translateY(0);
 }
 
 .btn_redirecionar {
     background-color: transparent;
     color: #00cfff;
     border: 2px solid #00cfff;
+    font-family: "Orbitron", sans-serif;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 207, 255, 0.2);
 }
 
 .btn_redirecionar:hover {
     background-color: #00cfff;
     color: #07090f;
+    border-color: #00cfff;
+    box-shadow: 0 0 20px rgba(0, 207, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn_redirecionar:active {
+    transform: translateY(0);
 }
 
 .texto {
@@ -629,5 +659,67 @@
 @media (max-width: 575.98px) {
     .secao_contato .botao_box {
         width: 100%;
+    }
+}
+
+/* ==========================================================================
+   ESTRUTURA DE SEÇÕES FULLSCREEN (100vh) & ALTERNÂNCIA DE CORES DE FUNDO
+   ========================================================================== */
+
+.secao-fullscreen {
+    min-height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 90px 0 40px;
+    box-sizing: border-box;
+    position: relative;
+    transition: background-color 0.4s ease;
+}
+
+/* Cor Padrão / Ímpar: Fundo escuro cyber original (gradiente transparente) */
+.secao-bg-dark {
+    background-color: transparent;
+}
+
+/* Cor Alternada / Par: Fundo contrastante em tom grafite/navy do "como funciona" (#161e2b) */
+.secao-bg-alt {
+    background-color: #161e2b;
+    border-top: 1px solid rgba(0, 207, 255, 0.12);
+    border-bottom: 1px solid rgba(0, 207, 255, 0.12);
+}
+
+/* Ajustes de alinhamento vertical para cada seção */
+#inicio.secao-fullscreen {
+    justify-content: center;
+    padding-top: 110px;
+}
+
+#sobre.secao-fullscreen,
+#funcionalidades.secao-fullscreen,
+#como-funciona.secao-fullscreen,
+#equipe.secao-fullscreen,
+#contato.secao-fullscreen {
+    justify-content: center;
+}
+
+.secao_equipe .div_img_texto {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 991.98px) {
+    html {
+        scroll-snap-type: none; /* Desativa snap em mobile para rolagem fluida */
+    }
+
+    .secao-fullscreen {
+        min-height: auto;
+        padding: 80px 0 50px;
+        scroll-snap-align: none;
     }
 }
