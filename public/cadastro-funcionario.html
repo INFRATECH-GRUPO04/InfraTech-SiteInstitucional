@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFRATECH-Funcionario</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+    <div class="box-cadastro">
+        <div class="posicao-titulo-formulario">
+            <div class="titulo-imagem">
+                <div class="posicao-imagem">
+                    <img src="./assets/icon/logo.png" alt="">
+                </div>
+
+                <div>
+                    <h1 class="titulo-login"><span class="destaque-azul">INFRA</span>TECH</h1>
+                </div>
+                <div class="bloco-linha">
+                    <p class="linha-divisao"></p>
+                </div>
+            </div>
+            <div class="formulario-login">
+                <form class="funcionario-formulario" id="loginFormulario">
+                    <div class="login-esquerdo">
+                        <div class="bloco-input-funcionario">
+                            <label for="codigoInput">Código da Empresa</label>
+                            <input class="inputs-formulario" type="text" id="codigoInput" placeholder="XXXXXX" required>
+                            <span class="mensagem-erro" id="codigoError"></span>
+                        </div>
+
+                        <div class="bloco-input-funcionario">
+                            <label for="nomeInput">Nome Completo</label>
+                            <input class="inputs-formulario" type="text" id="nomeInput" placeholder="João da Silva"
+                                required>
+                            <span class="mensagem-erro" id="nomeError"></span>
+                        </div>
+
+                        <div class="bloco-input-funcionario">
+                            <label for="cpfInput">CPF</label>
+                            <input class="inputs-formulario" type="text" id="cpfInput" placeholder="XXX.XXX.XXX-XX"
+                                required>
+                            <span class="mensagem-erro" id="cpfError"></span>
+                        </div>
+                    </div>
+                    <div class="login-direito">
+                        <div class="bloco-input-funcionario">
+                            <label for="emailInput">E-mail corporativo</label>
+                            <input class="inputs-formulario" type="email" id="emailInput"
+                                placeholder="infratech@empresa.com" required>
+                            <span class="mensagem-erro" id="emailError"></span>
+                        </div>
+
+                        <div class="bloco-input-funcionario">
+                            <div class="titulo-senha">
+                                <label for="passwordInput">Senha</label>
+                            </div>
+                            <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required>
+                            <span class="mensagem-erro" id="passwordError"></span>
+                        </div>
+
+                        <div class="bloco-input-funcionario">
+                            <div class="titulo-senha">
+                                <label for="passwordInput">Confirmar Senha</label>
+                            </div>
+                            <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required>
+                            <span class="mensagem-erro" id="passwordError"></span>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+
+            <div class="criar-conta">
+                <a href="cadastro-funcionario.html">
+                    <button class="botao-login" type="button">Criar conta</button>
+                </a>
+            </div>
+            <div class="posicao-conta">
+                <p class="texto">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal"
+                        data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

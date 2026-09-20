@@ -12,8 +12,15 @@ body {
     background-color: #151e36;
     width: 500px;
     height: 600px;
-
 }
+
+.box-cadastro {
+    border: 1px solid #00cfff;
+    background-color: #151e36;
+    width: 600px;
+    height: 600px;
+}
+
 
 .posicao-imagem {
     display: flex;
@@ -38,9 +45,54 @@ body {
     font-weight: bold;
 }
 
-.login-formulario{
+.login-formulario {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.funcionario-formulario {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+.login-esquerdo {
+    padding-left: 15px;
+    padding-right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+}
+
+.login-direito {
+    padding-left: 30px;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+}
+
+.texto {
+    color: #a0a0a0;
+}
+
+.texto_dif{
+    color: #00CFFF;
+    margin-left: 2px;
+    text-decoration: none;
+}
+
+.texto_dif:hover{
+    color: #00d0ff9d;
+}
+
+.posicao-conta{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .linha-divisao {
@@ -89,11 +141,15 @@ body {
     padding-right: 15px;
 }
 
-.login-formulario {
+.bloco-input-funcionario {
+    color: #00cfff;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 7px;
 }
+
 
 .inputs {
     background-color: #00d0ff13;
@@ -105,7 +161,19 @@ body {
     font-family: "JetBrains Mono", monospace;
     color: aliceblue;
     outline: none;
+}
 
+.inputs-formulario {
+    background-color: #00d0ff13;
+    border: 1px #00CFFF solid;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    padding-left: 14px;
+    border-radius: 2px;
+    font-family: "JetBrains Mono", monospace;
+    color: aliceblue;
+    outline: none;
+    width: 100%;
 }
 
 .inputs ::placeholder {
