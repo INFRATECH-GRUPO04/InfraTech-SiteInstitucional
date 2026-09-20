@@ -72,6 +72,7 @@
 
 .descricao_texto {
     color: white;
+    font-family: "Inter", sans-serif;
     font-size: 1rem;
     line-height: 1.8;
     margin: 0;
@@ -104,7 +105,9 @@
 
 .caixa-funcionalidade {
     border: 1px solid #00d0ff34;
-    padding: 20px;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sub-titulo-func {
@@ -128,8 +131,10 @@
 }
 
 .text-func {
+    font-family: "Inter", sans-serif;
     font-size: 0.9rem;
-    color: white;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.7;
 }
 
 .como-funciona {
@@ -151,10 +156,12 @@
 }
 
 .etapa {
-    min-height: 280px;
-    padding: 35px 30px;
+    padding: 30px 24px;
     border-left: 1px solid #00cfff20;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .etapa:last-child {
@@ -165,9 +172,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 55px;
-    height: 55px;
-    margin: 0 auto 25px;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    margin: 0 auto 20px;
     border: 1px solid #00cfff80;
     border-radius: 50%;
     color: #00cfff;
@@ -176,14 +184,17 @@
 
 .etapa h2 {
     font-family: "Orbitron";
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    margin-bottom: 12px;
 }
 
 .etapa p {
     color: #b9bec6;
-    font-family: "Inter";
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font-family: "Inter", sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    margin: 0;
+    text-align: center;
 }
 
 .div_popup {
@@ -667,7 +678,7 @@
    ========================================================================== */
 
 .secao-fullscreen {
-    min-height: 100vh;
+    min-height: 90vh;
     width: 100%;
     scroll-snap-align: start;
     scroll-snap-stop: always;
@@ -675,7 +686,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 90px 0 40px;
+    padding: 80px 0 30px;
     box-sizing: border-box;
     position: relative;
     transition: background-color 0.4s ease;
@@ -710,6 +721,86 @@
 .secao_equipe .div_img_texto {
     margin-top: 20px;
     margin-bottom: 30px;
+}
+
+/* ===== SEÇÃO EQUIPE ===== */
+.secao_equipe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.equipe-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 48px;
+    height: 100%;
+}
+
+/* LADO ESQUERDO – foto */
+.equipe-lado-foto {
+    flex: 1 1 55%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.equipe-foto-grupo {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    object-position: center 30%;  /* corta levemente topo e base */
+    border-radius: 10px;
+    border: 1px solid rgba(0, 207, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    display: block;
+}
+
+.equipe-foto-label {
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(0, 207, 255, 0.65);
+    text-transform: uppercase;
+}
+
+/* LADO DIREITO – texto */
+.equipe-lado-texto {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.equipe-lado-texto .titulo_principal {
+    margin: 0;
+}
+
+.equipe-texto {
+    color: rgba(255, 255, 255, 0.75);
+    font-family: "Inter", sans-serif;
+    font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* Responsivo: empilha em mobile */
+@media (max-width: 768px) {
+    .equipe-wrapper {
+        flex-direction: column;
+        padding: 40px 24px;
+        gap: 28px;
+    }
+    .equipe-lado-foto,
+    .equipe-lado-texto {
+        flex: unset;
+        width: 100%;
+    }
 }
 
 @media (max-width: 991.98px) {
