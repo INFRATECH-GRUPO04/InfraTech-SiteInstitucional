@@ -14,37 +14,45 @@
         <div class="posicao-titulo-formulario">
             <div class="titulo-imagem">
                 <div class="posicao-imagem">
-                    <img src="" alt="">
+                    <img src="./assets/icon/logo.png" alt="">
                 </div>
-                <div class="titulo">
-                    <span>INFRATECH</span>
+
+                <div>
+                     <h1 class="titulo-login"><span class="destaque-azul">INFRA</span>TECH</h1>
                 </div>
+                <div class="bloco-linha"><p class="linha-divisao"></p></div>
             </div>
             <div class="formulario-login">
                 <form class="login-formulario" id="loginFormulario">
-                    <div class="bloco-email">
+                    <div class="bloco-input">
                         <label for="emailInput">E-mail corporativo</label>
-                        <input type="email" id="emailInput" placeholder="infratech@empresa.com" required>
+                        <input class="inputs" type="email" id="emailInput" placeholder="infratech@empresa.com" required>
                         <span class="mensagem-erro" id="emailError"></span>
                     </div>
 
-                    <div class="bloco-senha">
+                    <div class="bloco-input">
                         <div class="titulo-senha">
                             <label for="passwordInput">Senha</label>
                         </div>
-                        <input type="password" id="passwordInput" placeholder="••••••••" required>
+                        <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required>
                         <span class="mensagem-erro" id="passwordError"></span>
                     </div>
+                    
                     <button type="submit" class="botao-login" id="botao-enviar-login">Entrar no Sistema</button>
-                </form>
+                
+            </form>
 
             </div>
-            <span>ou</span>
+            <div class="opcao-cadastro">
+            <span class="linha-opcao"></span>
+            <span class="texto-opcao">ou</span>
+            <span class="linha-opcao"></span>
+            </div>
             <div class="criar-conta">
                 <a href="cadastro-funcionario.html">
-                    <button class="botao-login">Criar nova conta</button>
+                    <button class="botao-login" type="button" >Criar conta</button>
                 </a>
-            </div>
+           </div>
         </div>
     </div>
 </body>
