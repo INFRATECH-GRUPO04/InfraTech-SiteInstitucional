@@ -23,11 +23,11 @@
         <button class="btn-menu-hamburguer" type="button" aria-label="Menu">&#9776;</button>
 
         <nav class="nav-container">
-            <a href="index.html">INÍCIO</a>
+            <a href="#inicio">INÍCIO</a>
             <a href="#sobre">SOBRE</a>
             <a href="#funcionalidades">FUNCIONALIDADES</a>
-            <a href="nossa_equipe.html">EQUIPE</a>
-            <a href="fale_conosco.html">CONTATO</a>
+            <a href="#equipe">EQUIPE</a>
+            <a href="#contato">CONTATO</a>
             <button class="btn btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</button>
         </nav>
     </div>
@@ -151,7 +151,7 @@
             </div>
         </div>
 
-        <div>
+        <div id="inicio">
             <div class="container sptech-item mx-auto">
                 <h2 class="fs-6 m-0"><span class="text-secondary">Projeto PI | </span>São Paulo Tech School</h2>
             </div>
@@ -167,7 +167,7 @@
 
             <div class="botoes-banner d-flex justify-content-center align-items-center gap-3 mt-4 px-3">
                 <button class="btn btn-cyan px-4" data-bs-toggle="modal" data-bs-target="#modalCadastro">CRIAR CONTA</button>
-                <button class="btn btn-funcionalidades px-4">VER FUNCIONALIDADES</button>
+                <a href="#funcionalidades" class="btn btn-funcionalidades px-4 d-inline-flex align-items-center justify-content-center text-decoration-none">VER FUNCIONALIDADES</a>
             </div>
         </div>
 
@@ -178,8 +178,8 @@
                         <div class="texto_sobre d-flex flex-column gap-3">
                             <p class="etiqueta_secao">// SOBRE O PROJETO</p>
                             <h2 class="titulo_principal">O QUE É A <span class="titulo_destaque">INFRATECH</span>?</h2>
-                            <p class="descricao_texto">A InfraTech é uma solução de monitoramento voltada à infraestrutura de servidores utilizados por jogos online. O sistema acompanha continuamente recursos como CPU, memória RAM e armazenamento, além de processos e serviços em execução.<p>
-                            Por meio da coleta e centralização dessas informações, a plataforma permite identificar situações de sobrecarga, indisponibilidade e comportamento anormal nos servidores, oferecendo maior visibilidade sobre o estado da infraestrutura.</p>
+                            <p class="descricao_texto">A InfraTech é uma solução de monitoramento voltada à infraestrutura de servidores utilizados por jogos online. O sistema acompanha continuamente recursos como CPU, memória RAM e armazenamento, além de processos e serviços em execução.</p>
+                            <p class="descricao_texto">Por meio da coleta e centralização dessas informações, a plataforma permite identificar situações de sobrecarga, indisponibilidade e comportamento anormal nos servidores, oferecendo maior visibilidade sobre o estado da infraestrutura.</p>
                             <p class="descricao_texto">Através de nossa solução nos servidores, o sistema coleta métricas de CPU, memória, rede e armazenamento, consolidada dos dados em um painel centralizado e emite alertas quando limites críticos são atingidos.</p>
                         </div>
                     </div>
@@ -272,6 +272,164 @@
                 </div>
             </div>
         </div>
+
+        <!-- SEÇÃO NOSSA EQUIPE -->
+        <section class="secao_equipe" id="equipe">
+            <div class="container text-center mb-4">
+                <p class="etiqueta_secao">// QUEM SOMOS</p>
+                <h2 class="titulo_principal mt-2">NOSSA <span class="text-cyan">EQUIPE</span></h2>
+            </div>
+
+            <div class="container">
+                <div class="div_img_texto">
+                    <div class="div_img">
+                        <img src="assets/imgs/geral.jpeg" alt="Equipe InfraTech">
+                        <div class="info_img">
+                            <span>EQUIPE COMPLETA</span>
+                            <h2>INFRATECH - SÃO PAULO TECH SCHOOL</h2>
+                        </div>
+                    </div>
+                    <div class="texto_equipe_desc">
+                        Na InfraTech, unimos engenharia de software e observabilidade para proteger ecossistemas de alta demanda.
+                        Nossa equipe desenvolve soluções inteligentes de monitoramento contínuo para servidores dedicados de jogos online e serviços críticos de microtransações.
+                        Combinamos monitoramento proativo de hardware, métricas de rede e integridade de transações para que panes silenciosas não se transformem em prejuízos financeiros ou quebra de confiança dos jogadores.
+                    </div>
+                </div>
+
+                <div class="contato_todos">
+                    <div class="contato">
+                        <div class="foto">
+                            <img src="assets/imgs/amanda.jpeg" alt="Amanda de Oliveira">
+                        </div>
+                        <span class="tag_cargo">TECNOLOGIA</span>
+                        <p class="nome_membro">Amanda de Oliveira</p>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_linkedin.png" alt="LinkedIn">
+                            <a href="https://www.linkedin.com/in/amanda-tavares-de-oliveira-7bb91542b/" target="_blank" rel="noopener noreferrer">Amanda Tavares de Oliveira</a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_github.png" alt="GitHub">
+                            <a href="https://github.com/AmandaTavares-0802" target="_blank" rel="noopener noreferrer">AmandaTavares-0802</a>
+                        </div>
+                    </div>
+
+                    <div class="contato">
+                        <div class="foto">
+                            <img src="assets/imgs/arthur.jpeg" alt="Arthur Martins">
+                        </div>
+                        <span class="tag_cargo">TECNOLOGIA</span>
+                        <p class="nome_membro">Arthur Martins</p>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_linkedin.png" alt="LinkedIn">
+                            <a href="https://www.linkedin.com/in/arthur-martins-a00706373/" target="_blank" rel="noopener noreferrer">Arthur Martins</a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_github.png" alt="GitHub">
+                            <a href="https://github.com/arthursptech" target="_blank" rel="noopener noreferrer">arthursptech</a>
+                        </div>
+                    </div>
+
+                    <div class="contato">
+                        <div class="foto">
+                            <img src="assets/imgs/guilherme.jpeg" alt="Guilherme Lima Pastorello">
+                        </div>
+                        <span class="tag_cargo">TECNOLOGIA</span>
+                        <p class="nome_membro">Guilherme Lima Pastorello</p>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_linkedin.png" alt="LinkedIn">
+                            <a href="https://www.linkedin.com/in/guilherme-lima-pastorello-62a8b7284/" target="_blank" rel="noopener noreferrer">Guilherme Lima Pastorello</a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_github.png" alt="GitHub">
+                            <a href="https://github.com/GuiPastorello" target="_blank" rel="noopener noreferrer">GuiPastorello</a>
+                        </div>
+                    </div>
+
+                    <div class="contato">
+                        <div class="foto">
+                            <img src="assets/imgs/isaac1.jpeg" alt="Isaac Azevedo Pinheiro">
+                        </div>
+                        <span class="tag_cargo">TECNOLOGIA</span>
+                        <p class="nome_membro">Isaac Azevedo Pinheiro</p>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_linkedin.png" alt="LinkedIn">
+                            <a href="https://www.linkedin.com/in/isaac-azevedo-041299341?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer">Isaac Azevedo</a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_github.png" alt="GitHub">
+                            <a href="https://github.com/isaacazevedopinheiro" target="_blank" rel="noopener noreferrer">isaacazevedopinheiro</a>
+                        </div>
+                    </div>
+
+                    <div class="contato">
+                        <div class="foto">
+                            <img src="assets/imgs/jeffersonbom.jpeg" alt="Jefferson Alexandre Lima Palma">
+                        </div>
+                        <span class="tag_cargo">TECNOLOGIA</span>
+                        <p class="nome_membro">Jefferson Alexandre Lima Palma</p>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_linkedin.png" alt="Jefferson Alexandre Palma">
+                            <a href="https://www.linkedin.com/in/jefferson-alexandre-lima-palma-a33568233?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer">Jefferson Alexandre Palma</a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_github.png" alt="GitHub">
+                            <a href="https://github.com/Jefferson-Palma" target="_blank" rel="noopener noreferrer">Jefferson-Palma</a>
+                        </div>
+                    </div>
+
+                    <div class="contato">
+                        <div class="foto">
+                            <img src="assets/imgs/duda.jpeg" alt="Maria Eduarda Fontana Nogueiro">
+                        </div>
+                        <span class="tag_cargo">TECNOLOGIA</span>
+                        <p class="nome_membro">Maria Eduarda Fontana Nogueiro</p>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_linkedin.png" alt="LinkedIn">
+                            <a href="https://www.linkedin.com/in/maria-eduarda-fontana-nogueiro-8642803a9?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer">Maria Eduarda Fontana Nogueiro</a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <img src="assets/icon/logo_github.png" alt="GitHub">
+                            <a href="https://github.com/MariaEduardaFontanaNogueiro" target="_blank" rel="noopener noreferrer">MariaEduardaFontanaNogueiro</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO FALE CONOSCO -->
+        <section class="secao_contato" id="contato">
+            <div class="container conteudo-principal">
+                <div class="div_texto_contato">
+                    <div>
+                        <p class="etiqueta_secao">// FALE CONOSCO</p>
+                        <h2 class="titulo_principal mt-2">QUER SABER <span class="text-cyan"><br>MAIS?</span></h2>
+                        <span class="texto_descricao_contato">Entre em contato com a equipe de desenvolvimento. Tire dúvidas sobre o projeto, o sistema ou solicite acesso para avaliação.</span>
+                    </div>
+
+                    <div class="box_acesso">
+                        <h3 class="sub_titulo_acesso">ACESSO AO SISTEMA</h3>
+                        <span class="texto_box_acesso">Para acessar o painel de monitoramento, crie sua conta gratuitamente. O acesso é restrito a usuários cadastrados.</span>
+
+                        <button class="btn btn-cyan botao_box" data-bs-toggle="modal" data-bs-target="#modalEntrar" type="button">Entrar</button>
+                    </div>
+
+                    <div class="div_contato">
+                        <div class="bloco_contato">
+                            <p>EMAIL</p>
+                            <span>contato@infratech.com</span>
+                        </div>
+                        <div class="bloco_contato">
+                            <p>INSTITUIÇÃO</p>
+                            <span>São Paulo Tech School</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="div_logo">
+                    <img class="img_logo img-fluid" src="assets/icon/logo_texto.png" alt="InfraTech">
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="rodape">
@@ -286,9 +444,11 @@
 
             <div class="rodape-links">
                 <h3>SISTEMA</h3>
-                <a href="index.html">INÍCIO</a>
+                <a href="#inicio">INÍCIO</a>
                 <a href="#sobre">SOBRE</a>
-                <a href="fale_conosco.html">CONTATO</a>
+                <a href="#funcionalidades">FUNCIONALIDADES</a>
+                <a href="#equipe">EQUIPE</a>
+                <a href="#contato">CONTATO</a>
             </div>
 
             <div class="rodape-links">
@@ -323,7 +483,13 @@
 
     
         btnHamburguer.addEventListener("click", () => {
-        menuNav.classList.toggle("ativo");
+            menuNav.classList.toggle("ativo");
+        });
+
+        document.querySelectorAll(".nav-container a").forEach(link => {
+            link.addEventListener("click", () => {
+                menuNav.classList.remove("ativo");
+            });
         });
 
         function entrar() {
