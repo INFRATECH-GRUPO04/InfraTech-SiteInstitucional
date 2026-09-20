@@ -64,7 +64,7 @@ body {
 
 .login-esquerdo {
     padding-left: 15px;
-    padding-right: 30px;
+    padding-right: 15px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -72,7 +72,7 @@ body {
 }
 
 .login-direito {
-    padding-left: 30px;
+    padding-left: 15px;
     padding-right: 15px;
     display: flex;
     flex-direction: column;
@@ -221,6 +221,8 @@ body {
     box-shadow: 0 0 15px #00CFFF;
 }
 
+
+/*Resposividade tela de login*/
 @media (max-width: 520px) {
    .box-login {
     width: 300px;
@@ -237,5 +239,15 @@ body {
 .opcao-cadastro {
     padding-left: 20px;
     padding-right: 20px;
+}
+}
+
+/*responsividade tela de cadastro funcionario */
+@media (max-width: 480px) {
+    .funcionario-formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 }
