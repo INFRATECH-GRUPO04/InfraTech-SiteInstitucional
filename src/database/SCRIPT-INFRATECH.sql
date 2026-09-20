@@ -73,7 +73,7 @@ CREATE TABLE servidor (
 
 
 -- -----------------------------------------------------
--- Table `InfraTech`.`servidor_has_funcionario`
+-- Table `InfraTech`.`servidor_funcionario`
 -- -----------------------------------------------------
 CREATE TABLE servidor_funcionario (
   fkFuncionario INT NOT NULL,
@@ -136,7 +136,7 @@ CREATE TABLE parametro_monitoramento (
 -- -----------------------------------------------------
 -- Table `InfraTech`.`metrica`
 -- -----------------------------------------------------
--- O que será monitorado em relação a qual componente
+
 CREATE TABLE metrica (
     id_metrica INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
@@ -146,146 +146,6 @@ CREATE TABLE metrica (
     fk_parametro_monitoramento INT,
     FOREIGN KEY (fk_componente) REFERENCES componente(id_componente),
     FOREIGN KEY (fk_parametro_monitoramento) REFERENCES parametro_monitoramento(id_parametro_monitoramento)
-);
-
-
-CREATE DATABASE IF NOT EXISTS InfraTech;
-USE InfraTech;
-
--- -----------------------------------------------------
--- Table `InfraTech`.`endereco`
--- -----------------------------------------------------
-CREATE TABLE endereco (
-  id_endereco INT PRIMARY KEY AUTO_INCREMENT,
-  cep CHAR(8) NOT NULL,
-  logradouro VARCHAR(100) NOT NULL,
-  bairro VARCHAR(100) NOT NULL,
-  numero VARCHAR(20) NOT NULL,
-  complemento VARCHAR(100),
-  estado CHAR(2) NOT NULL,
-  cidade VARCHAR(100) NOT NULL
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`empresa`
--- -----------------------------------------------------
-CREATE TABLE empresa (
-  idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
-  razaoSocial VARCHAR(100) NOT NULL,
-  nomeFantasia VARCHAR(100) NOT NULL,
-  cnpj CHAR(14) NOT NULL,
-  segmento_atuacao VARCHAR(80) NOT NULL,
-  email VARCHAR(200) UNIQUE NOT NULL,
-  telefone VARCHAR(20) NOT NULL,
-  status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  fk_endereco INT,
-  FOREIGN KEY (fk_endereco) REFERENCES endereco(id_endereco)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`funcionario`
--- -----------------------------------------------------
-CREATE TABLE funcionario (
-  idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
-  adm TINYINT DEFAULT 0,
-  nome VARCHAR(45) NOT NULL,
-  dataNascimento DATE NOT NULL,
-  email VARCHAR(45) NOT NULL,
-  senha VARCHAR(45) NOT NULL,
-  cpf CHAR(11) NOT NULL,
-  status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_funcionario_empresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`servidor`
--- -----------------------------------------------------
-CREATE TABLE servidor (
-  idServidor INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
-  nome VARCHAR(45) NULL,
-  status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT cfkEmpresa 
-    FOREIGN KEY (fkEmpresa) 
-    REFERENCES empresa(idEmpresa)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`servidor_funcionario`
--- -----------------------------------------------------
-CREATE TABLE servidor_funcionario (
-  fkFuncionario INT NOT NULL,
-  fkServidor INT NOT NULL,
-  PRIMARY KEY (fkFuncionario, fkServidor),
-  CONSTRAINT fk_servidor_funcionario_funcionario1
-    FOREIGN KEY (fkFuncionario)
-    REFERENCES funcionario (idFuncionario),
-  CONSTRAINT fk_servidor_funcionario_servidor1
-    FOREIGN KEY (fkServidor)
-    REFERENCES servidor (idServidor)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`convite`
--- -----------------------------------------------------
-CREATE TABLE convite (
-  idConvite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  codigo VARCHAR(100) NOT NULL,
-  tipoAcesso VARCHAR(45) NOT NULL,
-  quantidadeUso INT NOT NULL,
-  quantidadeUsada INT NOT NULL DEFAULT 0,
-  criado DATETIME DEFAULT CURRENT_TIMESTAMP,
-  fkEmpresa INT NOT NULL,
-  CONSTRAINT fk_convite_empresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`componente`
--- -----------------------------------------------------
-CREATE TABLE componente (
-  id_componente INT PRIMARY KEY AUTO_INCREMENT,
-  tipo VARCHAR(45) NOT NULL, -- cpu, ram, disco
-  modelo VARCHAR(100),
-  numero_serie VARCHAR(100), 
-  capacidade_total DECIMAL(14,2),
-  unidade_capacidade VARCHAR(45),
-  status_monitoramento TINYINT,
-  entrada_sistema DATETIME DEFAULT CURRENT_TIMESTAMP,
-  fk_servidor_componente INT,
-  FOREIGN KEY (fk_servidor_componente) REFERENCES servidor(idServidor)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`parametro_monitoramento`
--- -----------------------------------------------------
-CREATE TABLE parametro_monitoramento (
-  id_parametro_monitoramento INT PRIMARY KEY AUTO_INCREMENT,
-  limite_atencao DECIMAL(14,2) NOT NULL,
-  limite_critico DECIMAL(14,2) NOT NULL,
-  fk_servidor_parametro INT,
-  FOREIGN KEY (fk_servidor_parametro) REFERENCES servidor(idServidor)
-);
-
--- -----------------------------------------------------
--- Table `InfraTech`.`metrica`
--- -----------------------------------------------------
-CREATE TABLE metrica (
-  id_metrica INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(100),
-  unidade_medida VARCHAR(45),
-  descricao VARCHAR(200),
-  fk_componente INT,
-  fk_parametro_monitoramento INT,
-  FOREIGN KEY (fk_componente) REFERENCES componente(id_componente),
-  FOREIGN KEY (fk_parametro_monitoramento) REFERENCES parametro_monitoramento(id_parametro_monitoramento)
 );
 
 -- =====================================================
