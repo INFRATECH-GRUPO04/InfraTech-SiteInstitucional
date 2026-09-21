@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="header-left">
+    <div class="header-left" onload="aplicarMascara(cnpj, valor)">
         <div class="logo">
             <img src="./assets/icon/logo.png" alt="Logo">
         </div>
@@ -61,32 +61,32 @@
         <div class="titulo">Cadastro de empresa</div>
 
         <div class="fluxo" id="fluxo">
-           
-                <!-- PRIMEIRA PARTE -->
-                <!-- <ol class="progress step-1" id="progress">
+
+            <!-- PRIMEIRA PARTE -->
+            <ol class="progress step-1" id="progress">
                 <li class="active" data-progress="1">
-                <span class="circle">1</span>
-                <span>Dados da empresa</span>
-            </li>
+                    <span class="circle">1</span>
+                    <span>Dados da empresa</span>
+                </li>
 
-            <li data-progress="2">
-                <span class="circle">2</span>
-                <span>Endereço</span>
-            </li>
+                <li data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                </li>
 
-            <li data-progress="3">
-                <span class="circle">3</span>
-                <span>Responsável</span>
-            </li>
+                <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                </li>
 
-            <li data-progress="4">
-                <span class="circle">4</span>
-                <span>Confirmação</span>
-            </li> 
-            </ol>-->
-            
-                <!-- SEGUNDA PARTE -->
-                 <!-- <ol class="progress step-2" id="progress">
+                <li data-progress="4">
+                    <span class="circle">4</span>
+                    <span>Confirmação</span>
+                </li>
+            </ol>
+
+            <!-- SEGUNDA PARTE -->
+            <!-- <ol class="progress step-2" id="progress">
                 <li class="active" data-progress="1">
                     <span class="circle">1</span>
                     <span>Dados da empresa</span>
@@ -108,8 +108,8 @@
                 </li>
                 </ol> -->
 
-                <!-- TERCEIRA PARTE -->
-                <!-- <ol class="progress step-3" id="progress">
+            <!-- TERCEIRA PARTE -->
+            <!-- <ol class="progress step-3" id="progress">
                 <li class="active" data-progress="1">
                 <span class="circle">1</span>
                 <span>Dados da empresa</span>
@@ -131,8 +131,8 @@
             </li> 
             </ol> -->
 
-                <!-- QUARTA PARTE -->
-                <ol class="progress" id="progress">
+            <!-- QUARTA PARTE -->
+            <!-- <ol class="progress" id="progress">
                 <li class="active" data-progress="1">
                 <span class="circle">1</span>
                 <span>Dados da empresa</span>
@@ -152,411 +152,378 @@
                 <span class="circle">4</span>
                 <span>Confirmação</span>
             </li> 
-            </ol>
-            
+            </ol> -->
+
         </div>
 
 
         <div class="container-cadastro" id="container_cadastro">
 
             <!-- PRIMEIRA PARTE -->
-            <!-- <div class="subtitulo">Dados da Empresa</div>
+            <div class="subtitulo">Dados da Empresa</div>
             <div class="container-campos">
                 <div class="campos">
                     <div class="texto">Razão Social</div>
-                    <input type="text" class="input" id="razaoSocial" placeholder= "Tech Jogos Online">
+                    <input type="text" class="input" id="razaoSocial" placeholder="Tech Jogos Online">
                 </div>
                 <div class="campos">
                     <div class="texto">Nome Fantasia</div>
-                    <input type="text" class="input" id="nomeFantasia" placeholder = "TJO">
+                    <input type="text" class="input" id="nomeFantasia" placeholder="Tech JO">
                 </div>
                 <div class="campos">
                     <div class="texto">CNPJ</div>
-                    <input type="text" class="input" id="cnpj" placeholder = "">
+                    <input type="text" class="input" id="cnpj" placeholder="00.000.000/0001-11">
                 </div>
                 <div class="campos">
                     <div class="texto">Email</div>
-                    <input type="text" class="input" id="emailEmpresa">
+                    <input type="text" class="input" id="emailEmpresa" placeholder="tech.jo@techjo.com">
                 </div>
                 <div class="campos">
                     <div class="texto">Telefone</div>
-                    <input type="text" class="input" id="telefone">
+                    <input type="text" class="input" id="telefone" placeholder="(00)99999-9999">
                 </div>
                 <div class="campos">
                     <div class="texto">Segmento de Atuação</div>
-                    <input type="text" class="input" id="segmentoAtuacao">
+                    <input type="text" class="input" id="segmentoAtuacao"
+                        placeholder="Jogos competitivos, jogos RPG...">
                 </div>
             </div>
             <div class="container-botoes1">
                 <button onclick="avancarP1()" class="botao-avancar">Próximo passo</button>
-            </div> -->
-
-            <!-- SEGUNDA PARTE -->
-            <!-- <div class="subtitulo">Endereço</div>
-             <div class="container-campos">
-                <div class="campos">
-                    <div class="texto">Logradouro</div>
-                    <input type="text" class="input" id="logradouro">
-                </div>
-                <div class="campos">
-                    <div class="texto">Número</div>
-                    <input type="text" class="input" id="numero">
-                </div>
-                <div class="campos">
-                    <div class="texto">Complemento</div>
-                    <input type="text" class="input" id="complemento">
-                </div>
-                <div class="campos">
-                    <div class="texto">CEP</div>
-                    <input type="text" class="input" id="cep">
-                </div>
-                <div class="campos">
-                    <div class="texto">Bairro</div>
-                    <input type="text" class="input" id="bairro">
-                </div>
-                <div class="campos">
-                    <div class="texto"> Estado</div>
-                    <select class="input" id="estado"  required>
-                      <option value="">UF</option>
-                      <option value="AC">AC</option>
-                      <option value="AL">AL</option>
-                      <option value="AP">AP</option>
-                      <option value="AM">AM</option>
-                      <option value="BA">BA</option>
-                      <option value="CE">CE</option>
-                      <option value="DF">DF</option>
-                      <option value="ES">ES</option>
-                      <option value="GO">GO</option>
-                      <option value="MA">MA</option>
-                      <option value="MT">MT</option>
-                      <option value="MS">MS</option>
-                      <option value="MG">MG</option>
-                      <option value="PA">PA</option>
-                      <option value="PB">PB</option>
-                      <option value="PR">PR</option>
-                      <option value="PE">PE</option>
-                      <option value="PI">PI</option>
-                      <option value="RJ">RJ</option>
-                      <option value="RN">RN</option>
-                      <option value="RS">RS</option>
-                      <option value="RO">RO</option>
-                      <option value="RR">RR</option>
-                      <option value="SC">SC</option>
-                      <option value="SP">SP</option>
-                      <option value="SE">SE</option>
-                      <option value="TO">TO</option>
-                    </select>
-                    
-                </div>
-                <div class="campos">
-                    <div class="texto">Cidade</div>
-                    <input type="text" class="input" id="cidade">
-                </div>
             </div>
-            <div class="container-botoes2">
-                <button onclick="voltarP2()" class="botao-avancar">Voltar</button>
-                <button onclick="avancarP2()" class="botao-avancar">Próximo passo</button>
-            </div> -->
-
-            <!-- TERCEIRA PARTE -->
-             <div class="subtitulo">Responsável</div>
-            <div class="container-campos">
-                <div class="campos">
-                    <div class="texto">Nome Completo</div>
-                    <input type="text" class="input" id="nome" placeholder="João Silva">
-                </div>
-                <div class="campos">
-                    <div class="texto">Data de Nascimento</div>
-                    <input type="date" class="input" id="dtNascimento" placeholder="22/09/2000">
-                </div>
-                <div class="campos">
-                    <div class="texto">CPF</div>
-                    <input type="text" class="input" id="cpf" placeholder="111.111.111-11">
-                </div>
-                <div class="campos">
-                    <div class="texto">Email</div>
-                    <input type="text" class="input" id="emailFuncionario" placeholder="joao@tech.com">
-                </div>
-                <div class="campos">
-                    <div class="texto">Senha</div>
-                    <input type="password" class="input" id="senha">
-                </div>
-                <div class="campos">
-                    <div class="texto">Confirmar senha</div>
-                    <input type="password" class="input" id="confirmarSenha">
-                </div>
-            </div>
-            <div class="container-botoes2">
-                <button onclick="voltarP3()" class="botao-avancar">Voltar</button>
-                <button onclick="avancarP3()" class="botao-avancar">Próximo passo</button>
-            </div>
-
-            <!-- QUARTA PARTE -->
-            <!-- <div class="subtitulo">Responsável</div>
-            <div class="container-campos">
-                <div class="campos">
-                    <div class="texto">Nome Completo</div>
-                    <input type="text" class="input" id="nome" placeholder="João Silva">
-                </div>
-                <div class="campos">
-                    <div class="texto">Data de Nascimento</div>
-                    <input type="date" class="input" id="dtNascimento" placeholder="22/09/2000">
-                </div>
-                <div class="campos">
-                    <div class="texto">CPF</div>
-                    <input type="text" class="input" id="cpf" placeholder="111.111.111-11">
-                </div>
-                <div class="campos">
-                    <div class="texto">Email</div>
-                    <input type="text" class="input" id="emailFuncionario" placeholder="joao@tech.com">
-                </div>
-                <div class="campos">
-                    <div class="texto">Senha</div>
-                    <input type="password" class="input" id="senha">
-                </div>
-                <div class="campos">
-                    <div class="texto">Confirmar senha</div>
-                    <input type="password" class="input" id="confirmarSenha">
-                </div>
-            </div>
-            <div class="container-botoes2">
-                <button onclick="voltarP3()" class="botao-avancar">Voltar</button>
-                <button onclick="cadastrar()" class="botao-avancar">Cadastrar</button>
-            </div> -->
-            
         </div>
     </div>
-    
+
 </body>
 
 </html>
 
 <script>
 
-    function avancarP1(){
-        razaoSocial = razaoSocial.value;
-        nomeFantasia = nomeFantasia.value;
-        cnpj = limparCnpj(cnpj.value);
-        email = email.value;
-        telefone = limparTelefone(telefone.value);
-        segmentoAtuacao = segmentoAtuacao.value;
-        
-        aplicarMascara("cep", val => {
-          return valor
-            .replace(/\D/g, "")
-            .slice(0, 8)
-            .replace(/(\d{5})(\d)/, "$1-$2");
+    function aplicarMascara(id, mascara) {
+        const campo = document.querySelector(`#${id}`);
 
-            fluxo.innerHTML = `
-        <ol class="progress step-2" id="progress">
-                <li class="active" data-progress="1">
-                    <span class="circle">1</span>
-                    <span>Dados da empresa</span>
-                </li>
-
-                <li class="active" data-progress="2">
-                    <span class="circle">2</span>
-                    <span>Endereço</span>
-                </li>
-
-                <li data-progress="3">
-                    <span class="circle">3</span>
-                    <span>Responsável</span>
-                </li>
-
-                <li data-progress="4">
-                    <span class="circle">4</span>
-                    <span>Confirmação</span>
-                </li>
-                </ol>
-        `
-        container_cadastro.innerHTML = `
-        <div class="subtitulo">Endereço</div>
-             <div class="container-campos">
-                <div class="campos">
-                    <div class="texto">Logradouro</div>
-                    <input type="text" class="input" id="logradouro">
-                </div>
-                <div class="campos">
-                    <div class="texto">Número</div>
-                    <input type="text" class="input" id="numero">
-                </div>
-                <div class="campos">
-                    <div class="texto">Complemento</div>
-                    <input type="text" class="input" id="complemento">
-                </div>
-                <div class="campos">
-                    <div class="texto">CEP</div>
-                    <input type="text" class="input" id="cep">
-                </div>
-                <div class="campos">
-                    <div class="texto">Bairro</div>
-                    <input type="text" class="input" id="bairro">
-                </div>
-                <div class="campos">
-                    <div class="texto"> Estado</div>
-                    <select class="input" id="estado"  required>
-                      <option value="">UF</option>
-                      <option value="AC">AC</option>
-                      <option value="AL">AL</option>
-                      <option value="AP">AP</option>
-                      <option value="AM">AM</option>
-                      <option value="BA">BA</option>
-                      <option value="CE">CE</option>
-                      <option value="DF">DF</option>
-                      <option value="ES">ES</option>
-                      <option value="GO">GO</option>
-                      <option value="MA">MA</option>
-                      <option value="MT">MT</option>
-                      <option value="MS">MS</option>
-                      <option value="MG">MG</option>
-                      <option value="PA">PA</option>
-                      <option value="PB">PB</option>
-                      <option value="PR">PR</option>
-                      <option value="PE">PE</option>
-                      <option value="PI">PI</option>
-                      <option value="RJ">RJ</option>
-                      <option value="RN">RN</option>
-                      <option value="RS">RS</option>
-                      <option value="RO">RO</option>
-                      <option value="RR">RR</option>
-                      <option value="SC">SC</option>
-                      <option value="SP">SP</option>
-                      <option value="SE">SE</option>
-                      <option value="TO">TO</option>
-                    </select>
-                    
-                </div>
-                <div class="campos">
-                    <div class="texto">Cidade</div>
-                    <input type="text" class="input" id="cidade">
-                </div>
-            </div>
-            <div class="container-botoes2">
-                <button onclick="voltarP2()" class="botao-avancar">Voltar</button>
-                <button onclick="avancarP2()" class="botao-avancar">Próximo passo</button>
-            </div>
-        `;
+        campo.addEventListener("input", () => {
+            campo.value = mascara(campo.value);
         });
     }
 
-    function avancarP2(){
+    function avancarP1() {
+        varRazaoSocial = razaoSocial.value;
+        varNomeFantasia = nomeFantasia.value;
+        varCnpj = limparCnpj(cnpj.value);
+        varEmail = emailEmpresa.value;
+        varTelefone = limparTelefone(telefone.value);
+        varSegmentoAtuacao = segmentoAtuacao.value;
+
+
+        fluxo.innerHTML = `
+        <ol class="progress step-2" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+                </li>
+                
+                <li class="active" data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                    </li>
+                    
+                    <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                    </li>
+                    
+                    <li data-progress="4">
+                        <span class="circle">4</span>
+                        <span>Confirmação</span>
+                        </li>
+                        </ol>
+                        `
+        container_cadastro.innerHTML = `
+                        <div class="subtitulo">Endereço</div>
+                        <div class="container-campos">
+                            <div class="campos">
+                                <div class="texto">Logradouro</div>
+                                <input type="text" class="input" id="logradouro">
+                                </div>
+                                <div class="campos">
+                                    <div class="texto">Número</div>
+                                    <input type="text" class="input" id="numero">
+                                    </div>
+                                    <div class="campos">
+                                        <div class="texto">Complemento</div>
+                                        <input type="text" class="input" id="complemento">
+                                        </div>
+                                        <div class="campos">
+                                            <div class="texto">CEP</div>
+                                            <input type="text" class="input" id="cep">
+                                            </div>
+                                            <div class="campos">
+                                                <div class="texto">Bairro</div>
+                                                <input type="text" class="input" id="bairro">
+                                                </div>
+                                                <div class="campos">
+                                                    <div class="texto"> Estado</div>
+                                                    <select class="input" id="estado"  required>
+                                                        <option value="">UF</option>
+                                                        <option value="AC">AC</option>
+                                                        <option value="AL">AL</option>
+                                                        <option value="AP">AP</option>
+                                                        <option value="AM">AM</option>
+                                                        <option value="BA">BA</option>
+                                                        <option value="CE">CE</option>
+                                                        <option value="DF">DF</option>
+                                                        <option value="ES">ES</option>
+                                                        <option value="GO">GO</option>
+                                                        <option value="MA">MA</option>
+                                                        <option value="MT">MT</option>
+                                                        <option value="MS">MS</option>
+                                                        <option value="MG">MG</option>
+                                                        <option value="PA">PA</option>
+                                                        <option value="PB">PB</option>
+                                                        <option value="PR">PR</option>
+                                                        <option value="PE">PE</option>
+                                                        <option value="PI">PI</option>
+                                                        <option value="RJ">RJ</option>
+                                                        <option value="RN">RN</option>
+                                                        <option value="RS">RS</option>
+                                                        <option value="RO">RO</option>
+                                                        <option value="RR">RR</option>
+                                                        <option value="SC">SC</option>
+                                                        <option value="SP">SP</option>
+                                                        <option value="SE">SE</option>
+                                                        <option value="TO">TO</option>
+                                                        </select>
+                                                        
+                                                        </div>
+                                                        <div class="campos">
+                                                            <div class="texto">Cidade</div>
+                                                            <input type="text" class="input" id="cidade">
+                                                            </div>
+                                                            </div>
+                                                            <div class="container-botoes2">
+                                                                <button onclick="voltarP2()" class="botao-avancar">Voltar</button>
+                                                                <button onclick="avancarP2()" class="botao-avancar">Próximo passo</button>
+                                                                </div>
+                                                                `
+
+        aplicarMascara("cep", valor => {
+            return valor
+                .replace(/\D/g, "")
+                .slice(0, 8)
+                .replace(/(\d{5})(\d)/, "$1-$2");
+        });
+    }
+
+    function avancarP2() {
+        varLogradouro = logradouro.value;
+        varNumero = numero.value;
+        varComplemento = complemento.value;
+        varCep = limparCep(cep.value);
+        varBairro = bairro.value;
+        varEstado = estado.value;
+        varCidade = cidade.value;
+
+
+
+
+        fluxo.innerHTML = `<ol class="progress step-3" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+                </li>
+                
+                <li class="active" data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                    </li>
+                    
+                    <li class="active" data-progress="3">
+                        <span class="circle">3</span>
+                        <span>Responsável</span>
+                        </li>
+                        
+                        <li data-progress="4">
+                            <span class="circle">4</span>
+                            <span>Confirmação</span>
+                            </li> 
+                            </ol>`
+        container_cadastro.innerHTML = `
+                            <div class="subtitulo">Responsável</div>
+                            <div class="container-campos">
+                                <div class="campos">
+                                    <div class="texto">Nome Completo</div>
+                                    <input type="text" class="input" id="nome" placeholder="João Silva">
+                                    </div>
+                                    <div class="campos">
+                                        <div class="texto">Data de Nascimento</div>
+                                        <input type="date" class="input" id="dtNascimento" placeholder="22/09/2000">
+                                        </div>
+                                        <div class="campos">
+                                            <div class="texto">CPF</div>
+                                            <input type="text" class="input" id="cpf" placeholder="111.111.111-11">
+                                            </div>
+                                            <div class="campos">
+                                                <div class="texto">Email</div>
+                                                <input type="text" class="input" id="emailFuncionario" placeholder="joao@tech.com">
+                                                </div>
+                                                <div class="campos">
+                                                    <div class="texto">Senha</div>
+                                                    <input type="password" class="input" id="senha">
+                                                    </div>
+                                                    <div class="campos">
+                                                        <div class="texto">Confirmar senha</div>
+                                                        <input type="password" class="input" id="confirmarSenha">
+                                                        </div>
+                                                        </div>
+                                                        <div class="container-botoes2">
+                                                            <button onclick="voltarP3()" class="botao-avancar">Voltar</button>
+                                                            <button onclick="avancarP3()" class="botao-avancar">Próximo passo</button>
+                                                            </div>
+                                                            `
+
+
+        aplicarMascara("cpf", valor => {
+            return valor
+                .replace(/\D/g, "")
+                .slice(0, 11)
+                .replace(/^(\d{3})(\d)/, "$1.$2")
+                .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+                .replace(/\.(\d{3})(\d)/, ".$1-$2");
+        });
+    }
+
+    function voltarP2(){
+        container_cadastro.innerHTML = `
+        <div class="subtitulo">Dados da Empresa</div>
+            <div class="container-campos">
+                <div class="campos">
+                    <div class="texto">Razão Social</div>
+                    <input type="text" class="input" id="razaoSocial" placeholder="${razaoSocial}">
+                </div>
+                <div class="campos">
+                    <div class="texto">Nome Fantasia</div>
+                    <input type="text" class="input" id="nomeFantasia" placeholder="${nomeFantasia}">
+                </div>
+                <div class="campos">
+                    <div class="texto">CNPJ</div>
+                    <input type="text" class="input" id="cnpj" placeholder="${cnpj}">
+                </div>
+                <div class="campos">
+                    <div class="texto">Email</div>
+                    <input type="text" class="input" id="emailEmpresa" placeholder="${emailEmpresa}">
+                </div>
+                <div class="campos">
+                    <div class="texto">Telefone</div>
+                    <input type="text" class="input" id="telefone" placeholder="${telefone}">
+                </div>
+                <div class="campos">
+                    <div class="texto">Segmento de Atuação</div>
+                    <input type="text" class="input" id="segmentoAtuacao"
+                        placeholder="${segmentoAtuacao}">
+                </div>
+            </div>
+            <div class="container-botoes1">
+                <button onclick="avancarP1()" class="botao-avancar">Próximo passo</button>
+            </div>`
+
+            if(varRazaoSocial != razaoSocial.value){
+                razaoSocial =razaoSocial.value;
+            }
+            if(varNomeFantasia != nomeFantasia.value){
+                razaoSocial =razaoSocial.value;
+            }
+            if(razaoSocial != razaoSocial.value){
+                razaoSocial =razaoSocial.value;
+            }
+
+    }
+
+    function avancarP3() {
+        varNome = nome.value;
+        varDtNascimento = dtNascimento.value;
+        varCpf = limparCpf(cpf.value);
+        varEmail = emailFuncionario.value;
+        varSenha = senha.value
+    }
+
+
+    aplicarMascara("cnpj", valor => {
+        return valor
+            .replace(/\D/g, "")
+            .slice(0, 14)
+            .replace(/^(\d{2})(\d)/, "$1.$2")
+            .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+            .replace(/\.(\d{3})(\d)/, ".$1/$2")
+            .replace(/(\d{4})(\d)/, "$1-$2");
+    });
+
+    aplicarMascara("telefone", valor => {
+        return valor
+            .replace(/\D/g, "")
+            .slice(0, 11)
+            .replace(/^(\d{2})(\d)/, "($1) $2")
+            .replace(/(\d{5})(\d)/, "$1-$2");
+    });
+
+    function limparCnpj(cnpj) {
+        return cnpj.replace(/\D/g, "");
+    }
+
+    function validarCnpj(cnpj) {
+        const cnpjLimpo = limparCnpj(cnpj);
+        return cnpjLimpo.length === 14;
+    }
+
+    function limparCep(cep) {
+        return cep.replace(/\D/g, "");
+    }
+
+    function validarCep(cep) {
+        const cepLimpo = limparCep(cep);
+        return cepLimpo.length === 8;
+    }
+
+    function limparCpf(cpf) {
+        return cpf.replace(/\D/g, "");
+    }
+
+    function validarCpf(cpf) {
+        const cpfLimpo = limparCpf(cpf);
+        return cpfLimpo.length === 11;
+    }
+
+    function limparTelefone(telefone) {
+        return telefone.replace(/\D/g, "");
+    }
+
+    function validarTelefone(telefone) {
+        const telefoneLimpo = limparTelefone(telefone);
+        return telefoneLimpo.length === 11;
+    }
+
+    function cadastrar() {
+        razaoSocial = razaoSocial.value;
+        nomeFantasia = nomeFantasia.value;
+        cnpj = cnpj.value;
+        email = email.value;
+        telefone = telefone.value;
+        segmentoAtuacao = segmentoAtuacao.value;
+
         logradouro = logradouro.value;
         numero = numero.value;
         complemento = complemento.value;
-        cep = limparCep(cep.value);
+        cep = cep.value;
         bairro = bairro.value;
         estado = estado.value;
         cidade = cidade.value;
 
-        
 
-        aplicarMascara("cpf", valor => {
-    return valor
-        .replace(/\D/g, "")
-        .slice(0, 11)
-        .replace(/^(\d{3})(\d)/, "$1.$2")
-        .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
-        .replace(/\.(\d{3})(\d)/, ".$1-$2");
-});
-    }
 
-    function avancarP3(){
         nome = nome.value;
         dtNascimento = dtNascimento.value;
-        cpf = limparCpf(cpf.value);
+        cpf = cpf.value;
         email = email.value;
-        senha = senha.value
     }
-
-    aplicarMascara(id, mascara);
-    
-
-    function aplicarMascara(id, mascara) {
-    const campo = document.querySelector(`#${id}`);
-
-    campo.addEventListener("input", () => {
-        campo.value = mascara(campo.value);
-    });
-}
-
-
-
-aplicarMascara("cnpj", valor => {
-    return valor
-    .replace(/\D/g, "")
-    .slice(0, 14)
-    .replace(/^(\d{2})(\d)/, "$1.$2")
-    .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
-    .replace(/\.(\d{3})(\d)/, ".$1/$2")
-    .replace(/(\d{4})(\d)/, "$1-$2");
-});
-
-aplicarMascara("telefone", valor => {
-    return valor
-        .replace(/\D/g, "")
-        .slice(0, 11)
-        .replace(/^(\d{2})(\d)/, "($1) $2")
-        .replace(/(\d{5})(\d)/, "$1-$2");
-});
-
-function limparCnpj(cnpj) {
-    return cnpj.replace(/\D/g, "");
-}
-
-function validarCnpj(cnpj) {
-    const cnpjLimpo = limparCnpj(cnpj);
-    return cnpjLimpo.length === 14;
-}
-
-function limparCep(cep) {
-    return cep.replace(/\D/g, "");
-}
-
-function validarCep(cep) {
-    const cepLimpo = limparCep(cep);
-    return cepLimpo.length === 8;
-}
-
-function limparCpf(cpf) {
-    return cpf.replace(/\D/g, "");
-}
-
-function validarCpf(cpf) {
-    const cpfLimpo = limparCpf(cpf);
-    return cpfLimpo.length === 11;
-}
-
-function limparTelefone(telefone) {
-    return telefone.replace(/\D/g, "");
-}
-
-function validarTelefone(telefone) {
-    const telefoneLimpo = limparTelefone(telefone);
-    return telefoneLimpo.length === 11;
-}
-
-function cadastrar(){
-    razaoSocial = razaoSocial.value;
-    nomeFantasia = nomeFantasia.value;
-    cnpj = cnpj.value;
-    email = email.value;
-    telefone = telefone.value;
-    segmentoAtuacao = segmentoAtuacao.value;
-
-    logradouro = logradouro.value;
-    numero = numero.value;
-    complemento = complemento.value;
-    cep = cep.value;
-    bairro = bairro.value;
-    estado = estado.value;
-    cidade = cidade.value;
-    
-
-    
-    nome = nome.value;
-    dtNascimento = dtNascimento.value;
-    cpf = cpf.value;
-    email = email.value;
-}
 </script>
