@@ -21,6 +21,7 @@ var app = express();
 var indexRouter = require("./src/routes/index");
 var login_cadastroRouter = require("./src/routes/login_cadastro");
 var servidorRouter = require("./src/routes/servidor")
+var gerenciarEmpresaRouter = require("./src/routes/gerenciarEmpresa");
 
 var cryptoRouter = require("./src/routes/crypto");
 
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
 
+app.use("/gerenciar-empresa", gerenciarEmpresaRouter);
 app.use("/", indexRouter);
 app.use("/login_cadastro", login_cadastroRouter);
 app.use("/crypto", cryptoRouter);

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="shortcut icon" href="../assets/icon/logo.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfraTech | Gerenciar Empresas</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/barralateral.css">
+    <link rel="stylesheet" href="../css/gerenciar_empresa.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+
+    <script src="../js/sessao.js"></script>
+    <script src="../js/gerenciar_empresa.js" defer></script>
+</head>
+
+<body class="pagina-empresas">
+
+    <div class="header-left">
+        <div class="logo">
+            <img src="../assets/icon/logo.png" alt="Logo">
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+        <hr class="linha">
+
+        <a href="./gerenciar_empresa.html" class="nav-item ativo">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="#" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair">
+            <img src="../assets/imgs/logout.png" alt="" class="logout-icon">
+        </div>
+    </div>
+
+    <main class="conteudo-empresas">
+
+        <div class="barra-topo">
+            <p class="caminho">Empresas / Gerenciar</p>
+            <div class="usuario-topo">
+                <span class="ponto-online" aria-hidden="true"></span>
+                <span id="nome_usuario">Admin</span>
+            </div>
+        </div>
+
+        <div class="titulo-pagina">
+            <h1>Gerenciar empresas</h1>
+            <p>Edite os dados das empresas clientes ou desative o acesso delas ao sistema.</p>
+        </div>
+
+        <section class="painel" aria-label="Lista de empresas">
+            <div class="barra-ferramentas">
+                <div class="abas" role="tablist" aria-label="Situação da empresa">
+                    <button type="button" class="aba ativa" id="aba_ativas" role="tab" aria-selected="true" data-status="1">
+                        Ativas <span class="contador" id="cont_ativas">0</span>
+                    </button>
+                    <button type="button" class="aba" id="aba_desativadas" role="tab" aria-selected="false" data-status="0">
+                        Desativadas <span class="contador" id="cont_desativadas">0</span>
+                    </button>
+                </div>
+
+                <input type="search" id="ipt_busca" class="campo-busca" placeholder="Buscar por nome, CNPJ ou e-mail"
+                    aria-label="Buscar empresa" autocomplete="off">
+            </div>
+
+            <div class="tabela-rolagem" id="area_tabela">
+                <table class="tabela-empresas">
+                    <thead>
+                        <tr>
+                            <th scope="col">Empresa</th>
+                            <th scope="col">CNPJ</th>
+                            <th scope="col">Contato</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="col-acoes">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo_tabela"></tbody>
+                </table>
+            </div>
+
+            <div class="estado-vazio" id="estado_vazio" hidden>
+                <p class="estado-titulo" id="estado_titulo"></p>
+                <p class="estado-texto" id="estado_texto"></p>
+                <button type="button" class="btn btn-ciano" id="btn_recarregar" hidden>Tentar novamente</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detalhes -->
+    <dialog id="dlg_detalhes" class="modal" aria-labelledby="detalhes_titulo">
+        <div class="modal-cabecalho">
+            <h2 class="modal-titulo" id="detalhes_titulo">Detalhes da empresa</h2>
+            <button type="button" class="btn-fechar" data-fechar aria-label="Fechar">&times;</button>
+        </div>
+        <div class="modal-corpo" id="detalhes_corpo"></div>
+        <div class="modal-rodape">
+            <button type="button" class="btn btn-suave" data-fechar>Fechar</button>
+            <button type="button" class="btn btn-ciano" id="btn_detalhes_editar" hidden>Editar dados</button>
+        </div>
+    </dialog>
+
+    <!-- Edição -->
+    <dialog id="dlg_editar" class="modal" aria-labelledby="editar_titulo">
+        <form id="form_edicao" class="modal-form" novalidate>
+            <div class="modal-cabecalho">
+                <h2 class="modal-titulo" id="editar_titulo">Editar empresa</h2>
+                <button type="button" class="btn-fechar" data-fechar aria-label="Fechar">&times;</button>
+            </div>
+
+            <div class="modal-corpo">
+                <p class="aviso-erro" id="edicao_aviso" role="alert" hidden></p>
+
+                <h3 class="secao-titulo">Dados da empresa</h3>
+                <div class="grade">
+                    <div class="campo c6">
+                        <label for="ed_razao">Razão social</label>
+                        <input type="text" id="ed_razao" maxlength="100" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_razao"></span>
+                    </div>
+                    <div class="campo c6">
+                        <label for="ed_fantasia">Nome fantasia</label>
+                        <input type="text" id="ed_fantasia" maxlength="100" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_fantasia"></span>
+                    </div>
+                    <div class="campo c4">
+                        <label for="ed_cnpj">CNPJ</label>
+                        <input type="text" id="ed_cnpj" maxlength="18" inputmode="numeric" placeholder="00.000.000/0000-00" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_cnpj"></span>
+                    </div>
+                    <div class="campo c8">
+                        <label for="ed_segmento">Segmento de atuação</label>
+                        <input type="text" id="ed_segmento" maxlength="80" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_segmento"></span>
+                    </div>
+                    <div class="campo c6">
+                        <label for="ed_email">E-mail</label>
+                        <input type="text" id="ed_email" maxlength="200" inputmode="email" placeholder="contato@empresa.com" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_email"></span>
+                    </div>
+                    <div class="campo c6">
+                        <label for="ed_telefone">Telefone</label>
+                        <input type="text" id="ed_telefone" maxlength="15" inputmode="tel" placeholder="(11) 99999-0000" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_telefone"></span>
+                    </div>
+                </div>
+
+                <h3 class="secao-titulo">Endereço</h3>
+                <div class="grade">
+                    <div class="campo c4">
+                        <label for="ed_cep">CEP</label>
+                        <input type="text" id="ed_cep" maxlength="9" inputmode="numeric" placeholder="00000-000" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_cep"></span>
+                    </div>
+                    <div class="campo c8">
+                        <label for="ed_logradouro">Logradouro</label>
+                        <input type="text" id="ed_logradouro" maxlength="100" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_logradouro"></span>
+                    </div>
+                    <div class="campo c4">
+                        <label for="ed_numero">Número</label>
+                        <input type="text" id="ed_numero" maxlength="20" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_numero"></span>
+                    </div>
+                    <div class="campo c8">
+                        <label for="ed_complemento">Complemento <span class="opcional">(opcional)</span></label>
+                        <input type="text" id="ed_complemento" maxlength="100" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_complemento"></span>
+                    </div>
+                    <div class="campo c5">
+                        <label for="ed_bairro">Bairro</label>
+                        <input type="text" id="ed_bairro" maxlength="100" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_bairro"></span>
+                    </div>
+                    <div class="campo c4">
+                        <label for="ed_cidade">Cidade</label>
+                        <input type="text" id="ed_cidade" maxlength="100" autocomplete="off">
+                        <span class="erro-campo" id="erro_ed_cidade"></span>
+                    </div>
+                    <div class="campo c3">
+                        <label for="ed_estado">UF</label>
+                        <select id="ed_estado"></select>
+                        <span class="erro-campo" id="erro_ed_estado"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-rodape">
+                <button type="button" class="btn btn-suave" data-fechar>Cancelar</button>
+                <button type="submit" class="btn btn-principal">Salvar alterações</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Confirmação (usada em editar, desativar e reativar) -->
+    <dialog id="dlg_confirmar" class="modal modal-estreito" aria-labelledby="confirmar_titulo">
+        <div class="modal-cabecalho">
+            <h2 class="modal-titulo" id="confirmar_titulo"></h2>
+        </div>
+        <div class="modal-corpo">
+            <div id="confirmar_texto" class="confirmar-texto"></div>
+            <ul class="lista-mudancas" id="confirmar_lista" hidden></ul>
+            <p class="aviso-erro" id="confirmar_erro" role="alert" hidden></p>
+        </div>
+        <div class="modal-rodape">
+            <button type="button" class="btn btn-suave" id="btn_confirmar_cancelar">Cancelar</button>
+            <button type="button" class="btn btn-principal" id="btn_confirmar_ok">Confirmar</button>
+        </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+</body>
+
+</html>
