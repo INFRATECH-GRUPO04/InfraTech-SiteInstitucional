@@ -1,365 +1,141 @@
-```html
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfraTech | Cadastrar Token</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/cadastro-base.css">
+    <link rel="stylesheet" href="../css/cadastro_token.css">
+    <link rel="stylesheet" href="../css/barralateral.css">
 
-    <meta
-        name="description"
-        content="Cadastro e geração de tokens da InfraTech."
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Orbitron:wght@400..900&display=swap"
+        rel="stylesheet">
 
-    <title>Cadastro de Token | InfraTech</title>
+    <script src="../js/sessao.js"></script>
 </head>
 
 <body>
 
-    <header>
+    <div class="header-left">
+        <div class="logo">
+            <img src="../assets/icon/logo.png" alt="Logo">
+        </div>
 
-        <h1>
-            Cadastro de Token
-        </h1>
+        <hr class="linha">
 
-        <p>
-            Cadastre um novo token de acesso.
-        </p>
+        <h3 class="nav-categoria">
+            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+        <hr class="linha">
 
-    </header>
+        <a href="../dentro.html" class="nav-item">
+            <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+        <a href="./modificar_servidor.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+        <a href="./cadastro_servidor.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar
+        </a>
 
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionarios
+        </h3>
+        <hr class="linha">
 
-    <main>
+        <a href="./cadastro_token.html" class="nav-item ativo">
+            <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="./modificar_funcionario.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
 
-        <section aria-labelledby="titulo-cadastro-token">
+        <div class="btn-logout" onclick="limparSessao()" title="Sair">
+            <img src="../assets/imgs/logout.png" alt="" class="logout-icon">
+        </div>
+    </div>
 
-            <header>
+    <div class="content">
+        <header>
+            <p>FUNCIONÁRIOS — GERAR TOKEN</p>
+            <div class="div_admin">
+                <p>Admin</p>
+            </div>
+        </header>
 
-                <h2 id="titulo-cadastro-token">
-                    Novo Token
-                </h2>
+        <div class="layout block_token">
+            <div class="forms bg_token">
+                <div class="header-forms">
+                    <div class="circulo">T</div>
 
-                <p>
-                    Preencha as informações necessárias para gerar
-                    um novo token.
-                </p>
+                    <div class="texto-header-forms-token">
+                        <h3>Cadastrar token</h3>
+                        <p>Gere um token de acesso para seus funcionários</p>
+                    </div>
+                </div>
 
-            </header>
+                <div class="stepper">
+                    <div class="step-dot" data-step="1"><span>1</span></div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="2"><span>2</span></div>
+                    <div class="step-line"></div>
+                    <div class="step-dot" data-step="3"><span>3</span></div>
+                </div>
 
-
-            <nav aria-label="Etapas do cadastro">
-
-                <ol>
-
-                    <li aria-current="step">
-                        <span>Etapa 1</span>
-                        <span>Quantidade</span>
-                    </li>
-
-                    <li>
-                        <span>Etapa 2</span>
-                        <span>Permissão</span>
-                    </li>
-
-                    <li>
-                        <span>Etapa 3</span>
-                        <span>Token</span>
-                    </li>
-
-                </ol>
-
-            </nav>
-
-
-            <form
-                id="form-token"
-                action="#"
-                method="post"
-            >
-
-                <section
-                    id="pagina1"
-                    aria-labelledby="titulo-pagina1"
-                >
-
-                    <header>
-
-                        <h3 id="titulo-pagina1">
-                            Quantidade de tokens
-                        </h3>
-
-                        <p>
-                            Informe a quantidade de tokens que deseja gerar.
+                <div class="insert-forms">
+                    <div class="step-panel" data-panel="1">
+                        <p><span class="span_token">Quantos funcionários deverão ser cadastrados com esse token?</span>
                         </p>
-
-                    </header>
-
-
-                    <div>
-
-                        <label for="ipt_qtd_token">
-                            Quantidade de tokens
-                        </label>
-
-                        <input
-                            id="ipt_qtd_token"
-                            name="quantidade"
-                            type="number"
-                            min="1"
-                            max="9999"
-                            step="1"
-                            inputmode="numeric"
-                            required
-                        >
-
+                        <input type="text" id="ipt_qtd_token" class="ipt_token" placeholder="Ex: 30"
+                            inputmode="numeric">
+                        <p class="erro_campo" id="erro_qtd"></p>
                     </div>
 
-
-                    <p id="quantidade-ajuda">
-                        Informe um número inteiro entre 1 e 9.999.
-                    </p>
-
-
-                    <p
-                        id="quantidade-erro"
-                        role="alert"
-                        hidden
-                    ></p>
-
-
-                    <button
-                        id="btn-pagina-1"
-                        type="button"
-                    >
-                        Continuar
-                    </button>
-
-                </section>
-
-
-                <section
-                    id="pagina2"
-                    aria-labelledby="titulo-pagina2"
-                    hidden
-                >
-
-                    <header>
-
-                        <h3 id="titulo-pagina2">
-                            Permissão do token
-                        </h3>
-
-                        <p>
-                            Escolha o nível de acesso que será associado
-                            ao token.
-                        </p>
-
-                    </header>
-
-
-                    <div>
-
-                        <p>
-                            Tipo de permissão
-                        </p>
-
-
-                        <div>
-
-                            <input
-                                id="radio_admin"
-                                name="permissao"
-                                type="radio"
-                                value="ADMIN"
-                                required
-                            >
-
-                            <label for="radio_admin">
-                                Administrador
-                            </label>
-
+                    <div class="step-panel" data-panel="2">
+                        <p class="resumo_token">Funcionários a cadastrar: <span id="qtd_user"></span></p>
+                        <p><span class="span_token">Qual a permissão que esse usuário pode possuir?</span></p>
+                        <div class="radios">
+                            <input type="radio" id="qtd1" name="permissao" value="ADMIN">
+                            <label for="qtd1">Administrador</label>
+                            <input type="radio" id="qtd5" name="permissao" value="COMUM">
+                            <label for="qtd5">Comum</label>
                         </div>
-
-
-                        <div>
-
-                            <input
-                                id="radio_comum"
-                                name="permissao"
-                                type="radio"
-                                value="COMUM"
-                            >
-
-                            <label for="radio_comum">
-                                Usuário comum
-                            </label>
-
-                        </div>
-
+                        <p class="erro_campo" id="erro_perm"></p>
                     </div>
 
+                    <div class="step-panel" data-panel="3">
+                        <div class="resumo_final">
+                            <p>Funcionários: <span id="qtd_users"></span></p>
+                            <p>Tipo de usuário: <span id="tipo_user"></span></p>
+                        </div>
+                        <p><span class="span_token">Token gerado</span></p>
+                        <div class="token_box">
+                            <span id="token">------</span>
+                            <button type="button" id="btn_copiar" onclick="copiarCodigo()">Copiar</button>
+                        </div>
+                    </div>
+                </div>
 
-                    <p
-                        id="permissao-erro"
-                        role="alert"
-                        hidden
-                    ></p>
-
-
-                    <button
-                        id="btn-voltar-1"
-                        type="button"
-                    >
-                        Voltar
-                    </button>
-
-                    <button
-                        id="btn-pagina-2"
-                        type="button"
-                    >
-                        Gerar Token
-                    </button>
-
-                </section>
-
-
-                <section
-                    id="pagina3"
-                    aria-labelledby="titulo-pagina3"
-                    hidden
-                >
-
-                    <header>
-
-                        <h3 id="titulo-pagina3">
-                            Token gerado
-                        </h3>
-
-                        <p>
-                            O token foi gerado com sucesso.
-                        </p>
-
-                    </header>
-
-
-                    <section aria-labelledby="titulo-token-gerado">
-
-                        <h4 id="titulo-token-gerado">
-                            Seu token
-                        </h4>
-
-                        <p>
-                            Copie o token e armazene-o em um local seguro.
-                        </p>
-
-
-                        <output
-                            id="token_gerado"
-                            name="token"
-                            aria-label="Token gerado"
-                        ></output>
-
-
-                        <button
-                            id="btn-copiar-token"
-                            type="button"
-                        >
-                            Copiar Token
-                        </button>
-
-
-                        <p
-                            id="copy-feedback"
-                            role="status"
-                            aria-live="polite"
-                            hidden
-                        >
-                            Token copiado com sucesso.
-                        </p>
-
-                    </section>
-
-
-                    <section aria-labelledby="titulo-resumo">
-
-                        <h4 id="titulo-resumo">
-                            Resumo
-                        </h4>
-
-
-                        <dl>
-
-                            <div>
-
-                                <dt>
-                                    Quantidade
-                                </dt>
-
-                                <dd id="resumo_quantidade">
-                                </dd>
-
-                            </div>
-
-
-                            <div>
-
-                                <dt>
-                                    Permissão
-                                </dt>
-
-                                <dd id="resumo_permissao">
-                                </dd>
-
-                            </div>
-
-                        </dl>
-
-                    </section>
-
-
-                    <p
-                        id="token-error"
-                        role="alert"
-                        hidden
-                    ></p>
-
-
-                    <button
-                        id="btn-voltar-2"
-                        type="button"
-                    >
-                        Voltar
-                    </button>
-
-                    <button
-                        id="btn-novo-token"
-                        type="button"
-                    >
-                        Gerar Novo Token
-                    </button>
-
-                </section>
-
-            </form>
-
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        <p>
-            InfraTech
-        </p>
-
-    </footer>
-
+                <div class="continuar-cadastro">
+                    <button type="button" id="voltar" onclick="voltarEtapa()">Voltar</button>
+                    <button type="button" id="btn_avancar" onclick="avancarEtapa()">Continuar →</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
-
