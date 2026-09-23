@@ -20,15 +20,15 @@ CREATE TABLE endereco (
 -- Table `InfraTech`.`empresa`
 -- -----------------------------------------------------
 CREATE TABLE empresa (
-  idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
-  razaoSocial VARCHAR(100) NOT NULL,
-  nomeFantasia VARCHAR(100) NOT NULL,
+  id_empresa INT PRIMARY KEY AUTO_INCREMENT,
+  razao_social VARCHAR(100) NOT NULL,
+  nome_fantasia VARCHAR(100),
   cnpj CHAR(14) NOT NULL,
-  segmento_atuacao VARCHAR(80) NOT NULL,
+  segmento_atuacao VARCHAR(80),
   email VARCHAR(200) UNIQUE NOT NULL,
   telefone VARCHAR(20) NOT NULL,
   status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   fk_endereco INT,
     FOREIGN KEY (fk_endereco) 
     REFERENCES endereco(id_endereco)
@@ -39,19 +39,19 @@ CREATE TABLE empresa (
 -- Table `InfraTech`.`funcionario`
 -- -----------------------------------------------------
 CREATE TABLE funcionario (
-  idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
+  id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
+  fk_empresa INT NOT NULL,
   adm TINYINT DEFAULT 0,
   nome VARCHAR(45) NOT NULL,
-  dataNascimento DATETIME NOT NULL,
+  data_nascimento DATETIME NOT NULL,
   email VARCHAR(45) NOT NULL,
   senha VARCHAR(45) NOT NULL,
   cpf CHAR(11) NOT NULL,
   status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa)
+    FOREIGN KEY (fk_empresa)
+    REFERENCES empresa (id_empresa)
   );
 
 
@@ -59,32 +59,32 @@ CREATE TABLE funcionario (
 -- Table `InfraTech`.`servidor`
 -- -----------------------------------------------------
 CREATE TABLE servidor (
-  idServidor INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
+  id_servidor INT PRIMARY KEY AUTO_INCREMENT,
+  fk_empresa INT NOT NULL,
   nome VARCHAR(45) NULL,
   status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT cfkEmpresa 
-  FOREIGN KEY (fkEmpresa) 
-  REFERENCES empresa(idEmpresa)
+  FOREIGN KEY (fk_empresa) 
+  REFERENCES empresa(id_empresa)
   );
 
 
 
 
 -- -----------------------------------------------------
--- Table `InfraTech`.`servidor_funcionario`
+-- Table `InfraTech`.`servidor_has_funcionario`
 -- -----------------------------------------------------
 CREATE TABLE servidor_funcionario (
-  fkFuncionario INT NOT NULL,
-  fkServidor INT NOT NULL,
-  PRIMARY KEY (fkFuncionario,fkServidor),
+  fk_funcionario INT NOT NULL,
+  fk_servidor INT NOT NULL,
+  PRIMARY KEY (fk_funcionario,fk_servidor),
   CONSTRAINT fk_servidor_funcionario_funcionario1
-    FOREIGN KEY (fkFuncionario)
-    REFERENCES funcionario (idFuncionario),
+    FOREIGN KEY (fk_funcionario)
+    REFERENCES funcionario (id_funcionario),
   CONSTRAINT fk_servidor_funcionario_servidor1
-    FOREIGN KEY (fkServidor)
-    REFERENCES servidor (idServidor)
+    FOREIGN KEY (fk_servidor)
+    REFERENCES servidor (id_servidor)
 );
 
 
@@ -92,16 +92,16 @@ CREATE TABLE servidor_funcionario (
 -- Table `InfraTech`.`convite`
 -- -----------------------------------------------------
 CREATE TABLE convite (
-  idConvite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  id_convite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   codigo VARCHAR(100) NOT NULL,
-  tipoAcesso VARCHAR(45) NOT NULL,
-  quantidadeUso INT NOT NULL,
-  quantidadeUsada INT NOT NULL DEFAULT 0,
+  tipo_acesso VARCHAR(45) NOT NULL,
+  quantidade_uso INT NOT NULL,
+  quantidade_usada INT NOT NULL DEFAULT 0,
   criado DATETIME DEFAULT NOW(),
-  fkEmpresa INT NOT NULL,
+  fk_empresa INT NOT NULL,
   CONSTRAINT fk_convite_empresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa));
+    FOREIGN KEY (fk_empresa)
+    REFERENCES empresa (id_empresa));
 
 
 -- -----------------------------------------------------
@@ -117,7 +117,7 @@ CREATE TABLE componente (
     status_monitoramento TINYINT,
     entrada_sistema DATETIME,
     fk_servidor_componente INT,
-    FOREIGN KEY (fk_servidor_componente) REFERENCES servidor(idServidor)
+    FOREIGN KEY (fk_servidor_componente) REFERENCES servidor(id_servidor)
 );
 
 
@@ -129,14 +129,14 @@ CREATE TABLE parametro_monitoramento (
   limite_atencao DECIMAL(14,2) NOT NULL,
   limite_critico DECIMAL(14,2) NOT NULL,
 	fk_servidor_parametro INT,
-    FOREIGN KEY (fk_servidor_parametro) REFERENCES servidor(idServidor)
+    FOREIGN KEY (fk_servidor_parametro) REFERENCES servidor(id_servidor)
 );
 
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`metrica`
 -- -----------------------------------------------------
-
+-- O que será monitorado em relação a qual componente
 CREATE TABLE metrica (
     id_metrica INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
@@ -148,34 +148,36 @@ CREATE TABLE metrica (
     FOREIGN KEY (fk_parametro_monitoramento) REFERENCES parametro_monitoramento(id_parametro_monitoramento)
 );
 
+
 -- =====================================================
 -- INSERTS ATUALIZADOS
 -- =====================================================
 
--- 1. Endereço
+-- 1. Endereço 
 INSERT INTO endereco (cep, logradouro, bairro, numero, complemento, estado, cidade) VALUES
 ('02002000', 'Avenida Paulista', 'Bela Vista', '1500', 'Sala 42', 'SP', 'São Paulo'),
-('03003000', 'Rua Augusta', 'Consolação', '500', 'Andar 3', 'SP', 'São Paulo');
+('03003000', 'Rua Augusta', 'Consolação', '500', 'Andar 3', 'SP', 'São Paulo'),
+('04004000', 'Rua Funchal', 'Vila Olímpia', '200', 'Conjunto 12', 'SP', 'São Paulo');
 
 -- 2. Empresa
-INSERT INTO empresa (razaoSocial, nomeFantasia, cnpj, segmento_atuacao, email, telefone, status_sistema, fk_endereco) VALUES
+INSERT INTO empresa (razao_social, nome_fantasia, cnpj, segmento_atuacao, email, telefone, status_sistema, fk_endereco) VALUES
 ('InfraTech Games Ltda', 'InfraTech Games', '12345678000101', 'Desenvolvimento de Jogos', 'contato@infratech.com', '11999990001', 1, 1),
 ('GameCloud Servicos S.A.', 'GameCloud', '23456789000102', 'Hospedagem e Cloud', 'contato@gamecloud.com', '11999990002', 1, 2),
 ('TechPlay Tecnologia Ltda', 'TechPlay', '34567890000103', 'Sistemas e Softwares', 'contato@techplay.com', '11999990003', 1, 3);
 
--- 3. Funcionário (adm: 1 = Admin, 0 = Analista)
-INSERT INTO funcionario (fkEmpresa, adm, nome, dataNascimento, email, senha, cpf, status_sistema) VALUES
-(1, 1, 'Felipe Santos', '2007-04-12', 'maria@infratech.com', '123456', '12345678901', 1),
+-- 3. Funcionário 
+INSERT INTO funcionario (fk_empresa, adm, nome, data_nascimento, email, senha, cpf, status_sistema) VALUES
+(1, 1, 'Felipe Santos', '2007-04-12', 'felipe@infratech.com', '123456', '12345678901', 1),
 (1, 0, 'Guilherme Albuquerque', '2007-08-23', 'guilherme@infratech.com', '123456', '23456789012', 1),
-(1, 1, 'Manuella Arantes', '2007-01-15', 'guilherme@infratech.com', '123456', '34567890123', 1),
+(1, 1, 'Manuella Arantes', '2007-01-15', 'manuella@infratech.com', '123456', '34567890123', 1),
 (1, 0, 'Luiz Silva', '2006-11-05', 'luiz@infratech.com', '123456', '45678901234', 1),
 (1, 0, 'Sarah Sato', '2007-08-25', 'sarah@infratech.com', '123456', '56789012345', 1),
-(1, 0, 'Vitor Andrade', '2003-03-18', 'vitor@infratech.com', '123456', '67890123456', 1);
-(2, 0, 'Alexandre Oliveira', '1997-06-03', 'alexandre@gamecloud.com', '123456', '28643895271', 1);
+(1, 0, 'Vitor Andrade', '2003-03-18', 'vitor@infratech.com', '123456', '67890123456', 1),
+(2, 0, 'Alexandre Oliveira', '1997-06-03', 'alexandre@gamecloud.com', '123456', '28643895271', 1),
 (3, 1, 'Luana Pereira', '2003-03-18', 'luana@techplay.com', '123456', '94784210876', 1);
 
 -- 4. Servidor
-INSERT INTO servidor (nome, fkEmpresa, status_sistema) VALUES
+INSERT INTO servidor (nome, fk_empresa, status_sistema) VALUES
 ('Servidor Principal', 1, 1),
 ('Servidor Backup', 1, 1),
 ('Servidor Game 01', 2, 1),
@@ -183,7 +185,7 @@ INSERT INTO servidor (nome, fkEmpresa, status_sistema) VALUES
 ('Servidor Game 03', 3, 1);
 
 -- 5. Servidor_Funcionario
-INSERT INTO servidor_funcionario (fkFuncionario, fkServidor) VALUES
+INSERT INTO servidor_funcionario (fk_funcionario, fk_servidor) VALUES
 (1, 1),
 (2, 1),
 (1, 2),
@@ -195,14 +197,14 @@ INSERT INTO servidor_funcionario (fkFuncionario, fkServidor) VALUES
 (8, 5);
 
 -- 6. Convite
-INSERT INTO convite (idConvite, codigo, tipoAcesso, quantidadeUso, fkEmpresa) VALUES
+INSERT INTO convite (id_convite, codigo, tipo_acesso, quantidade_uso, fk_empresa) VALUES
 (1, 'INFRA-ADM-001', 'Administrador', 5, 1),
 (2, 'INFRA-ANA-001', 'Analista', 10, 1),
 (3, 'INFRA-ADM-001', 'Administrador', 5, 2),
 (4, 'INFRA-ANA-001', 'Analista', 10, 2),
 (5, 'INFRA-ANA-001', 'Analista', 5, 3);
 
--- 7. Componente (Vinculados diretamente ao Servidor)
+-- 7. Componente
 INSERT INTO componente (tipo, modelo, numero_serie, capacidade_total, unidade_capacidade, status_monitoramento, fk_servidor_componente) VALUES
 ('cpu', 'Intel Xeon E5-2680', 'SN-CPU-001', 100.00, '%', 1, 1),
 ('ram', 'DDR4 128GB', 'SN-RAM-002', 128.00, 'GB', 1, 1),
