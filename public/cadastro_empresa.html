@@ -7,6 +7,7 @@
     <title>Cadastro de empresa</title>
     <link rel="stylesheet" href="css/barralateral.css">
     <link rel="stylesheet" href="css/cadastro_empresa.css">
+    <link rel="icon" href="assets/icon/logo.png">
 </head>
 
 <body>
@@ -172,21 +173,21 @@
         varTelefone = limparTelefone(telefone.value);
         varSegmentoAtuacao = segmentoAtuacao.value;
 
-    //     if (varRazaoSocial === "" || varCnpj === "" ||
-    //     varEmailEmpresa === "" || varTelefone === "" ) {
-    //     card_erro.innerHTML = "Preencha todos os campos";
-    //     return; 
-    // }
+        if (varRazaoSocial === "" || varCnpj === "" ||
+        varEmailEmpresa === "" || varTelefone === "" ) {
+        card_erro.innerHTML = "Preencha todos os campos";
+        return; 
+    }
 
-    // if (!validarCnpj(varCnpj)) {
-    //     card_erro.innerHTML = "CNPJ inválido";
-    //     return;
-    // }
+    if (!validarCnpj(varCnpj)) {
+        card_erro.innerHTML = "CNPJ inválido";
+        return;
+    }
 
-    // if (!validarTelefone(varTelefone)) {
-    //     card_erro.innerHTML = "Telefone inválido";
-    //     return;
-    // }
+    if (!validarTelefone(varTelefone)) {
+        card_erro.innerHTML = "Telefone inválido";
+        return;
+    }
 
         fluxo.innerHTML = `
         <ol class="progress step-2" id="progress">
@@ -299,16 +300,16 @@
         varEstado = estado.value;
         varCidade = cidade.value;
 
-    //     if (varLogradouro === "" || varNumero === "" || varCep === "" ||
-    //     varBairro === "" || varEstado === "" || varCidade === "") {
-    //     card_erro.innerHTML = "Preencha todos os campos";
-    //     return;
-    // }
+        if (varLogradouro === "" || varNumero === "" || varCep === "" ||
+        varBairro === "" || varEstado === "" || varCidade === "") {
+        card_erro.innerHTML = "Preencha todos os campos";
+        return;
+    }
 
-    // if (!validarCep(varCep)) {
-    //     card_erro.innerHTML = "CEP inválido";
-    //     return;
-    // }
+    if (!validarCep(varCep)) {
+        card_erro.innerHTML = "CEP inválido";
+        return;
+    }
 
         fluxo.innerHTML = `<ol class="progress step-3" id="progress">
             <li class="active" data-progress="1">
@@ -455,21 +456,21 @@
         varSenha = senha.value
         varConfirmarSenha = confirmarSenha.value;
 
-    //     if (varNome === "" || varDtNascimento === "" || varCpf === "" ||
-    //     varEmailResponsavel === "" || varSenha === "" || varConfirmarSenha === "") {
-    //     card_erro.innerHTML = "Preencha todos os campos";
-    //     return;
-    // }
+        if (varNome === "" || varDtNascimento === "" || varCpf === "" ||
+        varEmailResponsavel === "" || varSenha === "" || varConfirmarSenha === "") {
+        card_erro.innerHTML = "Preencha todos os campos";
+        return;
+    }
 
-    // if (!validarCpf(varCpf)) {
-    //     card_erro.innerHTML = "CPF inválido";
-    //     return;
-    // }
+    if (!validarCpf(varCpf)) {
+        card_erro.innerHTML = "CPF inválido";
+        return;
+    }
 
-    // if (varSenha !== varConfirmarSenha) {
-    //     card_erro.innerHTML = "As senhas não coincidem";
-    //     return;
-    // }
+    if (varSenha !== varConfirmarSenha) {
+        card_erro.innerHTML = "As senhas não coincidem";
+        return;
+    }
 
         fluxo.innerHTML = `<ol class="progress" id="progress">
                 <li class="active" data-progress="1">
