@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>InfraTech - Cadastrar Token</title>
+
+    <link rel="stylesheet" href="/public/css/global.css">
+    <link rel="stylesheet" href="/public/css/cadastro_token.css">
+
+    <script src="../cadastro_token/cadastro_token.js" defer></script>
+
+
+</head>
+
+<body>
+
+
+    <div class="header-left">
+
+        <div class="logo">
+            <img src="../assets/icon/logo.png" alt="InfraTech">
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <hr class="linha">
+
+        <a href="../dentro.html" class="nav-item">
+            <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+
+        <a href="./modificar_servidor.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <a href="./cadastro_servidor.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <hr class="linha">
+
+        <a href="./cadastro_token.html" class="nav-item ativo">
+            <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+
+        <a href="./modificar_funcionario.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair">
+            <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+
+    </div>
+
+    <div class="content">
+
+        <header>
+
+            <p>FUNCIONÁRIOS — GERAR TOKEN</p>
+
+            <div class="div_admin">
+                <p>Admin</p>
+            </div>
+
+        </header>
+
+        <div class="layout block_token">
+
+            <div class="forms bg_token">
+
+                <div class="header-forms">
+
+                    <div class="circulo">
+                        T
+                    </div>
+
+                    <div class="texto-header-forms-token">
+
+                        <h3>Cadastrar token</h3>
+
+                        <p>
+                            Gere um token de acesso para seus funcionários
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="stepper">
+
+                    <div class="step-dot" data-step="1">
+                        <span>1</span>
+                    </div>
+
+                    <div class="step-line"></div>
+
+                    <div class="step-dot" data-step="2">
+                        <span>2</span>
+                    </div>
+
+                    <div class="step-line"></div>
+
+                    <div class="step-dot" data-step="3">
+                        <span>3</span>
+                    </div>
+
+                </div>
+
+                <div class="insert-forms">
+
+                    <!-- ETAPA 1 -->
+                    <div class="step-panel" data-panel="1">
+
+                        <p>
+                            <span class="span_token">
+                                Quantos funcionários deverão ser cadastrados com esse token?
+                            </span>
+                        </p>
+
+                        <input type="text" id="ipt_qtd_token" class="ipt_token" placeholder="Ex: 30" inputmode="numeric"
+                            autocomplete="off">
+
+                        <p class="erro_campo" id="erro_qtd"></p>
+
+                    </div>
+
+                    <!-- ETAPA 2 -->
+                    <div class="step-panel" data-panel="2">
+
+                        <p class="resumo_token">
+                            Funcionários a cadastrar:
+                            <span id="qtd_user"></span>
+                        </p>
+
+                        <p>
+                            <span class="span_token">
+                                Qual a permissão que esse usuário pode possuir?
+                            </span>
+                        </p>
+
+                        <div class="radios">
+
+                            <input type="radio" id="qtd1" name="permissao" value="ADMIN">
+
+                            <label for="qtd1">
+                                Administrador
+                            </label>
+
+                            <input type="radio" id="qtd5" name="permissao" value="COMUM">
+
+                            <label for="qtd5">
+                                Comum
+                            </label>
+
+                        </div>
+
+                        <p class="erro_campo" id="erro_perm"></p>
+
+                    </div>
+
+                    <!-- ETAPA 3 -->
+                    <div class="step-panel" data-panel="3">
+
+                        <div class="resumo_final">
+
+                            <p>
+                                Funcionários:
+                                <span id="qtd_users"></span>
+                            </p>
+
+                            <p>
+                                Tipo de usuário:
+                                <span id="tipo_user"></span>
+                            </p>
+
+                        </div>
+
+                        <p>
+                            <span class="span_token">
+                                Token gerado
+                            </span>
+                        </p>
+
+                        <div class="token_box">
+
+                            <span id="token">
+
+                            </span>
+
+                            <button type="button" id="btn_copiar" onclick="copiarCodigo()">
+                                Copiar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="continuar-cadastro">
+
+                    <button type="button" id="voltar" onclick="voltarEtapa()">
+                        Voltar
+                    </button>
+
+                    <button type="button" id="btn_avancar" onclick="avancarEtapa()">
+                        Continuar →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>
