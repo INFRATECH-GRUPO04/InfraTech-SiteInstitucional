@@ -203,8 +203,6 @@
             </div>
         </div>
 
-        <button type="button" class="botao-contorno-tracejado">+ Adicionar Componente</button>
-
         <div class="acoes-rodape">
             <button type="button" class="botao-perigo" onclick="excluirServidor()">Excluir Servidor</button>
             <button type="button" class="botao-primario" onclick="atualizarServidor()">Salvar Alterações</button>
@@ -279,7 +277,7 @@
                                 <div class="linha-componente-novo">
                                     <div class="coluna-componente">
                                         <label>TIPO</label>
-                                        <select class="controle-formulario" disabled>
+                                        <select class="controle-formulario" style="appearance: none; -webkit-appearance: none;" disabled>
                                             <option value="cpu" ${c.tipo == 'cpu' ? 'selected' : ''}>CPU</option>
                                             <option value="ram" ${c.tipo == 'ram' ? 'selected' : ''}>Memória RAM</option>
                                             <option value="disco" ${c.tipo == 'disco' ? 'selected' : ''}>Disco SSD</option>

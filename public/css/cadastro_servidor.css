@@ -153,6 +153,10 @@ select.controle-formulario {
   background-size: 15px;
 }
 
+select.controle-formulario:disabled {
+  background-image: none;
+}
+
 .titulo-secao {
   display: flex;
   align-items: center;
