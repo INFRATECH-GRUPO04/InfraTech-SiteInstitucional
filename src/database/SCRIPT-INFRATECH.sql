@@ -1,5 +1,5 @@
-CREATE DATABASE InfraTech;
-USE InfraTech ;
+CREATE DATABASE infratech;
+USE infratech ;
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`endereco`
