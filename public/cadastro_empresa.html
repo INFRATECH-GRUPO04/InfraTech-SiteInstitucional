@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de empresa</title>
+    <link rel="stylesheet" href="css/barralateral.css">
+    <link rel="stylesheet" href="css/cadastro_empresa.css">
+    <link rel="icon" href="assets/icon/logo.png">
+</head>
+
+<body>
+    <div class="header-left">
+        <div class="logo">
+            <img src="./assets/icon/logo.png" alt="Logo">
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="./assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+        <hr class="linha">
+
+        <!-- Adicione a classe 'ativo' no link da página correspondente -->
+        <a href="./dentro.html" class="nav-item ativo">
+            <img src="./assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+        <a href="./dashboard/modificar_servidor.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+        <a href="./dashboard/cadastro_servidor.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="./assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionarios
+        </h3>
+        <hr class="linha">
+        <a href="./dashboard/cadastro_token.html" class="nav-item">
+            <img src="./assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="./dashboard/modificar_funcionario.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair">
+            <img src="./assets/imgs/logout.png" alt="" class="logout-icon">
+        </div>
+    </div>
+
+    <div class="main">
+
+        <div class="titulo">CADASTRO DE EMPRESA</div>
+
+        <div class="fluxo" id="fluxo">
+
+            <!-- PRIMEIRA PARTE -->
+            <ol class="progress step-1" id="progress">
+                <li class="active" data-progress="1">
+                    <span class="circle">1</span>
+                    <span>Dados da empresa</span>
+                </li>
+
+                <li data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                </li>
+
+                <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                </li>
+
+                <li data-progress="4">
+                    <span class="circle">4</span>
+                    <span>Confirmação</span>
+                </li>
+            </ol>
+
+
+        </div>
+
+
+        <div class="container-cadastro" id="container_cadastro">
+
+            <!-- PRIMEIRA PARTE -->
+            <div class="cabecalho">
+                <div class="subtitulo">Dados da Empresa</div>
+                <div id="card_erro"></div>
+            </div>
+
+            <div class="container-campos">
+                <div class="campos">
+                    <div class="texto">Razão Social</div>
+                    <input type="text" class="input" id="razaoSocial" placeholder="Tech Jogos Online">
+                </div>
+                <div class="campos">
+                    <div class="texto">Nome Fantasia</div>
+                    <input type="text" class="input" id="nomeFantasia" placeholder="Tech JO">
+                </div>
+                <div class="campos">
+                    <div class="texto">CNPJ</div>
+                    <input type="text" class="input" id="cnpj" placeholder="00.000.000/0000-00">
+                </div>
+                <div class="campos">
+                    <div class="texto">Email</div>
+                    <input type="text" class="input" id="emailEmpresa" placeholder="tech.jo@techjo.com">
+                </div>
+                <div class="campos">
+                    <div class="texto">Telefone</div>
+                    <input type="text" class="input" id="telefone" placeholder="(00)99999-9999">
+                </div>
+                <div class="campos">
+                    <div class="texto">Segmento de Atuação</div>
+                    <input type="text" class="input" id="segmentoAtuacao"
+                        placeholder="Jogos competitivos, jogos RPG...">
+                </div>
+            </div>
+            <div class="container-botoes1">
+                <button onclick="avancarP1()" class="botao-avancar">Próximo passo</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<script>
+
+    function aplicarMascara(id, mascara) {
+        const campo = document.querySelector(`#${id}`);
+
+        campo.addEventListener("input", () => {
+            campo.value = mascara(campo.value);
+        });
+    }
+
+    var varRazaoSocial;
+    var varNomeFantasia;
+    var varCnpj;
+    var varEmailEmpresa;
+    var varTelefone;
+    var varSegmentoAtuacao;
+    var varLogradouro;
+    var varNumero;
+    var varComplemento;
+    var varCep;
+    var varBairro;
+    var varEstado;
+    var varCidade;
+    var varNome;
+    var varDtNascimento;
+    var varCpf;
+    var varEmailResponsavel;
+    var varSenha;
+
+
+    function avancarP1() {
+        varRazaoSocial = razaoSocial.value;
+        varNomeFantasia = nomeFantasia.value;
+        varCnpj = limparCnpj(cnpj.value);
+        varEmailEmpresa = emailEmpresa.value;
+        varTelefone = limparTelefone(telefone.value);
+        varSegmentoAtuacao = segmentoAtuacao.value;
+
+        if (varRazaoSocial === "" || varCnpj === "" ||
+        varEmailEmpresa === "" || varTelefone === "" ) {
+        card_erro.innerHTML = "Preencha todos os campos";
+        return; 
+    }
+
+    if (!validarCnpj(varCnpj)) {
+        card_erro.innerHTML = "CNPJ inválido";
+        return;
+    }
+
+    if (!validarTelefone(varTelefone)) {
+        card_erro.innerHTML = "Telefone inválido";
+        return;
+    }
+
+        fluxo.innerHTML = `
+        <ol class="progress step-2" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+                </li>
+                
+                <li class="active" data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                    </li>
+                    
+                    <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                    </li>
+                    
+                    <li data-progress="4">
+                        <span class="circle">4</span>
+                        <span>Confirmação</span>
+                        </li>
+                        </ol>
+                        `
+        container_cadastro.innerHTML = `
+                        <div class="cabecalho">
+                <div class="subtitulo">Endereço</div>
+                <div id="card_erro"></div>
+             </div>
+                        <div class="container-campos">
+                            <div class="campos">
+                                <div class="texto">Logradouro</div>
+                                <input type="text" class="input" id="logradouro" placeholder = "Rua da Luz">
+                                </div>
+                                <div class="campos">
+                                    <div class="texto">Número</div>
+                                    <input type="text" class="input" id="numero" placeholder = "500">
+                                    </div>
+                                    <div class="campos">
+                                        <div class="texto">Complemento</div>
+                                        <input type="text" class="input" id="complemento" placeholder = "Bloco A">
+                                        </div>
+                                        <div class="campos">
+                                            <div class="texto">CEP</div>
+                                            <input type="text" class="input" id="cep" placeholder = "00000-000">
+                                            </div>
+                                            <div class="campos">
+                                                <div class="texto">Bairro</div>
+                                                <input type="text" class="input" id="bairro" placeholder = "Santa Paula">
+                                                </div>
+                                                <div class="campos">
+                                                    <div class="texto">Cidade</div>
+                                                    <input type="text" class="input" id="cidade" placeholder = "São Paulo">
+                                                    </div>
+                                                <div class="campos">
+                                                    <div class="texto"> Estado</div>
+                                                    <select class="input" id="estado"  required>
+                                                        <option value="">UF</option>
+                                                        <option value="AC">AC</option>
+                                                        <option value="AL">AL</option>
+                                                        <option value="AP">AP</option>
+                                                        <option value="AM">AM</option>
+                                                        <option value="BA">BA</option>
+                                                        <option value="CE">CE</option>
+                                                        <option value="DF">DF</option>
+                                                        <option value="ES">ES</option>
+                                                        <option value="GO">GO</option>
+                                                        <option value="MA">MA</option>
+                                                        <option value="MT">MT</option>
+                                                        <option value="MS">MS</option>
+                                                        <option value="MG">MG</option>
+                                                        <option value="PA">PA</option>
+                                                        <option value="PB">PB</option>
+                                                        <option value="PR">PR</option>
+                                                        <option value="PE">PE</option>
+                                                        <option value="PI">PI</option>
+                                                        <option value="RJ">RJ</option>
+                                                        <option value="RN">RN</option>
+                                                        <option value="RS">RS</option>
+                                                        <option value="RO">RO</option>
+                                                        <option value="RR">RR</option>
+                                                        <option value="SC">SC</option>
+                                                        <option value="SP">SP</option>
+                                                        <option value="SE">SE</option>
+                                                        <option value="TO">TO</option>
+                                                        </select>
+                                                        
+                                                        </div>
+                                                            </div>
+                                                            <div class="container-botoes2">
+                                                                <button onclick="voltarP2()" class="botao-avancar">Voltar</button>
+                                                                <button onclick="avancarP2()" class="botao-avancar">Próximo passo</button>
+                                                                </div>
+                                                                `
+
+        aplicarMascara("cep", valor => {
+            return valor
+                .replace(/\D/g, "")
+                .slice(0, 8)
+                .replace(/(\d{5})(\d)/, "$1-$2");
+        });
+    }
+
+    function avancarP2() {
+        varLogradouro = logradouro.value;
+        varNumero = numero.value;
+        varComplemento = complemento.value;
+        varCep = limparCep(cep.value);
+        varBairro = bairro.value;
+        varEstado = estado.value;
+        varCidade = cidade.value;
+
+        if (varLogradouro === "" || varNumero === "" || varCep === "" ||
+        varBairro === "" || varEstado === "" || varCidade === "") {
+        card_erro.innerHTML = "Preencha todos os campos";
+        return;
+    }
+
+    if (!validarCep(varCep)) {
+        card_erro.innerHTML = "CEP inválido";
+        return;
+    }
+
+        fluxo.innerHTML = `<ol class="progress step-3" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+                </li>
+                
+                <li class="active" data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                    </li>
+                    
+                    <li class="active" data-progress="3">
+                        <span class="circle">3</span>
+                        <span>Responsável</span>
+                        </li>
+                        
+                        <li data-progress="4">
+                            <span class="circle">4</span>
+                            <span>Confirmação</span>
+                            </li> 
+                            </ol>`
+        container_cadastro.innerHTML = `
+                            <div class="cabecalho">
+                <div class="subtitulo">Dados do responsável</div>
+                <div id="card_erro"></div>
+             </div>
+                            <div class="container-campos">
+                                <div class="campos">
+                                    <div class="texto">Nome Completo</div>
+                                    <input type="text" class="input" id="nome" placeholder="João Silva">
+                                    </div>
+                                    <div class="campos">
+                                        <div class="texto">Data de Nascimento</div>
+                                        <input type="date" class="input" id="dtNascimento" placeholder="22/09/2000">
+                                        </div>
+                                        <div class="campos">
+                                            <div class="texto">CPF</div>
+                                            <input type="text" class="input" id="cpf" placeholder="111.111.111-11">
+                                            </div>
+                                            <div class="campos">
+                                                <div class="texto">Email</div>
+                                                <input type="text" class="input" id="emailResponsavel" placeholder="joao@tech.com">
+                                                </div>
+                                                <div class="campos">
+                                                    <div class="texto">Senha</div>
+                                                    <input type="password" class="input" id="senha">
+                                                    </div>
+                                                    <div class="campos">
+                                                        <div class="texto">Confirmar senha</div>
+                                                        <input type="password" class="input" id="confirmarSenha">
+                                                        </div>
+                                                        </div>
+                                                        <div class="container-botoes2">
+                                                            <button onclick="voltarP3()" class="botao-avancar">Voltar</button>
+                                                            <button onclick="avancarP3()" class="botao-avancar">Próximo passo</button>
+                                                            </div>
+                                                            `
+
+
+        aplicarMascara("cpf", valor => {
+            return valor
+                .replace(/\D/g, "")
+                .slice(0, 11)
+                .replace(/^(\d{3})(\d)/, "$1.$2")
+                .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+                .replace(/\.(\d{3})(\d)/, ".$1-$2");
+        });
+    }
+
+    function voltarP2() {
+        fluxo.innerHTML = `
+            <ol class="progress step-1" id="progress">
+                <li class="active" data-progress="1">
+                    <span class="circle">1</span>
+                    <span>Dados da empresa</span>
+                </li>
+
+                <li data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                </li>
+
+                <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                </li>
+
+                <li data-progress="4">
+                    <span class="circle">4</span>
+                    <span>Confirmação</span>
+                </li>
+            </ol>`
+
+        container_cadastro.innerHTML = `
+        <div class="cabecalho">
+                <div class="subtitulo">Dados da Empresa</div>
+                <div id="card_erro"></div>
+             </div>
+            <div class="container-campos">
+                <div class="campos">
+                    <div class="texto">Razão Social</div>
+                    <input type="text" class="input" id="razaoSocial">
+                </div>
+                <div class="campos">
+                    <div class="texto">Nome Fantasia</div>
+                    <input type="text" class="input" id="nomeFantasia">
+                </div>
+                <div class="campos">
+                    <div class="texto">CNPJ</div>
+                    <input type="text" class="input" id="cnpj">
+                </div>
+                <div class="campos">
+                    <div class="texto">Email</div>
+                    <input type="text" class="input" id="emailEmpresa">
+                </div>
+                <div class="campos">
+                    <div class="texto">Telefone</div>
+                    <input type="text" class="input" id="telefone">
+                </div>
+                <div class="campos">
+                    <div class="texto">Segmento de Atuação</div>
+                    <input type="text" class="input" id="segmentoAtuacao">
+                </div>
+            </div>
+            <div class="container-botoes1">
+                <button onclick="avancarP1()" class="botao-avancar">Próximo passo</button>
+            </div>`
+
+        document.getElementById("razaoSocial").value = varRazaoSocial;
+        document.getElementById("nomeFantasia").value = varNomeFantasia;
+        document.getElementById("cnpj").value = varCnpj;
+        document.getElementById("emailEmpresa").value = varEmailEmpresa;
+        document.getElementById("telefone").value = varTelefone;
+        document.getElementById("segmentoAtuacao").value = varSegmentoAtuacao;
+
+    }
+
+    function avancarP3() {
+        varNome = nome.value;
+        varDtNascimento = dtNascimento.value;
+        varCpf = limparCpf(cpf.value);
+        varEmailResponsavel = emailResponsavel.value;
+        varSenha = senha.value
+        varConfirmarSenha = confirmarSenha.value;
+
+        if (varNome === "" || varDtNascimento === "" || varCpf === "" ||
+        varEmailResponsavel === "" || varSenha === "" || varConfirmarSenha === "") {
+        card_erro.innerHTML = "Preencha todos os campos";
+        return;
+    }
+
+    if (!validarCpf(varCpf)) {
+        card_erro.innerHTML = "CPF inválido";
+        return;
+    }
+
+    if (varSenha !== varConfirmarSenha) {
+        card_erro.innerHTML = "As senhas não coincidem";
+        return;
+    }
+
+        fluxo.innerHTML = `<ol class="progress" id="progress">
+                <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+            </li>
+
+            <li class="active" data-progress="2">
+                <span class="circle">2</span>
+                <span>Endereço</span>
+            </li>
+
+            <li class="active" data-progress="3">
+                <span class="circle">3</span>
+                <span>Responsável</span>
+            </li>
+
+            <li class="active" data-progress="4">
+                <span class="circle">4</span>
+                <span>Confirmação</span>
+            </li> 
+            </ol>`
+
+        container_cadastro.innerHTML = `
+            <div class="cabecalho">
+                <div class="subtitulo">Confirmação</div>
+                <div id="card_erro"></div>
+             </div>
+            <div class="container-confirmar">
+                <div class="container-sessao">
+                    <div class="sessao">Dados da Empresa</div>
+                    <div class="texto">Razão Social: ${varRazaoSocial}</div>
+                    <div class="texto">Nome Fantasia: ${varNomeFantasia}</div>
+                    <div class="texto">CNPJ: ${varCnpj}</div>
+                    <div class="texto">Email da Empresa: ${varEmailEmpresa}</div>
+                    <div class="texto">Telefone: ${varTelefone}</div>
+                    <div class="texto">Segmento de Atuação: ${varSegmentoAtuacao}</div>
+                </div>
+                <div class="container-sessao">
+                    <div class="sessao">Endereço</div>
+                    <div class="texto">Logradouro: ${varLogradouro}</div>
+                    <div class="texto">Número: ${varNumero}</div>
+                    <div class="texto">Complemento: ${varComplemento}</div>
+                    <div class="texto">CEP: ${varCep}</div>
+                    <div class="texto">Bairro: ${varBairro}</div>
+                    <div class="texto">Estado: ${varEstado}</div>
+                    <div class="texto">Cidade: ${varCidade}</div>
+                </div>
+                <div class="container-sessao">
+                    <div class="sessao">Responsável</div>
+                    <div class="texto">Nome Completo: ${varNome}</div>
+                    <div class="texto">Data de Nascimento: ${varDtNascimento}</div>
+                    <div class="texto">CPF: ${varCpf}</div>
+                    <div class="texto">Email do Responsável: ${varEmailResponsavel}</div>
+                    <div class="texto">Senha: ${varSenha}</div>
+                </div>
+            </div>
+            <div class="container-botoes3">
+                <button onclick="voltarP4()" class="botao-avancar">Voltar</button>
+                <button onclick="cadastrar()" class="botao-avancar" id="botao-cadastrar">Cadastrar Empresa</button>
+            </div>`
+
+    }
+
+    function voltarP3() {
+        fluxo.innerHTML = `<ol class="progress step-2" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+                </li>
+                
+                <li class="active" data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                    </li>
+                    
+                    <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                    </li>
+                    
+                    <li data-progress="4">
+                        <span class="circle">4</span>
+                        <span>Confirmação</span>
+                        </li>
+                        </ol>`
+
+        container_cadastro.innerHTML = `
+        <div class="cabecalho">
+                <div class="subtitulo">Endereço</div>
+                <div id="card_erro"></div>
+             </div>
+                        <div class="container-campos">
+                            <div class="campos">
+                                <div class="texto">Logradouro</div>
+                                <input type="text" class="input" id="logradouro">
+                                </div>
+                                <div class="campos">
+                                    <div class="texto">Número</div>
+                                    <input type="text" class="input" id="numero">
+                                    </div>
+                                    <div class="campos">
+                                        <div class="texto">Complemento</div>
+                                        <input type="text" class="input" id="complemento">
+                                        </div>
+                                        <div class="campos">
+                                            <div class="texto">CEP</div>
+                                            <input type="text" class="input" id="cep">
+                                            </div>
+                                            <div class="campos">
+                                                <div class="texto">Bairro</div>
+                                                <input type="text" class="input" id="bairro">
+                                                </div>
+                                                <div class="campos">
+                                                    <div class="texto"> Estado</div>
+                                                    <select class="input" id="estado"  required>
+                                                        <option value="">UF</option>
+                                                        <option value="AC">AC</option>
+                                                        <option value="AL">AL</option>
+                                                        <option value="AP">AP</option>
+                                                        <option value="AM">AM</option>
+                                                        <option value="BA">BA</option>
+                                                        <option value="CE">CE</option>
+                                                        <option value="DF">DF</option>
+                                                        <option value="ES">ES</option>
+                                                        <option value="GO">GO</option>
+                                                        <option value="MA">MA</option>
+                                                        <option value="MT">MT</option>
+                                                        <option value="MS">MS</option>
+                                                        <option value="MG">MG</option>
+                                                        <option value="PA">PA</option>
+                                                        <option value="PB">PB</option>
+                                                        <option value="PR">PR</option>
+                                                        <option value="PE">PE</option>
+                                                        <option value="PI">PI</option>
+                                                        <option value="RJ">RJ</option>
+                                                        <option value="RN">RN</option>
+                                                        <option value="RS">RS</option>
+                                                        <option value="RO">RO</option>
+                                                        <option value="RR">RR</option>
+                                                        <option value="SC">SC</option>
+                                                        <option value="SP">SP</option>
+                                                        <option value="SE">SE</option>
+                                                        <option value="TO">TO</option>
+                                                        </select>
+                                                        
+                                                        </div>
+                                                        <div class="campos">
+                                                            <div class="texto">Cidade</div>
+                                                            <input type="text" class="input" id="cidade">
+                                                            </div>
+                                                            </div>
+                                                            <div class="container-botoes2">
+                                                                <button onclick="voltarP2()" class="botao-avancar">Voltar</button>
+                                                                <button onclick="avancarP2()" class="botao-avancar">Próximo passo</button>
+                                                                </div>`
+
+        document.getElementById("logradouro").value = varLogradouro;
+        document.getElementById("numero").value = varNumero;
+        document.getElementById("complemento").value = varComplemento;
+        document.getElementById("cep").value = varCep;
+        document.getElementById("bairro").value = varBairro;
+        document.getElementById("estado").value = varEstado;
+        document.getElementById("cidade").value = varCidade;
+    }
+
+    function voltarP4() {
+        fluxo.innerHTML = `<ol class="progress step-3" id="progress">
+            <li class="active" data-progress="1">
+                <span class="circle">1</span>
+                <span>Dados da empresa</span>
+                </li>
+                
+                <li class="active" data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                    </li>
+                    
+                    <li class="active" data-progress="3">
+                        <span class="circle">3</span>
+                        <span>Responsável</span>
+                        </li>
+                        
+                        <li data-progress="4">
+                            <span class="circle">4</span>
+                            <span>Confirmação</span>
+                            </li> 
+                            </ol>`
+        container_cadastro.innerHTML = `
+                            <div class="cabecalho">
+                <div class="subtitulo">Responsável</div>
+                <div id="card_erro"></div>
+             </div>
+                            <div class="container-campos">
+                                <div class="campos">
+                                    <div class="texto">Nome Completo</div>
+                                    <input type="text" class="input" id="nome" placeholder="João Silva">
+                                    </div>
+                                    <div class="campos">
+                                        <div class="texto">Data de Nascimento</div>
+                                        <input type="date" class="input" id="dtNascimento" placeholder="22/09/2000">
+                                        </div>
+                                        <div class="campos">
+                                            <div class="texto">CPF</div>
+                                            <input type="text" class="input" id="cpf" placeholder="111.111.111-11">
+                                            </div>
+                                            <div class="campos">
+                                                <div class="texto">Email</div>
+                                                <input type="text" class="input" id="emailResponsavel" placeholder="joao@tech.com">
+                                                </div>
+                                                <div class="campos">
+                                                    <div class="texto">Senha</div>
+                                                    <input type="password" class="input" id="senha">
+                                                    </div>
+                                                    <div class="campos">
+                                                        <div class="texto">Confirmar senha</div>
+                                                        <input type="password" class="input" id="confirmarSenha">
+                                                        </div>
+                                                        </div>
+                                                        <div class="container-botoes2">
+                                                            <button onclick="voltarP3()" class="botao-avancar">Voltar</button>
+                                                            <button onclick="avancarP3()" class="botao-avancar">Próximo passo</button>
+                                                            </div>
+                                                            `
+
+
+        aplicarMascara("cpf", valor => {
+            return valor
+                .replace(/\D/g, "")
+                .slice(0, 11)
+                .replace(/^(\d{3})(\d)/, "$1.$2")
+                .replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3")
+                .replace(/\.(\d{3})(\d)/, ".$1-$2");
+        });
+
+        document.getElementById("nome").value = varNome;
+        document.getElementById("dtNascimento").value = varDtNascimento;
+        document.getElementById("cpf").value = varCpf;
+        document.getElementById("emailResponsavel").value = varEmailResponsavel;
+        document.getElementById("senha").value = varSenha;
+    }
+
+
+    aplicarMascara("cnpj", valor => {
+        return valor
+            .replace(/\D/g, "")
+            .slice(0, 14)
+            .replace(/^(\d{2})(\d)/, "$1.$2")
+            .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+            .replace(/\.(\d{3})(\d)/, ".$1/$2")
+            .replace(/(\d{4})(\d)/, "$1-$2");
+    });
+
+    aplicarMascara("telefone", valor => {
+        return valor
+            .replace(/\D/g, "")
+            .slice(0, 11)
+            .replace(/^(\d{2})(\d)/, "($1) $2")
+            .replace(/(\d{5})(\d)/, "$1-$2");
+    });
+
+    function limparCnpj(cnpj) {
+        return cnpj.replace(/\D/g, "");
+    }
+
+    function validarCnpj(cnpj) {
+        const cnpjLimpo = limparCnpj(cnpj);
+        return cnpjLimpo.length === 14;
+    }
+
+    function limparCep(cep) {
+        return cep.replace(/\D/g, "");
+    }
+
+    function validarCep(cep) {
+        const cepLimpo = limparCep(cep);
+        return cepLimpo.length === 8;
+    }
+
+    function limparCpf(cpf) {
+        return cpf.replace(/\D/g, "");
+    }
+
+    function validarCpf(cpf) {
+        const cpfLimpo = limparCpf(cpf);
+        return cpfLimpo.length === 11;
+    }
+
+    function limparTelefone(telefone) {
+        return telefone.replace(/\D/g, "");
+    }
+
+    function validarTelefone(telefone) {
+        const telefoneLimpo = limparTelefone(telefone);
+        return telefoneLimpo.length === 11;
+    }
+
+    function cadastrar() {
+
+        fetch("/cadastro_empresa/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        razaoSocialServer: varRazaoSocial,
+        nomeFantasiaServer: varNomeFantasia,
+        cnpjServer: varCnpj,
+        emailEmpresaServer: varEmailEmpresa,
+        telefoneServer: varTelefone,
+        segmentoAtuacaoServer: varSegmentoAtuacao,
+        logradouroServer: varLogradouro,
+        numeroServer: varNumero,
+        complementoServer: varComplemento,
+        cepServer: varCep,
+        bairroServer: varBairro,
+        estadoServer: varEstado,
+        cidadeServer: varCidade,
+        nomeServer: varNome,
+        dtNascimentoServer: varDtNascimento,
+        cpfServer: varCpf,
+        emailResponsavelServer: varEmailResponsavel,
+        senhaServer: varSenha
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+
+          card_erro.innerHTML =
+            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+          setTimeout(() => {
+            window.location = "../dentro.html";
+          }, "2000");
+
+        } else {
+        card_erro.innerHTML = "Houve um erro ao tentar realizar o cadastro!";
+        throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+        card_erro.innerHTML = `#ERRO: ${resposta}`;
+      });
+
+    return false;
+  }
+    
+</script>
