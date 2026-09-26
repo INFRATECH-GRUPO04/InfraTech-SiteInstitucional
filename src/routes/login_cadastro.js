@@ -16,7 +16,16 @@ router.post("/autenticar", function (req, res) {
 });
 
 router.get("/verificar", function (req, res) {
-    usuarioController.verificar(req, res);
+    login_cadastroController.verificar(req, res);
 });
+
+router.post("/EmailsIguais", function (req, res) {
+    login_cadastroController.EmailsIguais(req, res);
+});
+
+router.post("/CodigoEmpresa", function (req, res) {
+    login_cadastroController.CodigoEmpresa(req, res);
+});
+
 
 module.exports = router;
