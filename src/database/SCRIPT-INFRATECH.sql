@@ -1,5 +1,5 @@
 CREATE DATABASE InfraTech;
-USE InfraTech ;
+USE InfraTech;
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`endereco`
@@ -47,13 +47,12 @@ CREATE TABLE funcionario (
   email VARCHAR(45) NOT NULL,
   senha VARCHAR(45) NOT NULL,
   cpf CHAR(11) NOT NULL,
-  status_sistema TINYINT NOT NULL,
+  status_sistema TINYINT NOT NULL DEFAULT 1,
   dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
     FOREIGN KEY (fk_empresa)
     REFERENCES empresa (id_empresa)
-  );
-
+    );
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`servidor`
@@ -68,9 +67,6 @@ CREATE TABLE servidor (
   FOREIGN KEY (fk_empresa) 
   REFERENCES empresa(id_empresa)
   );
-
-
-
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`servidor_has_funcionario`
@@ -87,7 +83,6 @@ CREATE TABLE servidor_funcionario (
     REFERENCES servidor (id_servidor)
 );
 
-
 -- -----------------------------------------------------
 -- Table `InfraTech`.`convite`
 -- -----------------------------------------------------
@@ -102,7 +97,6 @@ CREATE TABLE convite (
   CONSTRAINT fk_convite_empresa
     FOREIGN KEY (fk_empresa)
     REFERENCES empresa (id_empresa));
-
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`componente`
@@ -120,7 +114,6 @@ CREATE TABLE componente (
     FOREIGN KEY (fk_servidor_componente) REFERENCES servidor(id_servidor)
 );
 
-
 -- -----------------------------------------------------
 -- Table `InfraTech`.`parametro_monitoramento`
 -- -----------------------------------------------------
@@ -131,7 +124,6 @@ CREATE TABLE parametro_monitoramento (
 	fk_servidor_parametro INT,
     FOREIGN KEY (fk_servidor_parametro) REFERENCES servidor(id_servidor)
 );
-
 
 -- -----------------------------------------------------
 -- Table `InfraTech`.`metrica`
@@ -147,7 +139,6 @@ CREATE TABLE metrica (
     FOREIGN KEY (fk_componente) REFERENCES componente(id_componente),
     FOREIGN KEY (fk_parametro_monitoramento) REFERENCES parametro_monitoramento(id_parametro_monitoramento)
 );
-
 
 -- =====================================================
 -- INSERTS ATUALIZADOS
@@ -223,3 +214,4 @@ INSERT INTO metrica (nome, unidade_medida, descricao, fk_componente, fk_parametr
 ('Uso de CPU', '%', 'Percentual do processamento utilizado', 1, 1),
 ('Uso de Memória RAM', 'GB', 'Consumo de memória em Gigabytes', 2, 1),
 ('Uso de Disco', 'GB', 'Espaço ocupado em disco', 3, 1);
+
