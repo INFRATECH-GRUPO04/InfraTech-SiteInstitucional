@@ -1,8 +1,7 @@
 
     function entrar() {
-        
-        var emailVar = ipt_email_corporativo.value;
-        var senhaVar = ipt_senha.value;
+        var emailVar = emailInput.value;
+        var senhaVar = passwordInput.value;
 
         if (emailVar == "" || senhaVar == "") {
             cardErro.style.display = "block"
@@ -35,9 +34,9 @@
                     sessionStorage.EMAIL_USUARIO = json.email;
                     sessionStorage.SENHA_USUARIO = json.senha;
                     sessionStorage.NOME_USUARIO = json.nome;
-                    sessionStorage.ID_USUARIO = json.idFuncionario;
-                    sessionStorage.ID_EMPRESA = json.idEmpresa;
-                    sessionStorage.TIPO_ACESSO = json.tipoAcesso;
+                    sessionStorage.ID_USUARIO = json.id_funcionario;
+                    sessionStorage.ID_EMPRESA = json.id_empresa;
+                    sessionStorage.TIPO_ACESSO = json.adm;
     
 
                     setTimeout(() => {

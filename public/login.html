@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFRATECH-Login</title>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
+    <script src="js/login.js" defer></script>
+
+</head>
+
+<body>
+    <div class="box-login">
+        <div class="posicao-titulo-formulario">
+            <div class="titulo-imagem">
+                <div class="posicao-imagem">
+                    <img src="./assets/icon/logo.png" alt="">
+                </div>
+
+                <div>
+                     <h1 class="titulo-login"><span class="destaque-azul">INFRA</span>TECH</h1>
+                </div>
+                <div class="bloco-linha"><p class="linha-divisao"></p></div>
+            </div>
+            <div class="formulario-login">
+                <div class="login-formulario" id="loginFormulario">
+                    <div class="bloco-input">
+                        <label for="emailInput">E-mail corporativo</label>
+                        <input class="inputs" type="email" id="emailInput" placeholder="infratech@empresa.com" required>
+                        <span class="mensagem-erro" id="emailError"></span>
+                    </div>
+
+                    <div class="bloco-input">
+                        <div class="titulo-senha">
+                            <label for="passwordInput">Senha</label>
+                        </div>
+                        <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required>
+                        <span class="mensagem-erro" id="passwordError"></span>
+                    </div>
+                    
+                    <button class="botao-login" onclick="entrar()">Entrar no Sistema</button>
+                
+                </div>
+
+            </div>
+            <div class="opcao-cadastro">
+            <span class="linha-opcao"></span>
+            <span class="texto-opcao">ou</span>
+            <span class="linha-opcao"></span>
+            </div>
+            <div class="criar-conta">
+                <a href="cadastro-funcionario.html">
+                    <button class="botao-login" type="button" >Criar conta</button>
+                </a>
+           </div>
+        </div>
+    </div>
+</body>
+
+</html>
