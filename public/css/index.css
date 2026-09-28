@@ -31,12 +31,19 @@
     border-radius: 4px;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.3);
 }
 
 .btn-funcionalidades:hover {
     background-color: #00cfff;
     color: #07090f;
+    border-color: #00cfff;
+    box-shadow: 0 0 25px rgba(0, 207, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-funcionalidades:active {
+    transform: translateY(0);
 }
 
 .secao_sobre {
@@ -65,6 +72,7 @@
 
 .descricao_texto {
     color: white;
+    font-family: "Inter", sans-serif;
     font-size: 1rem;
     line-height: 1.8;
     margin: 0;
@@ -97,12 +105,16 @@
 
 .caixa-funcionalidade {
     border: 1px solid #00d0ff34;
-    padding: 20px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sub-titulo-func {
-    font-size: 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
     color: #00cfff;
+    margin-bottom: 4px;
 }
 
 .caixa-titulo-func p {
@@ -115,18 +127,20 @@
 }
 
 .titulo-func {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-family: "Orbitron";
-    padding: 10px 0;
+    padding: 4px 0 8px;
+    margin: 0;
 }
 
 .text-func {
-    font-size: 0.9rem;
-    color: white;
+    font-family: "Inter", sans-serif;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.6;
 }
 
 .como-funciona {
-    background-color: #1c2332;
     text-align: center;
 }
 
@@ -145,10 +159,12 @@
 }
 
 .etapa {
-    min-height: 280px;
-    padding: 35px 30px;
+    padding: 30px 24px;
     border-left: 1px solid #00cfff20;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .etapa:last-child {
@@ -159,9 +175,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 55px;
-    height: 55px;
-    margin: 0 auto 25px;
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    margin: 0 auto 20px;
     border: 1px solid #00cfff80;
     border-radius: 50%;
     color: #00cfff;
@@ -170,14 +187,17 @@
 
 .etapa h2 {
     font-family: "Orbitron";
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    margin-bottom: 12px;
 }
 
 .etapa p {
     color: #b9bec6;
-    font-family: "Inter";
-    font-size: 0.9rem;
-    line-height: 1.7;
+    font-family: "Inter", sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    margin: 0;
+    text-align: center;
 }
 
 .div_popup {
@@ -236,9 +256,13 @@
 .btn_cadastro {
     background-color: #00cfff;
     color: #07090f;
-    font-family: "Orbitron";
+    font-family: "Orbitron", sans-serif;
     font-weight: bold;
     border: 2px solid #00cfff;
+    border-radius: 4px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.3);
 }
 
 .btn_login:hover,
@@ -246,17 +270,37 @@
     background-color: transparent;
     color: #00cfff;
     border-color: #00cfff;
+    box-shadow: 0 0 20px rgba(0, 207, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn_login:active,
+.btn_cadastro:active {
+    transform: translateY(0);
 }
 
 .btn_redirecionar {
     background-color: transparent;
     color: #00cfff;
     border: 2px solid #00cfff;
+    font-family: "Orbitron", sans-serif;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 207, 255, 0.2);
 }
 
 .btn_redirecionar:hover {
     background-color: #00cfff;
     color: #07090f;
+    border-color: #00cfff;
+    box-shadow: 0 0 20px rgba(0, 207, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn_redirecionar:active {
+    transform: translateY(0);
 }
 
 .texto {
@@ -302,8 +346,474 @@
         flex-direction: column;
     }
 
-    .botoes-banner button {
+    .botoes-banner button,
+    .botoes-banner a {
         width: 100%;
         max-width: 320px;
+    }
+}
+
+/* ==========================================================================
+   SEÇÃO NOSSA EQUIPE (#equipe)
+   ========================================================================== */
+
+.secao_equipe {
+    padding: 90px 0 60px;
+    border-top: 1px solid rgba(0, 207, 255, 0.15);
+    position: relative;
+}
+
+.secao_equipe .div_img_texto {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+    margin: 40px auto 60px;
+    gap: 40px;
+}
+
+.secao_equipe .div_img {
+    position: relative;
+    width: 480px;
+    max-width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 207, 255, 0.25);
+    border-radius: 4px;
+}
+
+.secao_equipe .div_img::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(0, 207, 255, 0.35), #00cfff);
+}
+
+.secao_equipe .div_img::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 38px;
+    height: 25px;
+    border-top: 2px solid #00cfff;
+    border-left: 2px solid #00cfff;
+    z-index: 2;
+}
+
+.secao_equipe .div_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.secao_equipe .div_img:hover img {
+    opacity: 0.85;
+}
+
+.secao_equipe .info_img {
+    position: absolute;
+    left: 25px;
+    bottom: 25px;
+    z-index: 2;
+}
+
+.secao_equipe .info_img span {
+    display: block;
+    text-align: left;
+    margin-bottom: 4px;
+    color: #00cfff;
+    font-size: 11px;
+    letter-spacing: 3px;
+    font-weight: 600;
+}
+
+.secao_equipe .info_img h2 {
+    margin: 0;
+    text-align: left;
+    color: #e8f4fa;
+    font-family: "Orbitron", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.secao_equipe .texto_equipe_desc {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #c2c7d7;
+    text-align: left;
+}
+
+.secao_equipe .contato_todos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 40px 20px;
+}
+
+.secao_equipe .contato {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.secao_equipe .foto {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #00cfff;
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.2);
+    margin: 0 auto 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.secao_equipe .foto:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(0, 207, 255, 0.5);
+}
+
+.secao_equipe .foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.secao_equipe .contato span.tag_cargo {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0, 207, 255, 0.7);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.secao_equipe .contato p.nome_membro {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.secao_equipe .informacoes_contato {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 6px auto;
+    color: #5a7080;
+    font-size: 0.85rem;
+}
+
+.secao_equipe .informacoes_contato img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.secao_equipe .informacoes_contato a {
+    color: #5a7080;
+    transition: color 0.2s;
+    text-decoration: none;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.secao_equipe .informacoes_contato a:hover {
+    color: #00cfff;
+}
+
+@media (max-width: 991.98px) {
+    .secao_equipe .contato_todos {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .secao_equipe .div_img_texto {
+        flex-direction: column;
+        text-align: center;
+    }
+    .secao_equipe .texto_equipe_desc {
+        text-align: left;
+    }
+}
+
+@media (max-width: 600px) {
+    .secao_equipe .contato_todos {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   SEÇÃO FALE CONOSCO / CONTATO (#contato)
+   ========================================================================== */
+
+.secao_contato {
+    padding: 80px 0 100px;
+    border-top: 1px solid rgba(0, 207, 255, 0.15);
+}
+
+.secao_contato .conteudo-principal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.secao_contato .div_texto_contato {
+    flex: 1;
+    max-width: 550px;
+}
+
+.secao_contato .texto_descricao_contato {
+    color: #b9bec6;
+    display: block;
+    line-height: 1.7;
+    font-size: 0.95rem;
+    margin-top: 15px;
+}
+
+.secao_contato .box_acesso {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+    width: 100%;
+    padding: 25px;
+    background: rgba(0, 207, 255, 0.02);
+    border: 1px solid rgba(0, 207, 255, 0.2);
+    border-radius: 6px;
+}
+
+.secao_contato .sub_titulo_acesso {
+    font-size: 0.8rem;
+    color: #00cfff;
+    margin: 0;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+.secao_contato .texto_box_acesso {
+    color: #b9bec6;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.secao_contato .botao_box {
+    align-self: flex-start;
+}
+
+.secao_contato .div_contato {
+    margin-top: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.secao_contato .bloco_contato p {
+    color: rgba(0, 207, 255, 0.5);
+    margin: 0 0 4px 0;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.secao_contato .bloco_contato span {
+    color: #00cfff;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.secao_contato .div_logo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.secao_contato .img_logo {
+    max-width: 440px;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 25px rgba(0, 207, 255, 0.15));
+}
+
+@media (max-width: 991.98px) {
+    .secao_contato .conteudo-principal {
+        flex-direction: column;
+    }
+    .secao_contato .div_texto_contato {
+        max-width: 100%;
+        width: 100%;
+    }
+    .secao_contato .div_logo {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .secao_contato .img_logo {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .secao_contato .botao_box {
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   ESTRUTURA DE SEÇÕES FULLSCREEN (100vh) & ALTERNÂNCIA DE CORES DE FUNDO
+   ========================================================================== */
+
+.secao-fullscreen {
+    min-height: 90vh;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 0 30px;
+    box-sizing: border-box;
+    position: relative;
+    transition: background-color 0.4s ease;
+}
+
+/* Cor Padrão / Ímpar: Fundo escuro cyber original (gradiente transparente) */
+.secao-bg-dark {
+    background-color: transparent;
+}
+
+/* Cor Alternada / Par: Fundo contrastante em tom grafite/navy do "como funciona" (#161e2b) */
+.secao-bg-alt {
+    background-color: #161e2b;
+    border-top: 1px solid rgba(0, 207, 255, 0.12);
+    border-bottom: 1px solid rgba(0, 207, 255, 0.12);
+}
+
+/* Ajustes de alinhamento vertical para cada seção */
+#inicio.secao-fullscreen {
+    justify-content: center;
+    padding-top: 110px;
+}
+
+#sobre.secao-fullscreen,
+#funcionalidades.secao-fullscreen,
+#como-funciona.secao-fullscreen,
+#equipe.secao-fullscreen,
+#contato.secao-fullscreen {
+    justify-content: center;
+}
+
+.secao_equipe .div_img_texto {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+/* ===== SEÇÃO EQUIPE ===== */
+.secao_equipe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.equipe-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 48px;
+    height: 100%;
+}
+
+/* LADO ESQUERDO – foto */
+.equipe-lado-foto {
+    flex: 1 1 55%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.equipe-foto-grupo {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    object-position: center 30%;  /* corta levemente topo e base */
+    border-radius: 10px;
+    border: 1px solid rgba(0, 207, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    display: block;
+}
+
+.equipe-foto-label {
+    font-family: "Orbitron", sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(0, 207, 255, 0.65);
+    text-transform: uppercase;
+}
+
+/* LADO DIREITO – texto */
+.equipe-lado-texto {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.equipe-lado-texto .titulo_principal {
+    margin: 0;
+}
+
+.equipe-texto {
+    color: rgba(255, 255, 255, 0.75);
+    font-family: "Inter", sans-serif;
+    font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* Responsivo: empilha em mobile */
+@media (max-width: 768px) {
+    .equipe-wrapper {
+        flex-direction: column;
+        padding: 40px 24px;
+        gap: 28px;
+    }
+    .equipe-lado-foto,
+    .equipe-lado-texto {
+        flex: unset;
+        width: 100%;
+    }
+}
+
+@media (max-width: 991.98px) {
+    html {
+        scroll-snap-type: none; /* Desativa snap em mobile para rolagem fluida */
+    }
+
+    .secao-fullscreen {
+        min-height: auto;
+        padding: 80px 0 50px;
+        scroll-snap-align: none;
     }
 }

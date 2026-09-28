@@ -2,7 +2,17 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  scroll-snap-type: y mandatory;
+}
+
+body {
   margin: 0;
   padding: 0;
   max-width: 100%;
@@ -81,11 +91,11 @@ header.scrolled {
 }
 
 .btn-cyan {
-  font-family: "Orbitron";
+  font-family: "Orbitron", sans-serif;
   font-weight: bold;
   background-color: #00CFFF;
   color: #07090F;
-  border: none;
+  border: 2px solid #00CFFF;
   padding: 10px 30px;
   font-size: 0.9rem;
   letter-spacing: 0.5px;
@@ -97,8 +107,14 @@ header.scrolled {
 .btn-cyan:hover {
   background-color: transparent;
   color: #00cfff;
-  border: 2px solid #00cfff;
-  box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+  border-color: #00cfff;
+  box-shadow: 0 0 20px rgba(0, 207, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn-cyan:active {
+  transform: translateY(0);
+  box-shadow: 0 0 10px rgba(0, 207, 255, 0.4);
 }
 
 .btn-menu-hamburguer {

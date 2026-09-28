@@ -23,11 +23,11 @@
         <button class="btn-menu-hamburguer" type="button" aria-label="Menu">&#9776;</button>
 
         <nav class="nav-container">
-            <a href="index.html">INÍCIO</a>
+            <a href="#inicio">INÍCIO</a>
             <a href="#sobre">SOBRE</a>
             <a href="#funcionalidades">FUNCIONALIDADES</a>
-            <a href="nossa_equipe.html">EQUIPE</a>
-            <a href="fale_conosco.html">CONTATO</a>
+            <a href="#equipe">EQUIPE</a>
+            <a href="#contato">CONTATO</a>
             <button class="btn btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</button>
         </nav>
     </div>
@@ -151,12 +151,8 @@
             </div>
         </div>
 
-        <div>
-            <div class="container sptech-item mx-auto">
-                <h2 class="fs-6 m-0"><span class="text-secondary">Projeto PI | </span>São Paulo Tech School</h2>
-            </div>
-
-            <div class="container logo-banner mt-5 d-flex flex-column align-items-center">
+        <section class="secao-fullscreen secao-bg-dark" id="inicio">
+            <div class="container logo-banner mt-3 d-flex flex-column align-items-center">
                 <img src="assets/icon/logo.png" alt="" class="img-fluid" width="150">
                 <h1 class="fw-bold text-center display-4">INFRA<span class="text-cyan">TECH</span></h1>
             </div>
@@ -167,19 +163,18 @@
 
             <div class="botoes-banner d-flex justify-content-center align-items-center gap-3 mt-4 px-3">
                 <button class="btn btn-cyan px-4" data-bs-toggle="modal" data-bs-target="#modalCadastro">CRIAR CONTA</button>
-                <button class="btn btn-funcionalidades px-4">VER FUNCIONALIDADES</button>
+                <a href="#funcionalidades" class="btn btn-funcionalidades px-4 d-inline-flex align-items-center justify-content-center text-decoration-none">VER FUNCIONALIDADES</a>
             </div>
-        </div>
+        </section>
 
-        <div class="secao_sobre py-5" id="sobre">
+        <section class="secao-fullscreen secao-bg-alt" id="sobre">
             <div class="container">
                 <div class="row align-items-center g-5">
                     <div class="col-12 col-lg-6">
                         <div class="texto_sobre d-flex flex-column gap-3">
-                            <p class="etiqueta_secao">// SOBRE O PROJETO</p>
                             <h2 class="titulo_principal">O QUE É A <span class="titulo_destaque">INFRATECH</span>?</h2>
-                            <p class="descricao_texto">A InfraTech é uma solução de monitoramento voltada à infraestrutura de servidores utilizados por jogos online. O sistema acompanha continuamente recursos como CPU, memória RAM e armazenamento, além de processos e serviços em execução.<p>
-                            Por meio da coleta e centralização dessas informações, a plataforma permite identificar situações de sobrecarga, indisponibilidade e comportamento anormal nos servidores, oferecendo maior visibilidade sobre o estado da infraestrutura.</p>
+                            <p class="descricao_texto">A InfraTech é uma solução de monitoramento voltada à infraestrutura de servidores utilizados por jogos online. O sistema acompanha continuamente recursos como CPU, memória RAM e armazenamento, além de processos e serviços em execução.</p>
+                            <p class="descricao_texto">Por meio da coleta e centralização dessas informações, a plataforma permite identificar situações de sobrecarga, indisponibilidade e comportamento anormal nos servidores, oferecendo maior visibilidade sobre o estado da infraestrutura.</p>
                             <p class="descricao_texto">Através de nossa solução nos servidores, o sistema coleta métricas de CPU, memória, rede e armazenamento, consolidada dos dados em um painel centralizado e emite alertas quando limites críticos são atingidos.</p>
                         </div>
                     </div>
@@ -193,59 +188,59 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="container" id="funcionalidades">
-            <div class="caixa-titulo-func text-center py-5">
-                <p>// O QUE O SISTEMA OFERECE</p>
-                <h1 class="display-5 fw-bold">FUNCIONALIDADES <span class="text-cyan">PRINCIPAIS</span></h1>
-            </div>
-
-            <div class="row g-0">
-                <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
-                    <h6 class="sub-titulo-func">COLETA</h6>
-                    <h3 class="titulo-func">Agente de Coleta</h3>
-                    <p class="text-func">Um agente instalado no servidor realiza a coleta periódica de informações sobre CPU, memória RAM e armazenamento, além de dados relacionados aos recursos monitorados.</p>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
-                    <h6 class="sub-titulo-func">PROCESSAMENTO</h6>
-                    <h3 class="titulo-func">Dados Processados</h3>
-                    <p class="text-func">Os dados coletados são processados e organizados para identificar alterações nos níveis de utilização dos recursos e possíveis situações que necessitem de atenção.</p>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
-                    <h6 class="sub-titulo-func">ALERTAS</h6>
-                    <h3 class="titulo-func">Sistema de Alertas</h3>
-                    <p class="text-func">Quando os recursos monitorados ultrapassam os limites estabelecidos, o sistema identifica o incidente e inicia o fluxo de comunicação para a equipe responsável.</p>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
-                    <h6 class="sub-titulo-func">DASHBOARD</h6>
-                    <h3 class="titulo-func">Painel de Controle</h3>
-                    <p class="text-func">Interface centralizada acessível apenas para usuários autenticados. Exibe o estado da frota de servidores, histórico de eventos e relatórios de disponibilidade.</p>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
-                    <h6 class="sub-titulo-func">SEGURANÇA</h6>
-                    <h3 class="titulo-func">Acesso Controlado</h3>
-                    <p class="text-func">Nenhum dado de servidor é exposto publicamente. Todo acesso ao painel exige autenticação, e as permissões são gerenciadas por perfil de usuário.</p>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
-                    <h6 class="sub-titulo-func">RELATÓRIOS</h6>
-                    <h3 class="titulo-func">Relatórios de SLA</h3>
-                    <p class="text-func">O acesso às informações de monitoramento é protegido por autenticação e controle de permissões, garantindo que os dados da infraestrutura sejam visualizados apenas por usuários autorizados.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="como-funciona mt-5 py-5">
-            <p class="etiqueta">// FLUXO DO SISTEMA</p>
-            <h1 class="display-6 fw-bold my-5">COMO <span>FUNCIONA</span></h1>
-
+        <section class="secao-fullscreen secao-bg-dark" id="funcionalidades">
             <div class="container">
-                <div class="row">
+                <div class="caixa-titulo-func text-center py-2">
+                    <h2 class="fw-bold" style="font-family:'Orbitron';font-size:clamp(1.4rem,3vw,2rem);">FUNCIONALIDADES <span class="text-cyan">PRINCIPAIS</span></h2>
+                </div>
+
+                <div class="row g-0 justify-content-center">
+                    <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
+                        <h6 class="sub-titulo-func">COLETA</h6>
+                        <h3 class="titulo-func">Agente de Coleta</h3>
+                        <p class="text-func">Um agente instalado no servidor realiza a coleta periódica de informações sobre CPU, memória RAM e armazenamento, além de dados relacionados aos recursos monitorados.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
+                        <h6 class="sub-titulo-func">PROCESSAMENTO</h6>
+                        <h3 class="titulo-func">Dados Processados</h3>
+                        <p class="text-func">Os dados coletados são processados e organizados para identificar alterações nos níveis de utilização dos recursos e possíveis situações que necessitem de atenção.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
+                        <h6 class="sub-titulo-func">ALERTAS</h6>
+                        <h3 class="titulo-func">Sistema de Alertas</h3>
+                        <p class="text-func">Quando os recursos monitorados ultrapassam os limites estabelecidos, o sistema identifica o incidente e inicia o fluxo de comunicação para a equipe responsável.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
+                        <h6 class="sub-titulo-func">DASHBOARD</h6>
+                        <h3 class="titulo-func">Painel de Controle</h3>
+                        <p class="text-func">Interface centralizada acessível apenas para usuários autenticados. Exibe o estado da frota de servidores, histórico de eventos e relatórios de disponibilidade.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
+                        <h6 class="sub-titulo-func">SEGURANÇA</h6>
+                        <h3 class="titulo-func">Acesso Controlado</h3>
+                        <p class="text-func">Nenhum dado de servidor é exposto publicamente. Todo acesso ao painel exige autenticação, e as permissões são gerenciadas por perfil de usuário.</p>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4 caixa-funcionalidade">
+                        <h6 class="sub-titulo-func">RELATÓRIOS</h6>
+                        <h3 class="titulo-func">Relatórios de SLA</h3>
+                        <p class="text-func">O acesso às informações de monitoramento é protegido por autenticação e controle de permissões, garantindo que os dados da infraestrutura sejam visualizados apenas por usuários autorizados.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="secao-fullscreen secao-bg-alt como-funciona" id="como-funciona">
+            <div class="container">
+                <h1 class="display-6 fw-bold my-4">COMO <span>FUNCIONA</span></h1>
+
+                <div class="row align-items-stretch g-0">
                     <div class="col-12 col-md-6 col-lg-3 etapa">
                         <div class="numero">01</div>
                         <h2>Cadastro e Configuração</h2>
@@ -271,7 +266,64 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- SEÇÃO NOSSA EQUIPE -->
+        <section class="secao-fullscreen secao-bg-dark secao_equipe" id="equipe">
+            <div class="equipe-wrapper">
+                <div class="equipe-lado-foto">
+                    <img src="assets/imgs/GrupodePI.jfif" alt="Equipe InfraTech - Grupo de Projeto Integrador" class="equipe-foto-grupo">
+                    <span class="equipe-foto-label">INFRATECH · SÃO PAULO TECH SCHOOL · 2026</span>
+                </div>
+
+                <div class="equipe-lado-texto">
+                    <h2 class="titulo_principal">NOSSA <span class="text-cyan">EQUIPE</span></h2>
+                    <p class="equipe-texto">
+                        Somos um grupo de estudantes da São Paulo Tech School unidos pelo propósito de resolver problemas reais com tecnologia.
+                    </p>
+                    <p class="equipe-texto">
+                        A InfraTech nasceu como projeto integrador e evoluiu para uma solução completa de monitoramento de infraestrutura. Unimos engenharia de software e observabilidade para proteger servidores de jogos online e serviços críticos de microtransações.
+                    </p>
+                    <p class="equipe-texto">
+                        Nossa equipe acompanha métricas de hardware, rede e integridade de transações em tempo real — garantindo que panes silenciosas sejam detectadas antes de se tornarem prejuízos financeiros ou quebras de confiança dos jogadores.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO FALE CONOSCO -->
+        <section class="secao-fullscreen secao-bg-alt secao_contato" id="contato">
+            <div class="container conteudo-principal">
+                <div class="div_texto_contato">
+                    <div>
+                        <h2 class="titulo_principal mt-2">QUER SABER <span class="text-cyan"><br>MAIS?</span></h2>
+                        <span class="texto_descricao_contato">Entre em contato com a equipe de desenvolvimento. Tire dúvidas sobre o projeto, o sistema ou solicite acesso para avaliação.</span>
+                    </div>
+
+                    <div class="box_acesso">
+                        <h3 class="sub_titulo_acesso">ACESSO AO SISTEMA</h3>
+                        <span class="texto_box_acesso">Para acessar o painel de monitoramento, crie sua conta gratuitamente. O acesso é restrito a usuários cadastrados.</span>
+
+                        <button class="btn btn-cyan botao_box" data-bs-toggle="modal" data-bs-target="#modalEntrar" type="button">Entrar</button>
+                    </div>
+
+                    <div class="div_contato">
+                        <div class="bloco_contato">
+                            <p>EMAIL</p>
+                            <span>contato@infratech.com</span>
+                        </div>
+                        <div class="bloco_contato">
+                            <p>INSTITUIÇÃO</p>
+                            <span>São Paulo Tech School</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="div_logo">
+                    <img class="img_logo img-fluid" src="assets/icon/logo_texto.png" alt="InfraTech">
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="rodape">
@@ -286,9 +338,11 @@
 
             <div class="rodape-links">
                 <h3>SISTEMA</h3>
-                <a href="index.html">INÍCIO</a>
+                <a href="#inicio">INÍCIO</a>
                 <a href="#sobre">SOBRE</a>
-                <a href="fale_conosco.html">CONTATO</a>
+                <a href="#funcionalidades">FUNCIONALIDADES</a>
+                <a href="#equipe">EQUIPE</a>
+                <a href="#contato">CONTATO</a>
             </div>
 
             <div class="rodape-links">
@@ -323,7 +377,13 @@
 
     
         btnHamburguer.addEventListener("click", () => {
-        menuNav.classList.toggle("ativo");
+            menuNav.classList.toggle("ativo");
+        });
+
+        document.querySelectorAll(".nav-container a").forEach(link => {
+            link.addEventListener("click", () => {
+                menuNav.classList.remove("ativo");
+            });
         });
 
         function entrar() {
