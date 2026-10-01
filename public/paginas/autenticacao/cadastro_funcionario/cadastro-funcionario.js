@@ -1,66 +1,48 @@
- function validar() {
+function validar() {
+    var nomeVar = nomeInput.value.trim();
+    var emailVar = emailInput.value.trim();
+    var senhaVar = passwordInput.value;
+    var confirmacaoSenhaVar = confirmInput.value;
+    let codigoVar = codigoInput.value.trim();
+    let cpfVar = cpfInput.value.trim();
+    let nascimentoVar = nascimentoInput.value.trim();
 
+    let indice_arroba = emailVar.indexOf("@");
+    let indice_com = emailVar.indexOf(".com");
+    let cpfLimpo = cpfVar.replace(/\D/g, "");
 
-        var nomeVar = nomeInput.value;
-        var emailVar = emailInput.value;
-        var senhaVar = passwordInput.value;
-        var confirmacaoSenhaVar = confirmInput.value;
-        let codigoVar = codigoInput.value;
-        let cpfVar = cpfInput.value;
-        let nascimentoVar = nascimentoInput.value;
-
-        let indice_arroba = emailVar.indexOf("@");
-        let indice_com = emailVar.indexOf(".com");
-        let valida_cpf_numeros = /^\d+$/.test(cpfVar);
-
-        if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "" ||
-            codigoVar == "" || cpfVar == "" || nascimentoVar == "") {
-
-            exibirErro("Preencha todos os campos!");
-
-            return false;
-
-        } else if (indice_arroba == -1 || indice_com == -1) {
-
-            exibirErro("Insira um email válido!");
-
-            return false;
-
-        } else if (senhaVar.length < 6) {
-
-            exibirErro("Digite pelo menos 6 dígitos");
-
-            return false;
-
-        } else if (senhaVar != confirmacaoSenhaVar) {
-
-            exibirErro("A senha está incorreta!") ;
-
-            return false;
-
-        } else if (cpfVar < 11 || valida_cpf_numeros == false) {
-
-            exibirErro("CPF Inválido!");
-            return false;
-
-        } else if(nascimentoVar.length < 10) {
-
-            exibirErro("A data de nascimento está incompleta!") ;
-
-            return false;
-
-        }else{
-
-            setTimeout(sumirMensagem, 5000);
-            confirmarEmailsIguais()
-
-           return false;
+    if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "" ||
+        codigoVar == "" || cpfVar == "" || nascimentoVar == "") {
+        exibirErro("Preencha todos os campos!");
+        return false;
+    } else if (indice_arroba == -1 || indice_com == -1) {
+        exibirErro("Insira um e-mail válido!");
+        return false;
+    } else if (senhaVar.length < 6) {
+        exibirErro("A senha deve ter pelo menos 6 caracteres!");
+        return false;
+    } else if (senhaVar != confirmacaoSenhaVar) {
+        exibirErro("As senhas não coincidem!");
+        return false;
+    } else if (cpfLimpo.length !== 11) {
+        exibirErro("CPF deve ter 11 dígitos numéricos!");
+        return false;
+    } else if (nascimentoVar.length < 10) {
+        exibirErro("A data de nascimento está incompleta (DD/MM/AAAA)!");
+        return false;
+    } else {
+        var btnCadastrar = document.getElementById("btn_cadastrar");
+        if (btnCadastrar) {
+            btnCadastrar.disabled = true;
+            btnCadastrar.innerText = "Validando dados...";
         }
+        confirmarEmailsIguais();
+        return false;
     }
-
+}
 
 function confirmarEmailsIguais() {
-    var emailVar = emailInput.value;
+    var emailVar = emailInput.value.trim();
 
     fetch("/login_cadastro/EmailsIguais", {
         method: "POST",
@@ -68,22 +50,23 @@ function confirmarEmailsIguais() {
         body: JSON.stringify({ emailServer: emailVar })
     }).then(function (resposta) {
         if (resposta.ok) {
-        
-            confirmarCodigoEmpresa(); 
+            confirmarCodigoEmpresa();
         } else {
-            
+            reabilitarBotao();
             resposta.text().then(texto => {
-                exibirErro(texto);
+                exibirErro(texto || "E-mail já cadastrado!");
             });
         }
     }).catch(function (erro) {
         console.log(erro);
+        reabilitarBotao();
+        exibirErro("Erro ao verificar e-mail.");
     });
     return false;
 }
 
 function confirmarCodigoEmpresa() {
-    var codigoVar = codigoInput.value;
+    var codigoVar = codigoInput.value.trim();
 
     fetch("/login_cadastro/CodigoEmpresa", {
         method: "POST",
@@ -91,38 +74,32 @@ function confirmarCodigoEmpresa() {
         body: JSON.stringify({ codigoServer: codigoVar })
     }).then(function (resposta) {
         if (resposta.ok) {
-            
             resposta.json().then(json => {
-                
                 var idDaEmpresaRecebido = json.fk_empresa;
-                
-                
-                cadastrar(idDaEmpresaRecebido); 
+                cadastrar(idDaEmpresaRecebido);
             });
         } else {
-            
+            reabilitarBotao();
             resposta.text().then(texto => {
-                exibirErro(texto);
+                exibirErro(texto || "Código da empresa não encontrado!");
             });
         }
     }).catch(function (erro) {
         console.log(erro);
+        reabilitarBotao();
+        exibirErro("Erro ao verificar código da empresa.");
     });
     return false;
 }
 
-
 function cadastrar(idDaEmpresa) {
-  
-    var nomeVar = nomeInput.value;
-    var emailVar = emailInput.value;
+    var nomeVar = nomeInput.value.trim();
+    var emailVar = emailInput.value.trim();
     var senhaVar = passwordInput.value;
-    var cpfVar = cpfInput.value;
-    var nascimentoVar = nascimentoInput.value;
+    var cpfVar = cpfInput.value.replace(/\D/g, "");
+    var nascimentoVar = nascimentoInput.value.trim();
 
     var partesData = nascimentoVar.split('/');
-    
-    //transforma a data no formato do banco
     var dataFormatada = partesData[2] + '-' + partesData[1] + '-' + partesData[0];
 
     fetch("/login_cadastro/cadastrar", {
@@ -134,61 +111,95 @@ function cadastrar(idDaEmpresa) {
             senhaServer: senhaVar,
             cpfServer: cpfVar,
             nascimentoServer: dataFormatada,
-            fkEmpresaServer: idDaEmpresa 
+            fkEmpresaServer: idDaEmpresa
         }),
     }).then(function (resposta) {
         console.log("resposta: ", resposta);
 
         if (resposta.ok) {
-            
-            cardErro.style.display = "block";
-            mensagem_erro.innerHTML = "Cadastro realizado com sucesso!";
-            
+            let divCardErro = document.getElementById("cardErro");
+            let spanMensagemErro = document.getElementById("mensagem_erro");
+
+            if (divCardErro && spanMensagemErro) {
+                divCardErro.style.display = "block";
+                divCardErro.style.borderColor = "var(--cor-sucesso, #05df72)";
+                spanMensagemErro.innerHTML = "Cadastro realizado com sucesso! Redirecionando...";
+            }
+
             setTimeout(() => {
-                window.location = "login.html";
-            }, 3000);
+                window.location = "../login/login.html";
+            }, 2000);
         } else {
-            throw "Houve um erro ao tentar realizar o cadastro!";
+            reabilitarBotao();
+            throw new Error("Houve um erro ao tentar realizar o cadastro!");
         }
     }).catch(function (resposta) {
         console.log(`#ERRO: ${resposta}`);
+        reabilitarBotao();
+        exibirErro("Erro ao realizar cadastro.");
     });
 
     return false;
 }
 
+function reabilitarBotao() {
+    var btnCadastrar = document.getElementById("btn_cadastrar");
+    if (btnCadastrar) {
+        btnCadastrar.disabled = false;
+        btnCadastrar.innerText = "Criar Conta de Funcionário";
+    }
+}
+
 let cronometroErro;
 
 function exibirErro(mensagem) {
-    
     let divCardErro = document.getElementById("cardErro");
     let spanMensagemErro = document.getElementById("mensagem_erro");
+
+    if (!divCardErro || !spanMensagemErro) {
+        alert(mensagem);
+        return;
+    }
 
     clearTimeout(cronometroErro);
 
     divCardErro.style.display = "block";
+    divCardErro.style.borderColor = "var(--cor-perigo, #ff3366)";
     spanMensagemErro.innerHTML = mensagem;
 
-   
-    cronometroErro = setTimeout(function() {
+    cronometroErro = setTimeout(function () {
         divCardErro.style.display = "none";
-    }, 4000); 
+    }, 4500);
 }
 
-let inputNascimento = document.getElementById('nascimentoInput');
+// Máscara dinâmica de CPF
+let inputCpf = document.getElementById('cpfInput');
+if (inputCpf) {
+    inputCpf.addEventListener('input', function (e) {
+        let valor = e.target.value.replace(/\D/g, "");
+        if (valor.length > 11) valor = valor.slice(0, 11);
+        valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+        valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+        valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        e.target.value = valor;
+    });
+}
 
-inputNascimento.addEventListener('input', function(e) {
-    // Remove tudo que não for número
-    let valor = e.target.value.replace(/\D/g, "");
-    
-    // Adiciona as barras no lugar certo
-    valor = valor.replace(/(\d{2})(\d)/, "$1/$2");
-    valor = valor.replace(/(\d{2})(\d)/, "$1/$2");
-    
-    // Atualiza o input
-    e.target.value = valor;
-});
+// Máscara dinâmica de Data de Nascimento
+let inputNascimento = document.getElementById('nascimentoInput');
+if (inputNascimento) {
+    inputNascimento.addEventListener('input', function (e) {
+        let valor = e.target.value.replace(/\D/g, "");
+        if (valor.length > 8) valor = valor.slice(0, 8);
+        valor = valor.replace(/(\d{2})(\d)/, "$1/$2");
+        valor = valor.replace(/(\d{2})(\d)/, "$1/$2");
+        e.target.value = valor;
+    });
+}
 
 function sumirMensagem() {
-    cardErro.style.display = "none";
-  }
+    let divCardErro = document.getElementById("cardErro");
+    if (divCardErro) {
+        divCardErro.style.display = "none";
+    }
+}

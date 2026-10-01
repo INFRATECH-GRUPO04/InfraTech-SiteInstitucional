@@ -4,98 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INFRATECH-Funcionario</title>
+    <title>Cadastro de Funcionário - InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
+
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
     <link rel="stylesheet" href="../login/login.css">
     <script src="./cadastro-funcionario.js" defer></script>
 </head>
 
-<body>
-    
-    <div class="box-cadastro">
-<div class="alerta_erro">
-            <div class="card_erro" id="cardErro">
-                <span id="mensagem_erro"></span>
-            </div>
+<body class="pagina-autenticacao">
+
+    <div class="alerta_erro">
+        <div class="card_erro" id="cardErro">
+            <span id="mensagem_erro"></span>
         </div>
+    </div>
 
-
+    <div class="box-cadastro">
         <div class="posicao-titulo-formulario">
             <div class="titulo-imagem">
-                <div class="posicao-imagem">
-                    <img src="./assets/icon/logo.png" alt="">
-                </div>
+                <a href="../../institucional/home/index.html" class="posicao-imagem" title="Voltar ao início">
+                    <img src="../../../assets/icon/logo.png" alt="InfraTech Logo">
+                </a>
 
-                <div>
-                    <h1 class="titulo-login"><span class="destaque-azul">INFRA</span>TECH</h1>
-                </div>
+                <h1 class="titulo-login"><span class="destaque-branco">INFRA</span><span class="destaque-azul">TECH</span></h1>
+                <p class="subtitulo-autenticacao">Cadastro de Colaborador via Código da Empresa</p>
                 <div class="bloco-linha">
-                    <p class="linha-divisao"></p>
+                    <div class="linha-divisao"></div>
                 </div>
             </div>
+
             <div class="formulario-login">
-                <form class="funcionario-formulario" id="loginFormulario">
+                <form class="funcionario-formulario" id="loginFormulario" onsubmit="event.preventDefault(); validar();">
                     <div class="login-esquerdo">
                         <div class="bloco-input-funcionario">
                             <label for="codigoInput">Código da Empresa</label>
-                            <input class="inputs-formulario" type="text" id="codigoInput" placeholder="XXXXXX" required>
+                            <input class="inputs-formulario" type="text" id="codigoInput" placeholder="Ex: ABC123" required autocomplete="off">
                         </div>
 
                         <div class="bloco-input-funcionario">
                             <label for="nomeInput">Nome Completo</label>
-                            <input class="inputs-formulario" type="text" id="nomeInput" placeholder="João da Silva"
-                                required>
+                            <input class="inputs-formulario" type="text" id="nomeInput" placeholder="João da Silva" required autocomplete="name">
                         </div>
 
                         <div class="bloco-input-funcionario">
                             <label for="cpfInput">CPF</label>
-                            <input class="inputs-formulario" type="text" id="cpfInput" maxlength="14"
-                                placeholder="XXX.XXX.XXX-XX" required>
+                            <input class="inputs-formulario" type="text" id="cpfInput" maxlength="14" placeholder="000.000.000-00" required inputmode="numeric">
                         </div>
 
                         <div class="bloco-input-funcionario">
                             <label for="nascimentoInput">Data de Nascimento</label>
-                            <input class="inputs-formulario" type="text" id="nascimentoInput" maxlength="10"
-                                placeholder="XX/XX/XXXX" required>
+                            <input class="inputs-formulario" type="text" id="nascimentoInput" maxlength="10" placeholder="DD/MM/AAAA" required inputmode="numeric">
                         </div>
-
                     </div>
+
                     <div class="login-direito">
                         <div class="bloco-input-funcionario">
                             <label for="emailInput">E-mail Corporativo</label>
-                            <input class="inputs-formulario" type="email" id="emailInput"
-                                placeholder="infratech@empresa.com" required>
+                            <input class="inputs-formulario" type="email" id="emailInput" placeholder="voce@empresa.com" required autocomplete="email">
                         </div>
 
                         <div class="bloco-input-funcionario">
                             <div class="titulo-senha">
                                 <label for="passwordInput">Senha</label>
                             </div>
-                            <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required>
+                            <input class="inputs" type="password" id="passwordInput" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
                         </div>
 
                         <div class="bloco-input-funcionario">
                             <div class="titulo-senha">
-                                <label for="passwordInput">Confirmar Senha</label>
+                                <label for="confirmInput">Confirmar Senha</label>
                             </div>
-                            <input class="inputs" type="password" id="confirmInput" placeholder="••••••••" required>
+                            <input class="inputs" type="password" id="confirmInput" placeholder="Repita a senha" required autocomplete="new-password">
                         </div>
                     </div>
-
-
                 </form>
-
             </div>
 
             <div class="criar-conta">
-                    <button class="botao-login" onclick="validar()" type="button">Criar conta</button>
+                <button class="botao-login" onclick="validar()" type="button" id="btn_cadastrar">Criar Conta de Funcionário</button>
             </div>
-            <div class="posicao-conta">
-                <p class="texto">Já tem conta? <a id="link_entrar" href="login.html" class="texto_dif"
-                        data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
 
+            <div class="posicao-conta">
+                <p class="texto">Já tem uma conta? <a id="link_entrar" href="../login/login.html" class="texto_dif">Entrar</a></p>
+            </div>
+
+            <div class="rodape-auth">
+                <a href="../../institucional/home/index.html">← Voltar para o site institucional</a>
             </div>
         </div>
     </div>
+
 </body>
+
 </html>
