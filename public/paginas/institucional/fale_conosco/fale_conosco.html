@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fale Conosco - InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&display=swap"
-        rel="stylesheet" />
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
     <link rel="stylesheet" href="../../../compartilhado/css/cadastro_pop.css">
     <link rel="stylesheet" href="./fale_conosco.css">
@@ -16,219 +14,207 @@
 
 <body>
 
-    <header>
-        <div class="container d-flex align-items-center justify-content-between">
-            <div class="logo-header d-flex align-items-center gap-3">
-                <img src="assets/icon/logo.png" width="45" class="img-fluid" />
-                <h3 class="m-0 fs-4 fw-semibold">INFRA<span style="color: #00cfff">TECH</span></h3>
-            </div>
+    <!-- CABEÇALHO -->
+    <header class="cabecalho">
+        <div class="container-header">
+            <a href="../home/index.html#inicio" class="logo-header">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech" class="logo-header-img">
+                <h3 class="logo-header-titulo">INFRA<span class="text-cyan">TECH</span></h3>
+            </a>
 
-            <button class="btn-menu-hamburguer" aria-label="Menu">&#9776;</button>
+            <button class="btn-menu-hamburguer" type="button" aria-label="Abrir Menu">&#9776;</button>
 
             <nav class="nav-container">
-                <a href="index.html#inicio">INÍCIO</a>
-                <a href="index.html#sobre">SOBRE</a>
-                <a href="index.html#funcionalidades">FUNCIONALIDADES</a>
-                <a href="index.html#equipe">EQUIPE</a>
-                <a href="index.html#contato">CONTATO</a>
-                <button class="btn btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</button>
+                <a href="../home/index.html#inicio">Início</a>
+                <a href="../home/index.html#sobre">Sobre</a>
+                <a href="../home/index.html#funcionalidades">Funcionalidades</a>
+                <a href="../nossa_equipe/nossa_equipe.html">Equipe</a>
+                <a href="./fale_conosco.html" style="color: var(--cor-cyan);">Fale Conosco</a>
+                <button type="button" class="btn-cyan open-modal" data-modal="modal-entrar">Entrar</button>
             </nav>
         </div>
     </header>
 
-    <main>
-        <<div class="modal fade" id="modalEntrar" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content bg-transparent border-0">
-                    <div class="div_popup">
-                        <div class="div_canto_superior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Fechar"></button>
-                            </div>
-                        </div>
+    <main id="contato">
 
-                        <div class="div_titulo">
-                            <div>
-                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-                            </div>
-                            <p class="titulo_popup texto_popup">ENTRAR</p>
-                        </div>
-
-                        <div class="div_componentes_login">
-                            <div class="campo_login mb-4">
-                                <p>E-MAIL</p>
-                                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto"
-                                    placeholder="voce@empresa.com">
-                            </div>
-
-                            <div class="campo_login">
-                                <p>SENHA</p>
-                                <input type="password" id="ipt_senha" class="form-control campoTexto"
-                                    placeholder="Mínimo 8 caracteres">
-
-                                <div class="senha d-flex justify-content-between align-items-center mt-2">
-                                    <div class="form-check">
-                                        <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
-                                        <label for="lembrar" class="form-check-label">Lembrar Acesso</label>
-                                    </div>
-                                    <span>Esqueci a senha</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="div_btn_entrarSistema">
-                            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO
-                                SISTEMA</button>
-                            <div class="divisoria my-3 text-center">OU</div>
-                            <button id="btn_redirecionar" class="btn btn_redirecionar w-100" type="button"
-                                data-bs-toggle="modal" data-bs-target="#modalCadastro" data-bs-dismiss="modal">CRIAR
-                                NOVA CONTA</button>
-                        </div>
-
-                        <div class="div_canto_inferior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita"></div>
-                        </div>
+        <!-- DIALOG MODAL: ENTRAR -->
+        <dialog id="modal-entrar">
+            <div class="div_popup">
+                <div class="div_canto_superior">
+                    <div class="borda_esquerda"></div>
+                    <div class="borda_direita">
+                        <button type="button" class="btn-close-modal close-modal" aria-label="Fechar">✕</button>
                     </div>
                 </div>
-            </div>
-            </div>
 
-            <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content bg-transparent border-0">
-                        <div class="div_popup">
-                            <div class="div_canto_superior d-flex justify-content-between">
-                                <div class="borda_esquerda"></div>
-                                <div class="borda_direita">
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                        aria-label="Fechar"></button>
-                                </div>
-                            </div>
-
-                            <div class="div_titulo">
-                                <div>
-                                    <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-                                    <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-
-
-                                </div>
-                                <p class="titulo_popup texto_popup">CADASTRAR</p>
-                            </div>
-
-
-                            <div class="row g-3 mb-3">
-                                <div class="col-12 col-md-6">
-                                    <p>NOME COMPLETO</p>
-                                    <input type="text" id="ipt_nome" class="form-control campoTexto"
-                                        placeholder="João Silva">
-                                </div>
-
-                                <div class="col-12 col-md-6">
-                                    <p>CÓDIGO DA EMPRESA</p>
-                                    <input type="text" id="ipt_codigo" class="form-control campoTexto"
-                                        placeholder="A44FSF">
-                                </div>
-                            </div>
-
-                            <p>CPF</p>
-                            <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3"
-                                placeholder="000.003.444-41">
-
-                            <p>E-MAIL CORPORATIVO</p>
-                            <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3"
-                                placeholder="voce@empresa.com">
-
-                            <p>SENHA</p>
-                            <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3"
-                                placeholder="Mínimo 8 caracteres">
-
-                            <p>CONFIRMAR SENHA</p>
-                            <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto"
-                                placeholder="Repita a senha">
-
-                            <div class="div_btn_criarConta text-center mt-4">
-                                <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100">CRIAR
-                                    CONTA</button>
-
-                                <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif"
-                                        data-bs-toggle="modal" data-bs-target="#modalEntrar"
-                                        data-bs-dismiss="modal">Entrar</a></p>
-
-                            </div>
-
-                            <div class="div_canto_inferior d-flex justify-content-between">
-                                <div class="borda_esquerda"></div>
-                                <div class="borda_direita"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="div_titulo">
+                    <img src="../../../assets/icon/CadastroIcon.png" alt="InfraTech" class="img-icon">
+                    <h2 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h2>
+                    <span class="texto_popup">ENTRAR NO SISTEMA</span>
                 </div>
-            </div>
 
-            <div class="container conteudo-principal">
-                <div class="div_texto">
-                    <div>
-                        <h1 class="titulo">QUER SABER <span style="color: #00cfff"><br>MAIS?</span></h1>
-                        <span class="texto">Entre em contato com a equipe de desenvolvimento. Tire dúvidas sobre o
-                            projeto, o sistema ou
-                            solicite acesso para avaliação.</span>
+                <div class="div_componentes_login">
+                    <div class="campo_login">
+                        <label for="ipt_email_corporativo">E-MAIL CORPORATIVO</label>
+                        <input type="email" id="ipt_email_corporativo" class="campoTexto" placeholder="voce@empresa.com">
                     </div>
 
-                    <div class="box">
-                        <h3 class="sub_titulo_azul">ACESSO AO SISTEMA</h3>
-                        <span class="texto2">Para acessar o painel de monitoramento, crie sua conta gratuitamente. O
-                            acesso é restrito a
-                            usuários cadastrados.</span>
+                    <div class="campo_login">
+                        <label for="ipt_senha">SENHA</label>
+                        <input type="password" id="ipt_senha" class="campoTexto" placeholder="Mínimo 8 caracteres">
 
-                        <button class="btn btn-cyan botao_box" data-bs-toggle="modal" data-bs-target="#modalEntrar"
-                            type="button">Entrar</button>
-                    </div>
-
-                    <div class="div_contato">
-                        <div class="bloco_contato">
-                            <p>EMAIL</p>
-                            <span>contato@infratech.com</span>
-                        </div>
-                        <div class="bloco_contato">
-                            <p>INSTITUIÇÃO</p>
-                            <span>São Paulo Tech School</span>
+                        <div class="senha">
+                            <label>
+                                <input type="checkbox" name="lembrar" id="lembrar"> Lembrar Acesso
+                            </label>
+                            <a href="../../autenticacao/login/login.html" style="color: var(--cor-cyan); font-size: 0.8rem;">Esqueci a senha</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="div_logo">
-                    <img class="img_logo img-fluid" src="assets/icon/logo_texto.png" alt="">
+                <div class="div_btn_entrarSistema">
+                    <button id="btn_login" class="btn_login" type="button" onclick="entrar()">ENTRAR NO SISTEMA</button>
+                    <div class="divisoria">OU</div>
+                    <button class="btn_redirecionar switch-modal" type="button" data-modal="modal-cadastro">CRIAR NOVA CONTA</button>
+                </div>
+
+                <div class="div_canto_inferior">
+                    <div class="borda_esquerda"></div>
+                    <div class="borda_direita"></div>
                 </div>
             </div>
+        </dialog>
+
+        <!-- DIALOG MODAL: CADASTRO -->
+        <dialog id="modal-cadastro">
+            <div class="div_popup">
+                <div class="div_canto_superior">
+                    <div class="borda_esquerda"></div>
+                    <div class="borda_direita">
+                        <button type="button" class="btn-close-modal close-modal" aria-label="Fechar">✕</button>
+                    </div>
+                </div>
+
+                <div class="div_titulo">
+                    <img src="../../../assets/icon/CadastroIcon.png" alt="InfraTech" class="img-icon">
+                    <h2 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h2>
+                    <span class="texto_popup">CADASTRAR FUNCIONÁRIO</span>
+                </div>
+
+                <div class="div_componentes_login">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="campo_login">
+                            <label for="ipt_nome">NOME COMPLETO</label>
+                            <input type="text" id="ipt_nome" class="campoTexto" placeholder="João Silva">
+                        </div>
+                        <div class="campo_login">
+                            <label for="ipt_codigo">CÓDIGO EMPRESA</label>
+                            <input type="text" id="ipt_codigo" class="campoTexto" placeholder="A44FSF">
+                        </div>
+                    </div>
+
+                    <div class="campo_login">
+                        <label for="ipt_cpf">CPF</label>
+                        <input type="text" id="ipt_cpf" class="campoTexto" placeholder="000.000.000-00">
+                    </div>
+
+                    <div class="campo_login">
+                        <label for="ipt_email_corporativo_cadastro">E-MAIL CORPORATIVO</label>
+                        <input type="email" id="ipt_email_corporativo_cadastro" class="campoTexto" placeholder="voce@empresa.com">
+                    </div>
+
+                    <div class="campo_login">
+                        <label for="ipt_senha_cadastro">SENHA</label>
+                        <input type="password" id="ipt_senha_cadastro" class="campoTexto" placeholder="Mínimo 8 caracteres">
+                    </div>
+
+                    <div class="campo_login">
+                        <label for="ipt_confirmar_senha">CONFIRMAR SENHA</label>
+                        <input type="password" id="ipt_confirmar_senha" class="campoTexto" placeholder="Repita a senha">
+                    </div>
+                </div>
+
+                <div class="div_btn_criarConta">
+                    <button type="button" onclick="buscarCodigo()" id="btn_cadastro" class="btn_cadastro">CRIAR CONTA</button>
+                    <p style="text-align: center; margin: 4px 0 0; font-size: 0.82rem; color: var(--cor-texto-suave);">
+                        Já tem conta?
+                        <a id="link_entrar" href="#" class="texto_dif switch-modal" data-modal="modal-entrar">Entrar</a>
+                    </p>
+                </div>
+
+                <div class="div_canto_inferior">
+                    <div class="borda_esquerda"></div>
+                    <div class="borda_direita"></div>
+                </div>
+            </div>
+        </dialog>
+
+        <!-- CONTEÚDO PRINCIPAL DA PÁGINA -->
+        <div class="container conteudo-principal">
+            <div class="div_texto">
+                <div>
+                    <h1 class="titulo">QUER SABER <span class="text-cyan"><br>MAIS?</span></h1>
+                    <p class="texto">
+                        Entre em contato com nossa equipe de desenvolvimento e arquitetura.
+                        Tire dúvidas sobre o monitoramento de infraestrutura, requisitos técnicos ou solicite acesso para avaliação institucional.
+                    </p>
+                </div>
+
+                <div class="box">
+                    <h3 class="sub_titulo_azul">ACESSO AO SISTEMA</h3>
+                    <p class="texto2">
+                        Para acessar o painel de monitoramento, realize login com sua conta ou utilize o token fornecido por sua organização.
+                    </p>
+
+                    <button class="btn-cyan botao_box open-modal" data-modal="modal-entrar" type="button">
+                        Acessar Painel
+                    </button>
+                </div>
+
+                <div class="div_contato">
+                    <div class="bloco_contato">
+                        <p>E-MAIL</p>
+                        <span>contato@infratech.com</span>
+                    </div>
+                    <div class="bloco_contato">
+                        <p>INSTITUIÇÃO</p>
+                        <span>São Paulo Tech School</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="div_logo">
+                <img class="img_logo" src="../../../assets/icon/logo_texto.png" alt="InfraTech">
+            </div>
+        </div>
+
     </main>
 
+    <!-- RODAPÉ -->
     <footer class="rodape">
         <div class="rodape-conteudo">
             <div class="rodape-logo">
-                <img src="assets/icon/logo.png" alt="InfraTech">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
                 <div>
-                    <h2>INFRATECH</h2>
-                    <p>Monitoramento inteligente de infraestrutura.</p>
+                    <h2>INFRA<span class="text-cyan">TECH</span></h2>
+                    <p>Monitoramento inteligente da infraestrutura de servidores.</p>
                 </div>
             </div>
 
             <div class="rodape-links">
                 <h3>SISTEMA</h3>
-                <a href="index.html#inicio">INÍCIO</a>
-                <a href="index.html#sobre">SOBRE</a>
-                <a href="index.html#funcionalidades">FUNCIONALIDADES</a>
-                <a href="index.html#equipe">EQUIPE</a>
-                <a href="index.html#contato">CONTATO</a>
+                <a href="../home/index.html#inicio">Início</a>
+                <a href="../home/index.html#sobre">Sobre</a>
+                <a href="../home/index.html#funcionalidades">Funcionalidades</a>
+                <a href="../nossa_equipe/nossa_equipe.html">Equipe</a>
+                <a href="./fale_conosco.html">Fale Conosco</a>
             </div>
 
             <div class="rodape-links">
                 <h3>ACESSO</h3>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</a>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modalCadastro">Criar conta</a>
+                <a href="#" class="open-modal" data-modal="modal-entrar">Entrar</a>
+                <a href="#" class="open-modal" data-modal="modal-cadastro">Criar conta</a>
+                <a href="../../autenticacao/login/login.html">Login Direto</a>
             </div>
         </div>
 
