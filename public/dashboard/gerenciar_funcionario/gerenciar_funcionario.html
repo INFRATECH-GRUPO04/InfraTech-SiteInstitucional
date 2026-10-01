@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar funcionário</title>
+    <link rel="stylesheet" href="gerenciar_funcionario.css">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/barralateral.css">
+</head>
+
+<body>
+    <div class="header-left">
+        <div class="logo">
+            <img src="./assets/icon/logo.png" alt="Logo">
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="./assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+        <hr class="linha">
+
+        <!-- Adicione a classe 'ativo' no link da página correspondente -->
+        <a href="./dentro.html" class="nav-item ativo">
+            <img src="./assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+        <a href="./dashboard/modificar_servidor.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+        <a href="./dashboard/cadastro_servidor.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="./assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionarios
+        </h3>
+        <hr class="linha">
+        <a href="./dashboard/cadastro_token.html" class="nav-item">
+            <img src="./assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="./dashboard/modificar_funcionario.html" class="nav-item">
+            <img src="./assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair">
+            <img src="./assets/imgs/logout.png" alt="" class="logout-icon">
+        </div>
+    </div>
+
+    <div class="container_main">
+        <div class=" header">
+
+        </div>
+
+        <div class="main">
+            <div class="box-titulo">
+                <div class="titulo">
+                    <div class="risco"></div>FUNCIONÁRIOS
+                </div>
+                <div class="titulo">
+                    <div class="risco"></div>CONTROLE DE ACESSO
+                </div>
+            </div>
+
+            <div class="container-gerenciamento">
+                <div class="boxes-funcionario">
+
+                    <div class="box-funcionario">
+                        <div class="circulo-iniciais">AL</div>
+                        <div class="infos-escritas">
+                            <div class="nome-funcionario">Ana Lima</div>
+                            <div class="cargo-servidor">
+                                <div class="cargo-admin">Admin</div>
+                                <div class="servidor">2 servidores</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-funcionario">
+                        <div class="circulo-iniciais">BC</div>
+                        <div class="infos-escritas">
+                            <div class="nome-funcionario">Bruno Costa</div>
+                            <div class="cargo-servidor">
+                                <div class="cargo-usuario">Admin</div>
+                                <div class="servidor">2 servidores</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="box-crud">
+                    <div class="head-crud">
+                    <div class="crud-identificacao">
+                        <div class="circulo-iniciais-crud" style="width: 3.6vw; height: 3.6vw;">AL</div>
+                        <div class="identificacao">
+                            <div class="nome-funcionario" style="font-size: 1.2vw;">Bruno Costa</div>
+                            <div class="email-funcionario">bruno.costa@empresa.com</div>
+                        </div>
+                    </div>
+                    <div class="servidor-crud">2 servidores</div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
