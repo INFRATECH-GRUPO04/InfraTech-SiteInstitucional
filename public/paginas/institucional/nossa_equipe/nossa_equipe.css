@@ -1,446 +1,266 @@
-.div_img {
-    position: relative;
+/* =========================================================
+   INFRATECH - NOSSA EQUIPE (CSS)
+   ========================================================= */
 
-    width: 500px;
-
-    overflow: hidden;
-
-    border: 1px solid #00cfff45;
-    border-radius: 3px;
+main {
+    margin-top: 90px;
+    width: 100%;
 }
 
+.secao-equipe-hero {
+    padding: 50px 0 30px;
+}
 
+.equipe-header-intro {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto 40px;
+}
 
-.div_texto {
-    width: 40%;
+.tag-secao {
+    color: var(--cor-cyan);
+    font-family: var(--fonte-tecnica);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
 
+.titulo {
+    font-family: var(--fonte-display);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    color: var(--cor-branco-logo);
+    margin: 10px 0 16px;
+}
 
-    font-size: 20px;
-
-    text-align: left;
+.subtitulo {
+    color: var(--cor-texto-corpo);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0;
 }
 
 .div_img_texto {
-    display: flex;
-    align-items: center;
-    flex-wrap:wrap;
-    justify-content: center;
-    flex-direction: row;
-
-
-    width: 100%;
-    max-width: 80%;
-    margin: 200px auto 0;
-    gap: 4%;
-}
-
-.contato_todos{
     display: grid;
-    grid-template-columns: 0.3fr 0.3fr 0.3fr;
-    justify-content: center;
-    place-items: center;
-    gap:20px;
-}
-
-.contato{
-    margin-top: 140px;
-    width: 250px;
-    text-align: center;
-}
-
-@media (max-width: 1150px) {
-    
-.div_texto {
-    width: 80%;
-    text-align: left;
-    color: #c2c7d7;
-    font-size: 1rem;
-    line-height: 1.8;
-    margin: 0;
-    margin-top: 100px;
-}
-}
-@media (max-width: 900px) {
-    .contato_todos{
-        display: grid;
-        grid-template-columns: 0.3fr 0.3fr;
-        justify-content: center;
-        place-items: center;
-        gap:20px;
-    }
-
-    
-.div_texto {
-    width: 80%;
-    text-align: left;
-
-    color: #c2c7d7;
-    font-size: 1rem;
-    line-height: 1.8;
-    margin: 0;
-}
-
-}
-@media (max-width: 767.98px) {
-    
-.div_texto {
-    width: 100%;
-
-    color: #c2c7d7;
-
-    font-size: 20px;
-
-    text-align: left;
-}
-
-    
-
-
-    .div_img {
-    position: relative;
-
-    max-width: 80%;
-
-    overflow: hidden;
-
-    border: 1px solid #00cfff45;
-    border-radius: 3px;
-}
-
-    main {
-    max-width: 100%;
-    /* margin-top: 20px; */
-}
-
-
-
-
-    .div_img_texto {
-    display: flex;
+    grid-template-columns: 1.1fr 0.9fr;
     align-items: center;
-    flex-wrap:wrap;
-    justify-content: center;
-    flex-direction: column; 
-
-
-   width: 100%;
-    max-width: 80%;
-
-    margin: 100px auto 0;
-    gap: 4%;
-    }
-
-
-    .sptech-item {
-        width: 90%;
-        text-align: center;
-        padding: 10px 15px;
-    }
-
-    .frase-banner {
-        width: 90%;
-    }
-
-    .botoes-banner {
-        flex-direction: column;
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .botoes-banner button {
-        width: 100%;
-    }
-
-    .titulo_principal {
-        font-size: 2rem;
-    }
-
-    .descricao_texto {
-        font-size: 0.9rem;
-    }
-
-    .imagem-empresa {
-        height: 300px;
-    }
-
-}
-
-@media (max-width: 575.98px) {
-
-
-.div_texto {
-    width: 100%;
-
-    color: #c2c7d7;
-
-    font-size: 20px;
-
-    text-align: left;
-
-    margin-top: 100px;
-}
-
-
-.contato_todos{
-    display: grid;
-    grid-template-columns: 0.3fr;
-    justify-content: center;
-    place-items: center;
-    /* gap:10px; */
+    gap: 50px;
+    background: var(--cor-card);
+    border: 1px solid var(--cor-borda-cyan);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 
 .div_img {
     position: relative;
-
-    max-width: 80%;
-
+    width: 100%;
+    height: 360px;
     overflow: hidden;
-
-    border: 1px solid #00cfff45;
-    border-radius: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--cor-borda);
 }
-    
-    main {
-    max-width: 100%;
-    /* margin-top: 20px; */
-}
-    
-    .div_img_texto {
-    display: flex;
-    align-items: center;
-    flex-wrap:wrap;
-    justify-content: center;
-    flex-direction: column; 
-
-    width: 100%;
-    /* max-width: 80%; */
-
-    margin: 100px auto 0;
-    gap: 4%;
-    }
-
-    .logo-banner h1 {
-        font-size: 2rem;
-    }
-
-    .frase-banner p {
-        font-size: 0.8rem;
-    }
-
-    .titulo_principal {
-        font-size: 1.7rem;
-    }
-
-    .descricao_texto {
-        font-size: 0.85rem;
-    }
-
-    .imagem-empresa {
-        height: 250px;
-    }
-
-    .titulo-func {
-        font-size: 1.2rem;
-    }
-
-    .text-func {
-        font-size: 0.8rem;
-    }
-
-    .como-funciona h1 {
-        font-size: 1.7rem;
-    }
-
-    .div_popup {
-        padding: 20px;
-    }
-
-}
-
-main {
-    width: 100%;
-    margin-top: 100px;
-}
-
-
-.texto_main {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    
-}
-
-
-.texto {
-    text-align: center;
-}
-
-
-.sub_titulo_azul {
-    font-size: 12px;
-    color: #00cfff;
-}
-
-
-.titulo {
-    margin-top: 22px;
-}
-
-
-
-
-
-.div_img::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-
-    background: linear-gradient(to right,
-            transparent,
-            #00cfff55,
-            #00cfff);
-}
-
 
 .div_img img {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
-    display: block;
-
-    opacity: 0.5;
+    object-position: center 25%;
+    opacity: 0.9;
+    transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
-.div_img::before {
-    content: "";
-
-    position: absolute;
-
-    top: 20px;
-    left: 20px;
-
-    width: 38px;
-    height: 25px;
-
-
-    border-top: 2px solid #00cfff;
-    border-left: 2px solid #00cfff;
-
-    z-index: 2;
+.div_img:hover img {
+    transform: scale(1.03);
+    opacity: 1;
 }
-
 
 .info_img {
     position: absolute;
-
-    left: 25px;
-    bottom: 25px;
-
+    left: 20px;
+    bottom: 20px;
     z-index: 2;
+    background: rgba(3, 8, 14, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 207, 255, 0.25);
 }
-
 
 .info_img span {
     display: block;
-    text-align: left;
-
+    color: var(--cor-cyan);
+    font-family: var(--fonte-tecnica);
+    font-size: 0.68rem;
+    letter-spacing: 2px;
     margin-bottom: 2px;
-
-    color: #00cfff;
-
-    font-size: 10px;
-    letter-spacing: 4px;
 }
-
 
 .info_img h2 {
     margin: 0;
-    text-align: left;
-
-    color: #e8f4fa;
-
-    font-family: "Orbitron", sans-serif;
-
-    font-size: 20px;
-    font-weight: 600;
+    color: var(--cor-branco-logo);
+    font-family: var(--fonte-display);
+    font-size: 1rem;
+    font-weight: 700;
 }
 
-
-
-
-
-
-
-
-
-.contato span{
-    font-size: 10px;
-    color: #00d0ff8d;
+.div_texto {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.contato p{
-    font-size: 20px;
+.div_texto p {
+    margin: 0;
+    color: var(--cor-texto-corpo);
+    font-size: 1rem;
+    line-height: 1.8;
 }
 
+/* Seção de Membros */
+.secao-membros {
+    padding: 50px 0 80px;
+}
 
-.foto{
-    width: 150px;
-    height: 150px;
+.contato_todos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    width: 100%;
+}
 
+.contato-card {
+    background-color: var(--cor-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all var(--transicao);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.contato-card:hover {
+    border-color: var(--cor-cyan);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 207, 255, 0.15);
+}
+
+.foto {
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     overflow: hidden;
-
-    border: 2px solid #00cfff;
-    box-shadow: 0 0 15px #00cfff33;
-
-    margin: 0 auto 20px;
+    border: 2px solid var(--cor-cyan);
+    box-shadow: 0 0 16px rgba(0, 207, 255, 0.25);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .foto img {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
 }
 
-.informacoes_contato{
+.foto.avatar-badge {
+    background: linear-gradient(135deg, #0e2236 0%, #061524 100%);
+    color: var(--cor-branco-logo);
+    font-family: var(--fonte-display);
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.cargo {
+    font-family: var(--fonte-tecnica);
+    font-size: 0.68rem;
+    color: var(--cor-cyan);
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.nome {
+    font-family: var(--fonte-display);
+    font-size: 1.05rem;
+    color: var(--cor-branco-logo);
+    margin: 0 0 16px 0;
+}
+
+.informacoes_contato {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.informacoes_contato a {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 250px;
-    height: 30px;
-    margin: 10px auto 0;
-    text-align: center;
-    margin-top: 10px;
-    color: #5A7080;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    color: var(--cor-texto-suave);
+    font-size: 0.82rem;
+    transition: all var(--transicao);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.informacoes_contato img{
-    width: 20px;
-    height: 20px;
+.informacoes_contato a:hover {
+    color: var(--cor-branco-logo);
+    background-color: rgba(0, 207, 255, 0.08);
+}
+
+.informacoes_contato img {
+    width: 16px;
+    height: 16px;
     object-fit: contain;
+    flex-shrink: 0;
 }
 
-.informacoes_contato span{
-    font-size: 16px;
-}
+/* Responsividade */
+@media (max-width: 991px) {
+    .div_img_texto {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 25px;
+    }
 
+    .div_img {
+        height: 280px;
+    }
 
-@media (max-width: 991.98px) {
-    .div_texto {
-        max-width: 100%;
-        width: 100%;
+    .contato_todos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 }
 
-@media (max-width: 575.98px) {
-    .botao_box {
-        width: 100%;
+@media (max-width: 600px) {
+    main {
+        margin-top: 75px;
+    }
+
+    .secao-equipe-hero {
+        padding: 30px 0 20px;
+    }
+
+    .div_img {
+        height: 220px;
+    }
+
+    .contato_todos {
+        grid-template-columns: 1fr;
+    }
+
+    .contato-card {
+        padding: 24px 16px;
     }
 }

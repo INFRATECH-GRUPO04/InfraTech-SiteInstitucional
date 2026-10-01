@@ -1,57 +1,67 @@
-main {
+/* =========================================================
+   INFRATECH - FALE CONOSCO (CSS)
+   ========================================================= */
+
+main#contato {
     margin-top: 100px;
     width: 100%;
-    padding: 40px 0;
+    padding: 60px 0 80px;
+    min-height: calc(100vh - 100px - 280px);
 }
 
 .conteudo-principal {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
     align-items: center;
-    justify-content: space-between;
-    gap: 40px;
+    gap: 60px;
 }
 
 .div_texto {
-    flex: 1;
-    max-width: 550px;
-}
-
-.sub_titulo_azul {
-    font-size: 12px;
-    color: #00cfff;
-    margin: 0;
+    max-width: 580px;
 }
 
 .titulo {
-    font-family: "Orbitron";
-    margin-top: 20px;
-    margin-bottom: 25px;
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-family: var(--fonte-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: var(--cor-branco-logo);
+    line-height: 1.15;
+    margin-bottom: 20px;
 }
 
 .texto {
-    color: white;
-    display: block;
-    line-height: 1.6;
-    font-size: 0.95rem;
+    color: var(--cor-texto-corpo);
+    line-height: 1.75;
+    font-size: 1rem;
+    margin-bottom: 24px;
 }
 
 .box {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 35px;
+    gap: 14px;
+    margin-top: 30px;
     width: 100%;
-    padding: 25px;
-    background: rgba(0, 207, 255, 0.02);
-    border: 1px solid rgba(0, 207, 255, 0.2);
-    border-radius: 6px;
+    padding: 26px;
+    background: rgba(0, 207, 255, 0.03);
+    border: 1px solid var(--cor-borda-cyan);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.sub_titulo_azul {
+    font-family: var(--fonte-display);
+    font-size: 0.82rem;
+    color: var(--cor-cyan);
+    margin: 0;
+    letter-spacing: 1px;
 }
 
 .texto2 {
-    color: white;
+    color: var(--cor-texto-suave);
     font-size: 0.9rem;
     line-height: 1.6;
+    margin: 0;
 }
 
 .botao_box {
@@ -59,41 +69,43 @@ main {
 }
 
 .div_contato {
-    margin-top: 40px;
+    margin-top: 35px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    gap: 32px;
+    flex-wrap: wrap;
 }
 
 .bloco_contato p {
-    color: rgba(0, 207, 255, 0.5);
-    margin: 0 0 5px 0;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
+    color: var(--cor-texto-muted);
+    font-family: var(--fonte-tecnica);
+    margin: 0 0 6px 0;
+    font-size: 0.72rem;
+    letter-spacing: 1.2px;
 }
 
 .bloco_contato span {
-    color: #00cfff;
+    color: var(--cor-branco-logo);
     font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .div_logo {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .img_logo {
-    max-width: 480px;
+    max-width: 440px;
     width: 100%;
     height: auto;
+    filter: drop-shadow(0 0 25px rgba(0, 207, 255, 0.25));
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 991px) {
     .conteudo-principal {
-        flex-direction: column;
-        padding: 0 20px;
+        grid-template-columns: 1fr;
+        gap: 40px;
     }
 
     .div_texto {
@@ -102,8 +114,7 @@ main {
     }
 
     .div_logo {
-        width: 100%;
-        margin-top: 30px;
+        margin-top: 20px;
     }
 
     .img_logo {
@@ -112,6 +123,11 @@ main {
 }
 
 @media (max-width: 575.98px) {
+    main#contato {
+        margin-top: 80px;
+        padding: 40px 0 60px;
+    }
+
     .botao_box {
         width: 100%;
     }

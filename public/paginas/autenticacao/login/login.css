@@ -1,297 +1,335 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* =========================================================
+   INFRATECH - TELAS DE AUTENTICAÇÃO (LOGIN & CADASTRO)
+   ========================================================= */
 
-body {
+body.pagina-autenticacao {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    padding: 30px 16px;
+    background: radial-gradient(circle at 50% 30%, rgba(0, 207, 255, 0.08) 0%, transparent 60%),
+                linear-gradient(180deg, #07101a 0%, #050b12 50%, #03070b 100%);
+    background-attachment: fixed;
+    box-sizing: border-box;
 }
 
-
-.box-login {
-    border: 1px solid #00cfff;
-    background-color: #151e36;
-    width: 500px;
-    height: 550px;
-}
-
-.posicao-titulo-formulario{
+.box-login,
+.box-cadastro {
     width: 100%;
-    max-width: 500px;
+    max-width: 480px;
+    background-color: var(--cor-card, #0b1622);
+    border: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.25));
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 207, 255, 0.08);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+    margin: auto;
+}
+
+.box-cadastro {
+    max-width: 760px;
+}
+
+.box-login::before,
+.box-cadastro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(0, 207, 255, 0.1), #00cfff, rgba(0, 207, 255, 0.1));
+}
+
+.posicao-titulo-formulario {
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.box-cadastro {
-    border: 1px solid #00cfff;
-    background-color: #151e36;
+.titulo-imagem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-
 .posicao-imagem {
-    display: flex;
-    flex-direction: row;
+    display: inline-flex;
     justify-content: center;
-    height: 60px;
+    margin-bottom: 12px;
+    transition: transform var(--transicao);
+}
+
+.posicao-imagem:hover {
+    transform: scale(1.05);
+}
+
+.posicao-imagem img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(0, 207, 255, 0.35));
 }
 
 .titulo-login {
-    font-family: "Orbitron", sans-serif;
-    font-size: 20px;
-    display: flex;
-    justify-content: center;
-    font-weight: bold;
-
+    font-family: var(--fonte-display, "Orbitron", sans-serif);
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 0;
 }
 
-.titulo-login .destaque-azul {
-    display: flex;
-    justify-content: center;
-    color: #00CFFF;
-    font-weight: bold;
+.destaque-branco {
+    color: var(--cor-branco-logo, #ffffff);
 }
 
-.login-formulario {
-    padding-left: 15px;
-    padding-right: 15px;
+.destaque-azul {
+    color: var(--cor-cyan, #00CFFF);
+    text-shadow: 0 0 10px rgba(0, 207, 255, 0.35);
 }
 
-.funcionario-formulario {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 10px;
-}
-
-.login-esquerdo {
-    padding-left: 15px;
-    padding-right: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    width: 100%;
-}
-
-.login-direito {
-    padding-left: 15px;
-    padding-right: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    width: 100%;
-}
-
-.texto {
-    color: #a0a0a0;
-}
-
-.texto_dif{
-    color: white;
-    margin-left: 2px;
-    text-decoration: none;
-}
-
-.texto_dif:hover{
-    color: #00d0ff9d;
-}
-
-.posicao-conta{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.linha-divisao {
-    font-size: 11px;
-    padding: 10px;
-    border-bottom: 2px #00CFFF solid;
-    background-color: #151e36;
+.subtitulo-autenticacao {
+    color: var(--cor-texto-suave, #92abbd);
+    font-size: 0.82rem;
+    margin: 6px 0 0;
 }
 
 .bloco-linha {
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-bottom: 20px;
+    width: 100%;
+    margin-top: 14px;
 }
 
-.texto-opcao {
+.linha-divisao {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 207, 255, 0.3), transparent);
+}
+
+/* Formulário */
+.formulario-login {
+    width: 100%;
+}
+
+.login-formulario {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.linha-opcao {
-    display: block;
-    width: 200px;
-    height: 2px;
-    background-color: #00cfff;
-}
-
-.opcao-cadastro {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     gap: 16px;
+}
+
+.funcionario-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     margin-bottom: 20px;
-    padding-top: 20px;
 }
 
-.bloco-input {
-    color: white;
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
+.bloco-input,
 .bloco-input-funcionario {
-    color: white;
-    font-size: 0.8rem;
-    margin-bottom: 5px;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
+    width: 100%;
 }
 
-
-.inputs {
-    background-color: #00d0ff13;
-    border: 1px #00CFFF solid;
-    padding-top: 11px;
-    padding-bottom: 11px;
-    padding-left: 14px;
-    border-radius: 2px;
-    font-family: "JetBrains Mono", monospace;
-    color: aliceblue;
-    outline: none;
+.bloco-input label,
+.bloco-input-funcionario label {
+    color: var(--cor-texto-suave, #92abbd);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-family: var(--fonte-tecnica, "JetBrains Mono", monospace);
 }
 
+.inputs,
 .inputs-formulario {
-    background-color: #00d0ff13;
-    border: 1px #00CFFF solid;
-    padding-top: 11px;
-    padding-bottom: 11px;
-    padding-left: 14px;
-    border-radius: 2px;
-    font-family: "JetBrains Mono", monospace;
-    color: aliceblue;
+    background-color: var(--cor-input, #071018);
+    border: 1px solid var(--cor-borda, #142838);
+    padding: 11px 14px;
+    border-radius: var(--raio-padrao, 6px);
+    font-family: var(--fonte-tecnica, "JetBrains Mono", monospace);
+    color: var(--cor-branco-logo, #ffffff);
     outline: none;
+    font-size: 0.9rem;
+    transition: all var(--transicao, 0.2s ease);
     width: 100%;
 }
 
-.inputs ::placeholder {
-    color: #E8F4F850;
+.inputs:focus,
+.inputs-formulario:focus {
+    border-color: var(--cor-cyan, #00CFFF);
+    box-shadow: 0 0 0 3px rgba(0, 207, 255, 0.18);
+    background-color: #0b1826;
 }
 
-.criar-conta {
+.inputs::placeholder,
+.inputs-formulario::placeholder {
+    color: var(--cor-texto-muted, #648294);
+    opacity: 0.7;
+}
+
+.titulo-senha {
     display: flex;
-    flex-direction: column;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-.criar-conta a {
-    display: block;
-    width: 100%;
-    text-decoration: none;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .botao-login {
-    margin-top: 18px;
+    margin-top: 8px;
     cursor: pointer;
     padding: 13px;
-    background-color: #00CFFF;
-    border: 1px transparent solid;
-    border-radius: 4px;
-    font-family: "Orbitron", sans-serif;
-    font-weight: bold;
-    font-size: 15px;
-    transition: all 0.3s ease-in-out;
+    background-color: var(--cor-cyan, #00CFFF);
+    color: #050b12 !important;
+    border: 1px solid var(--cor-cyan, #00CFFF);
+    border-radius: var(--raio-padrao, 6px);
+    font-family: var(--fonte-display, "Orbitron", sans-serif);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    transition: all var(--transicao, 0.2s ease);
     display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: center;
     width: 100%;
+    box-shadow: 0 0 16px rgba(0, 207, 255, 0.25);
 }
 
 .botao-login:hover {
-    background-color: #00CFFF;
-    color: #111;
-    box-shadow: 0 0 15px #00CFFF;
-}
-
-.alerta_erro {
-  display: flex;
-  justify-content: flex-end;
-  /* deixa o alerta acima de qualquer coisa na tela */
-  z-index: 9999;
-}
-
-.card_erro {
-  display: none;
-  background-color: #E8F4F850;
-  color: white;
-  width: 230px;
-  position: fixed;
-  border-radius: 4px;
-  border: #00CFFF 3px solid;
-  padding: 10px;
-  margin-right: 10%;
-  z-index: 9999;
-}
-
-.card_erro #mensagem_erro {
-  font-weight: 500;
-  font-size: 20px;
-}
-
-
-/*Resposividade tela de login*/
-@media (max-width: 520px) {
-   .box-login {
-    width: 300px;
-}
-
-.botao-login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 8px;
+    background-color: transparent;
+    color: var(--cor-cyan, #00CFFF) !important;
+    box-shadow: 0 0 24px rgba(0, 207, 255, 0.45);
+    transform: translateY(-2px);
 }
 
 .opcao-cadastro {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-}
-
-/*responsividade tela de cadastro funcionario */
-@media (max-width: 480px) {
-    .funcionario-formulario {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 10px;
-}
+    justify-content: center;
+    gap: 14px;
+    margin: 22px 0 18px;
 }
 
-@media (min-width: 900px){
-.posicao-titulo-formulario{
+.linha-opcao {
+    flex: 1;
+    height: 1px;
+    background-color: var(--cor-borda, #142838);
+}
+
+.texto-opcao {
+    color: var(--cor-texto-muted, #648294);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-family: var(--fonte-tecnica);
+}
+
+.criar-conta {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    max-width: 100%;
-    
 }
 
-.box-cadastro {
-    border: 1px solid #00cfff;
-    background-color: #151e36;
-    width: 60%;
-    align-items: center;
+.btn-outline-login {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.3));
+    border-radius: var(--raio-padrao, 6px);
+    background-color: transparent;
+    color: var(--cor-branco-logo, #ffffff);
+    font-family: var(--fonte-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    transition: all var(--transicao);
+    text-decoration: none;
 }
+
+.btn-outline-login:hover {
+    border-color: var(--cor-cyan);
+    color: var(--cor-cyan);
+    background-color: rgba(0, 207, 255, 0.08);
+}
+
+.posicao-conta {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.posicao-conta .texto {
+    color: var(--cor-texto-suave);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.posicao-conta .texto_dif {
+    color: var(--cor-cyan);
+    font-weight: 600;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.posicao-conta .texto_dif:hover {
+    text-decoration: underline;
+}
+
+.rodape-auth {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.rodape-auth a {
+    color: var(--cor-texto-muted);
+    font-size: 0.8rem;
+    transition: color var(--transicao);
+}
+
+.rodape-auth a:hover {
+    color: var(--cor-cyan);
+}
+
+/* Alertas de Erro */
+.alerta_erro {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+}
+
+.card_erro {
+    display: none;
+    background-color: rgba(11, 22, 34, 0.95);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    max-width: 320px;
+    border-radius: 8px;
+    border: 1px solid var(--cor-cyan, #00CFFF);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    padding: 14px 18px;
+    font-size: 0.88rem;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .funcionario-formulario {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .box-login,
+    .box-cadastro {
+        padding: 24px 18px;
+    }
 }

@@ -1,434 +1,245 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nossa Equipe - InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
 
-
-    <link href="https://googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
-        rel="stylesheet" />
-    <style>
-        @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-    </style>
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
     <link rel="stylesheet" href="../../../compartilhado/css/cadastro_pop.css">
     <link rel="stylesheet" href="./nossa_equipe.css">
-
 </head>
 
 <body>
 
+    <!-- CABEÇALHO -->
+    <header class="cabecalho">
+        <div class="container-header">
+            <a href="../home/index.html#inicio" class="logo-header">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech" class="logo-header-img">
+                <h3 class="logo-header-titulo">INFRA<span class="text-cyan">TECH</span></h3>
+            </a>
 
-    <header>
-        <div class="container d-flex align-items-center justify-content-between">
-            <div class="logo-header d-flex align-items-center gap-3">
-                <img src="assets/icon/logo.png" width="45" class="img-fluid" />
-                <h3 class="m-0 fs-4 fw-semibold">INFRA<span style="color: #00cfff">TECH</span></h3>
-            </div>
-
-            <button class="btn-menu-hamburguer" aria-label="Menu">&#9776;</button>
+            <button class="btn-menu-hamburguer" type="button" aria-label="Abrir Menu">&#9776;</button>
 
             <nav class="nav-container">
-                <a href="index.html#inicio">INÍCIO</a>
-                <a href="index.html#sobre">SOBRE</a>
-                <a href="index.html#funcionalidades">FUNCIONALIDADES</a>
-                <a href="index.html#equipe">EQUIPE</a>
-                <a href="index.html#contato">CONTATO</a>
-                <button class="btn btn-cyan" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</button>
+                <a href="../home/index.html#inicio">Início</a>
+                <a href="../home/index.html#sobre">Sobre</a>
+                <a href="../home/index.html#funcionalidades">Funcionalidades</a>
+                <a href="./nossa_equipe.html" style="color: var(--cor-cyan);">Equipe</a>
+                <a href="../fale_conosco/fale_conosco.html">Fale Conosco</a>
+                <a href="../../autenticacao/login/login.html" class="btn-cyan">Entrar</a>
             </nav>
         </div>
     </header>
 
     <main>
 
-        <div class="modal fade" id="modalEntrar" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content bg-transparent border-0">
-                    <div class="div_popup">
-                        <div class="div_canto_superior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Fechar"></button>
-                            </div>
-                        </div>
-
-                        <div class="div_titulo">
-                            <div>
-                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-                            </div>
-                            <p class="titulo_popup texto_popup">ENTRAR</p>
-                        </div>
-
-                        <div class="div_componentes_login">
-                            <div class="campo_login mb-4">
-                                <p>E-MAIL</p>
-                                <input type="text" id="ipt_email_corporativo" class="form-control campoTexto"
-                                    placeholder="voce@empresa.com">
-                            </div>
-
-                            <div class="campo_login">
-                                <p>SENHA</p>
-                                <input type="password" id="ipt_senha" class="form-control campoTexto"
-                                    placeholder="Mínimo 8 caracteres">
-
-                                <div class="senha d-flex justify-content-between align-items-center mt-2">
-                                    <div class="form-check">
-                                        <input type="checkbox" name="lembrar" id="lembrar" class="form-check-input">
-                                        <label for="lembrar" class="form-check-label">Lembrar Acesso</label>
-                                    </div>
-                                    <span>Esqueci a senha</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="div_btn_entrarSistema">
-                            <button id="btn_login" class="btn btn_login w-100" onclick="entrar()">ENTRAR NO
-                                SISTEMA</button>
-                            <div class="divisoria my-3 text-center">OU</div>
-                            <button id="btn_redirecionar" class="btn btn_redirecionar w-100" type="button"
-                                data-bs-toggle="modal" data-bs-target="#modalCadastro" data-bs-dismiss="modal">CRIAR
-                                NOVA CONTA</button>
-                        </div>
-
-                        <div class="div_canto_inferior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content bg-transparent border-0">
-                    <div class="div_popup">
-                        <div class="div_canto_superior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Fechar"></button>
-                            </div>
-                        </div>
-
-                        <div class="div_titulo">
-                            <div>
-                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-
-
-                            </div>
-                            <p class="titulo_popup texto_popup">CADASTRAR</p>
-                        </div>
-
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-6">
-                                <p>NOME COMPLETO</p>
-                                <input type="text" id="ipt_nome" class="form-control campoTexto"
-                                    placeholder="João Silva">
-                            </div>
-
-                            <div class="col-12 col-md-6">
-                                <p>CÓDIGO DA EMPRESA</p>
-                                <input type="text" id="ipt_codigo" class="form-control campoTexto" placeholder="A44FSF">
-                            </div>
-                        </div>
-
-                        <p>CPF</p>
-                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3"
-                            placeholder="000.003.444-41">
-
-                        <p>E-MAIL CORPORATIVO</p>
-                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3"
-                            placeholder="voce@empresa.com">
-
-                        <p>SENHA</p>
-                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3"
-                            placeholder="Mínimo 8 caracteres">
-
-                        <p>CONFIRMAR SENHA</p>
-                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto"
-                            placeholder="Repita a senha">
-
-                        <div class="div_btn_criarConta text-center mt-4">
-                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100">CRIAR
-                                CONTA</button>
-
-                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif"
-                                    data-bs-toggle="modal" data-bs-target="#modalEntrar"
-                                    data-bs-dismiss="modal">Entrar</a></p>
-
-                        </div>
-
-                        <div class="div_canto_inferior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="modalCadastro" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content bg-transparent border-0">
-                    <div class="div_popup">
-                        <div class="div_canto_superior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita">
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                    aria-label="Fechar"></button>
-                            </div>
-                        </div>
-
-                        <!-- <div class="div_titulo">
-                            <div>
-                                <img src="assets/icon/CadastroIcon.png" alt="Logo da InfraTech" class="img-icon">
-                                <h1 class="titulo_popup">INFRA<span class="corzinha">TECH</span></h1>
-
-                                
-                            </div>
-                            <p class="titulo_popup texto_popup">CADASTRAR</p>
-                        </div>
-                        
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-6">
-                                <p>NOME COMPLETO</p>
-                                <input type="text" id="ipt_nome" class="form-control campoTexto" placeholder="João Silva">
-                            </div>
-
-                            <div class="col-12 col-md-6">
-                                <p>CÓDIGO DA EMPRESA</p>
-                                <input type="text" id="ipt_codigo" class="form-control campoTexto" placeholder="A44FSF">
-                            </div>
-                        </div>
-
-                        <p>CPF</p>
-                        <input type="text" id="ipt_cpf" class="form-control campoTexto mb-3" placeholder="000.003.444-41">
-
-                        <p>E-MAIL CORPORATIVO</p>
-                        <input type="text" id="ipt_email_corporativo_cadastro" class="form-control campoTexto mb-3" placeholder="voce@empresa.com">
-
-                        <p>SENHA</p>
-                        <input type="password" id="ipt_senha_cadastro" class="form-control campoTexto mb-3" placeholder="Mínimo 8 caracteres">
-
-                        <p>CONFIRMAR SENHA</p>
-                        <input type="password" id="ipt_confirmar_senha" class="form-control campoTexto" placeholder="Repita a senha">
-
-                        <div class="div_btn_criarConta text-center mt-4">
-                            <button onclick="buscarCodigo()" id="btn_cadastro" class="btn btn_cadastro w-100" >CRIAR CONTA</button>
-
-                            <p class="texto mt-3">Já tem conta? <a id="link_entrar" href="#" class="texto_dif" data-bs-toggle="modal" data-bs-target="#modalEntrar" data-bs-dismiss="modal">Entrar</a></p>
-
-                        </div> -->
-
-                        <div class="div_canto_inferior d-flex justify-content-between">
-                            <div class="borda_esquerda"></div>
-                            <div class="borda_direita"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="texto_main">
-
-            <div class="texto">
-                <div>
-                    <h1 class="titulo">NOSSA <span style="color: #00cfff">EQUIPE</span></h1>
+        <!-- SEÇÃO HERO DA EQUIPE -->
+        <section class="secao-equipe-hero">
+            <div class="container">
+                <div class="equipe-header-intro">
+                    <span class="tag-secao">TALENTOS & ENGENHARIA</span>
+                    <h1 class="titulo">NOSSA <span class="text-cyan">EQUIPE</span></h1>
+                    <p class="subtitulo">
+                        Conheça os estudantes e desenvolvedores da São Paulo Tech School por trás da arquitetura,
+                        monitoramento e segurança da InfraTech.
+                    </p>
                 </div>
 
                 <div class="div_img_texto">
                     <div class="div_img">
-                        <img src="assets/imgs/geral.jpeg" alt="">
-
+                        <img src="../../../assets/imgs/GrupodePI.jfif" alt="Equipe Completa InfraTech">
                         <div class="info_img">
-                            <span>EQUIPE COMPLETA</span>
-                            <h2>INFRATECH - SÃO PAULO TECH SCHOOL</h2>
+                            <span>PROJETO INTEGRADOR · 2026</span>
+                            <h2>SÃO PAULO TECH SCHOOL</h2>
                         </div>
                     </div>
-                    <div class="div_texto" style="    color: white;">
-                        Na InfraTech, unimos engenharia de software, observabilidade para proteger ecosisisemas de alta
-                        demanda.
-                        nossa equipe desenvolve soluções inteligentes de monitoramento contínuo para servidores
-                        dedicados de jogos online e serviços críticos de microtransações.
-                        Combinamos monitoramento proativo de hardware, métricas de rede e integridade de
-                        transações para que panes silenciosas não se transformem em prejuízos financeiros ou quebra de
-                        confiança dos jogadores.
+                    <div class="div_texto">
+                        <p>
+                            Na InfraTech, unimos engenharia de software, observabilidade e redes para proteger ecossistemas de alta demanda e servidores dedicados de jogos online.
+                        </p>
+                        <p>
+                            Nossa equipe projeta e desenvolve agentes de telemetria contínua, combinando monitoramento proativo de hardware e integridade de transações para que panes silenciosas não se transformem em indisponibilidade ou prejuízos aos servidores.
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
+        <!-- CARDS DOS MEMBROS -->
+        <section class="secao-membros">
+            <div class="container">
+                <div class="contato_todos">
 
-        <div class="contato_todos">
-            <div class="contato">
-                <div class="foto">
-                    <img src="assets/imgs/amanda.jpeg" alt="">
-                </div>
-                <span>TECNOLOGIA</span>
-                <p>Amanda de Oliveira</p>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://www.linkedin.com/in/amanda-tavares-de-oliveira-7bb91542b/'">Amanda
-                        Tavares de Oliveira</span>
-                </div>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://github.com/AmandaTavares-0802'">AmandaTavares-0802</span>
+                    <!-- AMANDA -->
+                    <div class="contato-card">
+                        <div class="foto avatar-badge">
+                            <span>AO</span>
+                        </div>
+                        <span class="cargo">TECNOLOGIA & DESENVOLVIMENTO</span>
+                        <h3 class="nome">Amanda de Oliveira</h3>
+                        <div class="informacoes_contato">
+                            <a href="https://www.linkedin.com/in/amanda-tavares-de-oliveira-7bb91542b/" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_linkedin.png" alt="LinkedIn">
+                                <span>Amanda Tavares de Oliveira</span>
+                            </a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <a href="https://github.com/AmandaTavares-0802" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_github.png" alt="GitHub">
+                                <span>AmandaTavares-0802</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ARTHUR -->
+                    <div class="contato-card">
+                        <div class="foto avatar-badge">
+                            <span>AM</span>
+                        </div>
+                        <span class="cargo">TECNOLOGIA & DESENVOLVIMENTO</span>
+                        <h3 class="nome">Arthur Martins</h3>
+                        <div class="informacoes_contato">
+                            <a href="https://www.linkedin.com/in/arthur-martins-a00706373/" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_linkedin.png" alt="LinkedIn">
+                                <span>Arthur Martins</span>
+                            </a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <a href="https://github.com/arthursptech" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_github.png" alt="GitHub">
+                                <span>arthursptech</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- GUILHERME -->
+                    <div class="contato-card">
+                        <div class="foto avatar-badge">
+                            <span>GP</span>
+                        </div>
+                        <span class="cargo">TECNOLOGIA & DESENVOLVIMENTO</span>
+                        <h3 class="nome">Guilherme Pastorello</h3>
+                        <div class="informacoes_contato">
+                            <a href="https://www.linkedin.com/in/guilherme-lima-pastorello-62a8b7284/" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_linkedin.png" alt="LinkedIn">
+                                <span>Guilherme Lima Pastorello</span>
+                            </a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <a href="https://github.com/GuiPastorello" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_github.png" alt="GitHub">
+                                <span>GuiPastorello</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ISAAC -->
+                    <div class="contato-card">
+                        <div class="foto avatar-badge">
+                            <span>IA</span>
+                        </div>
+                        <span class="cargo">TECNOLOGIA & DESENVOLVIMENTO</span>
+                        <h3 class="nome">Isaac Azevedo Pinheiro</h3>
+                        <div class="informacoes_contato">
+                            <a href="https://www.linkedin.com/in/isaac-azevedo-041299341" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_linkedin.png" alt="LinkedIn">
+                                <span>Isaac Azevedo</span>
+                            </a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <a href="https://github.com/isaacazevedopinheiro" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_github.png" alt="GitHub">
+                                <span>isaacazevedopinheiro</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- JEFFERSON -->
+                    <div class="contato-card">
+                        <div class="foto">
+                            <img src="../../../assets/imgs/jeffersonbom.jpeg" alt="Jefferson Alexandre Palma">
+                        </div>
+                        <span class="cargo">TECNOLOGIA & DESENVOLVIMENTO</span>
+                        <h3 class="nome">Jefferson Palma</h3>
+                        <div class="informacoes_contato">
+                            <a href="https://www.linkedin.com/in/jefferson-alexandre-lima-palma-a33568233" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_linkedin.png" alt="LinkedIn">
+                                <span>Jefferson Alexandre Palma</span>
+                            </a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <a href="https://github.com/Jefferson-Palma" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_github.png" alt="GitHub">
+                                <span>Jefferson-Palma</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- MARIA EDUARDA -->
+                    <div class="contato-card">
+                        <div class="foto avatar-badge">
+                            <span>MF</span>
+                        </div>
+                        <span class="cargo">TECNOLOGIA & DESENVOLVIMENTO</span>
+                        <h3 class="nome">Maria Eduarda Fontana</h3>
+                        <div class="informacoes_contato">
+                            <a href="https://www.linkedin.com/in/maria-eduarda-fontana-nogueiro-8642803a9" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_linkedin.png" alt="LinkedIn">
+                                <span>Maria Eduarda Fontana</span>
+                            </a>
+                        </div>
+                        <div class="informacoes_contato">
+                            <a href="https://github.com/MariaEduardaFontanaNogueiro" target="_blank" rel="noopener noreferrer">
+                                <img src="../../../assets/icon/logo_github.png" alt="GitHub">
+                                <span>MariaEduardaFontana</span>
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+        </section>
 
-            <div class="contato">
-                <div class="foto">
-                    <img src="assets/imgs/arthur.jpeg" alt="">
-                </div>
-                <span>TECNOLOGIA</span>
-                <p>Arthur Martins</p>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://www.linkedin.com/in/arthur-martins-a00706373/'">Arthur
-                        Martins</span>
-                </div>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://github.com/arthursptech'">arthursptech</span>
-                </div>
-            </div>
-
-            <div class="contato">
-                <div class="foto">
-                    <img src="assets/imgs/guilherme.jpeg" alt="">
-                </div>
-                <span>TECNOLOGIA</span>
-                <p>Guilherme Lima Pastorello</p>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://www.linkedin.com/in/guilherme-lima-pastorello-62a8b7284/'">Guilherme
-                        Lima Pastorello</span>
-                </div>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://github.com/GuiPastorello'">GuiPastorello</span>
-                </div>
-            </div>
-
-            <div class="contato">
-                <div class="foto">
-                    <img src="assets/imgs/isaac1.jpeg" alt="">
-                </div>
-                <span>TECNOLOGIA</span>
-                <p>Isaac Azevedo Pinheiro</p>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://www.linkedin.com/in/isaac-azevedo-041299341?utm_source=share_via&utm_content=profile&utm_medium=member_ios'">Isaac
-                        Azevedo</span>
-                </div>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://github.com/isaacazevedopinheiro'">isaacazevedopinheiro</span>
-                </div>
-            </div>
-
-            <div class="contato">
-                <div class="foto">
-                    <img src="assets/imgs/jeffersonbom.jpeg" alt="">
-                </div>
-                <span>TECNOLOGIA</span>
-                <p>Jefferson Alexandre Lima Palma</p>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_linkedin.png" alt="Jefferson Alexandre Palma">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://www.linkedin.com/in/jefferson-alexandre-lima-palma-a33568233?utm_source=share_via&utm_content=profile&utm_medium=member_android'">Jefferson
-                        Alexandre Lima Palma</span>
-                </div>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://github.com/Jefferson-Palma'">Jefferson-Palma</span>
-                </div>
-            </div>
-
-            <div class="contato">
-                <div class="foto">
-                    <img src="assets/imgs/duda.jpeg" alt="">
-                </div>
-                <span>TECNOLOGIA</span>
-                <p>Maria Eduarda Fontana Nogueiro</p>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_linkedin.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://www.linkedin.com/in/maria-eduarda-fontana-nogueiro-8642803a9?utm_source=share_via&utm_content=profile&utm_medium=member_android'">Maria
-                        Eduarda Fontana Nogueiro</span>
-                </div>
-                <div class="informacoes_contato">
-                    <img src="assets/icon/logo_github.png" alt="">
-                    <span style="cursor: pointer;"
-                        onclick="window.location.href='https://github.com/MariaEduardaFontanaNogueiro'">MariaEduardaFontanaNogueiro</span>
-                </div>
-            </div>
-        </div>
-        </div>
     </main>
 
-
-
-
+    <!-- RODAPÉ -->
     <footer class="rodape">
-        <div class="container">
-            <div class="row justify-content-between g-5">
-                <div class="col-12 col-md-6 col-lg-5">
-                    <div class="rodape-logo">
-                        <div>
-                            <h2>INFRATECH</h2>
-                            <p>Monitoramento inteligente de infraestrutura.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3 col-lg-2">
-                    <div class="rodape-links">
-                        <h3>SISTEMA</h3>
-                        <a href="index.html#inicio">INÍCIO</a>
-                        <a href="index.html#sobre">SOBRE</a>
-                        <a href="index.html#funcionalidades">FUNCIONALIDADES</a>
-                        <a href="index.html#equipe">EQUIPE</a>
-                        <a href="index.html#contato">CONTATO</a>
-                    </div>
-                </div>
-
-                <div class="col-6 col-md-3 col-lg-2">
-                    <div class="rodape-links">
-                        <h3>ACESSO</h3>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalEntrar">Entrar</a>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modalCadastro">Criar conta</a>
-                    </div>
+        <div class="rodape-conteudo">
+            <div class="rodape-logo">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
+                <div>
+                    <h2>INFRA<span class="text-cyan">TECH</span></h2>
+                    <p>Monitoramento inteligente da infraestrutura de servidores.</p>
                 </div>
             </div>
 
-            <div class="rodape-final mt-4 pt-3">
-                <p>© 2026 InfraTech. Todos os direitos reservados.</p>
+            <div class="rodape-links">
+                <h3>SISTEMA</h3>
+                <a href="../home/index.html#inicio">Início</a>
+                <a href="../home/index.html#sobre">Sobre</a>
+                <a href="../home/index.html#funcionalidades">Funcionalidades</a>
+                <a href="./nossa_equipe.html">Equipe</a>
+                <a href="../fale_conosco/fale_conosco.html">Fale Conosco</a>
+            </div>
+
+            <div class="rodape-links">
+                <h3>ACESSO</h3>
+                <a href="../../autenticacao/login/login.html">Entrar</a>
+                <a href="../../autenticacao/cadastro_funcionario/cadastro-funcionario.html">Criar Conta</a>
+                <a href="../fale_conosco/fale_conosco.html">Suporte</a>
             </div>
         </div>
-    </footer>
-</body>
 
-<script src="../../../compartilhado/js/script-modal.js"></script>
-<script src="./nossa_equipe.js"></script>
+        <div class="rodape-final">
+            <p>© 2026 InfraTech. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="./nossa_equipe.js"></script>
+</body>
 
 </html>

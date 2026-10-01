@@ -4,31 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INFRATECH-Login</title>
+    <title>Login - InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
+
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
     <link rel="stylesheet" href="./login.css">
     <script src="./login.js" defer></script>
-
 </head>
 
-<body>
+<body class="pagina-autenticacao">
+
+    <div class="alerta_erro">
+        <div class="card_erro" id="cardErro">
+            <span id="mensagem_erro"></span>
+        </div>
+    </div>
+
     <div class="box-login">
         <div class="posicao-titulo-formulario">
             <div class="titulo-imagem">
-                <div class="posicao-imagem">
-                    <img src="./assets/icon/logo.png" alt="">
-                </div>
+                <a href="../../institucional/home/index.html" class="posicao-imagem" title="Voltar ao início">
+                    <img src="../../../assets/icon/logo.png" alt="InfraTech Logo">
+                </a>
 
-                <div>
-                     <h1 class="titulo-login"><span class="destaque-azul">INFRA</span>TECH</h1>
-                </div>
-                <div class="bloco-linha"><p class="linha-divisao"></p></div>
+                <h1 class="titulo-login"><span class="destaque-branco">INFRA</span><span class="destaque-azul">TECH</span></h1>
+                <p class="subtitulo-autenticacao">Painel de Observabilidade & Monitoramento</p>
+                <div class="bloco-linha"><div class="linha-divisao"></div></div>
             </div>
+
             <div class="formulario-login">
-                <div class="login-formulario" id="loginFormulario">
+                <form class="login-formulario" id="loginFormulario" onsubmit="event.preventDefault(); entrar();">
                     <div class="bloco-input">
                         <label for="emailInput">E-mail corporativo</label>
-                        <input class="inputs" type="email" id="emailInput" placeholder="infratech@empresa.com" required>
+                        <input class="inputs" type="email" id="emailInput" placeholder="infratech@empresa.com" required autocomplete="email">
                         <span class="mensagem-erro" id="emailError"></span>
                     </div>
 
@@ -36,27 +44,32 @@
                         <div class="titulo-senha">
                             <label for="passwordInput">Senha</label>
                         </div>
-                        <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required>
+                        <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required autocomplete="current-password">
                         <span class="mensagem-erro" id="passwordError"></span>
                     </div>
-                    
-                    <button class="botao-login" onclick="entrar()">Entrar no Sistema</button>
-                
-                </div>
 
+                    <button class="botao-login" type="submit" id="btn_entrar">Entrar no Sistema</button>
+                </form>
             </div>
+
             <div class="opcao-cadastro">
-            <span class="linha-opcao"></span>
-            <span class="texto-opcao">ou</span>
-            <span class="linha-opcao"></span>
+                <span class="linha-opcao"></span>
+                <span class="texto-opcao">ou</span>
+                <span class="linha-opcao"></span>
             </div>
+
             <div class="criar-conta">
-                <a href="cadastro-funcionario.html">
-                    <button class="botao-login" type="button" >Criar conta</button>
+                <a href="../cadastro_funcionario/cadastro-funcionario.html" class="btn-outline-login">
+                    Criar nova conta com token
                 </a>
-           </div>
+            </div>
+
+            <div class="rodape-auth">
+                <a href="../../institucional/home/index.html">← Voltar para o site institucional</a>
+            </div>
         </div>
     </div>
+
 </body>
 
 </html>
