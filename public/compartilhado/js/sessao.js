@@ -6,15 +6,17 @@ function validarSessao() {
     var b_usuario = document.getElementById("b_usuario");
 
     if (email != null && nome != null) {
-        b_usuario.innerHTML = nome;
+        if (b_usuario) {
+            b_usuario.textContent = nome;
+        }
     } else {
-        window.location = "../login.html";
+        window.location = "/index.html";
     }
 }
 
 function limparSessao() {
     sessionStorage.clear();
-    window.location = "../index.html";
+    window.location = "/index.html";
 }
 
 // carregamento (loading)
@@ -33,4 +35,3 @@ function finalizarAguardar(texto) {
         divErrosLogin.innerHTML = texto;
     }
 }
-

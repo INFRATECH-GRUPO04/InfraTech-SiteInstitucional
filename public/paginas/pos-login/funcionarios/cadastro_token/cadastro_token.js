@@ -1,4 +1,6 @@
-const painéis = document.querySelectorAll(".step-panel");
+validarSessao();
+
+const paineis = document.querySelectorAll(".step-panel");
 const pontos = document.querySelectorAll(".step-dot");
 const linhas = document.querySelectorAll(".step-line");
 
@@ -12,13 +14,41 @@ const tipoUserSpan = document.getElementById("tipo_user");
 
 const tokenSpan = document.getElementById("token");
 const btnCopiar = document.getElementById("btn_copiar");
+const avisoCopia = document.getElementById("aviso_copia");
 const btnAvancar = document.getElementById("btn_avancar");
 const btnVoltar = document.getElementById("voltar");
 
+const ROTULOS_BOTAO = {
+    1: "Continuar →",
+    2: "Gerar token",
+    3: "+ Gerar novo token"
+};
+
 let etapaAtual = 1;
+let quantidade = 0;
+let carregando = false;
+let temporizadorCopia = null;
+
+function atualizarBotoes() {
+    btnAvancar.textContent = carregando ? "Gerando token..." : ROTULOS_BOTAO[etapaAtual];
+    btnAvancar.disabled = carregando;
+    btnAvancar.setAttribute("aria-busy", String(carregando));
+    btnVoltar.disabled = carregando;
+    btnVoltar.hidden = etapaAtual === 1;
+}
+
+function focarEtapa(numero) {
+    const alvo = {
+        1: qtdInput,
+        2: document.querySelector('input[name="permissao"]:checked') || document.getElementById("qtd1"),
+        3: btnCopiar
+    }[numero];
+
+    alvo.focus();
+}
 
 function mostrarEtapa(numero) {
-    painéis.forEach(function (painel) {
+    paineis.forEach(function (painel) {
         painel.classList.toggle("active", Number(painel.dataset.panel) === numero);
     });
 
@@ -26,111 +56,215 @@ function mostrarEtapa(numero) {
         const passo = Number(dot.dataset.step);
         dot.classList.toggle("done", passo < numero);
         dot.classList.toggle("active", passo === numero);
+
+        if (passo === numero) {
+            dot.setAttribute("aria-current", "step");
+        } else {
+            dot.removeAttribute("aria-current");
+        }
     });
 
     linhas.forEach(function (linha, indice) {
         linha.classList.toggle("done", indice + 1 < numero);
     });
 
-    btnVoltar.hidden = numero === 1;
-
-    if (numero === 3) {
-        btnAvancar.textContent = "+ Gerar novo token";
-        btnAvancar.onclick = reiniciarWizard;
-    } else {
-        btnAvancar.textContent = "Continuar →";
-        btnAvancar.onclick = avancarEtapa;
-    }
-
     etapaAtual = numero;
+    atualizarBotoes();
+    focarEtapa(numero);
+}
+
+function marcarInvalido(campo, invalido) {
+    if (invalido) {
+        campo.setAttribute("aria-invalid", "true");
+    } else {
+        campo.removeAttribute("aria-invalid");
+    }
 }
 
 function validarEtapa1() {
-    const quantidade = Number(qtdInput.value);
+    const valor = qtdInput.value.trim();
+    const numero = Number(valor);
 
-    if (!quantidade || quantidade <= 0) {
-        erroQtd.textContent = "Informe um número válido de funcionários.";
+    if (!/^\d+$/.test(valor) || numero < 1) {
+        erroQtd.textContent = "Informe um número inteiro de funcionários, maior que zero.";
+        marcarInvalido(qtdInput, true);
+        qtdInput.focus();
         return false;
     }
 
     erroQtd.textContent = "";
-    qtdUserSpan.textContent = quantidade;
+    marcarInvalido(qtdInput, false);
+    quantidade = numero;
+    qtdUserSpan.textContent = numero;
     return true;
 }
 
-function validarEtapa2() {
-    const permissaoSelecionada = document.querySelector('input[name="permissao"]:checked');
+function permissaoSelecionada() {
+    return document.querySelector('input[name="permissao"]:checked');
+}
 
-    if (!permissaoSelecionada) {
+function rotuloDaPermissao(radio) {
+    return document.querySelector('label[for="' + radio.id + '"]').textContent.trim();
+}
+
+function gerarToken() {
+    const permissao = permissaoSelecionada();
+
+    if (!permissao) {
         erroPerm.textContent = "Escolha uma permissão para continuar.";
-        return false;
-    }
-
-    erroPerm.textContent = "";
-    qtdUsersSpan.textContent = qtdInput.value;
-    tipoUserSpan.textContent = permissaoSelecionada.value;
-    gerarToken(permissaoSelecionada.value);
-    return true;
-}
-
-function avancarEtapa() {
-    if (etapaAtual === 1 && validarEtapa1()) {
-        mostrarEtapa(2);
         return;
     }
 
-    if (etapaAtual === 2 && validarEtapa2()) {
-        mostrarEtapa(3);
+    const idEmpresa = sessionStorage.ID_EMPRESA;
+
+    if (!idEmpresa) {
+        erroPerm.textContent = "Sessão inválida. Faça login novamente.";
+        return;
     }
-}
 
-function voltarEtapa() {
-    if (etapaAtual > 1) {
-        mostrarEtapa(etapaAtual - 1);
-    }
-}
+    erroPerm.textContent = "";
+    carregando = true;
+    atualizarBotoes();
 
-function reiniciarWizard() {
-    window.location.href = "./cadastro_token.html";
-}
-
-function gerarToken(permissao) {
     fetch("/crypto/gerar", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            qtdServer: qtdInput.value,
-            permServer: permissao,
-            idEmpresaVincularServer: sessionStorage.ID_EMPRESA
+            qtdServer: quantidade,
+            permServer: permissao.value,
+            idEmpresaVincularServer: idEmpresa
         })
     })
         .then(function (resposta) {
             if (!resposta.ok) {
-                throw new Error("Houve um erro ao tentar gerar o código!");
+                throw new Error("Falha ao gerar o token");
             }
 
             return resposta.json();
         })
         .then(function (dados) {
             tokenSpan.textContent = dados.token;
+            qtdUsersSpan.textContent = quantidade;
+            tipoUserSpan.textContent = rotuloDaPermissao(permissao);
+            carregando = false;
+            mostrarEtapa(3);
         })
-        .catch(function (erro) {
-            console.log(erro);
+        .catch(function () {
+            carregando = false;
+            atualizarBotoes();
+            erroPerm.textContent = "Não foi possível gerar o token. Tente novamente.";
         });
 }
 
-function copiarCodigo() {
-    navigator.clipboard.writeText(tokenSpan.textContent);
+function avancarEtapa() {
+    if (carregando) {
+        return;
+    }
+
+    if (etapaAtual === 1 && validarEtapa1()) {
+        mostrarEtapa(2);
+    } else if (etapaAtual === 2) {
+        gerarToken();
+    } else if (etapaAtual === 3) {
+        reiniciarWizard();
+    }
+}
+
+function voltarEtapa() {
+    if (!carregando && etapaAtual > 1) {
+        mostrarEtapa(etapaAtual - 1);
+    }
+}
+
+function reiniciarWizard() {
+    qtdInput.value = "";
+    quantidade = 0;
+    marcarInvalido(qtdInput, false);
+    erroQtd.textContent = "";
+    erroPerm.textContent = "";
+    tokenSpan.textContent = "";
+    avisoCopia.textContent = "";
+
+    const selecionada = permissaoSelecionada();
+    if (selecionada) {
+        selecionada.checked = false;
+    }
+
+    mostrarEtapa(1);
+}
+
+function confirmarCopia() {
     btnCopiar.textContent = "Copiado";
     btnCopiar.classList.add("copiado");
+    avisoCopia.textContent = "Token copiado para a área de transferência.";
 
-    setTimeout(function () {
+    clearTimeout(temporizadorCopia);
+    temporizadorCopia = setTimeout(function () {
         btnCopiar.textContent = "Copiar";
         btnCopiar.classList.remove("copiado");
+        avisoCopia.textContent = "";
     }, 1500);
 }
 
+function copiarPorSelecao() {
+    const faixa = document.createRange();
+    faixa.selectNodeContents(tokenSpan);
+
+    const selecao = window.getSelection();
+    selecao.removeAllRanges();
+    selecao.addRange(faixa);
+
+    let copiado = false;
+    try {
+        copiado = document.execCommand("copy");
+    } catch (erro) {
+        copiado = false;
+    }
+
+    if (copiado) {
+        confirmarCopia();
+    } else {
+        avisoCopia.textContent = "Não foi possível copiar automaticamente. O token está selecionado: use Ctrl+C.";
+    }
+}
+
+function copiarCodigo() {
+    const token = tokenSpan.textContent;
+
+    if (!token) {
+        return;
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(token).then(confirmarCopia, copiarPorSelecao);
+    } else {
+        copiarPorSelecao();
+    }
+}
+
+qtdInput.addEventListener("input", function () {
+    qtdInput.value = qtdInput.value.replace(/\D/g, "");
+    erroQtd.textContent = "";
+    marcarInvalido(qtdInput, false);
+});
+
+qtdInput.addEventListener("keydown", function (evento) {
+    if (evento.key === "Enter") {
+        evento.preventDefault();
+        avancarEtapa();
+    }
+});
+
+document.querySelectorAll('input[name="permissao"]').forEach(function (radio) {
+    radio.addEventListener("change", function () {
+        erroPerm.textContent = "";
+    });
+});
+
+btnAvancar.addEventListener("click", avancarEtapa);
+btnVoltar.addEventListener("click", voltarEtapa);
 btnCopiar.addEventListener("click", copiarCodigo);
+
 mostrarEtapa(1);
