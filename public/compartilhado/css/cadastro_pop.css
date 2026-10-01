@@ -1,23 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-
+/* =========================================================
+   INFRATECH - POPUP / MODAL (ENTRAR & CADASTRAR)
+   ========================================================= */
 
 dialog#modal-entrar,
-dialog#modal-cadastro {
+dialog#modal-cadastro,
+dialog.modal-infratech {
     position: fixed;
     inset: 0;
-    width: min(90vw, 600px);
-    max-width: 600px;
+    width: min(92vw, 540px);
+    max-width: 540px;
     z-index: 1100;
     margin: auto;
     padding: 0;
     border: none;
     background: transparent;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    color: var(--cor-texto, #ffffff);
 }
 
 dialog#modal-entrar::backdrop,
-dialog#modal-cadastro::backdrop {
-    background: rgb(0 0 0 / 70%);
+dialog#modal-cadastro::backdrop,
+dialog.modal-infratech::backdrop {
+    background: rgba(2, 6, 10, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
@@ -26,14 +31,14 @@ dialog#modal-cadastro::backdrop {
     position: relative;
     z-index: 1;
     width: 100%;
-    max-width: 600px;
-    background-color: #0A0D14;
+    background-color: var(--cor-card, #0b1622);
     display: flex;
     flex-direction: column;
     padding: 30px;
-    gap: 5px;
-    border: 1px solid #00d0ff20;
-    border-top: none; 
+    gap: 16px;
+    border: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.25));
+    border-radius: 10px;
+    box-sizing: border-box;
 }
 
 .div_popup::before {
@@ -42,330 +47,247 @@ dialog#modal-cadastro::backdrop {
     top: 0;
     left: 0;
     width: 100%;
-    height: 2px; 
-    background: linear-gradient(0.25turn, #00d0ff20, #00CFFF, #00d0ff20);
+    height: 3px; 
+    background: linear-gradient(90deg, rgba(0, 207, 255, 0.1), #00CFFF, rgba(0, 207, 255, 0.1));
+    border-radius: 10px 10px 0 0;
 }
 
-.ipt_separado{
-    background-color: #0A0D14;
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    margin-top: 30px;
-    width: 100%;
-    flex-wrap: wrap;
-}
-
-.metade{
-    flex: 1;
-    min-width: 180px;
-}
-
-.campoTexto{
-    background-color: #00d0ff13;
-    border: 1px #00d0ff15 solid;
-    width: 100%;
-    padding-top: 11px;
-    padding-bottom: 11px;
-    padding-right: 14px;
-    padding-left: 14px;
-    border-radius: 2px;
-    font-family: "JetBrains Mono", monospace;
-    color: #E8F4F850;
-}
-
-.titulo_popup{
-    display: flex;
-    justify-content: center;
-    color: #00CFFF;
-    font-weight: bold;
-    font-size: 11px;
-}
-
-.titulo_popup, .corzinha{
-    font-family: "Orbitron", sans-serif;
-    font-size: 16px;
-}
-
-.corzinha{
-    color: #E8F4F8;
-}
-
-.texto_popup{
-    font-size: 11px;
-    background-color: #00CFFF10;
-    padding: 10px;
-    border-bottom: 2px #00CFFF solid;
-}
-
-.btn_cadastro{
-    cursor: pointer;
-    padding: 13px;
-    background-color: #00CFFF;
-    color: #07090F;
-    border: 2px solid #00CFFF;
-    border-radius: 4px;
-    font-family: "Orbitron", sans-serif;
-    font-weight: bold;
-    font-size: 12px;
-    box-shadow: 0px 0px 15px rgba(0, 207, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn_cadastro:hover{
-    background-color: transparent;
-    color: #00CFFF;
-    border-color: #00CFFF;
-    box-shadow: 0px 0px 20px rgba(0, 207, 255, 0.6);
-    transform: translateY(-2px);
-}
-
-/* Remova o comentário se houver algum texto não estilizado */
-/* .texto{
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    color: #2A4050;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    background: transparent;
-} */
-
-.div_btn_criarConta{
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.texto_dif{
-    color: #00CFFF;
-    margin-left: 2px;
-    text-decoration: none;
-}
-
-.texto_dif:hover{
-    color: #00d0ff9d;
-}
-
-dialog p{
-    font-family: "JetBrains Mono", monospace;
-    font-size: 10px;
-    color: #2A4050;
-    letter-spacing: 1.8px;
-}
-
-.div_titulo{
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-}
-
-.img-icon{
-    width:120px;
-    height: 100px;
-}
-
-.div_canto_superior, .div_canto_inferior{
+.div_canto_superior,
+.div_canto_inferior {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
-.div_canto_superior > .borda_esquerda{
-    width: 16px;
-    height: 16px;
-    border-top: 1px solid #00CFFF40;
-    border-left: 1px solid #00CFFF40;
-}
-
-.div_canto_superior > .borda_direita{
-    position: relative;
-    border-right: 1px solid #00d0ff40;
-    padding-right: 20px;
-    width: 16px;
-    height: 16px;
-    border-top: 1px solid #00CFFF40;
-}
-
-.div_canto_superior > .borda_direita > button{
+.div_canto_superior > .borda_direita > button,
+.btn-close-modal {
     cursor: pointer;
-    position: absolute;
     background: transparent;
     border: none;
-    top: 0;
-    right: 0;
-    width: 16px;
-    height: 16px;
-    color: #2A4050;
-    font-family: "Inter", sans-serif;
-    font-size: 25px;
-    padding: 0;
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 3px;
-}
-
-.div_canto_inferior > .borda_direita{
-    border-bottom: 1px solid #00CFFF40;
-    border-right: 1px solid #00CFFF40;
-    width: 16px;
-    height: 16px;
-}
-
-.div_canto_inferior > .borda_esquerda{
-    border-left: 1px solid #00CFFF40;
-    border-bottom: 1px solid #00CFFF40;
-    width: 16px;
-    height: 16px;
-}
-
-/*A partir daqui são as modificações para o Login*/
-
-.div_componentes_login{
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.campo_login{
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.espaco{
-    margin-top: 36px;
-}
-
-.btn_login{
-    margin-top: 18px;
-    cursor: pointer;
-    padding: 13px;
-    background-color: #00CFFF;
-    color: #07090F;
-    border: 2px solid #00CFFF;
+    color: var(--cor-texto-suave, #92abbd);
+    font-size: 22px;
+    line-height: 1;
+    padding: 4px 8px;
     border-radius: 4px;
-    font-family: "Orbitron", sans-serif;
-    font-weight: bold;
-    font-size: 12px;
-    box-shadow: 0px 0px 15px rgba(0, 207, 255, 0.3);
-    transition: all 0.3s ease;
+    transition: color var(--transicao, 0.2s ease), background-color var(--transicao, 0.2s ease);
 }
 
-.btn_login:hover{
-    background-color: transparent;
-    color: #00CFFF;
-    border-color: #00CFFF;
-    box-shadow: 0px 0px 20px rgba(0, 207, 255, 0.6);
-    transform: translateY(-2px);
+.div_canto_superior > .borda_direita > button:hover,
+.btn-close-modal:hover {
+    color: var(--cor-cyan, #00cfff);
+    background-color: rgba(0, 207, 255, 0.1);
 }
 
-.div_btn_entrarSistema{
+.div_titulo {
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    gap: 18px;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
 }
 
-.senha{
-    margin-top: 18px;
+.div_titulo img,
+.img-icon {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0, 207, 255, 0.35));
+}
+
+.titulo_popup {
+    margin: 0;
+    font-family: var(--fonte-display, "Orbitron", sans-serif);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--cor-branco-logo, #ffffff);
+    letter-spacing: 1.5px;
+}
+
+.titulo_popup .corzinha {
+    color: var(--cor-cyan, #00cfff);
+}
+
+.texto_popup {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--cor-cyan, #00cfff);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background-color: rgba(0, 207, 255, 0.08);
+    padding: 6px 16px;
+    border-radius: 4px;
+    border-bottom: 2px solid var(--cor-cyan, #00cfff);
+    margin: 4px 0 10px 0;
+}
+
+.div_componentes_login {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.campo_login {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo_login p,
+.campo_login label,
+.div_popup p.label-campo {
+    margin: 0;
+    font-family: var(--fonte-tecnica, "JetBrains Mono", monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave, #92abbd);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.campoTexto {
+    background-color: var(--cor-input, #071018);
+    border: 1px solid var(--cor-borda, #142838);
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--raio-padrao, 6px);
+    font-family: var(--fonte-tecnica, "JetBrains Mono", monospace);
+    color: var(--cor-branco-logo, #ffffff);
+    font-size: 0.9rem;
+    outline: none;
+    transition: all var(--transicao, 0.2s ease);
+}
+
+.campoTexto:focus {
+    border-color: var(--cor-cyan, #00cfff);
+    box-shadow: 0 0 0 3px rgba(0, 207, 255, 0.18);
+    background-color: #0b1826;
+}
+
+.campoTexto::placeholder {
+    color: var(--cor-texto-muted, #648294);
+    opacity: 0.7;
+}
+
+.senha {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.78rem;
+    margin-top: 6px;
+}
+
+.senha label {
+    font-family: var(--fonte-principal, sans-serif);
+    font-size: 0.8rem;
+    color: var(--cor-texto-suave, #92abbd);
+    cursor: pointer;
+}
+
+.senha span {
+    font-family: var(--fonte-principal, sans-serif);
+    color: var(--cor-cyan, #00cfff);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.senha span:hover {
+    text-decoration: underline;
+}
+
+.div_btn_entrarSistema,
+.div_btn_criarConta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btn_login,
+.btn_cadastro {
+    cursor: pointer;
+    padding: 12px;
+    background-color: var(--cor-cyan, #00cfff);
+    color: #050b12;
+    border: 1px solid var(--cor-cyan, #00cfff);
+    border-radius: var(--raio-padrao, 6px);
+    font-family: var(--fonte-display, "Orbitron", sans-serif);
+    font-weight: 800;
+    font-size: 0.82rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0px 0px 16px rgba(0, 207, 255, 0.3);
+    transition: all var(--transicao, 0.2s ease);
     width: 100%;
 }
 
-.senha > input[type="checkbox"]{
-    -webkit-appearance: none;
-    cursor: pointer;
-    margin-right: 8px;
-    position: relative;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 1px solid #00CFFF20;
-    border-radius: 2px;
-    vertical-align: middle;
-    transition: 0.2s ease;
+.btn_login:hover,
+.btn_cadastro:hover {
+    background-color: transparent;
+    color: var(--cor-cyan, #00cfff);
+    box-shadow: 0px 0px 24px rgba(0, 207, 255, 0.5);
+    transform: translateY(-2px);
 }
 
-.senha > input[type="checkbox"]:checked{
-    background-color: #00CFFF;
-    border-color: #019ec2;
-}
-
-.senha > input[type="checkbox"]:checked::after{
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 0px;
-    width: 5px;
-    height: 10px;
-    border: solid #0A0D14;
-    border-width: 0px 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-.senha > label{
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    color: #4A6070;
-}
-
-.senha > span{
-    margin-left: auto;
-    font-family: "JetBrains Mono", monospace;
-    color: #00CFFF;
-    font-size: 11px;
-}
-
-.divisoria{
+.divisoria {
     display: flex;
     align-items: center;
     text-align: center;
-    color: #2A4050;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
+    color: var(--cor-texto-muted, #648294);
+    font-family: var(--fonte-tecnica, "JetBrains Mono", monospace);
+    font-size: 0.75rem;
+    margin: 4px 0;
 }
 
 .divisoria::before,
-.divisoria::after{
+.divisoria::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #2A4050;
+    border-bottom: 1px solid var(--cor-borda, #142838);
 }
 
-.divisoria::after{
-    margin-left: 20px;
-}
-.divisoria::before{
-    margin-right: 20px;
+.divisoria::after {
+    margin-left: 14px;
 }
 
-.btn_redirecionar{
+.divisoria::before {
+    margin-right: 14px;
+}
+
+.btn_redirecionar {
     cursor: pointer;
-    color: #00CFFF;
-    background-color: #0A0D14;
-    padding: 13px;
-    border: 1px solid #00CFFF20;
-    font-family: "Orbitron", sans-serif;
-    border-radius: 4px;
-    letter-spacing: 1.1px;
-    font-size: 12px;
-    font-weight: bold;
-    transition: 0.5s ease-in-out;
-    margin-bottom: 16px;
+    color: var(--cor-branco-logo, #ffffff);
+    background-color: transparent;
+    padding: 11px;
+    border: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.3));
+    font-family: var(--fonte-display, "Orbitron", sans-serif);
+    border-radius: var(--raio-padrao, 6px);
+    letter-spacing: 0.8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all var(--transicao, 0.2s ease);
+    width: 100%;
 }
 
-.btn_redirecionar:hover{
-    color: #0A0D14;
-    background-color: #00CFFF;
-    border: 1px solid #00CFFF;
+.btn_redirecionar:hover {
+    color: var(--cor-cyan, #00cfff);
+    border-color: var(--cor-cyan, #00cfff);
+    background-color: rgba(0, 207, 255, 0.08);
 }
+
+.texto_dif {
+    color: var(--cor-cyan, #00cfff);
+    margin-left: 4px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.texto_dif:hover {
+    text-decoration: underline;
+}
+
 @media (max-width: 575.98px) {
     .div_popup {
-        padding: 18px;
+        padding: 20px 16px;
     }
 }
