@@ -22,6 +22,7 @@ var indexRouter = require("./src/routes/index");
 var login_cadastroRouter = require("./src/routes/login_cadastro");
 var servidorRouter = require("./src/routes/servidor")
 var cadastro_empresaRouter = require("./src/routes/cadastro_empresa")
+var gerenciarFuncionarioRouter = require("./src/routes/gerenciar_funcionario")
 
 var cryptoRouter = require("./src/routes/crypto");
 
@@ -36,6 +37,7 @@ app.use("/login_cadastro", login_cadastroRouter);
 app.use("/crypto", cryptoRouter);
 app.use("/servidor", servidorRouter);
 app.use("/cadastro_empresa", cadastro_empresaRouter);
+app.use("/gerenciar_funcionario", gerenciarFuncionarioRouter);
 
 
 app.listen(PORTA_APP, function () {

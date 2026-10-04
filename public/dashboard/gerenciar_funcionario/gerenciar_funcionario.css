@@ -3,6 +3,10 @@ body{
     flex-direction: row;
     
 }
+
+a, button{
+    cursor: pointer;
+}
 .container-main{
     width: 100vw;
     height: 100vh;
@@ -57,8 +61,8 @@ body{
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 1vw;
+    justify-content: space-evenly;
+    padding-right: 2.5vw;
 }
 .boxes-funcionario{
     height: 70vh;
@@ -78,6 +82,9 @@ body{
     background-color: #1e3040;
     border-radius: 20px;
     border: solid 1px #00CFFF;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-evenly; 
 }
 
 .box-funcionario{
@@ -148,12 +155,13 @@ body{
 .servidor{
     display: flex;
     font-size: 1vw;
+    color: #ffffff65;
 }
 
 .head-crud{
     border-bottom: #00CFFF solid 1px;
-    height: 10vh;
-    width: auto;
+    height: 16%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -171,6 +179,7 @@ body{
 
 .email-funcionario{
     font-size: 1vw;
+    color: #ffffff65;
 }
 
 .identficacao{
@@ -180,8 +189,8 @@ body{
 }
 
 .circulo-iniciais-crud{
-    width: 3.6vw; 
-    height: 3.6vw;
+    width: 3.5vw; 
+    height: 3.5vw;
     background-color: #90e5f910;
     border-radius: 30px;
     display: flex;
@@ -191,7 +200,7 @@ body{
     color: #00CFFF;
 }
 
-.servidor-crud{
+.servidor-crud-head{
     width: 8vw;
     height: 2vw;
     font-size: 1vw;
@@ -203,4 +212,204 @@ body{
     align-items: center;
     justify-content: center;
     margin-right: 2vw;
+}
+
+.box-modificar{
+    height: 90%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-crud{
+    height: 13%;
+    width: 100%;
+    border-top: #00CFFF solid 1px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 8vw;
+}
+
+.texto-revisao{
+    color: #ffffff30;
+    font-size: 1vw;
+}
+
+.botao-salvar{
+    background-color: #00CFFF;
+    width: 10vw;
+    height: 2.7vw;
+    color: black;
+    border-radius: 5vw;
+    font-size: 1.1vw;
+    border: none;
+    font-weight: 400;
+}
+
+.subtitulo-box-crud{
+    color: #00CFFF;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1vw;
+    margin-left: 3vw;
+    margin-top: 2vw;
+    margin-bottom: 1.5vw;
+}
+
+.img-class{
+    width: 1.1vw;
+    height: 1.1vw;
+}
+
+.box-servidores{
+    width: 95%;
+    height: 80%;
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #3a5a78 transparent;
+    align-content: flex-start;
+    
+}
+
+.servidor-crud{
+    width: 45%;
+    height: 17%;
+    margin-top: 1vw;
+    background-color: #ffffff07;
+    border: #ffffff20 solid 1px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 2vw;
+    gap: 1vw;
+}
+
+.permissoes{
+    width: 100%;
+    height: 35%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 1vw;
+}
+
+.permissao{
+    width: 45%;
+    height: 80%;
+    background-color: #ffffff07;
+    border: #ffffff20 solid 1px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding-left: 2vw;
+}
+
+.img-user{
+    width: 1.5vw; 
+    height: 1.5vw;
+}
+
+.usuario-comum{
+    font-size: 1vw;
+    color: #00CFFF;
+}
+
+.administrador{
+    font-size: 1vw;
+    color: #ffffff;
+}
+
+.explicacao{
+    color: #ffffff65;
+    font-size: 0.9vw;
+}
+
+.imagens-permissao{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 2vw;
+}
+
+.infos-servidor{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.nome-servidor{
+    font-size: 1vw;
+}
+
+.localizacao{
+    color: #ffffff65;
+    font-size: 1vw;
+}
+
+.img-titulo{
+    width: 1.5vw;
+    height: 1.5vw;
+}
+
+.botoes-modificar{
+    width: 100%;
+    height: 2vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 2vw;
+    padding-top: 2vw;
+    gap: 1vw;
+}
+
+.botao-modificar{
+    border: none;
+    color: #fffFFF65;
+    background-color: transparent;
+    font-size: 1.2vw;
+
+}
+
+.container-inputs{
+    width: 100%;
+    height: 76%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.box-input{
+    width: 45%;
+    height: 30%;
+}
+
+.input-funcionario{
+    width: 100%;
+    height: 50%;
+    background-color: #ffffff07;
+    border: #ffffff20 solid 1px;;
+    border-radius: 10px;
+}
+
+.texto-input{
+    margin-left: 1vw;
+    margin-bottom: 0.5vw;
 }
