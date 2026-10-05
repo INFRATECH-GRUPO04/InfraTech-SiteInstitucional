@@ -4,86 +4,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../../compartilhado/css/global.css?v=2">
-    <link rel="stylesheet" href="../../../compartilhado/css/cadastro-base.css?v=2">
-    <link rel="stylesheet" href="./cadastro_servidor.css?v=2">
-    <link rel="stylesheet" href="../../../compartilhado/css/barralateral.css?v=2">
     <title>Cadastrar Servidor | InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
 
+    <link rel="stylesheet" href="../../../compartilhado/css/global.css">
+    <link rel="stylesheet" href="../../../compartilhado/css/cadastro-base.css">
+    <link rel="stylesheet" href="./cadastro_servidor.css">
 
     <script src="../../../compartilhado/js/sessao.js"></script>
 </head>
 
-<body>
+<body class="pagina-servidores">
 
-    <div class="header-left">
+    <!-- SIDEBAR -->
+    <aside class="header-left">
         <div class="logo">
-            <img src="../assets/icon/logo.png" alt="Logo">
+            <a href="../painel/painel.html" title="InfraTech Painel">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
         </div>
 
         <hr class="linha">
 
-        <!-- Seção Servidores -->
         <h3 class="nav-categoria">
-            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
             Servidores
         </h3>
-        <hr class="linha">
 
-        <a href="../dentro.html" class="nav-item">
-            <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-            Dashboard
-        </a>
-        <a href="../dashboard/modificar_servidor.html" class="nav-item">
-            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-            Modificar
+        <a href="../painel/painel.html" class="nav-item">
+            <img src="../../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Em Breve
         </a>
         <a href="./cadastro_servidor.html" class="nav-item ativo">
-            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-            Cadastrar
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
         </a>
-
-        <!-- Seção Funcionários -->
-        <h3 class="nav-categoria secao-funcionarios">
-            <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
-            Funcionários
-        </h3>
-        <hr class="linha">
-
-        <a href="./cadastro_token.html" class="nav-item">
-            <img src="../assets/imgs/token.png" alt="" class="menu-icon">
-            Cadastrar Token
+        <a href="./cadastro_instancia.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Instâncias
         </a>
-        <a href="../dashboard/modificar_funcionario.html" class="nav-item">
-            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        <a href="./modificar_servidor.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
             Modificar
         </a>
 
-        <!-- Botão Sair -->
-        <div class="btn-logout" onclick="limparSessao()" title="Sair">
-            <img src="../assets/imgs/logout.png" alt="" class="logout-icon">
-        </div>
-    </div>
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
 
-    <div class="conteudo-principal">
+        <a href="../funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="../funcionarios/modificar_funcionario.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo-principal">
+        <div class="barra-superior-painel">
+            <div class="migalhas">
+                <span class="text-muted">Servidores</span> / <span>Cadastrar Host</span>
+            </div>
+            <div class="usuario-sessao">
+                <span class="ponto-status"></span>
+                <span id="nome_usuario" class="nome-usuario">Administrador</span>
+            </div>
+        </div>
+
         <div class="titulo-pagina">
             <span class="destaque">|</span> CADASTRAR SERVIDOR
         </div>
 
+        <!-- ABAS DE NAVEGAÇÃO ENTRE TIPOS -->
+        <div class="container-abas">
+            <a href="./cadastro_servidor.html" class="botao-aba ativo">Servidores Físicos</a>
+            <a href="./cadastro_instancia.html" class="botao-aba">Instâncias Virtuais</a>
+        </div>
+
         <div class="painel-formulario">
             <div class="cabecalho-painel">
-                <img src="../assets/icon/logo_server.png" alt="">
+                <img src="../../../assets/icon/logo_server.png" alt="Servidor">
                 <div>
                     <h3>Cadastrar Infraestrutura</h3>
-                    <p>Provisione novos servidores físicos ou instâncias virtuais</p>
+                    <p>Provisione novos servidores físicos e defina limites de telemetria</p>
                 </div>
             </div>
 
-
-
             <div class="grupo-formulario">
-                <label>NOME DO SERVIDOR</label>
-                <input type="text" class="controle-formulario" placeholder="SRV-DATABASE-PRIMARY" id="nome_servidor_id">
+                <label for="nome_servidor_id">NOME DO SERVIDOR</label>
+                <input type="text" class="controle-formulario" placeholder="Ex: SRV-DATABASE-PRIMARY" id="nome_servidor_id" autocomplete="off">
             </div>
 
             <div class="titulo-secao">
@@ -93,14 +124,16 @@
                 ALOCAÇÃO DE RECURSOS (COMPONENTES)
             </div>
 
-            <!-- Container for dynamic components -->
-            <div id="alinhar" style="display: flex; flex-direction: column; gap: 20px;"></div>
+            <!-- Container para componentes dinâmicos -->
+            <div id="alinhar" style="display: flex; flex-direction: column; gap: 16px;"></div>
 
-            <button type="button" class="botao-primario" onclick="cadastrarServidorCompleto()">Cadastrar
-                Servidor</button>
+            <button type="button" class="botao-primario" onclick="cadastrarServidorCompleto()">
+                Cadastrar Servidor
+            </button>
         </div>
-    </div>
+    </main>
+
+    <script src="./cadastro_servidor.js"></script>
 </body>
 
-<script src="./cadastro_servidor.js"></script>
 </html>

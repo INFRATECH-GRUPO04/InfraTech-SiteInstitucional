@@ -19,8 +19,8 @@ body.pagina-autenticacao {
     width: 100%;
     max-width: 480px;
     background-color: var(--cor-card, #0b1622);
-    border: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.25));
-    border-radius: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 207, 255, 0.08);
     padding: 36px 32px;
     position: relative;
@@ -148,9 +148,9 @@ body.pagina-autenticacao {
 .inputs,
 .inputs-formulario {
     background-color: var(--cor-input, #071018);
-    border: 1px solid var(--cor-borda, #142838);
+    border: 1px solid var(--cor-borda);
     padding: 11px 14px;
-    border-radius: var(--raio-padrao, 6px);
+    border-radius: var(--raio);
     font-family: var(--fonte-tecnica, "JetBrains Mono", monospace);
     color: var(--cor-branco-logo, #ffffff);
     outline: none;
@@ -185,7 +185,7 @@ body.pagina-autenticacao {
     background-color: var(--cor-cyan, #00CFFF);
     color: #050b12 !important;
     border: 1px solid var(--cor-cyan, #00CFFF);
-    border-radius: var(--raio-padrao, 6px);
+    border-radius: var(--raio);
     font-family: var(--fonte-display, "Orbitron", sans-serif);
     font-weight: 800;
     font-size: 0.85rem;

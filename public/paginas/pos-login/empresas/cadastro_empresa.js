@@ -667,7 +667,7 @@
             "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
 
           setTimeout(() => {
-            window.location = "../dentro.html";
+            window.location = "../painel/painel.html";
           }, "2000");
 
         } else {

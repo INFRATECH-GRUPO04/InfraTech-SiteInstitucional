@@ -1,13 +1,13 @@
 var database = require("../database/config");
 
 function gerarCodigo(codigo, permissao, quantidade, fkEmpresa) {
-    var instrucaoSql = `INSERT INTO convite (codigo, tipoAcesso, quantidadeUso, fkEmpresa) VALUES ('${codigo}', '${permissao}', '${quantidade}', '${fkEmpresa}')`;
+    var instrucaoSql = `INSERT INTO convite (codigo, tipo_acesso, quantidade_uso, fk_empresa) VALUES ('${codigo}', '${permissao}', '${quantidade}', '${fkEmpresa}')`;
     console.log("Executando a instrução SQL de geração de código: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
 function buscarCodigo(codigo){
-    var instrucaoSql = `SELECT idConvite, tipoAcesso, quantidadeUso, quantidadeUsada, fkEmpresa FROM convite WHERE codigo = '${codigo}';`;
+    var instrucaoSql = `SELECT id_convite, tipo_acesso, quantidade_uso, quantidade_usada, fk_empresa FROM convite WHERE codigo = '${codigo}';`;
     console.log("Executando a instrução SQL de geração de código: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }

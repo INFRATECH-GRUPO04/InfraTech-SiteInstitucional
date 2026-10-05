@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboards - InfraTech</title>
+    <title>Em Breve - InfraTech</title>
     <link rel="icon" href="../../../assets/icon/logo.png" type="image/png">
 
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
@@ -19,7 +19,7 @@
     <!-- SIDEBAR -->
     <aside class="header-left">
         <div class="logo">
-            <a href="./painel.html" title="InfraTech Painel">
+            <a href="./painel.html" title="InfraTech">
                 <img src="../../../assets/icon/logo.png" alt="InfraTech">
             </a>
         </div>
@@ -33,7 +33,7 @@
 
         <a href="./painel.html" class="nav-item ativo">
             <img src="../../../assets/imgs/dashboards.png" alt="" class="menu-icon">
-            Dashboard
+            Em Breve
         </a>
         <a href="../servidores/cadastro_servidor.html" class="nav-item">
             <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
@@ -81,11 +81,11 @@
         </div>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
+    <!-- CONTEÚDO PRINCIPAL: EM BREVE -->
     <main class="conteudo-painel">
         <header class="barra-superior-painel">
             <div class="migalhas">
-                <span class="text-muted">InfraTech</span> / <span>Dashboard de Monitoramento</span>
+                <span class="text-muted">InfraTech</span> / <span>Painel</span>
             </div>
 
             <div class="usuario-sessao">
@@ -94,62 +94,23 @@
             </div>
         </header>
 
-        <div class="painel-header-metricas">
-            <div>
-                <h1 class="titulo-secao-painel">VISÃO GERAL DA <span class="text-cyan">INFRAESTRUTURA</span></h1>
-                <p class="subtitulo-painel">Métricas em tempo real de hosts físicos e clusters de instâncias virtuais.</p>
-            </div>
-        </div>
+        <div class="container-em-breve-wrapper">
+            <div class="card-em-breve">
+                <div class="badge-em-breve">EM DESENVOLVIMENTO</div>
 
-        <!-- CARDS DE MÉTRICAS -->
-        <div class="grid-metricas">
-            <div class="card-metrica">
-                <div class="metrica-header">
-                    <span>HOSTS MONITORADOS</span>
-                    <span class="badge-status status-ok">Ativo</span>
-                </div>
-                <div class="metrica-valor">12 <span class="metrica-unidade">servidores</span></div>
-                <div class="metrica-rodape">100% de disponibilidade no SLA</div>
-            </div>
+                <h1 class="titulo-em-breve">
+                    PAINEL DE <span class="text-cyan">MONITORAMENTO</span>
+                </h1>
 
-            <div class="card-metrica">
-                <div class="metrica-header">
-                    <span>USO MÉDIO DE CPU</span>
-                    <span class="badge-status status-normal">Normal</span>
-                </div>
-                <div class="metrica-valor text-cyan">42.8%</div>
-                <div class="metrica-rodape">Pico de 78% nas últimas 24h</div>
-            </div>
-
-            <div class="card-metrica">
-                <div class="metrica-header">
-                    <span>USO MÉDIO DE RAM</span>
-                    <span class="badge-status status-normal">Normal</span>
-                </div>
-                <div class="metrica-valor">58.4%</div>
-                <div class="metrica-rodape">Alocação estável sem leak</div>
-            </div>
-
-            <div class="card-metrica">
-                <div class="metrica-header">
-                    <span>ALERTAS ATIVOS</span>
-                    <span class="badge-status status-zero">0 Críticos</span>
-                </div>
-                <div class="metrica-valor text-white">0</div>
-                <div class="metrica-rodape">Nenhum incidente crítico detectado</div>
-            </div>
-        </div>
-
-        <!-- MÓDULO EM BREVE / DETALHES -->
-        <div class="painel-placeholder-wrapper">
-            <div class="placeholder-content">
-                <h2 class="placeholder-title">PAINEL EM <span class="text-cyan">EXPANSÃO</span></h2>
-                <p class="placeholder-text">
-                    Os módulos de telemetria contínua, telegráficos em tempo real e análise de latência estão sendo vinculados ao banco de dados dos servidores.
+                <p class="descricao-em-breve">
+                    O módulo de telemetria e gráficos em tempo real está sendo integrado à infraestrutura.
+                    Enquanto isso, você pode gerenciar hosts, cadastrar servidores e gerar tokens de acesso para sua equipe.
                 </p>
-                <div class="placeholder-botoes">
+
+                <div class="acoes-em-breve">
                     <a href="../servidores/cadastro_servidor.html" class="btn-cyan">Cadastrar Novo Servidor</a>
-                    <a href="../servidores/modificar_servidor.html" class="btn-outline">Gerenciar Servidores Existentes</a>
+                    <a href="../servidores/modificar_servidor.html" class="btn-outline">Gerenciar Hosts Existentes</a>
+                    <a href="../funcionarios/cadastro_token/cadastro_token.html" class="btn-outline">Gerar Token de Funcionário</a>
                 </div>
             </div>
         </div>

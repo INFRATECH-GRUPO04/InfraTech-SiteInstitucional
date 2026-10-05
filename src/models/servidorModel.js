@@ -6,7 +6,7 @@ function cadastrar(nome,idEmpresa) {
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
     var instrucaoSql = `
-        INSERT INTO servidor (nome, fkEmpresa, status_sistema) VALUES ('${nome}', ${idEmpresa}, 1);
+        INSERT INTO servidor (nome, fk_empresa, status_sistema) VALUES ('${nome}', ${idEmpresa}, 1);
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -34,7 +34,7 @@ function cadastrar(nome,idEmpresa) {
     }
 
     function listar(idEmpresa) {
-        var instrucaoSql = `SELECT idServidor, nome, status_sistema FROM servidor WHERE fkEmpresa = ${idEmpresa};`;
+        var instrucaoSql = `SELECT id_servidor, nome, status_sistema FROM servidor WHERE fk_empresa = ${idEmpresa};`;
         console.log("Executando a instrução SQL: \n" + instrucaoSql);
         return database.executar(instrucaoSql);
     }
@@ -54,7 +54,7 @@ function cadastrar(nome,idEmpresa) {
     }
 
     function atualizar(idServidor, nome) {
-        var instrucaoSql = `UPDATE servidor SET nome = '${nome}' WHERE idServidor = ${idServidor};`;
+        var instrucaoSql = `UPDATE servidor SET nome = '${nome}' WHERE id_servidor = ${idServidor};`;
         console.log("Executando a instrução SQL: \n" + instrucaoSql);
         return database.executar(instrucaoSql);
     }

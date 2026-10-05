@@ -20,15 +20,15 @@ CREATE TABLE endereco (
 -- Table `InfraTech`.`empresa`
 -- -----------------------------------------------------
 CREATE TABLE empresa (
-  idEmpresa INT PRIMARY KEY AUTO_INCREMENT,
-  razaoSocial VARCHAR(100) NOT NULL,
-  nomeFantasia VARCHAR(100) NOT NULL,
+  id_empresa INT PRIMARY KEY AUTO_INCREMENT,
+  razao_social VARCHAR(100) NOT NULL,
+  nome_fantasia VARCHAR(100) NOT NULL,
   cnpj CHAR(14) NOT NULL,
   segmento_atuacao VARCHAR(80) NOT NULL,
   email VARCHAR(200) UNIQUE NOT NULL,
   telefone VARCHAR(20) NOT NULL,
   status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   fk_endereco INT,
     FOREIGN KEY (fk_endereco) 
     REFERENCES endereco(id_endereco)
@@ -39,19 +39,19 @@ CREATE TABLE empresa (
 -- Table `InfraTech`.`funcionario`
 -- -----------------------------------------------------
 CREATE TABLE funcionario (
-  idFuncionario INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
-  tipoAcesso VARCHAR(20) NOT NULL DEFAULT 'FUNCIONARIO',
+  id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
+  fk_empresa INT NOT NULL,
+  tipo_acesso VARCHAR(20) NOT NULL DEFAULT 'FUNCIONARIO',
   nome VARCHAR(45) NULL,
-  dataNascimento DATETIME NULL,
+  data_nascimento DATETIME NULL,
   email VARCHAR(45) NOT NULL,
   senha VARCHAR(45) NOT NULL,
   cpf CHAR(11) NULL,
   status_sistema TINYINT NOT NULL DEFAULT 1,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_funcionario_empresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa)
+    FOREIGN KEY (fk_empresa)
+    REFERENCES empresa (id_empresa)
   );
 
 
@@ -59,14 +59,14 @@ CREATE TABLE funcionario (
 -- Table `InfraTech`.`servidor`
 -- -----------------------------------------------------
 CREATE TABLE servidor (
-  idServidor INT PRIMARY KEY AUTO_INCREMENT,
-  fkEmpresa INT NOT NULL,
+  id_servidor INT PRIMARY KEY AUTO_INCREMENT,
+  fk_empresa INT NOT NULL,
   nome VARCHAR(45) NULL,
   status_sistema TINYINT NOT NULL,
-  dtCadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT cfkEmpresa 
-  FOREIGN KEY (fkEmpresa) 
-  REFERENCES empresa(idEmpresa)
+  dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT cfk_empresa 
+  FOREIGN KEY (fk_empresa) 
+  REFERENCES empresa(id_empresa)
   );
 
 -- -----------------------------------------------------
@@ -74,18 +74,18 @@ CREATE TABLE servidor (
 -- -----------------------------------------------------
 -- Um funcionário SEM nenhuma linha aqui enxerga todos os
 -- servidores da própria empresa. Uma linha aqui restringe a visão dele
--- apenas aos servidores vinculados. Isso vale só para tipoAcesso = FUNCIONARIO;
+-- apenas aos servidores vinculados. Isso vale só para tipo_acesso = FUNCIONARIO;
 -- o gestor sempre vê tudo, independente desta tabela.
 CREATE TABLE servidor_funcionario (
-  fkFuncionario INT NOT NULL,
-  fkServidor INT NOT NULL,
-  PRIMARY KEY (fkFuncionario,fkServidor),
+  fk_funcionario INT NOT NULL,
+  fk_servidor INT NOT NULL,
+  PRIMARY KEY (fk_funcionario,fk_servidor),
   CONSTRAINT fk_servidor_funcionario_funcionario1
-    FOREIGN KEY (fkFuncionario)
-    REFERENCES funcionario (idFuncionario),
+    FOREIGN KEY (fk_funcionario)
+    REFERENCES funcionario (id_funcionario),
   CONSTRAINT fk_servidor_funcionario_servidor1
-    FOREIGN KEY (fkServidor)
-    REFERENCES servidor (idServidor)
+    FOREIGN KEY (fk_servidor)
+    REFERENCES servidor (id_servidor)
 );
 
 
@@ -93,16 +93,16 @@ CREATE TABLE servidor_funcionario (
 -- Table `InfraTech`.`convite`
 -- -----------------------------------------------------
 CREATE TABLE convite (
-  idConvite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  id_convite INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   codigo VARCHAR(100) NOT NULL,
-  tipoAcesso VARCHAR(20) NOT NULL DEFAULT 'FUNCIONARIO',
-  quantidadeUso INT NOT NULL,
-  quantidadeUsada INT NOT NULL DEFAULT 0,
+  tipo_acesso VARCHAR(20) NOT NULL DEFAULT 'FUNCIONARIO',
+  quantidade_uso INT NOT NULL,
+  quantidade_usada INT NOT NULL DEFAULT 0,
   criado DATETIME DEFAULT NOW(),
-  fkEmpresa INT NOT NULL,
+  fk_empresa INT NOT NULL,
   CONSTRAINT fk_convite_empresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa));
+    FOREIGN KEY (fk_empresa)
+    REFERENCES empresa (id_empresa));
 
 
 -- -----------------------------------------------------
@@ -118,7 +118,7 @@ CREATE TABLE componente (
     status_monitoramento TINYINT,
     entrada_sistema DATETIME,
     fk_servidor_componente INT,
-    FOREIGN KEY (fk_servidor_componente) REFERENCES servidor(idServidor)
+    FOREIGN KEY (fk_servidor_componente) REFERENCES servidor(id_servidor)
 );
 
 
@@ -130,7 +130,7 @@ CREATE TABLE parametro_monitoramento (
   limite_atencao DECIMAL(14,2) NOT NULL,
   limite_critico DECIMAL(14,2) NOT NULL,
 	fk_servidor_parametro INT,
-    FOREIGN KEY (fk_servidor_parametro) REFERENCES servidor(idServidor)
+    FOREIGN KEY (fk_servidor_parametro) REFERENCES servidor(id_servidor)
 );
 
 
@@ -160,14 +160,14 @@ INSERT INTO endereco (cep, logradouro, bairro, numero, complemento, estado, cida
 ('50030230', 'Avenida Conde da Boa Vista', 'Boa Vista', '921', NULL, 'PE', 'Recife');      -- id 4: Arena Nordeste
 
 -- 2. Empresa
-INSERT INTO empresa (razaoSocial, nomeFantasia, cnpj, segmento_atuacao, email, telefone, status_sistema, fk_endereco) VALUES
+INSERT INTO empresa (razao_social, nome_fantasia, cnpj, segmento_atuacao, email, telefone, status_sistema, fk_endereco) VALUES
 ('InfraTech Games Ltda', 'InfraTech Games', '12345678000195', 'Desenvolvimento de Jogos', 'contato@infratech.com', '11999990001', 1, 1),           -- id 1: empresa interna (nunca aparece no CRUD)
 ('GameCloud Servicos S.A.', 'GameCloud', '23456789000195', 'Hospedagem e Cloud', 'contato@gamecloud.com', '11999990002', 1, 2),                    -- id 2: cliente ativo
 ('TechPlay Tecnologia Ltda', 'TechPlay', '34567890000130', 'Sistemas e Softwares', 'contato@techplay.com', '11999990003', 1, 3),                   -- id 3: cliente ativo
 ('Arena Nordeste Servicos de Internet Ltda', 'Arena Nordeste', '60746948000112', 'Hospedagem e Cloud', 'contato@arenanordeste.com.br', '8140042020', 0, 4); -- id 4: cliente DESATIVADO, para testar reativação
 
 -- 3. Funcionário
-INSERT INTO funcionario (fkEmpresa, tipoAcesso, nome, dataNascimento, email, senha, cpf, status_sistema) VALUES
+INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf, status_sistema) VALUES
 -- Empresa 1 (InfraTech) - equipe interna, só ADMIN
 (1, 'ADMIN', 'Felipe Santos', '2007-04-12', 'felipe@infratech.com', '123456', '12345678901', 1),          -- id 1
 (1, 'ADMIN', 'Manuella Arantes', '2007-01-15', 'manuella@infratech.com', '123456', '34567890123', 1),     -- id 2
@@ -191,7 +191,7 @@ INSERT INTO funcionario (fkEmpresa, tipoAcesso, nome, dataNascimento, email, sen
 (4, 'FUNCIONARIO', 'Kaique Silva', '2001-01-30', 'kaique@arenanordeste.com.br', '123456', '88899900061', 1);       -- id 14: ativo
 
 -- 4. Servidor
-INSERT INTO servidor (nome, fkEmpresa, status_sistema) VALUES
+INSERT INTO servidor (nome, fk_empresa, status_sistema) VALUES
 ('SRV-INFRA-01', 1, 1),          -- id 1: InfraTech (uso interno)
 ('SRV-INFRA-02', 1, 1),          -- id 2: InfraTech (uso interno)
 ('SRV-GAMECLOUD-01', 2, 1),      -- id 3: GameCloud, ativo
@@ -202,12 +202,12 @@ INSERT INTO servidor (nome, fkEmpresa, status_sistema) VALUES
 ('SRV-ARENA-01', 4, 1);          -- id 8: Arena Nordeste, ativo
 
 -- 5. Servidor_Funcionario
-INSERT INTO servidor_funcionario (fkFuncionario, fkServidor) VALUES
+INSERT INTO servidor_funcionario (fk_funcionario, fk_servidor) VALUES
 (4, 3),   -- Bianca (GameCloud) só vê o SRV-GAMECLOUD-01
 (9, 6);   -- Debora (TechPlay) só vê o SRV-TECHPLAY-01
 
 -- 6. Convite
-INSERT INTO convite (codigo, tipoAcesso, quantidadeUso, quantidadeUsada, fkEmpresa) VALUES
+INSERT INTO convite (codigo, tipo_acesso, quantidade_uso, quantidade_usada, fk_empresa) VALUES
 ('B4E19F', 'FUNCIONARIO', 10, 4, 2),  -- GameCloud: convite em uso, ainda com vagas
 ('7C2AD0', 'FUNCIONARIO', 5, 5, 3),   -- TechPlay: convite esgotado (usos = limite)
 ('F0913B', 'FUNCIONARIO', 3, 0, 4);   -- Arena Nordeste: convite recém-gerado, ainda sem uso

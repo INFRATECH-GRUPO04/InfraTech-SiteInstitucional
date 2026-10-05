@@ -61,7 +61,7 @@ function buscarGestor(idEmpresa) {
     var instrucaoSql = `
         SELECT idFuncionario, nome, email, senha, cpf, status_sistema AS status, dtCadastro
         FROM funcionario
-        WHERE fkEmpresa = ${Number(idEmpresa)} AND tipoAcesso = 'GESTOR'
+        WHERE fk_empresa = ${Number(idEmpresa)} AND tipoAcesso = 'GESTOR'
         LIMIT 1;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
@@ -74,8 +74,8 @@ function contarVinculos(idEmpresa) {
     var id = Number(idEmpresa);
     var instrucaoSql = `
         SELECT
-            (SELECT COUNT(*) FROM servidor WHERE fkEmpresa = ${id} AND status_sistema = 1) AS qtdServidores,
-            (SELECT COUNT(*) FROM funcionario WHERE fkEmpresa = ${id} AND tipoAcesso = 'FUNCIONARIO' AND status_sistema = 1) AS qtdFuncionarios;
+            (SELECT COUNT(*) FROM servidor WHERE fk_empresa = ${id} AND status_sistema = 1) AS qtd_servidores,
+            (SELECT COUNT(*) FROM funcionario WHERE fk_empresa = ${id} AND tipo_acesso = 'FUNCIONARIO' AND status_sistema = 1) AS qtd_funcionarios;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -83,7 +83,7 @@ function contarVinculos(idEmpresa) {
 
 function verificarCnpj(cnpj, idEmpresa) {
     var instrucaoSql = `
-        SELECT idEmpresa FROM empresa WHERE cnpj = ${esc(cnpj)} AND idEmpresa <> ${Number(idEmpresa)};
+        SELECT id_empresa FROM empresa WHERE cnpj = ${esc(cnpj)} AND id_empresa <> ${Number(idEmpresa)};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -91,7 +91,7 @@ function verificarCnpj(cnpj, idEmpresa) {
 
 function verificarEmail(email, idEmpresa) {
     var instrucaoSql = `
-        SELECT idEmpresa FROM empresa WHERE email = ${esc(email)} AND idEmpresa <> ${Number(idEmpresa)};
+        SELECT id_empresa FROM empresa WHERE email = ${esc(email)} AND id_empresa <> ${Number(idEmpresa)};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -140,7 +140,7 @@ function atualizarEmpresa(idEmpresa, d, fkEndereco) {
             email = ${esc(d.email)},
             telefone = ${esc(d.telefone)},
             fk_endereco = ${Number(fkEndereco)}
-        WHERE idEmpresa = ${Number(idEmpresa)} AND idEmpresa <> ${ID_EMPRESA_INTERNA};
+        WHERE id_empresa = ${Number(idEmpresa)} AND id_empresa <> ${ID_EMPRESA_INTERNA};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -152,7 +152,7 @@ function alterarStatus(idEmpresa, status) {
 
     var instrucaoSql = `
         UPDATE empresa SET status_sistema = ${Number(status)}
-        WHERE idEmpresa = ${Number(idEmpresa)} AND idEmpresa <> ${ID_EMPRESA_INTERNA};
+        WHERE id_empresa = ${Number(idEmpresa)} AND id_empresa <> ${ID_EMPRESA_INTERNA};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

@@ -1,5 +1,5 @@
 /* =========================================================
-   INFRATECH - PAINEL PRINCIPAL & DASHBOARDS
+   INFRATECH - PAINEL "EM BREVE" (CSS)
    ========================================================= */
 
 body.pagina-painel {
@@ -25,12 +25,12 @@ body.pagina-painel {
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
-    border-bottom: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.15));
+    border-bottom: 1px solid var(--cor-borda);
 }
 
 .migalhas {
     font-size: 0.82rem;
-    font-family: var(--fonte-tecnica);
+    font-family: var(--fonte-mono);
     color: var(--cor-cyan);
 }
 
@@ -38,10 +38,10 @@ body.pagina-painel {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0, 207, 255, 0.05);
-    border: 1px solid var(--cor-borda, #142838);
+    background: rgba(0, 207, 255, 0.04);
+    border: 1px solid var(--cor-borda);
     padding: 6px 14px;
-    border-radius: 20px;
+    border-radius: var(--raio-pill);
 }
 
 .ponto-status {
@@ -49,158 +49,85 @@ body.pagina-painel {
     height: 8px;
     background-color: var(--cor-sucesso, #05df72);
     border-radius: 50%;
-    box-shadow: 0 0 8px var(--cor-sucesso, #05df72);
 }
 
 .nome-usuario {
     font-size: 0.82rem;
     font-weight: 600;
-    color: var(--cor-branco-logo, #ffffff);
+    color: var(--cor-branco, #ffffff);
 }
 
-.painel-header-metricas {
+.container-em-breve-wrapper {
+    flex: 1;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 10px;
 }
 
-.titulo-secao-painel {
-    font-family: var(--fonte-display);
-    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
-    color: var(--cor-branco-logo, #ffffff);
-    margin: 0 0 6px 0;
-    letter-spacing: 1px;
-}
-
-.subtitulo-painel {
-    color: var(--cor-texto-suave, #92abbd);
-    font-size: 0.9rem;
-    margin: 0;
-}
-
-/* Grid de Métricas */
-.grid-metricas {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    width: 100%;
-}
-
-.card-metrica {
+.card-em-breve {
     background-color: var(--cor-card, #0b1622);
-    border: 1px solid var(--cor-borda, #142838);
-    border-radius: 10px;
-    padding: 22px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 16px;
+    padding: 50px 40px;
+    text-align: center;
+    max-width: 680px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-    transition: all var(--transicao);
+    align-items: center;
     position: relative;
     overflow: hidden;
 }
 
-.card-metrica::before {
+.card-em-breve::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0, 207, 255, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, var(--cor-cyan), transparent);
 }
 
-.card-metrica:hover {
-    border-color: var(--cor-cyan);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 207, 255, 0.12);
-}
-
-.metrica-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.metrica-header span:first-child {
-    font-family: var(--fonte-tecnica);
+.badge-em-breve {
+    font-family: var(--fonte-mono);
     font-size: 0.72rem;
-    color: var(--cor-texto-muted, #648294);
-    letter-spacing: 1px;
     font-weight: 700;
+    color: var(--cor-cyan);
+    letter-spacing: 2px;
+    background: rgba(0, 207, 255, 0.06);
+    padding: 6px 16px;
+    border-radius: var(--raio-pill);
+    border: 1px solid rgba(0, 207, 255, 0.2);
+    margin-bottom: 20px;
 }
 
-.badge-status {
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    text-transform: uppercase;
-}
-
-.status-ok,
-.status-normal {
-    background-color: rgba(5, 223, 114, 0.12);
-    color: #05df72;
-    border: 1px solid rgba(5, 223, 114, 0.3);
-}
-
-.status-zero {
-    background-color: rgba(0, 207, 255, 0.1);
-    color: #00cfff;
-    border: 1px solid rgba(0, 207, 255, 0.25);
-}
-
-.metrica-valor {
+.titulo-em-breve {
     font-family: var(--fonte-display);
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--cor-branco-logo, #ffffff);
-    line-height: 1.1;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 900;
+    color: var(--cor-branco, #ffffff);
+    margin: 0 0 16px 0;
+    letter-spacing: 1.5px;
+    line-height: 1.2;
+}
+
+.descricao-em-breve {
+    color: var(--cor-texto, #c7d8e4);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0 0 32px 0;
+    max-width: 540px;
+}
+
+.acoes-em-breve {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
-}
-
-.metrica-unidade {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--cor-texto-muted);
-    font-family: var(--fonte-principal);
-}
-
-.metrica-rodape {
-    font-size: 0.78rem;
-    color: var(--cor-texto-suave);
-    border-top: 1px solid var(--cor-borda-suave, rgba(255, 255, 255, 0.06));
-    padding-top: 8px;
-    margin-top: 4px;
-}
-
-/* Wrapper do Placeholder */
-.painel-placeholder-wrapper {
-    background-color: var(--cor-card);
-    border: 1px solid var(--cor-borda);
-    border-radius: 12px;
-    padding: 40px 20px;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
-    margin-top: 10px;
-}
-
-.placeholder-botoes {
-    display: flex;
-    gap: 16px;
-    margin-top: 28px;
+    gap: 14px;
     flex-wrap: wrap;
     justify-content: center;
-}
-
-/* Responsividade */
-@media (max-width: 1200px) {
-    .grid-metricas {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    width: 100%;
 }
 
 @media (max-width: 991px) {
@@ -214,22 +141,15 @@ body.pagina-painel {
 }
 
 @media (max-width: 600px) {
-    .grid-metricas {
-        grid-template-columns: 1fr;
+    .card-em-breve {
+        padding: 30px 18px;
     }
 
-    .barra-superior-painel {
+    .acoes-em-breve {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
     }
 
-    .placeholder-botoes {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .placeholder-botoes a {
+    .acoes-em-breve a {
         width: 100%;
     }
 }

@@ -1,279 +1,275 @@
+/* =========================================================
+   INFRATECH - CADASTRO DE TOKEN (CSS)
+   ========================================================= */
+
 .circulo {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--cyan);
+    font-family: var(--fonte-tecnica);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--cor-cyan);
 }
 
 .titulo-token {
-  margin: 0;
-  font-size: 1.15rem;
+    margin: 0;
+    font-family: var(--fonte-display);
+    font-size: 1.15rem;
+    color: var(--cor-branco-logo);
 }
 
 .bg_token {
-  width: 100%;
-  max-width: 560px;
+    width: 100%;
+    max-width: 580px;
 }
 
 .stepper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 20px 20px 0;
-  list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 24px 24px 0;
+    list-style: none;
 }
 
 .step-dot {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid #2a4050;
-  border-radius: 50%;
-  background-color: #1e3040;
-  color: #63adbe;
-  font-size: 13px;
-  font-weight: 600;
-  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid var(--cor-borda);
+    border-radius: 50%;
+    background-color: var(--cor-input);
+    color: var(--cor-texto-muted);
+    font-family: var(--fonte-tecnica);
+    font-size: 13px;
+    font-weight: 700;
+    transition: all var(--transicao);
 }
 
 .step-dot.active {
-  border-color: var(--cyan);
-  background-color: var(--cyan-wash);
-  color: var(--cyan);
+    border-color: var(--cor-cyan);
+    background-color: rgba(0, 207, 255, 0.12);
+    color: var(--cor-cyan);
+    box-shadow: 0 0 10px rgba(0, 207, 255, 0.3);
 }
 
 .step-dot.done {
-  border-color: var(--cyan);
-  background-color: var(--cyan);
-  color: var(--on-cyan);
+    border-color: var(--cor-cyan);
+    background-color: var(--cor-cyan);
+    color: #050b12;
 }
 
 .step-line {
-  flex: 1;
-  height: 1px;
-  background-color: #2a4050;
-  transition: background-color 0.25s ease;
+    flex: 1;
+    height: 2px;
+    background-color: var(--cor-borda);
+    transition: background-color var(--transicao);
 }
 
 .step-line.done {
-  background-color: var(--cyan);
+    background-color: var(--cor-cyan);
 }
 
 .step-panel {
-  display: none;
-  flex-direction: column;
-  gap: 16px;
+    display: none;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .step-panel.active {
-  display: flex;
+    display: flex;
 }
 
 .span_token {
-  margin: 0;
-  padding: 0;
-  color: #90e5f9;
-  font-size: 1rem;
-  line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    color: var(--cor-branco-logo);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 600;
 }
 
 .ipt_token {
-  width: 160px;
-  height: auto;
-  padding: 10px 14px;
-  border-color: #2a4050;
-  font-family: var(--font-mono);
+    width: 180px;
+    height: auto;
+    padding: 10px 14px;
+    background-color: var(--cor-input);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-padrao);
+    font-family: var(--fonte-tecnica);
+    color: var(--cor-branco-logo);
+    font-size: 1.1rem;
+    outline: none;
+    transition: all var(--transicao);
 }
 
 .ipt_token:focus {
-  outline: none;
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px var(--cyan-ring);
-}
-
-.ipt_token[aria-invalid="true"] {
-  border-color: var(--danger);
+    border-color: var(--cor-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 207, 255, 0.18);
+    background-color: #0b1826;
 }
 
 .radios-grupo {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
 }
 
 .radios-grupo legend {
-  margin-bottom: 16px;
-  padding: 0;
+    margin-bottom: 14px;
+    padding: 0;
 }
 
 .radios {
-  position: relative;
-  display: flex;
-  gap: 12px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
 }
 
 .radios input {
-  display: block;
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  opacity: 0;
-  pointer-events: none;
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .radios label {
-  padding: 10px 18px;
-  border: 1px solid #2a4050;
-  border-radius: 6px;
-  background-color: rgba(255, 255, 255, 0.03);
-  color: #63adbe;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+    padding: 12px 20px;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-padrao);
+    background-color: rgba(255, 255, 255, 0.02);
+    color: var(--cor-texto-suave);
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all var(--transicao);
 }
 
 .radios label:hover {
-  border-color: var(--cyan);
+    border-color: var(--cor-cyan);
+    color: var(--cor-branco-logo);
 }
 
 .radios input:checked + label {
-  border-color: var(--cyan);
-  background-color: rgba(0, 207, 255, 0.08);
-  color: var(--cyan);
-}
-
-.radios input:focus-visible + label {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
+    border-color: var(--cor-cyan);
+    background-color: rgba(0, 207, 255, 0.1);
+    color: var(--cor-cyan);
+    box-shadow: 0 0 10px rgba(0, 207, 255, 0.2);
 }
 
 .resumo_token,
 .resumo_final {
-  color: #63adbe;
-  font-size: 14px;
+    color: var(--cor-texto-suave);
+    font-size: 0.9rem;
+    background: rgba(0, 207, 255, 0.04);
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--cor-borda-cyan);
 }
 
 .resumo_final p {
-  margin: 0 0 6px;
+    margin: 0 0 6px;
 }
 
 .resumo_final span {
-  color: var(--cyan);
+    color: var(--cor-cyan);
+    font-weight: 700;
 }
 
 .erro_campo {
-  min-height: 1.2em;
-  margin: 0;
-  color: var(--danger);
-  font-size: 0.85rem;
+    min-height: 1.2em;
+    margin: 0;
+    color: var(--cor-perigo, #ff3366);
+    font-size: 0.85rem;
 }
 
 .token_box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 18px;
-  border: 1px solid #2a4050;
-  border-radius: 6px;
-  background-color: rgba(255, 255, 255, 0.02);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 1px solid var(--cor-cyan);
+    border-radius: 8px;
+    background-color: rgba(0, 207, 255, 0.06);
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.15);
 }
 
 #token {
-  color: var(--cyan);
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
-  letter-spacing: 3px;
-  word-break: break-all;
-  user-select: all;
+    color: var(--cor-cyan);
+    font-family: var(--fonte-tecnica);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    word-break: break-all;
+    user-select: all;
 }
 
 #btn_copiar {
-  padding: 6px 14px;
-  border: 1px solid var(--cyan);
-  border-radius: 5px;
-  background-color: transparent;
-  color: var(--cyan);
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+    padding: 8px 18px;
+    border: 1px solid var(--cor-cyan);
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--cor-cyan);
+    font-family: var(--fonte-principal);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transicao);
+    white-space: nowrap;
 }
 
 #btn_copiar:hover,
 #btn_copiar.copiado {
-  background-color: var(--cyan);
-  color: var(--on-cyan);
+    background-color: var(--cor-cyan);
+    color: #050b12;
+    box-shadow: 0 0 10px rgba(0, 207, 255, 0.4);
 }
 
 .aviso_copia {
-  min-height: 1.2em;
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 0.85rem;
+    min-height: 1.2em;
+    margin: 0;
+    color: var(--cor-sucesso, #05df72);
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-.continuar-cadastro {
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
-.continuar-cadastro button {
-  width: auto;
-  padding: 10px 24px;
-}
+@media (max-width: 600px) {
+    .stepper {
+        padding: 16px 14px 0;
+    }
 
-#btn_avancar {
-  margin-left: auto;
-}
+    .radios {
+        flex-direction: column;
+    }
 
-#voltar[hidden] {
-  display: none;
-}
+    .token_box {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
 
-@media (max-width: 768px) {
-  body {
-    flex-direction: column;
-  }
+    .ipt_token {
+        width: 100%;
+    }
 
-  .block_token {
-    margin-top: 24px;
-  }
+    .continuar-cadastro {
+        flex-direction: column-reverse;
+    }
 
-  .stepper {
-    padding: 16px 10px 0;
-  }
-
-  .radios {
-    flex-direction: column;
-  }
-
-  .token_box {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .ipt_token {
-    width: 100%;
-    max-width: none;
-  }
-
-  .continuar-cadastro {
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-
-  .continuar-cadastro button,
-  #btn_avancar {
-    width: 100%;
-    margin-left: 0;
-  }
+    .continuar-cadastro button {
+        width: 100%;
+    }
 }

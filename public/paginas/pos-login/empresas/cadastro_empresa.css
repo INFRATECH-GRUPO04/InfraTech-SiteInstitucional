@@ -1,248 +1,327 @@
-*{
-    padding: 0px;
-    margin: 0px;
-    font-family: "JetBrains Mono", monospace;
-}
-body{
-    display: flex;
-    flex-direction: row;
-    width: 100vw;
-    height: 100vh;
-}
+/* =========================================================
+   INFRATECH - CADASTRO DE EMPRESA (CSS)
+   ========================================================= */
 
-.main{
-    height: 100vh;
-    width: 88vw;
-    background-color: #030a10;
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 36px 60px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.2vw;
-
+    gap: 24px;
 }
 
-.container-cadastro{
-    width: 55vw;
-    height: 30vw;
-    border: solid 1px #00CFFF;
-    border-radius: 20px;
-    background-color: #2A4050;
+.titulo {
+    font-family: var(--fonte-display);
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 800;
+    color: var(--cor-branco-logo, #ffffff);
+    letter-spacing: 1px;
 }
 
-.titulo{
-  color: white;
-  font-size: 2.3vw;
-  
+/* Stepper de Progresso */
+.fluxo {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
+
 .progress {
-  width: min(100%, 40vw);
-  margin: 16px auto;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  flex-shrink: 0;
-  list-style: none;
+    width: 100%;
+    margin: 10px 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    list-style: none;
+    gap: 8px;
 }
 
 .progress li {
-  position: relative;
-  min-width: 0;
-  color: rgba(132, 134, 138, 0.6);
-  text-align: center;
-  font-size: 1vw;
-  font-weight: 700;
+    position: relative;
+    color: var(--cor-texto-muted, #648294);
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: var(--fonte-tecnica);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
 }
 
-
-/* linha que liga uma etapa na outra */
 .progress li:not(:last-child)::after {
-  position: absolute;
-  z-index: 0;
-  top: 18px;
-  left: calc(50% + 25px);
-  width: calc(100% - 50px);
-  height: 2px;
-  content: "";
-  background: rgba(132, 134, 138, 0.6);
+    position: absolute;
+    z-index: 0;
+    top: 18px;
+    left: calc(50% + 22px);
+    width: calc(100% - 44px);
+    height: 2px;
+    content: "";
+    background: var(--cor-borda, #142838);
+    transition: background 0.3s ease;
 }
 
-
-/* bolinha das etapas */
 .progress .circle {
-  position: relative;
-  z-index: 1;
-  width: 3vw;
-  height: 3vw;
-  margin: 0 auto 6px;
-  display: grid;
-  place-items: center;
-  border: 2px solid #498f9f;
-  border-radius: 50%;
-  background: transparent;
-  color: rgba(107, 114, 128, 0.65);
-  font-size: 14px;
+    position: relative;
+    z-index: 1;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 50%;
+    background: var(--cor-input, #071018);
+    color: var(--cor-texto-muted);
+    font-family: var(--fonte-tecnica);
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.3s ease;
 }
 
-
-/* etapa atual e etapas concluidas */
 .progress li.active,
 .progress li.done {
-  color: white;
+    color: var(--cor-branco-logo, #ffffff);
 }
 
-.progress li.active .circle,
+.progress li.active .circle {
+    border-color: var(--cor-cyan);
+    background: rgba(0, 207, 255, 0.15);
+    color: var(--cor-cyan);
+    box-shadow: 0 0 12px rgba(0, 207, 255, 0.35);
+}
+
 .progress li.done .circle {
-  border-color:#154955;
-  background: #498f9f;
-  color: white;
+    border-color: var(--cor-cyan);
+    background: var(--cor-cyan);
+    color: #050b12;
 }
 
 .progress.step-2 li[data-progress="1"]::after,
-/* Quando estiver no Passo 3: pinta as linhas dos itens 1 e 2 */
 .progress.step-3 li[data-progress="1"]::after,
 .progress.step-3 li[data-progress="2"]::after,
-/* Quando estiver no Passo 4: pinta as linhas dos itens 1, 2 e 3 */
 .progress.step-4 li[data-progress="1"]::after,
 .progress.step-4 li[data-progress="2"]::after,
 .progress.step-4 li[data-progress="3"]::after {
-  background: #498f9f; /* Sua cor ativa */
+    background: var(--cor-cyan);
 }
 
-.container-campos{
-  width: 55vw;
-  height: 23vw;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  gap: 1.2px;
-  flex-wrap: wrap;
-}
-.subtitulo{
-  color: white;
-  font-size: 1.5vw;
-  width: 20vw;
-  margin-left: 1vw;
-  margin-top: 1vw;
-}
-.texto{
-  color: white;
-  margin-left: 7px;
+/* Container de Formulário */
+.container-cadastro {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-card);
+    background-color: var(--cor-card, #0b1622);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.input{
-  width: 25vw;
-  height: 2.8vw;
-  border: 1px solid #00CFFF;
-  background-color: #00CFFF25;
-  box-sizing: border-box;
-  color: white;
-  padding-left: 1vw;
+.cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--cor-borda);
+    padding-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.input::placeholder{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-left: 1vw;
-  color: rgba(255, 255, 255, 0.518);
+.subtitulo {
+    color: var(--cor-branco-logo, #ffffff);
+    font-family: var(--fonte-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+#card_erro {
+    color: var(--cor-perigo, #ff3366);
+    font-family: var(--fonte-tecnica);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.container-campos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    width: 100%;
+}
+
+.campos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campos:has(#logradouro) {
+    grid-column: 1 / -1;
+}
+
+.texto {
+    color: var(--cor-texto-suave, #92abbd);
+    font-family: var(--fonte-tecnica);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--cor-borda, #142838);
+    background-color: var(--cor-input, #071018);
+    border-radius: var(--raio-padrao, 6px);
+    box-sizing: border-box;
+    color: var(--cor-branco-logo, #ffffff);
+    padding: 10px 14px;
+    font-family: var(--fonte-tecnica);
+    font-size: 0.9rem;
+    outline: none;
+    transition: all var(--transicao);
 }
 
 .input:focus {
-  outline: none;
-  border: 1px solid #00aeef; 
-  color: white;
+    outline: none;
+    border-color: var(--cor-cyan, #00CFFF);
+    box-shadow: 0 0 0 3px rgba(0, 207, 255, 0.18);
+    background-color: #0b1826;
 }
 
-#logradouro{
-  width: 51.5vw;
-}
-
-select,
-#dtNascimento{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-left: 1vw;
-  color: rgba(255, 255, 255, 0.518);
+.input::placeholder {
+    color: var(--cor-texto-muted, #648294);
+    opacity: 0.7;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  /* Inverte a cor do ícone (de escuro para claro) */
-  filter: invert(1);
-  
-  /* Garante que o ícone fique alinhado com o padding do input */
-  margin-left: 10px;
-  cursor: pointer;
+    filter: invert(1);
+    cursor: pointer;
 }
 
-.cabecalho{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+/* Confirmação (Passo 4) */
+.container-confirmar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-#card_erro{
-  color: #00aeef;
-  width: 32vw;
-  height: 2vw;
-  font-size: 1vw;
-  margin-top: 1vw;
+.container-sessao {
+    background: rgba(7, 16, 26, 0.6);
+    border: 1px solid var(--cor-borda, #142838);
+    border-radius: 8px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-select option{
-  background-color: #24546c;
+.sessao {
+    color: var(--cor-cyan, #00CFFF);
+    font-family: var(--fonte-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
-.container-botoes1{
-  display: flex;
-  flex-direction: row;
-  align-items: end;
-  justify-content: flex-end;
+.container-sessao .texto {
+    font-size: 0.85rem;
+    text-transform: none;
+    color: var(--cor-texto-corpo);
+    line-height: 1.5;
+}
+
+/* Botões do Rodapé de Cadastro */
+.container-botoes1 {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid var(--cor-borda, #142838);
+    padding-top: 20px;
 }
 
 .container-botoes2,
-.container-botoes3{
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: space-between;
+.container-botoes3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--cor-borda, #142838);
+    padding-top: 20px;
+    gap: 14px;
+    flex-wrap: wrap;
 }
 
-
-
-#botao-cadastrar{
-  width: 11vw;
+.botao-avancar,
+#botao-cadastrar {
+    min-height: 42px;
+    padding: 10px 24px;
+    border-radius: var(--raio-padrao, 6px);
+    background-color: var(--cor-cyan, #00CFFF);
+    color: #050b12 !important;
+    border: 1px solid var(--cor-cyan);
+    font-family: var(--fonte-display);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    box-shadow: 0 0 16px rgba(0, 207, 255, 0.25);
+    cursor: pointer;
+    transition: all var(--transicao);
 }
 
-#dtNascimento{
-  color: white;
-
+.botao-avancar:hover,
+#botao-cadastrar:hover {
+    background-color: transparent;
+    color: var(--cor-cyan) !important;
+    box-shadow: 0 0 24px rgba(0, 207, 255, 0.45);
+    transform: translateY(-2px);
 }
 
-.botao-avancar{
-  width: 10vw;
-  height: 3vw;
-  border-radius: 20px;
-  background-color: #00CFFF;
-  border: none;
-  margin-right: 1.5vw;
-  margin-left: 1.5vw;
+/* Responsividade */
+@media (max-width: 991px) {
+    .container-campos,
+    .container-confirmar {
+        grid-template-columns: 1fr;
+    }
+
+    .campos:has(#logradouro) {
+        grid-column: auto;
+    }
 }
 
-.sessao{
-  color: #00CFFF;
-}
+@media (max-width: 600px) {
+    .main {
+        padding: 20px 16px 40px;
+    }
 
-.container-sessao > .texto{
-  font-size: 1.2vw;
-}
+    .container-cadastro {
+        padding: 20px 16px;
+    }
 
-.container-confirmar{
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  gap: 1.7vw;
+    .progress {
+        gap: 4px;
+    }
+
+    .progress li {
+        font-size: 0.68rem;
+    }
+
+    .progress .circle {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+    }
+
+    .container-botoes2,
+    .container-botoes3 {
+        flex-direction: column-reverse;
+    }
+
+    .botao-avancar,
+    #botao-cadastrar {
+        width: 100%;
+    }
 }

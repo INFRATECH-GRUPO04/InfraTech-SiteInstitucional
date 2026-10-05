@@ -17,7 +17,7 @@ body.pagina-empresas {
   flex-shrink: 0;
 }
 
-/* hr.linha vem do dashboards.css nas outras telas; esta página não o importa */
+/* Linha divisória da barra lateral */
 .pagina-empresas .header-left hr.linha {
   width: 100%;
   border: none;
@@ -91,9 +91,9 @@ body.pagina-empresas {
 /* ---------- Painel, abas e busca ---------- */
 
 .painel {
-  background: rgba(0, 207, 255, 0.03);
-  border: 1px solid rgba(0, 207, 255, 0.2);
-  border-radius: 8px;
+  background: rgba(0, 207, 255, 0.02);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-card);
   overflow: hidden;
 }
 
@@ -104,7 +104,7 @@ body.pagina-empresas {
   flex-wrap: wrap;
   gap: 16px;
   padding: 0 20px;
-  border-bottom: 1px solid #142a35;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .abas {
@@ -190,13 +190,13 @@ body.pagina-empresas {
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
-  border-bottom: 1px solid #142a35;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
 .tabela-empresas td {
   padding: 16px 20px;
   vertical-align: middle;
-  border-bottom: 1px solid #0f2029;
+  border-bottom: 1px solid var(--cor-borda-suave);
 }
 
 .tabela-empresas tbody tr:last-child td {

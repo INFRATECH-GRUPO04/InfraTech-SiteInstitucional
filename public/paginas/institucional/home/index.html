@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - InfraTech</title>
+    <title>InfraTech - Monitoramento Inteligente de Infraestrutura</title>
     <link rel="icon" href="../../../assets/icon/logo.png">
 
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
@@ -13,29 +13,29 @@
 
 <body>
 
-    <!-- CABEÇALHO / NAVBAR -->
-    <header class="cabecalho">
+    <!-- CABEÇALHO / HEADER DA HOME -->
+    <header class="cabecalho" id="header-principal">
         <div class="container-header">
-            <a href="#inicio" class="logo-header">
-                <img src="../../../assets/icon/logo.png" alt="InfraTech" class="logo-header-img">
+            <a href="#inicio" class="logo-header" title="InfraTech Home">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech Logo" class="logo-header-img">
                 <h3 class="logo-header-titulo">
                     INFRA<span class="text-cyan">TECH</span>
                 </h3>
             </a>
 
-            <button class="btn-menu-hamburguer" type="button" aria-label="Abrir Menu">
+            <button class="btn-menu-hamburguer" type="button" aria-label="Abrir Menu de Navegação">
                 &#9776;
             </button>
 
-            <nav class="nav-container">
+            <nav class="nav-container" aria-label="Navegação Principal">
                 <a href="#inicio">Início</a>
                 <a href="#sobre">Sobre</a>
                 <a href="#funcionalidades">Funcionalidades</a>
                 <a href="#como-funciona">Como Funciona</a>
-                <a href="../nossa_equipe/nossa_equipe.html">Equipe</a>
-                <a href="../fale_conosco/fale_conosco.html">Fale Conosco</a>
+                <a href="#equipe">Equipe</a>
+                <a href="#contato">Fale Conosco</a>
 
-                <a href="../../autenticacao/login/login.html" class="btn-cyan" id="btn-entrar">
+                <a href="../../autenticacao/login/login.html" class="btn-cyan" id="btn-entrar-nav">
                     Entrar
                 </a>
             </nav>
@@ -44,316 +44,385 @@
 
     <main>
 
-        <!-- INÍCIO / HERO BANNER -->
-        <section class="secao-fullscreen secao-bg-dark" id="inicio">
+        <!-- SEÇÃO 1: HERO / INÍCIO -->
+        <section class="secao-fullscreen secao-hero" id="inicio">
+            <div class="hero-glow-effect" aria-hidden="true"></div>
 
-            <div class="container logo-banner">
-                <img src="../../../assets/icon/logo.png" alt="InfraTech" class="logo-banner-img">
+            <div class="container conteudo-hero">
+                <div class="hero-badge">
+                    <span class="ponto-pulso"></span>
+                    <span>OBSERVABILIDADE PARA SERVIDORES DE JOGOS ONLINE</span>
+                </div>
 
-                <h1 class="titulo-banner">
-                    INFRA<span class="text-cyan">TECH</span>
-                </h1>
+                <div class="logo-banner">
+                    <img src="../../../assets/icon/logo.png" alt="InfraTech" class="logo-banner-img">
+
+                    <h1 class="titulo-banner">
+                        INFRA<span class="text-cyan">TECH</span>
+                    </h1>
+                </div>
+
+                <div class="frase-banner">
+                    <p>
+                        Monitoramento contínuo e inteligente de recursos computacionais.
+                        Acompanhe CPU, memória, armazenamento e tráfego de rede para antecipar incidentes,
+                        garantir baixa latência e manter a estabilidade da sua comunidade gamer.
+                    </p>
+                </div>
+
+                <div class="botoes-banner">
+                    <a href="../../autenticacao/cadastro_funcionario/cadastro-funcionario.html" class="btn-cyan">
+                        CRIAR CONTA
+                    </a>
+                    <a href="#sobre" class="btn-funcionalidades">
+                        CONHECER A PLATAFORMA
+                    </a>
+                </div>
             </div>
-
-            <div class="container frase-banner">
-                <p>
-                    Monitoramento inteligente e proativo da infraestrutura de servidores
-                    para jogos online. Acompanhe métricas de hardware, reduza a latência
-                    e previna quedas antes que afetem seus jogadores.
-                </p>
-            </div>
-
-            <div class="botoes-banner">
-                <a href="../../autenticacao/cadastro_funcionario/cadastro-funcionario.html" class="btn-cyan" id="btn-criar-conta">
-                    CRIAR CONTA
-                </a>
-
-                <a href="#funcionalidades" class="btn-funcionalidades">
-                    VER FUNCIONALIDADES
-                </a>
-            </div>
-
         </section>
 
-        <!-- SOBRE -->
-        <section class="secao-fullscreen secao-bg-alt" id="sobre">
+        <!-- TRANSIÇÃO 1 -->
+        <div class="divisor-ondas" aria-hidden="true"></div>
 
+        <!-- SEÇÃO 2: SOBRE -->
+        <section class="secao-fullscreen secao-sobre" id="sobre">
             <div class="container">
-
                 <div class="sobre-grid">
 
                     <div class="texto_sobre">
-
+                        <span class="subtitulo-tag">VISÃO & PROPÓSITO</span>
                         <h2 class="titulo_principal">
-                            O QUE É A
-                            <span class="titulo_destaque">INFRATECH</span>?
+                            O QUE É A <span class="titulo_destaque">INFRATECH</span>?
                         </h2>
 
                         <p class="descricao_texto">
-                            A InfraTech é uma solução especializada de observabilidade e monitoramento voltada
-                            à infraestrutura de servidores dedicados de jogos online e serviços críticos de microtransações.
+                            A InfraTech é uma solução focada na observabilidade profunda de servidores voltados a jogos online
+                            e serviços críticos de microtransações, onde cada milissegundo de indisponibilidade representa frustração para os jogadores e perda de receita.
                         </p>
 
                         <p class="descricao_texto">
-                            O sistema acompanha continuamente recursos essenciais como CPU, memória RAM,
-                            armazenamento, throughput de rede e serviços em execução, consolidando todas as métricas em tempo real.
+                            Através de telemetria ativa, o sistema coleta continuamente o consumo de CPU, memória RAM, I/O de disco
+                            e serviços em execução, consolidando os dados para identificar anomalias, picos repentinos de concorrência e gargalos de hardware.
                         </p>
 
                         <p class="descricao_texto">
-                            Por meio de agentes leves e seguros, nossa plataforma permite detectar gargalos, vazamentos
-                            de memória e comportamentos anômalos, emitindo alertas inteligentes antes que ocorram prejuízos financeiros ou indisponibilidade.
+                            Com arquitetura distribuída, limites configuráveis e notificações em tempo hábil, entregamos visibilidade completa
+                            para que a equipe técnica atue de forma proativa antes que panes silenciosas afetem a experiência dos usuários.
                         </p>
 
+                        <div class="sobre-metricas-rapidas">
+                            <div class="metrica-pill">
+                                <strong>&lt; 1%</strong>
+                                <span>Overhead de CPU</span>
+                            </div>
+                            <div class="metrica-pill">
+                                <strong>Tempo Real</strong>
+                                <span>Telemetria Contínua</span>
+                            </div>
+                            <div class="metrica-pill">
+                                <strong>Multi-Host</strong>
+                                <span>Físico e Virtual</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="area_imagem">
                         <div class="imagem-empresa">
                             <img src="../../../assets/imgs/watermarked_img_16092516649286935180.jpg"
-                                alt="Infraestrutura de Servidores InfraTech" class="imagem-sobre">
+                                alt="Infraestrutura de Servidores Monitorada pela InfraTech" class="imagem-sobre">
+                            <div class="imagem-legenda">
+                                <span>INFRAESTRUTURA DE ALTA PERFORMANCE</span>
+                            </div>
                         </div>
                     </div>
 
                 </div>
-
             </div>
-
         </section>
 
-        <!-- FUNCIONALIDADES -->
-        <section class="secao-fullscreen secao-bg-dark" id="funcionalidades">
-
+        <!-- SEÇÃO 3: FUNCIONALIDADES -->
+        <section class="secao-fullscreen secao-funcionalidades" id="funcionalidades">
             <div class="container">
-
-                <div class="caixa-titulo-func">
-                    <h2>
-                        FUNCIONALIDADES
-                        <span class="text-cyan">PRINCIPAIS</span>
+                <div class="caixa-titulo-secao">
+                    <span class="subtitulo-tag">RECURSOS DO SISTEMA</span>
+                    <h2 class="titulo_principal">
+                        FUNCIONALIDADES <span class="text-cyan">PRINCIPAIS</span>
                     </h2>
-                    <p class="subtitulo-secao">Tecnologia avançada para garantir máxima estabilidade e desempenho operacional.</p>
+                    <p class="descricao-secao">
+                        Construído para atender aos rigorosos requisitos de disponibilidade e segurança de servidores dedicados de jogos.
+                    </p>
                 </div>
 
                 <div class="funcionalidades-grid">
 
                     <div class="caixa-funcionalidade">
-                        <h6 class="sub-titulo-func">01 · COLETA</h6>
+                        <div class="func-numero">01</div>
+                        <h6 class="sub-titulo-func">TELEMETRIA</h6>
                         <h3 class="titulo-func">Agente de Coleta Leve</h3>
                         <p class="text-func">
-                            Agente de baixo overhead instalado no servidor coleta periodicamente
-                            métricas de CPU, RAM, I/O de disco e rede sem impactar os processos de jogo.
+                            Agente de coleta periódica de alta performance que extrai dados vitais de CPU, memória,
+                            armazenamento e processos sem comprometer as partidas.
                         </p>
                     </div>
 
                     <div class="caixa-funcionalidade">
-                        <h6 class="sub-titulo-func">02 · PROCESSAMENTO</h6>
-                        <h3 class="titulo-func">Análise Contínua</h3>
+                        <div class="func-numero">02</div>
+                        <h6 class="sub-titulo-func">PROCESSAMENTO</h6>
+                        <h3 class="titulo-func">Análise de Dados</h3>
                         <p class="text-func">
-                            Métricas processadas e estruturadas em tempo hábil para identificar desvios
-                            de padrão, sobrecargas repentinas e picos incomuns de concorrência.
+                            Processamento contínuo das métricas recebidas para identificar tendências de saturação,
+                            vazamento de memória e comportamentos anormais de processos.
                         </p>
                     </div>
 
                     <div class="caixa-funcionalidade">
-                        <h6 class="sub-titulo-func">03 · ALERTAS</h6>
-                        <h3 class="titulo-func">Notificações Críticas</h3>
+                        <div class="func-numero">03</div>
+                        <h6 class="sub-titulo-func">NOTIFICAÇÕES</h6>
+                        <h3 class="titulo-func">Alertas Críticos</h3>
                         <p class="text-func">
-                            Disparos automatizados de alerta quando limites de atenção ou críticos
-                            forem violados, acionando de imediato a equipe técnica responsável.
+                            Disparos automatizados de alerta quando limites pré-estabelecidos de atenção ou criticidade
+                            são ultrapassados, agilizando a contenção de incidentes.
                         </p>
                     </div>
 
                     <div class="caixa-funcionalidade">
-                        <h6 class="sub-titulo-func">04 · DASHBOARD</h6>
-                        <h3 class="titulo-func">Painel Centralizado</h3>
+                        <div class="func-numero">04</div>
+                        <h6 class="sub-titulo-func">CONSOLIDAÇÃO</h6>
+                        <h3 class="titulo-func">Painel Unificado</h3>
                         <p class="text-func">
-                            Visualização consolidada de toda a frota de servidores físicos e instâncias
-                            virtuais em um único dashboard intuitivo e seguro.
+                            Ambiente exclusivo onde administradores e técnicos acompanham a integridade de frotas
+                            de servidores físicos e instâncias virtuais em um só local.
                         </p>
                     </div>
 
                     <div class="caixa-funcionalidade">
-                        <h6 class="sub-titulo-func">05 · SEGURANÇA</h6>
-                        <h3 class="titulo-func">Acesso Controlado</h3>
+                        <div class="func-numero">05</div>
+                        <h6 class="sub-titulo-func">CONTROLE</h6>
+                        <h3 class="titulo-func">Acesso Seguro por Token</h3>
                         <p class="text-func">
-                            Proteção ponta a ponta com autenticação robusta, criptografia de tokens
-                            e controle refinado de permissões entre administradores e colaboradores.
+                            Controle rigoroso de permissões com tokens de acesso criptografados, garantindo isolamento total
+                            entre organizações e usuários autorizados.
                         </p>
                     </div>
 
                     <div class="caixa-funcionalidade">
-                        <h6 class="sub-titulo-func">06 · SLA & RELATÓRIOS</h6>
-                        <h3 class="titulo-func">Histórico e SLA</h3>
+                        <div class="func-numero">06</div>
+                        <h6 class="sub-titulo-func">DISPONIBILIDADE</h6>
+                        <h3 class="titulo-func">Métricas de SLA</h3>
                         <p class="text-func">
-                            Registro histórico de eventos, relatórios de disponibilidade e dados
-                            analíticos para otimização de custos e planejamento de capacidade.
+                            Histórico de eventos, tempo de resposta e relatórios de disponibilidade operacional para
+                            suportar tomadas de decisão e planejamento de escalabilidade.
                         </p>
                     </div>
 
                 </div>
-
             </div>
-
         </section>
 
-        <!-- COMO FUNCIONA -->
-        <section class="secao-fullscreen secao-bg-alt como-funciona" id="como-funciona">
-
+        <!-- SEÇÃO 4: COMO FUNCIONA -->
+        <section class="secao-fullscreen secao-como-funciona" id="como-funciona">
             <div class="container">
-
-                <h2 class="titulo-como-funciona">
-                    COMO <span>FUNCIONA</span>
-                </h2>
+                <div class="caixa-titulo-secao">
+                    <span class="subtitulo-tag">FLUXO DE INTEGRAÇÃO</span>
+                    <h2 class="titulo_principal">
+                        COMO <span class="text-cyan">FUNCIONA</span>
+                    </h2>
+                    <p class="descricao-secao">
+                        Quatro etapas simples para colocar sua infraestrutura sob monitoramento inteligente.
+                    </p>
+                </div>
 
                 <div class="etapas-grid">
 
                     <div class="etapa">
                         <div class="numero">01</div>
                         <h3>Cadastro & Setup</h3>
-                        <p>
-                            A empresa cria a conta de administração e provisiona
-                            os servidores na plataforma.
-                        </p>
+                        <p>O administrador registra a empresa e cadastra os hosts físicos ou instâncias que deseja proteger.</p>
                     </div>
 
                     <div class="etapa">
                         <div class="numero">02</div>
                         <h3>Instalação do Agente</h3>
-                        <p>
-                            O agente de monitoramento é configurado no host com
-                            chaves seguras de autenticação.
-                        </p>
+                        <p>O agente de telemetria é implantado no servidor host em poucos minutos com autenticação segura.</p>
                     </div>
 
                     <div class="etapa">
                         <div class="numero">03</div>
-                        <h3>Transmissão de Métricas</h3>
-                        <p>
-                            Telemetria de CPU, memória, processos e rede são
-                            transmitidos para análise analítica.
-                        </p>
+                        <h3>Coleta de Métricas</h3>
+                        <p>CPU, memória, rede e serviços são monitorados periodicamente com envio seguro para a plataforma.</p>
                     </div>
 
                     <div class="etapa">
                         <div class="numero">04</div>
-                        <h3>Monitoramento & Resposta</h3>
-                        <p>
-                            Visualização no painel em tempo real e resposta ágil
-                            a incidentes com alertas instantâneos.
-                        </p>
+                        <h3>Alertas & Resposta</h3>
+                        <p>Incidentes e variações críticas disparam notificações imediatas para a equipe técnica responsável.</p>
                     </div>
 
                 </div>
-
             </div>
-
         </section>
 
-        <!-- NOSSA EQUIPE -->
-        <section class="secao-fullscreen secao-bg-dark secao_equipe" id="equipe">
-
-            <div class="equipe-wrapper">
-
-                <div class="equipe-lado-foto">
-                    <img src="../../../assets/imgs/GrupodePI.jfif" alt="Equipe InfraTech - Grupo de Projeto Integrador"
-                        class="equipe-foto-grupo">
-
-                    <span class="equipe-foto-label">
-                        INFRATECH · SÃO PAULO TECH SCHOOL · 2026
-                    </span>
-                </div>
-
-                <div class="equipe-lado-texto">
+        <!-- SEÇÃO 5: EQUIPE INTEGRADA À HOME (SEM PÁGINA SEPARADA, SEM FOTOS INDIVIDUAIS) -->
+        <section class="secao-fullscreen secao-equipe-home" id="equipe">
+            <div class="container">
+                <div class="caixa-titulo-secao">
+                    <span class="subtitulo-tag">SÃO PAULO TECH SCHOOL · 2026</span>
                     <h2 class="titulo_principal">
                         NOSSA <span class="text-cyan">EQUIPE</span>
                     </h2>
-
-                    <p class="equipe-texto">
-                        Somos um grupo de desenvolvedores e entusiastas de infraestrutura da São Paulo Tech School
-                        unidos pelo propósito de resolver desafios reais do mercado de jogos com engenharia e tecnologia.
+                    <p class="descricao-secao">
+                        Desenvolvido por estudantes apaixonados por tecnologia, observabilidade e engenharia de software para servidores.
                     </p>
+                </div>
 
-                    <p class="equipe-texto">
-                        A InfraTech une observabilidade, telemetria de hardware e integridade de microsserviços
-                        para que panes silenciosas sejam diagnosticadas antes de causarem prejuízos financeiros ou quebra de confiança dos jogadores.
-                    </p>
+                <div class="equipe-home-destaque">
+                    <div class="equipe-foto-container">
+                        <img src="../../../assets/imgs/GrupodePI.jfif" alt="Equipe de Desenvolvimento InfraTech" class="equipe-foto-grupo">
+                        <div class="equipe-foto-badge">
+                            <span>PROJETO INTEGRADOR · SPTECH</span>
+                        </div>
+                    </div>
 
-                    <div class="equipe-acoes">
-                        <a href="../nossa_equipe/nossa_equipe.html" class="btn-cyan">
-                            Conhecer Todos os Integrantes →
-                        </a>
+                    <div class="equipe-home-texto">
+                        <h3 class="equipe-apresentacao-titulo">Engenharia, Observabilidade e Foco em Resultados</h3>
+                        <p>
+                            A InfraTech nasceu como um projeto integrador acadêmico e evoluiu para uma solução profissional
+                            de telemetria. Unimos práticas modernas de arquitetura e observabilidade para proteger frotas de servidores
+                            utilizados em ecossistemas de alta demanda e jogos online.
+                        </p>
+                        <p>
+                            Acreditamos que o monitoramento proativo é a chave para transformar dados brutos em decisões inteligentes,
+                            evitando perdas financeiras e garantindo partidas contínuas e seguras para os jogadores.
+                        </p>
                     </div>
                 </div>
 
-            </div>
+                <!-- CARDS LIMPOS DOS MEMBROS (SEM FOTOS INDIVIDUAIS) -->
 
+            </div>
         </section>
 
-        <!-- CONTATO -->
-        <section class="secao-fullscreen secao-bg-alt secao_contato" id="contato">
-
-            <div class="container conteudo-principal-contato">
-
-                <div class="div_texto_contato">
-
-                    <div>
-                        <h2 class="titulo_principal">
-                            QUER SABER <span class="text-cyan">MAIS?</span>
-                        </h2>
-
-                        <p class="texto_descricao_contato">
-                            Entre em contato com nossa equipe técnica. Tire dúvidas sobre a arquitetura do projeto,
-                            solicite uma demonstração ou saiba como integrar o agente ao seu ambiente.
-                        </p>
-                    </div>
-
-                    <div class="box_acesso">
-                        <h3 class="sub_titulo_acesso">ACESSO AO SISTEMA</h3>
-
-                        <p class="texto_box_acesso">
-                            Para acessar o painel de monitoramento, utilize sua conta cadastrada.
-                            O acesso é restrito a administradores e colaboradores autorizados.
-                        </p>
-
-                        <a href="../../autenticacao/login/login.html" class="btn-cyan botao_box" id="btn-entrar-contato">
-                            Entrar no Sistema
-                        </a>
-                    </div>
-
-                    <div class="div_contato">
-                        <div class="bloco_contato">
-                            <p>E-MAIL</p>
-                            <span>contato@infratech.com</span>
-                        </div>
-
-                        <div class="bloco_contato">
-                            <p>INSTITUIÇÃO</p>
-                            <span>São Paulo Tech School</span>
-                        </div>
-                    </div>
-
+        <!-- SEÇÃO 6: FALE CONOSCO / CONTATO INTEGRADO À HOME -->
+        <section class="secao-fullscreen secao-contato-home" id="contato">
+            <div class="container">
+                <div class="caixa-titulo-secao">
+                    <span class="subtitulo-tag">CONTATO & SUPORTE</span>
+                    <h2 class="titulo_principal">
+                        FALE <span class="text-cyan">CONOSCO</span>
+                    </h2>
+                    <p class="descricao-secao">
+                        Tire dúvidas sobre a solução, solicite uma demonstração ou entre em contato com nossa equipe técnica.
+                    </p>
                 </div>
 
-                <div class="div_logo">
-                    <img class="img_logo" src="../../../assets/icon/logo_texto.png" alt="InfraTech Logo">
-                </div>
+                <div class="contato-grid-home">
+                    <!-- INFORMAÇÕES DE CONTATO & ACESSO -->
+                    <div class="contato-info-coluna">
+                        <div class="contato-card-info">
+                            <h3 class="contato-info-titulo">Canais de Atendimento</h3>
+                            <p class="contato-info-desc">
+                                Nossa equipe técnica está pronta para responder suas dúvidas sobre arquitetura, implantação de agentes e viabilidade operacional.
+                            </p>
 
+                            <div class="contato-detalhes-lista">
+                                <div class="item-contato">
+                                    <div class="icone-contato">✉</div>
+                                    <div>
+                                        <label>E-MAIL CORPORATIVO</label>
+                                        <a href="mailto:contato@infratech.com">contato@infratech.com</a>
+                                    </div>
+                                </div>
+
+                                <div class="item-contato">
+                                    <div class="icone-contato">🏛</div>
+                                    <div>
+                                        <label>INSTITUIÇÃO ACADÊMICA</label>
+                                        <span>São Paulo Tech School</span>
+                                    </div>
+                                </div>
+
+                                <div class="item-contato">
+                                    <div class="icone-contato">📍</div>
+                                    <div>
+                                        <label>LOCALIZAÇÃO</label>
+                                        <span>São Paulo - SP, Brasil</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BOX DE ACESSO -->
+                        <div class="box-acesso-home">
+                            <div class="box-acesso-icone">🔐</div>
+                            <div>
+                                <h4 class="box-acesso-titulo">Acesso ao Sistema</h4>
+                                <p class="box-acesso-texto">
+                                    Para acessar o painel de hosts e instâncias, utilize suas credenciais corporativas ou gere uma nova conta com o token fornecido pela sua organização.
+                                </p>
+                                <div class="box-acesso-botoes">
+                                    <a href="../../autenticacao/login/login.html" class="btn-cyan">Entrar no Sistema</a>
+                                    <a href="../../autenticacao/cadastro_funcionario/cadastro-funcionario.html" class="btn-outline">Criar Conta</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORMULÁRIO DIRETO DE MENSAGEM -->
+                    <div class="contato-form-coluna">
+                        <div class="card-formulario-contato">
+                            <div class="card-form-header">
+                                <img src="../../../assets/icon/logo.png" alt="InfraTech" class="form-logo-img">
+                                <div>
+                                    <h3 class="form-titulo">Envie uma Mensagem</h3>
+                                    <p class="form-subtitulo">Responderemos em até 24 horas úteis</p>
+                                </div>
+                            </div>
+
+                            <form id="form-contato-home" onsubmit="event.preventDefault(); enviarMensagemContato();">
+                                <div class="form-grupo-duplo">
+                                    <div class="bloco-input">
+                                        <label for="contato_nome">Nome Completo</label>
+                                        <input type="text" id="contato_nome" placeholder="Seu nome" required autocomplete="name">
+                                    </div>
+                                    <div class="bloco-input">
+                                        <label for="contato_email">E-mail</label>
+                                        <input type="email" id="contato_email" placeholder="voce@empresa.com" required autocomplete="email">
+                                    </div>
+                                </div>
+
+                                <div class="bloco-input">
+                                    <label for="contato_assunto">Assunto</label>
+                                    <input type="text" id="contato_assunto" placeholder="Ex: Demonstração da plataforma" required>
+                                </div>
+
+                                <div class="bloco-input">
+                                    <label for="contato_mensagem">Mensagem</label>
+                                    <textarea id="contato_mensagem" rows="4" placeholder="Descreva sua dúvida ou solicitação..." required></textarea>
+                                </div>
+
+                                <div id="feedback_contato" class="feedback-contato" style="display: none;"></div>
+
+                                <button type="submit" class="btn-cyan btn-enviar-contato" id="btn-enviar-contato">
+                                    Enviar Mensagem
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </section>
 
     </main>
 
-    <!-- RODAPÉ -->
+    <!-- RODAPÉ DA HOME -->
     <footer class="rodape">
-
         <div class="rodape-conteudo">
-
             <div class="rodape-logo">
-                <img src="../../../assets/icon/logo.png" alt="InfraTech">
-
+                <img src="../../../assets/icon/logo.png" alt="InfraTech Logo">
                 <div>
                     <h2>INFRA<span class="text-cyan">TECH</span></h2>
                     <p>
-                        Monitoramento inteligente e proativo da infraestrutura de servidores para jogos online.
+                        Solução de observabilidade e monitoramento inteligente de infraestrutura para servidores de jogos online.
                     </p>
                 </div>
             </div>
@@ -361,30 +430,27 @@
             <div class="rodape-links">
                 <h3>NAVEGAÇÃO</h3>
                 <a href="#inicio">Início</a>
-                <a href="#sobre">Sobre</a>
+                <a href="#sobre">Sobre a Solução</a>
                 <a href="#funcionalidades">Funcionalidades</a>
                 <a href="#como-funciona">Como Funciona</a>
-                <a href="../nossa_equipe/nossa_equipe.html">Equipe</a>
-                <a href="../fale_conosco/fale_conosco.html">Fale Conosco</a>
+                <a href="#equipe">Nossa Equipe</a>
+                <a href="#contato">Fale Conosco</a>
             </div>
 
             <div class="rodape-links">
-                <h3>ACESSO</h3>
-                <a href="../../autenticacao/login/login.html">Entrar</a>
-                <a href="../../autenticacao/cadastro_funcionario/cadastro-funcionario.html">Criar Conta</a>
-                <a href="../fale_conosco/fale_conosco.html">Suporte</a>
+                <h3>ACESSO RÁPIDO</h3>
+                <a href="../../autenticacao/login/login.html">Login no Sistema</a>
+                <a href="../../autenticacao/cadastro_funcionario/cadastro-funcionario.html">Cadastrar com Token</a>
+                <a href="#contato">Suporte e Demonstração</a>
             </div>
-
         </div>
 
         <div class="rodape-final">
-            <p>© 2026 InfraTech. Todos os direitos reservados. São Paulo Tech School.</p>
+            <p>© 2026 InfraTech. Todos os direitos reservados. Projeto Integrador · São Paulo Tech School.</p>
         </div>
-
     </footer>
 
-    <script src="index.js"></script>
-
+    <script src="./index.js"></script>
 </body>
 
 </html>

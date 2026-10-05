@@ -2,19 +2,14 @@
 <html lang="pt-BR">
 
 <head>
-    <link rel="shortcut icon" href="../assets/icon/logo.png" type="image/png">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InfraTech | Gerenciar Empresas</title>
+    <title>Gerenciar Empresas | InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png" type="image/png">
 
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
-    <link rel="stylesheet" href="../../../compartilhado/css/barralateral.css">
     <link rel="stylesheet" href="./gerenciar_empresa.css">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
 
     <script src="../../../compartilhado/js/sessao.js"></script>
     <script src="./gerenciar_empresa.js" defer></script>
@@ -22,46 +17,85 @@
 
 <body class="pagina-empresas">
 
-    <div class="header-left">
+    <!-- SIDEBAR -->
+    <aside class="header-left">
         <div class="logo">
-            <img src="../assets/icon/logo.png" alt="Logo">
+            <a href="../painel/painel.html" title="InfraTech Painel">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
         </div>
 
         <hr class="linha">
 
         <h3 class="nav-categoria">
-            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../painel/painel.html" class="nav-item">
+            <img src="../../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Em Breve
+        </a>
+        <a href="../servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+        <a href="../servidores/cadastro_instancia.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Instâncias
+        </a>
+        <a href="../servidores/modificar_servidor.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="../funcionarios/modificar_funcionario.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
             Empresas
         </h3>
-        <hr class="linha">
 
         <a href="./gerenciar_empresa.html" class="nav-item ativo">
-            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
             Gerenciar
         </a>
-        <a href="#" class="nav-item">
-            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-            Cadastrar
+        <a href="./cadastro_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
         </a>
 
-        <div class="btn-logout" onclick="limparSessao()" title="Sair">
-            <img src="../assets/imgs/logout.png" alt="" class="logout-icon">
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
         </div>
-    </div>
+    </aside>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="conteudo-empresas">
 
         <div class="barra-topo">
             <p class="caminho">Empresas / Gerenciar</p>
             <div class="usuario-topo">
                 <span class="ponto-online" aria-hidden="true"></span>
-                <span id="nome_usuario">Admin</span>
+                <span id="nome_usuario">Administrador</span>
             </div>
         </div>
 
         <div class="titulo-pagina">
             <h1>Gerenciar empresas</h1>
-            <p>Edite os dados das empresas clientes ou desative o acesso delas ao sistema.</p>
+            <p>Edite os dados das empresas clientes ou desative o acesso delas ao sistema de observabilidade.</p>
         </div>
 
         <section class="painel" aria-label="Lista de empresas">
@@ -100,130 +134,108 @@
                 <button type="button" class="btn btn-ciano" id="btn_recarregar" hidden>Tentar novamente</button>
             </div>
         </section>
+
     </main>
 
-    <!-- Detalhes -->
+    <!-- Modais de Detalhes, Edição e Confirmação -->
     <dialog id="dlg_detalhes" class="modal" aria-labelledby="detalhes_titulo">
         <div class="modal-cabecalho">
             <h2 class="modal-titulo" id="detalhes_titulo">Detalhes da empresa</h2>
-            <button type="button" class="btn-fechar" data-fechar aria-label="Fechar">&times;</button>
+            <button type="button" class="btn-fechar" id="btn_fechar_detalhes" aria-label="Fechar modal">✕</button>
         </div>
         <div class="modal-corpo" id="detalhes_corpo"></div>
         <div class="modal-rodape">
-            <button type="button" class="btn btn-suave" data-fechar>Fechar</button>
-            <button type="button" class="btn btn-ciano" id="btn_detalhes_editar" hidden>Editar dados</button>
+            <button type="button" class="btn btn-fantasma" id="btn_fechar_detalhes_rodape">Fechar</button>
+            <button type="button" class="btn btn-ciano" id="btn_detalhes_editar">Editar dados</button>
         </div>
     </dialog>
 
-    <!-- Edição -->
-    <dialog id="dlg_editar" class="modal" aria-labelledby="editar_titulo">
+    <dialog id="dlg_editar" class="modal modal-largo" aria-labelledby="editar_titulo">
         <form id="form_edicao" class="modal-form" novalidate>
             <div class="modal-cabecalho">
                 <h2 class="modal-titulo" id="editar_titulo">Editar empresa</h2>
-                <button type="button" class="btn-fechar" data-fechar aria-label="Fechar">&times;</button>
+                <button type="button" class="btn-fechar" id="btn_fechar_edicao" aria-label="Fechar modal">✕</button>
             </div>
-
             <div class="modal-corpo">
-                <p class="aviso-erro" id="edicao_aviso" role="alert" hidden></p>
-
-                <h3 class="secao-titulo">Dados da empresa</h3>
-                <div class="grade">
-                    <div class="campo c6">
+                <p class="aviso-edicao" id="edicao_aviso" role="alert" hidden></p>
+                <div class="grid-form">
+                    <div class="campo-grupo span-2">
                         <label for="ed_razao">Razão social</label>
-                        <input type="text" id="ed_razao" maxlength="100" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_razao"></span>
+                        <input type="text" id="ed_razao" name="razaoSocial" required maxlength="100" class="input-edicao">
                     </div>
-                    <div class="campo c6">
+                    <div class="campo-grupo span-2">
                         <label for="ed_fantasia">Nome fantasia</label>
-                        <input type="text" id="ed_fantasia" maxlength="100" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_fantasia"></span>
+                        <input type="text" id="ed_fantasia" name="nomeFantasia" required maxlength="100" class="input-edicao">
                     </div>
-                    <div class="campo c4">
+                    <div class="campo-grupo">
                         <label for="ed_cnpj">CNPJ</label>
-                        <input type="text" id="ed_cnpj" maxlength="18" inputmode="numeric" placeholder="00.000.000/0000-00" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_cnpj"></span>
+                        <input type="text" id="ed_cnpj" name="cnpj" required maxlength="18" class="input-edicao" inputmode="numeric">
                     </div>
-                    <div class="campo c8">
+                    <div class="campo-grupo">
                         <label for="ed_segmento">Segmento de atuação</label>
-                        <input type="text" id="ed_segmento" maxlength="80" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_segmento"></span>
+                        <input type="text" id="ed_segmento" name="segmentoAtuacao" required maxlength="50" class="input-edicao">
                     </div>
-                    <div class="campo c6">
-                        <label for="ed_email">E-mail</label>
-                        <input type="text" id="ed_email" maxlength="200" inputmode="email" placeholder="contato@empresa.com" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_email"></span>
+                    <div class="campo-grupo">
+                        <label for="ed_email">E-mail corporativo</label>
+                        <input type="email" id="ed_email" name="email" required maxlength="100" class="input-edicao">
                     </div>
-                    <div class="campo c6">
+                    <div class="campo-grupo">
                         <label for="ed_telefone">Telefone</label>
-                        <input type="text" id="ed_telefone" maxlength="15" inputmode="tel" placeholder="(11) 99999-0000" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_telefone"></span>
+                        <input type="tel" id="ed_telefone" name="telefone" required maxlength="15" class="input-edicao" inputmode="tel">
                     </div>
-                </div>
-
-                <h3 class="secao-titulo">Endereço</h3>
-                <div class="grade">
-                    <div class="campo c4">
+                    <div class="campo-grupo">
                         <label for="ed_cep">CEP</label>
-                        <input type="text" id="ed_cep" maxlength="9" inputmode="numeric" placeholder="00000-000" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_cep"></span>
+                        <input type="text" id="ed_cep" name="cep" required maxlength="9" class="input-edicao" inputmode="numeric">
                     </div>
-                    <div class="campo c8">
+                    <div class="campo-grupo span-2">
                         <label for="ed_logradouro">Logradouro</label>
-                        <input type="text" id="ed_logradouro" maxlength="100" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_logradouro"></span>
+                        <input type="text" id="ed_logradouro" name="logradouro" required maxlength="100" class="input-edicao">
                     </div>
-                    <div class="campo c4">
+                    <div class="campo-grupo">
                         <label for="ed_numero">Número</label>
-                        <input type="text" id="ed_numero" maxlength="20" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_numero"></span>
+                        <input type="text" id="ed_numero" name="numero" required maxlength="10" class="input-edicao">
                     </div>
-                    <div class="campo c8">
-                        <label for="ed_complemento">Complemento <span class="opcional">(opcional)</span></label>
-                        <input type="text" id="ed_complemento" maxlength="100" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_complemento"></span>
+                    <div class="campo-grupo">
+                        <label for="ed_complemento">Complemento</label>
+                        <input type="text" id="ed_complemento" name="complemento" maxlength="50" class="input-edicao">
                     </div>
-                    <div class="campo c5">
+                    <div class="campo-grupo">
                         <label for="ed_bairro">Bairro</label>
-                        <input type="text" id="ed_bairro" maxlength="100" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_bairro"></span>
+                        <input type="text" id="ed_bairro" name="bairro" required maxlength="50" class="input-edicao">
                     </div>
-                    <div class="campo c4">
+                    <div class="campo-grupo">
                         <label for="ed_cidade">Cidade</label>
-                        <input type="text" id="ed_cidade" maxlength="100" autocomplete="off">
-                        <span class="erro-campo" id="erro_ed_cidade"></span>
+                        <input type="text" id="ed_cidade" name="cidade" required maxlength="50" class="input-edicao">
                     </div>
-                    <div class="campo c3">
+                    <div class="campo-grupo">
                         <label for="ed_estado">UF</label>
-                        <select id="ed_estado"></select>
-                        <span class="erro-campo" id="erro_ed_estado"></span>
+                        <select id="ed_estado" name="estado" required class="input-edicao select-edicao">
+                            <option value="">Selecione...</option>
+                        </select>
                     </div>
                 </div>
             </div>
-
             <div class="modal-rodape">
-                <button type="button" class="btn btn-suave" data-fechar>Cancelar</button>
-                <button type="submit" class="btn btn-principal">Salvar alterações</button>
+                <button type="button" class="btn btn-fantasma" id="btn_cancelar_edicao">Cancelar</button>
+                <button type="submit" class="btn btn-ciano" id="btn_salvar_edicao">Salvar alterações</button>
             </div>
         </form>
     </dialog>
 
-    <!-- Confirmação (usada em editar, desativar e reativar) -->
     <dialog id="dlg_confirmar" class="modal modal-estreito" aria-labelledby="confirmar_titulo">
         <div class="modal-cabecalho">
             <h2 class="modal-titulo" id="confirmar_titulo"></h2>
         </div>
         <div class="modal-corpo">
-            <div id="confirmar_texto" class="confirmar-texto"></div>
-            <ul class="lista-mudancas" id="confirmar_lista" hidden></ul>
-            <p class="aviso-erro" id="confirmar_erro" role="alert" hidden></p>
+            <p class="confirmar-msg" id="confirmar_msg"></p>
         </div>
         <div class="modal-rodape">
-            <button type="button" class="btn btn-suave" id="btn_confirmar_cancelar">Cancelar</button>
-            <button type="button" class="btn btn-principal" id="btn_confirmar_ok">Confirmar</button>
+            <button type="button" class="btn btn-fantasma" id="btn_cancelar_confirmar">Voltar</button>
+            <button type="button" class="btn" id="btn_executar_confirmar">Confirmar</button>
         </div>
     </dialog>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="notificacao" id="toast" role="status" aria-live="polite" hidden></div>
 
 </body>
 
