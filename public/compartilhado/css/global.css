@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* =========================================================
    1. VARIÁVEIS GLOBAIS
@@ -31,8 +31,8 @@
 
     /* Tipografia */
     --fonte-principal: "Inter", sans-serif;
-    --fonte-display: "Orbitron", sans-serif;
-    --fonte-mono: "JetBrains Mono", monospace;
+    --fonte-display: "Inter", sans-serif;
+    --fonte-mono: monospace;
 
     /* Dimensões e Arredondamento Clean */
     --largura-max: 1200px;
@@ -625,4 +625,14 @@ input::placeholder, textarea::placeholder {
         font-size: 11px;
         padding: 5px 8px;
     }
+}
+
+/* CORREÇÃO DO AUTOFILL DO NAVEGADOR PARA TEMAS ESCUROS */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--cor-input) inset !important;
+    -webkit-text-fill-color: var(--cor-branco) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }

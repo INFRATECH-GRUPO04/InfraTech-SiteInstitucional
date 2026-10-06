@@ -13,7 +13,7 @@ function buscarCodigo(codigo){
 }
 
 function atualizarCodigo(id){
-    var instrucaoSql = `UPDATE convite SET quantidadeUsada = quantidadeUsada + 1 WHERE idConvite = ${id} AND quantidadeUsada < quantidadeUso;`;
+    var instrucaoSql = `UPDATE convite SET quantidade_usada = quantidade_usada + 1 WHERE id_convite = ${id} AND quantidade_usada < quantidade_uso;`;
     console.log("Executando a instrução SQL de geração de código: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }

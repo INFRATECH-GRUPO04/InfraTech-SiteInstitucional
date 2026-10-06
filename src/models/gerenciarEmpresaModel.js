@@ -10,15 +10,15 @@ var esc = mysql.escape;
 
 // Campos de empresa + endereço, já com os nomes que o front usa
 var CAMPOS_EMPRESA = `
-    e.idEmpresa,
-    e.razaoSocial,
-    e.nomeFantasia,
+    e.id_empresa AS idEmpresa,
+    e.razao_social AS razaoSocial,
+    e.nome_fantasia AS nomeFantasia,
     e.cnpj,
     e.segmento_atuacao AS segmentoAtuacao,
     e.email,
     e.telefone,
     e.status_sistema AS status,
-    e.dtCadastro,
+    e.dt_cadastro AS dtCadastro,
     e.fk_endereco AS fkEndereco,
     en.cep,
     en.logradouro,
@@ -35,7 +35,7 @@ function listar() {
         SELECT ${CAMPOS_EMPRESA}
         FROM empresa e
         LEFT JOIN endereco en ON en.id_endereco = e.fk_endereco
-        WHERE e.idEmpresa <> ${ID_EMPRESA_INTERNA}
+        WHERE e.id_empresa <> ${ID_EMPRESA_INTERNA}
         ORDER BY e.nomeFantasia;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
@@ -49,7 +49,7 @@ function buscarPorId(idEmpresa) {
         SELECT ${CAMPOS_EMPRESA}
         FROM empresa e
         LEFT JOIN endereco en ON en.id_endereco = e.fk_endereco
-        WHERE e.idEmpresa = ${Number(idEmpresa)};
+        WHERE e.id_empresa = ${Number(idEmpresa)};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -59,9 +59,9 @@ function buscarGestor(idEmpresa) {
     console.log("ACESSEI O GERENCIAR EMPRESA MODEL \n function buscarGestor():", idEmpresa);
 
     var instrucaoSql = `
-        SELECT idFuncionario, nome, email, senha, cpf, status_sistema AS status, dtCadastro
+        SELECT id_funcionario AS idFuncionario, nome, email, senha, cpf, status_sistema AS status, dt_cadastro AS dtCadastro
         FROM funcionario
-        WHERE fk_empresa = ${Number(idEmpresa)} AND tipoAcesso = 'GESTOR'
+        WHERE fk_empresa = ${Number(idEmpresa)} AND tipo_acesso = 'GESTOR'
         LIMIT 1;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);

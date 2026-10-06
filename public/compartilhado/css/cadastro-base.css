@@ -16,8 +16,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 30px;
-    border-bottom: 1px solid var(--cor-borda-cyan, rgba(0, 207, 255, 0.2));
-    background-color: rgba(5, 11, 18, 0.6);
+    border-bottom: 1px solid var(--cor-borda-cyan);
+    background-color: var(--cor-fundo-secundario);
     position: static;
     min-height: auto;
 }
@@ -61,15 +61,16 @@
     padding-top: 40px;
 }
 
-.forms {
-    background-color: var(--cor-card, #0b1622);
-    border-radius: 12px;
-    border: 1px solid var(--cor-borda);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-    overflow: hidden;
-    width: 100%;
-    max-width: 600px;
+.forms { 
+  background-color: var(--cor-card); 
+  border-radius: 12px; 
+  border: 1px solid var(--cor-before); 
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45); 
+  overflow: hidden; 
+  width: 100%; 
+  max-width: 600px; 
 }
+
 
 .bg_token {
     background: linear-gradient(180deg, #0d1a29 0%, #08121c 100%);

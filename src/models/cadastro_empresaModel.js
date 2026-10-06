@@ -33,8 +33,8 @@ function cadastrarEmpresa(razaoSocial, nomeFantasia, cnpj, segmento, emailEmpres
 
 function cadastrarRepresentante(fkEmpresa, nomeResponsavel, dtNascimentoResponsavel, emailResponsavel, senha, cpf) {
   var instrucaoSql = `
-    INSERT INTO funcionario (fk_empresa, adm, nome, data_nascimento, email, senha, cpf, status_sistema, dt_cadastro) 
-    VALUES (${fkEmpresa}, 1, '${nomeResponsavel}', '${dtNascimentoResponsavel}', '${emailResponsavel}', '${senha}', '${cpf}', 1, NOW());
+    INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf, status_sistema) 
+    VALUES (${fkEmpresa}, 'GESTOR', '${nomeResponsavel}', '${dtNascimentoResponsavel}', '${emailResponsavel}', '${senha}', '${cpf}', 1);
   `;
   return database.executar(instrucaoSql);
 }
