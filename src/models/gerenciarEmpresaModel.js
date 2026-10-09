@@ -36,7 +36,7 @@ function listar() {
         FROM empresa e
         LEFT JOIN endereco en ON en.id_endereco = e.fk_endereco
         WHERE e.id_empresa <> ${ID_EMPRESA_INTERNA}
-        ORDER BY e.nomeFantasia;
+        ORDER BY e.nome_fantasia;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

@@ -10,38 +10,34 @@ function verificar(codigo) {
 }
 
 function autenticar(email, senha) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function entrar(): ", email, senha)
     var instrucaoSql = `
-        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, status_sistema AS statusSistema, dt_cadastro AS dtCadastro FROM funcionario WHERE email = '${email}' AND senha = '${senha}';
+        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, dt_cadastro AS dtCadastro 
+        FROM funcionario 
+        WHERE email = '${email}' AND senha = '${senha}';
     `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
-
-function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, email, senha, cpf, fkEmpresa);
-
+function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso) {
+    var tipoFinal = (tipoAcesso === 'ADMIN' || tipoAcesso === 'GESTOR') ? tipoAcesso : 'FUNCIONARIO';
     var instrucaoSql = `
-        INSERT INTO funcionario (fk_empresa, nome, data_nascimento, email, senha, cpf) VALUES ('${fkEmpresa}', '${nome}', '${data_nascimento}', '${email}', '${senha}', '${cpf}');
+        INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf) 
+        VALUES ('${fkEmpresa}', '${tipoFinal}', '${nome}', '${data_nascimento}', '${email}', '${senha}', '${cpf}');
     `;
-    console.log("Executando a instrução SQL de cadastro: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
 
 function EmailsIguais(email) {
-
     var instrucao = `SELECT email FROM funcionario WHERE email = '${email}';`;
-
-    console.log("executando a instrução sql: \n" + instrucao);
     return database.executar(instrucao);
 }
 
 function CodigoEmpresa(codigo) {
-
-    var instrucao = `SELECT fk_empresa FROM convite WHERE codigo = '${codigo}';`;
-
-    console.log("executando a instrução sql: \n" + instrucao);
+    var instrucao = `
+        SELECT id_convite, fk_empresa, tipo_acesso, quantidade_uso, quantidade_usada 
+        FROM convite 
+        WHERE codigo = '${codigo}' AND quantidade_usada < quantidade_uso;
+    `;
     return database.executar(instrucao);
 }
 

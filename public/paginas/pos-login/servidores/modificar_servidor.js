@@ -1,5 +1,6 @@
 function listarServidores() {
-    var idEmpresa = sessionStorage.ID_EMPRESA || 1; // Fallback para dev
+    validarSessao();
+    var idEmpresa = sessionStorage.ID_EMPRESA || 1;
 
     fetch(`/servidor/listar/${idEmpresa}`)
         .then(function(resposta) {

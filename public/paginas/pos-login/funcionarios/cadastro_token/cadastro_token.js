@@ -34,17 +34,19 @@ function atualizarBotoes() {
     btnAvancar.disabled = carregando;
     btnAvancar.setAttribute("aria-busy", String(carregando));
     btnVoltar.disabled = carregando;
-    btnVoltar.hidden = etapaAtual === 1;
+    btnVoltar.hidden = etapaAtual === 1 || etapaAtual === 3;
 }
 
 function focarEtapa(numero) {
     const alvo = {
         1: qtdInput,
-        2: document.querySelector('input[name="permissao"]:checked') || document.getElementById("qtd1"),
+        2: permissaoSelecionada() || document.getElementById("perm_funcionario") || document.getElementById("perm_admin") || document.getElementById("qtd1"),
         3: btnCopiar
     }[numero];
 
-    alvo.focus();
+    if (alvo) {
+        alvo.focus();
+    }
 }
 
 function mostrarEtapa(numero) {
@@ -187,9 +189,9 @@ function reiniciarWizard() {
     tokenSpan.textContent = "";
     avisoCopia.textContent = "";
 
-    const selecionada = permissaoSelecionada();
-    if (selecionada) {
-        selecionada.checked = false;
+    const radioPadrao = document.getElementById("perm_funcionario") || document.getElementById("qtd5");
+    if (radioPadrao) {
+        radioPadrao.checked = true;
     }
 
     mostrarEtapa(1);
@@ -202,7 +204,7 @@ function confirmarCopia() {
 
     clearTimeout(temporizadorCopia);
     temporizadorCopia = setTimeout(function () {
-        btnCopiar.textContent = "Copiar";
+        btnCopiar.textContent = "Copiar Token";
         btnCopiar.classList.remove("copiado");
         avisoCopia.textContent = "";
     }, 1500);

@@ -9,11 +9,12 @@
     <link rel="icon" href="../../../assets/icon/logo.png" type="image/png">
 
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
+    <link rel="stylesheet" href="../painel/painel.css">
 
     <script src="../../../compartilhado/js/sessao.js"></script>
 </head>
 
-<body class="pagina-servidores">
+<body class="pagina-painel" onload="validarSessao()">
 
     <!-- SIDEBAR -->
     <aside class="header-left">
@@ -81,8 +82,8 @@
     </aside>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="conteudo-principal">
-        <div class="barra-superior-painel">
+    <main class="conteudo-painel">
+        <header class="barra-superior-painel">
             <div class="migalhas">
                 <span class="text-muted">Funcionários</span> / <span>Modificar Colaborador</span>
             </div>
@@ -90,18 +91,21 @@
                 <span class="ponto-status"></span>
                 <span id="nome_usuario" class="nome-usuario">Administrador</span>
             </div>
-        </div>
+        </header>
 
-        <div class="placeholder-content">
-            <h1 class="placeholder-title">
-                EM <span class="text-cyan">BREVE</span>
-            </h1>
-            <p class="placeholder-text">
-                O gerenciamento avançado de permissões, redefinição de senhas e edição de perfis de funcionários está em fase de implementação.
-            </p>
-            <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-                <a href="./cadastro_token/cadastro_token.html" class="btn-cyan">Gerar Novo Token</a>
-                <a href="../painel/painel.html" class="btn-outline">Voltar ao Painel</a>
+        <div class="container-em-breve-wrapper">
+            <div class="card-em-breve">
+                <div class="badge-em-breve">EM DESENVOLVIMENTO</div>
+                <h1 class="titulo-em-breve">
+                    MODIFICAR <span class="text-cyan">FUNCIONÁRIO</span>
+                </h1>
+                <p class="descricao-em-breve">
+                    O gerenciamento avançado de permissões, redefinição de senhas e edição de perfis de funcionários está em fase de implementação.
+                </p>
+                <div class="acoes-em-breve">
+                    <a href="./cadastro_token/cadastro_token.html" class="btn-cyan">Gerar Novo Token</a>
+                    <a href="../painel/painel.html" class="btn-outline">Voltar ao Painel</a>
+                </div>
             </div>
         </div>
     </main>

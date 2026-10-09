@@ -15,9 +15,25 @@ function gerarCodigoToken() {
 
 
 function gerarCodigo(req, res) {
-    var qtd_funcionario = req.body.qtdServer;
+    var qtd_funcionario = Number(req.body.qtdServer);
     var perm_funcionario = req.body.permServer;
-    var fkEmpresa = req.body.idEmpresaVincularServer;
+    var fkEmpresa = Number(req.body.idEmpresaVincularServer);
+
+    if (!qtd_funcionario || qtd_funcionario <= 0) {
+        return res.status(400).send("Quantidade de funcionários inválida.");
+    }
+
+    if (!fkEmpresa || fkEmpresa <= 0) {
+        return res.status(400).send("ID da empresa inválido.");
+    }
+
+    if (perm_funcionario === "COMUM") {
+        perm_funcionario = "FUNCIONARIO";
+    }
+
+    if (perm_funcionario !== "ADMIN" && perm_funcionario !== "FUNCIONARIO") {
+        perm_funcionario = "FUNCIONARIO";
+    }
 
     var token_final = gerarCodigoToken();
 
@@ -32,10 +48,6 @@ function gerarCodigo(req, res) {
         ).catch(
             function (erro) {
                 console.log(erro);
-                console.log(
-                    "\nHouve um erro ao realizar o cadastro do token! Erro: ",
-                    erro.sqlMessage
-                );
                 res.status(500).json(erro.sqlMessage);
             }
         );

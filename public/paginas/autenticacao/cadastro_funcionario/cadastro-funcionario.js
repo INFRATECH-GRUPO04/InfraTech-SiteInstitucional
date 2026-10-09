@@ -75,13 +75,12 @@ function confirmarCodigoEmpresa() {
     }).then(function (resposta) {
         if (resposta.ok) {
             resposta.json().then(json => {
-                var idDaEmpresaRecebido = json.fk_empresa;
-                cadastrar(idDaEmpresaRecebido);
+                cadastrar(json.fk_empresa, json.id_convite, json.tipo_acesso);
             });
         } else {
             reabilitarBotao();
             resposta.text().then(texto => {
-                exibirErro(texto || "Código da empresa não encontrado!");
+                exibirErro(texto || "Código da empresa não encontrado ou esgotado!");
             });
         }
     }).catch(function (erro) {
@@ -92,7 +91,7 @@ function confirmarCodigoEmpresa() {
     return false;
 }
 
-function cadastrar(idDaEmpresa) {
+function cadastrar(idDaEmpresa, idConvite, tipoAcesso) {
     var nomeVar = nomeInput.value.trim();
     var emailVar = emailInput.value.trim();
     var senhaVar = passwordInput.value;
@@ -111,7 +110,9 @@ function cadastrar(idDaEmpresa) {
             senhaServer: senhaVar,
             cpfServer: cpfVar,
             nascimentoServer: dataFormatada,
-            fkEmpresaServer: idDaEmpresa
+            fkEmpresaServer: idDaEmpresa,
+            idConviteServer: idConvite,
+            tipoAcessoServer: tipoAcesso
         }),
     }).then(function (resposta) {
         console.log("resposta: ", resposta);

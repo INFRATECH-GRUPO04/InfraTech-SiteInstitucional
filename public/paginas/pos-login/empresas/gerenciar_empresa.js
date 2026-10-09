@@ -1,9 +1,8 @@
 (function () {
     "use strict";
 
-    // Só o login interno (Admin) usa esta página
     if (sessionStorage.TIPO_ACESSO !== "ADMIN") {
-        window.location.replace("../index.html");
+        window.location.replace("/paginas/pos-login/painel/painel.html");
         return;
     }
 

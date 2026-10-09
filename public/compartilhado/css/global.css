@@ -1,51 +1,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* =========================================================
-   1. VARIÁVEIS GLOBAIS
-   ========================================================= */
+/* ----------- Variáveis ----------- */
 :root {
-    /* Cores Principais */
     --cor-fundo: #050b12;
     --cor-fundo-secundario: #07101a;
     --cor-fundo-sidebar: #03080e;
     --cor-card: #0b1622;
     --cor-input: #071018;
 
-    /* Identidade da Marca (Branco + Ciano) */
     --cor-branco: #ffffff;
+    --cor-branco-logo: #ffffff;
     --cor-texto: #c7d8e4;
     --cor-texto-suave: #92abbd;
+    --cor-texto-muted: #648294;
     --cor-cyan: #00cfff;
     --cor-cyan-hover: #00e5ff;
     --cor-cyan-suave: rgba(0, 207, 255, 0.1);
 
-    /* Bordas Clean & Modernas */
     --cor-borda: rgba(255, 255, 255, 0.08);
     --cor-borda-suave: rgba(255, 255, 255, 0.05);
     --cor-borda-cyan: rgba(0, 207, 255, 0.2);
     --cor-borda-cyan-glow: rgba(0, 207, 255, 0.4);
+    --cor-before: rgba(255, 255, 255, 0.08);
 
-    /* Cores de Alerta */
     --cor-sucesso: #05df72;
     --cor-perigo: #dc2626;
 
-    /* Tipografia */
     --fonte-principal: "Inter", sans-serif;
     --fonte-display: "Inter", sans-serif;
     --fonte-mono: monospace;
+    --fonte-tecnica: "JetBrains Mono", monospace;
 
-    /* Dimensões e Arredondamento Clean */
     --largura-max: 1200px;
     --largura-sidebar: 240px;
     --raio: 8px;
     --raio-card: 12px;
     --raio-pill: 999px;
+    --raio-padrao: 8px;
     --transicao: 0.2s ease;
 }
 
-/* =========================================================
-   2. RESET E TIPOGRAFIA BÁSICA
-   ========================================================= */
+/* ----------- Base ----------- */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -65,6 +60,14 @@ body {
     color: var(--cor-texto);
     background-color: var(--cor-fundo);
     overflow-x: hidden;
+    min-height: 100vh;
+}
+
+body.pagina-servidores,
+body.pagina-painel,
+body.pagina-empresas,
+body:has(.header-left) {
+    display: flex;
     min-height: 100vh;
 }
 
@@ -109,9 +112,7 @@ p:last-child {
     margin-right: auto;
 }
 
-/* =========================================================
-   3. HEADER INSTITUCIONAL (HOME / PÁGINAS PÚBLICAS)
-   ========================================================= */
+/* ----------- Header Institucional ----------- */
 header.cabecalho {
     position: fixed;
     top: 0;
@@ -198,9 +199,7 @@ header.cabecalho.scrolled {
     padding: 4px;
 }
 
-/* =========================================================
-   4. BARRA LATERAL (SIDEBAR COM BORDAS CLEAN E LOGOUT VERMELHO)
-   ========================================================= */
+/* ----------- Barra Lateral (Sidebar) ----------- */
 .header-left {
     position: sticky;
     top: 0;
@@ -301,7 +300,7 @@ header.cabecalho.scrolled {
     opacity: 1;
 }
 
-/* BOTÃO DE LOGOUT NA BARRA LATERAL (DESTAQUE VERMELHO CLEAN) */
+/* ----------- Logout ----------- */
 .btn-logout {
     width: 100%;
     height: 42px;
@@ -345,9 +344,7 @@ header.cabecalho.scrolled {
     filter: brightness(0) invert(1);
 }
 
-/* =========================================================
-   5. BOTÕES E FORMULÁRIOS PADRONIZADOS
-   ========================================================= */
+/* ----------- Botões e Formulários ----------- */
 .btn,
 .btn-cyan,
 .btn-outline,
@@ -418,7 +415,6 @@ header.cabecalho.scrolled {
     background-color: #b91c1c;
 }
 
-/* Campos de Formulário com Bordas Sutis */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -457,7 +453,6 @@ input::placeholder, textarea::placeholder {
     color: rgba(146, 171, 189, 0.55);
 }
 
-/* Cards com Bordas Leves */
 .card {
     background-color: var(--cor-card);
     border: 1px solid var(--cor-borda);
@@ -470,9 +465,7 @@ input::placeholder, textarea::placeholder {
     border-color: var(--cor-borda-cyan);
 }
 
-/* =========================================================
-   6. RODAPÉ INSTITUCIONAL
-   ========================================================= */
+/* ----------- Rodapé ----------- */
 .rodape {
     padding: 40px 20px 20px;
     background-color: var(--cor-fundo-secundario);
@@ -540,9 +533,7 @@ input::placeholder, textarea::placeholder {
     text-align: center;
 }
 
-/* =========================================================
-   7. RESPONSIVIDADE
-   ========================================================= */
+/* ----------- Responsivo ----------- */
 @media (max-width: 991px) {
     .btn-menu-hamburguer {
         display: block;
@@ -566,7 +557,6 @@ input::placeholder, textarea::placeholder {
         display: flex;
     }
 
-    /* Barra lateral em telas médias */
     .header-left {
         width: 100%;
         min-width: 100%;
@@ -627,7 +617,7 @@ input::placeholder, textarea::placeholder {
     }
 }
 
-/* CORREÇÃO DO AUTOFILL DO NAVEGADOR PARA TEMAS ESCUROS */
+/* ----------- Autofill ----------- */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

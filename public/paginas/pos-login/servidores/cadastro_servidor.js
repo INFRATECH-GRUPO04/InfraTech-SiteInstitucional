@@ -2,6 +2,7 @@ let contador = 0;
 let inputsLista = [];
 
 window.onload = function () {
+    validarSessao();
     adicionarComponente("cpu");
     adicionarComponente("ram");
     adicionarComponente("disco");

@@ -1,7 +1,4 @@
-/* =========================================================
-   INFRATECH - TELAS DE AUTENTICAÇÃO (LOGIN & CADASTRO)
-   ========================================================= */
-
+/* ----------- Autenticação ----------- */
 body.pagina-autenticacao {
     display: flex;
     justify-content: center;
@@ -292,7 +289,7 @@ body.pagina-autenticacao {
     color: var(--cor-cyan);
 }
 
-/* Alertas de Erro */
+/* ----------- Alertas ----------- */
 .alerta_erro {
     position: fixed;
     top: 24px;
@@ -319,7 +316,7 @@ body.pagina-autenticacao {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsividade */
+/* ----------- Responsivo ----------- */
 @media (max-width: 768px) {
     .funcionario-formulario {
         grid-template-columns: 1fr;

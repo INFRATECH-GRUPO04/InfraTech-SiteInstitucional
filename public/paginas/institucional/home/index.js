@@ -1,5 +1,4 @@
-// Gerenciamento da navegação e interações da Home InfraTech
-
+// ----------- Navegação Home -----------
 document.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector("header");
 
@@ -27,21 +26,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Envio do formulário de Fale Conosco integrado na Home
+// ----------- Fale Conosco -----------
 function enviarMensagemContato(event) {
     if (event) event.preventDefault();
 
-    const nome = document.getElementById("nomeContato")?.value || "";
-    const email = document.getElementById("emailContato")?.value || "";
-    const assunto = document.getElementById("assuntoContato")?.value || "";
-    const mensagem = document.getElementById("mensagemContato")?.value || "";
-    const feedback = document.getElementById("mensagemContatoFeedback");
-    const btnSubmit = document.querySelector(".btn-enviar-contato");
+    const iptNome = document.getElementById("contato_nome") || document.getElementById("nomeContato");
+    const iptEmail = document.getElementById("contato_email") || document.getElementById("emailContato");
+    const iptAssunto = document.getElementById("contato_assunto") || document.getElementById("assuntoContato");
+    const iptMensagem = document.getElementById("contato_mensagem") || document.getElementById("mensagemContato");
+    const feedback = document.getElementById("feedback_contato") || document.getElementById("mensagemContatoFeedback");
+    const btnSubmit = document.getElementById("btn-enviar-contato") || document.querySelector(".btn-enviar-contato");
+
+    const nome = iptNome?.value || "";
+    const email = iptEmail?.value || "";
+    const assunto = iptAssunto?.value || "";
+    const mensagem = iptMensagem?.value || "";
 
     if (!nome.trim() || !email.trim() || !mensagem.trim()) {
         if (feedback) {
             feedback.style.display = "block";
-            feedback.style.color = "#ef4444";
+            feedback.style.color = "var(--cor-perigo, #dc2626)";
             feedback.innerText = "Por favor, preencha todos os campos obrigatórios.";
         }
         return false;
@@ -52,19 +56,17 @@ function enviarMensagemContato(event) {
         btnSubmit.innerText = "Enviando mensagem...";
     }
 
-    // Feedback imediato e elegante para o usuário
     setTimeout(() => {
         if (feedback) {
             feedback.style.display = "block";
-            feedback.style.color = "#10b981";
+            feedback.style.color = "var(--cor-sucesso, #05df72)";
             feedback.innerHTML = `Obrigado pelo contato, <strong>${nome}</strong>! Sua mensagem sobre "<em>${assunto || 'Atendimento'}</em>" foi enviada com sucesso. Nossa equipe entrará em contato em breve pelo e-mail <em>${email}</em>.`;
         }
 
-        // Limpa os campos
-        document.getElementById("nomeContato").value = "";
-        document.getElementById("emailContato").value = "";
-        document.getElementById("assuntoContato").value = "";
-        document.getElementById("mensagemContato").value = "";
+        if (iptNome) iptNome.value = "";
+        if (iptEmail) iptEmail.value = "";
+        if (iptAssunto) iptAssunto.value = "";
+        if (iptMensagem) iptMensagem.value = "";
 
         if (btnSubmit) {
             btnSubmit.disabled = false;
@@ -73,7 +75,7 @@ function enviarMensagemContato(event) {
                 btnSubmit.innerText = "Enviar Mensagem";
             }, 3000);
         }
-    }, 600);
+    }, 400);
 
     return false;
 }

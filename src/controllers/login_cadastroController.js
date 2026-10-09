@@ -54,6 +54,9 @@ function cadastrar(req, res) {
     var fkEmpresa = req.body.fkEmpresaServer;
 
 
+    var idConvite = req.body.idConviteServer;
+    var tipoAcesso = req.body.tipoAcessoServer;
+
     if (nome == undefined) {
         res.status(400).send("Seu nome está indefinido!");
     } else if (email == undefined) {
@@ -66,18 +69,20 @@ function cadastrar(req, res) {
         res.status(400).send("Sua data de nascimento está indefinida!");
     } else {
 
-        login_cadastroModel.cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf)
+        login_cadastroModel.cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso)
             .then(
                 function (resultado) {
+                    if (idConvite) {
+                        var cryptoModel = require("../models/cryptoModel");
+                        cryptoModel.atualizarCodigo(idConvite).catch(function (e) {
+                            console.log("Erro ao atualizar uso do convite:", e);
+                        });
+                    }
                     res.json(resultado);
                 }
             ).catch(
                 function (erro) {
                     console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao realizar o cadastro! Erro: ",
-                        erro.sqlMessage
-                    );
                     res.status(500).json(erro.sqlMessage);
                 }
             );
@@ -95,21 +100,15 @@ function EmailsIguais(req, res) {
         login_cadastroModel.EmailsIguais(email)
             .then(
                 function (resultadoEmail) {
-                    console.log(`\nResultados encontrados: ${resultadoEmail.length}`);
-
                     if (resultadoEmail.length == 1) {
-
                         res.status(403).send("Email e/ou senha inválido(s)");
-
                     } else if (resultadoEmail.length == 0) {
-
                         return res.status(200).send("Email disponível");
                     }
                 }
             ).catch(
                 function (erro) {
                     console.log(erro);
-                    console.log("\nHouve um erro ao realizar o login! Erro: ", erro.sqlMessage);
                     res.status(500).json(erro.sqlMessage);
                 }
             );
@@ -127,25 +126,20 @@ function CodigoEmpresa(req, res) {
         login_cadastroModel.CodigoEmpresa(codigo)
             .then(
                 function (resultadoCodigo) {
-                    console.log(`\nResultados encontrados: ${resultadoCodigo.length}`);
-
                     if (resultadoCodigo.length >= 1) {
-
                          res.status(200).json({
                             mensagem: "Codigo válido",
-                            fk_empresa: resultadoCodigo[0].fk_empresa
-                         })
-
-                    } else if (resultadoCodigo.length == 0) {
-
-                        res.status(403).send("Codigo inválido");
-
+                            fk_empresa: resultadoCodigo[0].fk_empresa,
+                            id_convite: resultadoCodigo[0].id_convite,
+                            tipo_acesso: resultadoCodigo[0].tipo_acesso
+                         });
+                    } else {
+                        res.status(403).send("Código inválido ou limite de usos esgotado.");
                     }
                 }
             ).catch(
                 function (erro) {
                     console.log(erro);
-                    console.log("\nHouve um erro ao realizar o login! Erro: ", erro.sqlMessage);
                     res.status(500).json(erro.sqlMessage);
                 }
             );

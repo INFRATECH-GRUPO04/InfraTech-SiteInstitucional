@@ -1,4 +1,4 @@
-// Sessão InfraTech
+// ----------- Sessão -----------
 function validarSessao() {
     var email = sessionStorage.EMAIL_USUARIO;
     var nome = sessionStorage.NOME_USUARIO;
@@ -14,23 +14,16 @@ function validarSessao() {
             nome_usuario.textContent = nome;
         }
     } else {
-        // Redireciona para a página de login se não houver sessão ativa
-        var caminhoLogin = window.location.pathname.includes("/paginas/pos-login/")
-            ? "../../autenticacao/login/login.html"
-            : "/paginas/autenticacao/login/login.html";
-        window.location.href = caminhoLogin;
+        window.location.href = "/paginas/autenticacao/login/login.html";
     }
 }
 
 function limparSessao() {
     sessionStorage.clear();
-    var caminhoLogin = window.location.pathname.includes("/paginas/pos-login/")
-        ? "../../autenticacao/login/login.html"
-        : "/paginas/autenticacao/login/login.html";
-    window.location.href = caminhoLogin;
+    window.location.href = "/paginas/autenticacao/login/login.html";
 }
 
-// Carregamento (loading)
+// ----------- Loading -----------
 function aguardar() {
     var divAguardar = document.getElementById("div_aguardar");
     if (divAguardar) {
