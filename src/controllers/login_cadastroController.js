@@ -21,8 +21,8 @@ function autenticar(req, res) {
                         var funcionario = resultadoAutenticar[0];
 
                         res.json({
-                            idFuncionario: funcionario.idFuncionario,
-                            idEmpresa: funcionario.fkEmpresa,
+                            idFuncionario: funcionario.id_funcionario,
+                            idEmpresa: funcionario.fk_empresa,
                             nome: funcionario.nome,
                             email: funcionario.email,
                             senha: funcionario.senha,
@@ -131,10 +131,10 @@ function CodigoEmpresa(req, res) {
 
                     if (resultadoCodigo.length >= 1) {
 
-                         res.status(200).json({
+                        res.status(200).json({
                             mensagem: "Codigo válido",
                             fk_empresa: resultadoCodigo[0].fk_empresa
-                         })
+                        })
 
                     } else if (resultadoCodigo.length == 0) {
 

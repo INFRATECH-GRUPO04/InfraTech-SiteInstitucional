@@ -1,23 +1,31 @@
 var express = require("express");
 var router = express.Router();
 
-var empresaController = require("../controllers/cadastro_empresaController");
+var gerenciar_funcionarioController = require("../controllers/gerenciar_funcionarioController");
 
 
-router.post("/cadastrar", function (req, res) {
-    empresaController.cadastrar(req, res);
-})
+// router.post("/cadastrar", function (req, res) {
+//     empresaController.cadastrar(req, res);
+// })
 
-router.get("/buscar", function (req, res) {
-    empresaController.buscarPorCnpj(req, res);
+router.get("/buscarNomeEmpresa/:id", function (req, res) {
+  gerenciar_funcionarioController.buscarNomeEmpresa(req, res);
 });
 
-router.get("/buscar/:id", function (req, res) {
-  empresaController.buscarPorId(req, res);
+router.get("/buscarDadosUsuario/:id", function (req, res) {
+  gerenciar_funcionarioController.buscarDadosUsuario(req, res);
 });
 
-router.get("/listar", function (req, res) {
-  empresaController.listar(req, res);
+router.get("/buscarDadosUsuarioEspecifico/:id", function (req, res) {
+  gerenciar_funcionarioController.buscarDadosUsuarioEspecifico(req, res);
+});
+
+router.delete("/deletarUsuario/:id", function (req, res) {
+  gerenciar_funcionarioController.deletarUsuario(req, res);
+});
+
+router.get("/buscarServidoresPorEmpresa/:id", function (req, res) {
+  gerenciar_funcionarioController.buscarServidoresPorEmpresa(req, res);
 });
 
 module.exports = router;

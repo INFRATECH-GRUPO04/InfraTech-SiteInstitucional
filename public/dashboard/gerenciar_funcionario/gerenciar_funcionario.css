@@ -7,6 +7,7 @@ body{
 a, button{
     cursor: pointer;
 }
+
 .container-main{
     width: 100vw;
     height: 100vh;
@@ -34,8 +35,6 @@ a, button{
     height: 91vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 1vw;
 }
 
 .titulo{
@@ -46,6 +45,15 @@ a, button{
     justify-content: space-between;
     font-size: 2.5vw;
     gap: 10px;
+    margin-bottom: 1vw;
+}
+
+.subtitulo{
+    color: #ffffff80;
+    margin-top: 1vw;
+    margin-bottom: 0vw;
+    margin-left: 2vw;
+    font-size: 1vw;
 }
 
 .risco{
@@ -61,12 +69,10 @@ a, button{
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
-    padding-right: 2.5vw;
 }
 .boxes-funcionario{
     height: 70vh;
-    width: 20vw;
+    width: 22vw;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,6 +80,63 @@ a, button{
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #3a5a78 transparent;
+}
+
+.container-funcionario {
+    display: block;         
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
+.container-funcionario-selecionado {
+    display: block;         
+    text-decoration: none;
+    background-color: #00CFFF10;
+    border: solid 1px #00CFFF;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+
+.hover-funcionario {
+    display: flex;
+    align-items: center;
+    gap: 1.2vw;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.circulo-iniciais {
+    background-color: #90e5f910;
+    width: 3vw;
+    height: 3vw;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #00CFFF;
+    flex-shrink: 0;         
+    margin-left: 1vw;
+}
+
+.infos-escritas {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5vw;
+    font-size: 1vw;
+}
+
+.cargo-servidor {
+    display: flex;
+    align-items: center;
+    gap: 0.6vw;
+}
+
+.servidor {
+    white-space: nowrap;     
+    font-size: 0.9vw;
 }
 
 .box-crud{
@@ -85,6 +148,23 @@ a, button{
     display: flex; 
     flex-direction: column;
     justify-content: space-evenly; 
+}
+
+.trecho-inicial{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.texto-inicial{
+    font-size: 1.2vw;
+    color: #ffffff50;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
 }
 
 .box-funcionario{
@@ -99,7 +179,12 @@ a, button{
     flex-shrink: 0;
 }
 
-.circulo-iniciais{
+.hover-funcionario{
+    width: 100%;
+    height: 100%;
+}
+
+/* .circulo-iniciais{
     background-color: #90e5f910;
     width: 3vw;
     height: 3vw;
@@ -109,9 +194,9 @@ a, button{
     align-items: center;
     justify-content: center;
     color: #00CFFF;
-}
+} */
 
-.infos-escritas{
+/* .infos-escritas{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -124,10 +209,10 @@ a, button{
     align-items: center;
     justify-content: space-evenly;
     gap: 12px;
-}
+} */
 
 .cargo-admin{
-    font-size: 1vw;
+    font-size: 0.9vw;
     width: 4vw;
     height: 1.5vw;
     display: flex;
@@ -137,6 +222,19 @@ a, button{
     border-radius: 10px;
     background-color: #FFA50020;
     color: #FFA500;
+}
+
+.cargo-infratech{
+    font-size: 0.9vw;
+    width: 4.6vw;
+    height: 1.5vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #90e5f9;
+    background-color: #00CFFF20;
 }
 
 .cargo-usuario{
@@ -152,15 +250,15 @@ a, button{
     background-color: #00CFFF20;
 
 }
-.servidor{
+/* .servidor{
     display: flex;
     font-size: 1vw;
     color: #ffffff65;
-}
+} */
 
 .head-crud{
     border-bottom: #00CFFF solid 1px;
-    height: 16%;
+    height: 17%;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -169,12 +267,20 @@ a, button{
 }
 
 .crud-identificacao{
-    width: 18vw;
+    width: 15vw;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     margin-left: 2vw;
+}
+
+.telaInicial{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff80;
 }
 
 .email-funcionario{
@@ -221,20 +327,71 @@ a, button{
     flex-direction: column;
 }
 
+.box-excluir{
+    width: auto;
+    height: 2.4vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 2vw;
+}
+
+.excluir{
+    width: 10vw;
+    height: 2.4vw;
+    flex-wrap: wrap;
+    font-size: 1vw;
+    color: #e13d3d;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5vw;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+.excluir:hover{
+    width: 10vw;
+    height: 2.4vw;
+    flex-wrap: wrap;
+    font-size: 1vw;
+    box-shadow: 0 0 15px #b23d3d;
+    /* color: black;
+    background-color: #e13d3d; */
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5vw;
+    border-radius: 10px;
+}
+
+
+
+.img-excluir{
+    width: 1.5vw;
+    height: 1.5vw;
+}
+
 .footer-crud{
-    height: 13%;
+    height: 15%;
     width: 100%;
     border-top: #00CFFF solid 1px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
-    gap: 8vw;
+    justify-content: space-between;
 }
 
 .texto-revisao{
     color: #ffffff30;
     font-size: 1vw;
+    margin-left: 2vw;
 }
 
 .botao-salvar{
@@ -242,10 +399,24 @@ a, button{
     width: 10vw;
     height: 2.7vw;
     color: black;
-    border-radius: 5vw;
+    border-radius: 10px;
     font-size: 1.1vw;
     border: none;
     font-weight: 400;
+    transition: 0.5s;
+    
+}
+
+.botao-salvar:hover{
+    background-color: #00CFFF;
+    width: 10vw;
+    height: 2.7vw;
+    color: black;
+    border-radius: 10px;
+    font-size: 1.1vw;
+    border: none;
+    font-weight: 400;
+    box-shadow: 0 0 11px #00CFFF;
 }
 
 .subtitulo-box-crud{
@@ -255,8 +426,22 @@ a, button{
     align-items: center;
     gap: 1vw;
     margin-left: 3vw;
-    margin-top: 2vw;
-    margin-bottom: 1.5vw;
+    margin-top: 3vw;
+    margin-bottom: 3vw;
+}
+
+.titulo-retorno{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.retorno{
+    color: #00CFFF;
+    font-size: 0.9vw;
+    margin-right: 4vw;
 }
 
 .img-class{
@@ -284,7 +469,7 @@ a, button{
     margin-top: 1vw;
     background-color: #ffffff07;
     border: #ffffff20 solid 1px;
-    border-radius: 20px;
+    border-radius: 10px;
     flex-shrink: 0;
     display: flex;
     flex-direction: row;
@@ -293,28 +478,6 @@ a, button{
     gap: 1vw;
 }
 
-.permissoes{
-    width: 100%;
-    height: 35%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 1vw;
-}
-
-.permissao{
-    width: 45%;
-    height: 80%;
-    background-color: #ffffff07;
-    border: #ffffff20 solid 1px;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    padding-left: 2vw;
-}
 
 .img-user{
     width: 1.5vw; 
@@ -334,16 +497,6 @@ a, button{
 .explicacao{
     color: #ffffff65;
     font-size: 0.9vw;
-}
-
-.imagens-permissao{
-    width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding-right: 2vw;
 }
 
 .infos-servidor{
@@ -386,30 +539,119 @@ a, button{
 
 }
 
-.container-inputs{
+.container-dados{
     width: 100%;
-    height: 76%;
+    height: 65%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+    align-content: flex-start;
+    row-gap: 2vw;   
     flex-wrap: wrap;
+    flex-shrink: 0;
 }
 
-.box-input{
+.box-dados{
     width: 45%;
-    height: 30%;
+    height: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3vw;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.4vw;
+    gap: 1vw;
 }
 
-.input-funcionario{
+.dado-funcionario{
     width: 100%;
-    height: 50%;
-    background-color: #ffffff07;
-    border: #ffffff20 solid 1px;;
-    border-radius: 10px;
+    height: 55%;
+    flex-shrink: 0;
+    font-size: 1.2vw;
+    margin-left: 2vw;
 }
 
-.texto-input{
+.texto-dado{
     margin-left: 1vw;
-    margin-bottom: 0.5vw;
+    margin-top: 0.3vw;
+    font-size: 1vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.overlay-modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;              
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-excluir{
+    width: 25vw;
+    background-color: #1e3040;
+    border: solid 1px #00CFFF;
+    border-radius: 20px;
+    padding: 2vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+}
+
+.modal-titulo{
+    color: #ff5c5c;
+    font-size: 1.4vw;
+    margin: 0;
+}
+
+.modal-texto{
+    color: #ffffff90;
+    font-size: 1vw;
+    margin: 0;
+}
+
+.modal-botoes{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 1vw;
+}
+
+.btn-cancelar,
+.btn-confirmar{
+    border: none;
+    border-radius: 5vw;
+    padding: 0.7vw 1.5vw;
+    font-size: 1vw;
+}
+
+.btn-cancelar{
+    background-color: transparent;
+    color: #ffffff90;
+    border: solid 1px #ffffff30;
+}
+
+.btn-cancelar:hover{
+    background-color: #ffffff90;
+    color: black;
+    border: solid 1px #00000070;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-confirmar{
+    background-color: #ff5c5c;
+    color: #fff;
+}
+
+.btn-confirmar:hover{
+    background-color: #d00b0b;
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }

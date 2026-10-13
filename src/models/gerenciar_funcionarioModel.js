@@ -1,49 +1,75 @@
 var database = require("../database/config");
 
-function buscarPorId(id) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE id_empresa = ${id}`;
-  return database.executar(instrucaoSql);
-}
-
-function listar() {
-  var instrucaoSql = `SELECT id_empresa AS id, razao_social, cnpj FROM empresa`;
-  return database.executar(instrucaoSql);
-}
-
-function buscarPorCnpj(cnpj) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE cnpj = '${cnpj}'`;
-  return database.executar(instrucaoSql);
-}
-
-function cadastrarEndereco(cep, logradouro, bairro, numero, complemento, estado, cidade) {
+function buscarNomeEmpresa(id) {
   var instrucaoSql = `
-    INSERT INTO endereco (cep, logradouro, bairro, numero, complemento, estado, cidade) 
-    VALUES ('${cep}', '${logradouro}', '${bairro}', '${numero}', '${complemento || ""}', '${estado}', '${cidade}');
-  `;
+    SELECT 
+        idEmpresa,
+        razaoSocial,
+        nomeFantasia
+    FROM empresa
+    WHERE idEmpresa = ${id};`;
   return database.executar(instrucaoSql);
 }
 
-function cadastrarEmpresa(razaoSocial, nomeFantasia, cnpj, segmento, emailEmpresa, telefoneEmpresa, fkEndereco) {
+function buscarDadosUsuario(id) {
   var instrucaoSql = `
-    INSERT INTO empresa (razao_social, nome_fantasia, cnpj, segmento_atuacao, email, telefone, status_sistema, dt_cadastro, fk_endereco) 
-    VALUES ('${razaoSocial}', '${nomeFantasia || ""}', '${cnpj}', '${segmento}', '${emailEmpresa}', '${telefoneEmpresa}', 1, NOW(), ${fkEndereco});
-  `;
+    SELECT 
+        f.id_funcionario,
+        f.nome,
+        f.tipoAcesso,
+        (SELECT COUNT(*) 
+           FROM servidor_funcionario sf 
+          WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
+    FROM funcionario f
+    WHERE f.fk_empresa = ${id};`;
   return database.executar(instrucaoSql);
 }
 
-function cadastrarRepresentante(fkEmpresa, nomeResponsavel, dtNascimentoResponsavel, emailResponsavel, senha, cpf) {
+function buscarDadosUsuarioEspecifico(id) {
   var instrucaoSql = `
-    INSERT INTO funcionario (fk_empresa, adm, nome, data_nascimento, email, senha, cpf, status_sistema, dt_cadastro) 
-    VALUES (${fkEmpresa}, 1, '${nomeResponsavel}', '${dtNascimentoResponsavel}', '${emailResponsavel}', '${senha}', '${cpf}', 1, NOW());
-  `;
+    SELECT 
+        f.id_funcionario,
+        f.tipoAcesso,
+        f.nome,
+        DATE_FORMAT(f.dataNascimento, '%d/%m/%Y') AS dataNascimento,
+        f.email,
+        f.senha,
+        f.cpf,
+        (SELECT COUNT(*) 
+           FROM servidor_funcionario sf 
+          WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
+    FROM funcionario f
+    WHERE f.id_funcionario = ${id};`;
+  return database.executar(instrucaoSql);
+}
+
+function deletarUsuario(id) {
+  var apagarVinculos = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${id};`;
+  var apagarFuncionario = `DELETE FROM funcionario WHERE id_funcionario = ${id};`;
+  
+  return database.executar(apagarVinculos).then(function () {
+    return database.executar(apagarFuncionario);
+  });
+}
+
+function buscarServidoresPorEmpresa(id) {
+  console.log("id do model:", id)
+  var instrucaoSql = `
+    SELECT 
+    s.idServidor,
+    s.fk_empresa,    
+    s.nome, 
+    s.status_sistema
+    FROM servidor s
+    WHERE s.fk_empresa = ${id};`;
   return database.executar(instrucaoSql);
 }
 
 module.exports = {
-  buscarPorCnpj,
-  buscarPorId,
-  listar,
-  cadastrarEndereco,
-  cadastrarEmpresa,
-  cadastrarRepresentante
-};
+  buscarNomeEmpresa,
+    buscarDadosUsuario,
+    buscarDadosUsuarioEspecifico,
+    deletarUsuario,
+    buscarServidoresPorEmpresa
+  };
+  
