@@ -155,3 +155,59 @@ a  { text-decoration: none; color: inherit; }
   text-align: center;
   flex-shrink: 0;
 }
+
+/* bloco de status dos servidores na sidebar */
+.sidebar__servidores {
+  padding: 14px 16px;
+  border-top: 1px solid var(--borda-bloco);
+  flex: 1;
+}
+
+.sidebar__servidores-titulo {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  color: var(--texto-escuro-apagado);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* Linha de cada servidor na sidebar */
+.servidor-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: 11px;
+  color: var(--texto-escuro-secundario);
+}
+
+.servidor-item__ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.servidor-item__nome {
+  flex: 1;
+  font-size: 10.5px;
+  font-family: 'Courier New', monospace;
+  color: var(--texto-escuro-secundario);
+}
+
+.servidor-item__uso {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--texto-escuro-primario);
+}
+
+/* Texto "OFF" em vermelho */
+.servidor-item__uso--offline {
+  color: var(--cor-offline);
+}
+
+/* Pontos coloridos — sidebar */
+.servidor-item__ponto--online  { background-color: var(--cor-online);  }
+.servidor-item__ponto--atencao { background-color: var(--cor-atencao); }
+.servidor-item__ponto--offline { background-color: var(--cor-offline); }
