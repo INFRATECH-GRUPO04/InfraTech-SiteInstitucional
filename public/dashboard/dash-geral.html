@@ -213,5 +213,279 @@
         <!-- fecha a parte de cima que tem as kpis-->
 
 
+        <!-- status dos servidores -->
+        <section class="status-servidores">
+
+          <div class="status-servidores__info">
+            <h2 class="status-servidores__titulo">Status dos Servidores</h2>
+            <p class="status-servidores__descricao">
+              Clique em qualquer linha para ver o diagnóstico completo daquele servidor
+            </p>
+          </div>
+
+          <table class="tabela-servidores">
+            <thead>
+              <tr>
+                <th>SERVIDOR</th>
+                <th>LOCALIDADE</th>
+                <th>SITUAÇÃO</th>
+                <th>PROCESSADOR</th>
+                <th>MEMÓRIA RAM</th>
+                <th>ARMAZENAMENTO</th>
+                <th>DISPONIBILIDADE</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Linha: SRV-BR-01 — Online -->
+              <tr class="tabela-servidores__linha" data-servidor="SRV-BR-01">
+                <td>
+                  <span class="ponto ponto--online"></span> SRV-BR-01
+                </td>
+                <td>São Paulo</td>
+                <td><span class="status status--online">Online</span></td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 42%"></div>
+                  </div>
+                  42%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 67%"></div>
+                  </div>
+                  67%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 54%"></div>
+                  </div>
+                  54%
+                </td>
+                <td>
+                  <span class="disponibilidade disponibilidade--estavel">Estável</span>
+                  <small>99.8% do tempo</small>
+                </td>
+                <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+              </tr>
+
+
+              <!-- Linha: SRV-BR-02 — Online -->
+              <tr class="tabela-servidores__linha" data-servidor="SRV-BR-02">
+                <td>
+                  <span class="ponto ponto--online"></span> SRV-BR-02
+                </td>
+                <td>Rio de Janeiro</td>
+                <td><span class="status status--online">Online</span></td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 28%"></div>
+                  </div>
+                  28%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 51%"></div>
+                  </div>
+                  51%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 38%"></div>
+                  </div>
+                  38%
+                </td>
+                <td>
+                  <span class="disponibilidade disponibilidade--estavel">Estável</span>
+                  <small>99.5% do tempo</small>
+                </td>
+                <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+              </tr>
+
+
+              <!-- Linha: SRV-BR-03 — Atenção (uso alto) -->
+              <tr class="tabela-servidores__linha tabela-servidores__linha--atencao" data-servidor="SRV-BR-03">
+                <td>
+                  <span class="ponto ponto--atencao"></span> SRV-BR-03
+                </td>
+                <td>Curitiba</td>
+                <td><span class="status status--atencao">Atenção</span></td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--atencao" style="width: 78%"></div>
+                  </div>
+                  78%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--atencao" style="width: 83%"></div>
+                  </div>
+                  83%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--atencao" style="width: 71%"></div>
+                  </div>
+                  71%
+                </td>
+                <td>
+                  <span class="disponibilidade disponibilidade--instavel">Instável</span>
+                  <small>96.2% do tempo</small>
+                </td>
+                <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+              </tr>
+
+
+              <!-- Linha: SRV-BR-04 — Offline (sem barras de uso) -->
+              <tr class="tabela-servidores__linha tabela-servidores__linha--offline" data-servidor="SRV-BR-04">
+                <td>
+                  <span class="ponto ponto--offline"></span> SRV-BR-04
+                </td>
+                <td>Brasília</td>
+                <td><span class="status status--offline">Offline</span></td>
+                <!-- Servidor offline: sem dados de uso -->
+                <td>—</td>
+                <td>—</td>
+                <td>—</td>
+                <td>
+                  <span class="disponibilidade disponibilidade--offline">Fora do ar</span>
+                </td>
+                <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+              </tr>
+
+
+              <!-- Linha: SRV-BR-05 — Online -->
+              <tr class="tabela-servidores__linha" data-servidor="SRV-BR-05">
+                <td>
+                  <span class="ponto ponto--online"></span> SRV-BR-05
+                </td>
+                <td>Recife</td>
+                <td><span class="status status--online">Online</span></td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 35%"></div>
+                  </div>
+                  35%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 44%"></div>
+                  </div>
+                  44%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 29%"></div>
+                  </div>
+                  29%
+                </td>
+                <td>
+                  <span class="disponibilidade disponibilidade--instavel">Instável</span>
+                  <small>95.7% do tempo</small>
+                </td>
+                <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+              </tr>
+
+
+              <!-- Linha: SRV-BR-06 — Online -->
+              <tr class="tabela-servidores__linha" data-servidor="SRV-BR-06">
+                <td>
+                  <span class="ponto ponto--online"></span> SRV-BR-06
+                </td>
+                <td>Salvador</td>
+                <td><span class="status status--online">Online</span></td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 21%"></div>
+                  </div>
+                  21%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 38%"></div>
+                  </div>
+                  38%
+                </td>
+                <td>
+                  <div class="barra-progresso">
+                    <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 45%"></div>
+                  </div>
+                  45%
+                </td>
+                <td>
+                  <span class="disponibilidade disponibilidade--estavel">Estável</span>
+                  <small>99.1% do tempo</small>
+                </td>
+                <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+              </tr>
+
+            </tbody>
+          </table>
+
+        </section>
+        <!-- acaba a sessão de dash específicas -->
+
+
+
+
+        <div class="secao-inferior">
+
+          <!-- Bloco 1: gráfico -->
+          <div class="bloco-rede">
+            <div class="bloco__cabecalho">
+              <div>
+                <h3 class="bloco__titulo">Uso de Rede ao Longo do Dia</h3>
+                <p class="bloco__descricao">
+                  Quanto a rede foi utilizada hora a hora – volume observado, sem classificação de severidade.
+                </p>
+              </div>
+              
+              <span class="badge badge--mbps">● 8.8 Mbps agora</span>
+            </div>
+
+            <!--chart js-->
+            <canvas id="grafico-rede" height="120"></canvas>
+          </div>
+
+          <!-- Bloco 2: gráfico de rosca  -->
+          <div class="bloco-saude">
+            <h3 class="bloco__titulo">Resumo de Saúde</h3>
+            <p class="bloco__descricao">Quantos servidores estão OK agora</p>
+
+            <!-- desneha  o gráfico-->
+            <canvas id="grafico-saude" width="160" height="160"></canvas>
+
+           
+            <ul class="legenda-saude">
+              <li>
+                <span class="ponto ponto--online"></span> Online
+                <strong>4</strong>
+              </li>
+              <li>
+                <span class="ponto ponto--atencao"></span> Atenção
+                <strong>1</strong>
+              </li>
+              <li>
+                <span class="ponto ponto--offline"></span> Offline
+                <strong>1</strong>
+              </li>
+            </ul>
+          </div>
+
+     
+
+            </ul>
+          </div>
+
+        </div>
+        
+
+      </main>
       
+
+    </div>
+   
+
+  </body>
 </html>
