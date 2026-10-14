@@ -29,26 +29,87 @@
         <!-- Menu de navegação principal -->
         <nav class="sidebar__nav">
           <ul>
-            <!-- Item ativo: Visão Geral -->
+            
             <li class="nav__item nav__item--ativo">
               <span class="nav__icone">▦</span>
               <span class="nav__texto">Visão Geral</span>
             </li>
+
             <li class="nav__item">
               <span class="nav__icone">♥</span>
               <span class="nav__texto">Saúde e Capacidade</span>
             </li>
+
             <li class="nav__item">
               <span class="nav__icone">◎</span>
               <span class="nav__texto">Disponibilidade</span>
             </li>
+
             <li class="nav__item">
               <span class="nav__icone">↗</span>
               <span class="nav__texto">Rede</span>
             </li>
+
             <li class="nav__item">
               <span class="nav__icone">🔔</span>
               <span class="nav__texto">Alertas e Regras</span>
             </li>
+
           </ul>
         </nav>
+
+
+        <div class="sidebar__servidores">
+          <p class="sidebar__servidores-titulo">STATUS DOS SERVIDORES</p>
+          <ul>
+            <!-- Cada item mostra: nome do servidor, % de uso e cor do status -->
+            <li class="servidor-item">
+              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
+              <span class="servidor-item__nome">SRV-BR-01</span>
+              <span class="servidor-item__uso">42%</span>
+            </li>
+
+            <li class="servidor-item">
+              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
+              <span class="servidor-item__nome">SRV-BR-02</span>
+              <span class="servidor-item__uso">28%</span>
+            </li>
+
+            <li class="servidor-item">
+              <span class="servidor-item__ponto servidor-item__ponto--atencao"></span>
+              <span class="servidor-item__nome">SRV-BR-03</span>
+              <span class="servidor-item__uso">78%</span>
+            </li>
+
+            <li class="servidor-item">
+              <span class="servidor-item__ponto servidor-item__ponto--offline"></span>
+              <span class="servidor-item__nome">SRV-BR-04</span>
+              <span class="servidor-item__uso servidor-item__uso--offline">OFF</span>
+            </li>
+
+            <li class="servidor-item">
+              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
+              <span class="servidor-item__nome">SRV-BR-05</span>
+              <span class="servidor-item__uso">35%</span>
+            </li>
+
+            <li class="servidor-item">
+              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
+              <span class="servidor-item__nome">SRV-BR-06</span>
+              <span class="servidor-item__uso">21%</span>
+            </li>
+
+
+          </ul>
+        </div>
+
+       
+        <div class="sidebar__rodape">
+          <button class="sidebar__btn-sair">
+            <span>↩</span> Sair
+          </button>
+        </div>
+
+      </aside>
+      <!-- fechando a sideebar -->
+
