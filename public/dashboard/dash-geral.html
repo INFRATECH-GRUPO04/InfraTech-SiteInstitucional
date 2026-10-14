@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>InfraTech – Visão Geral</title>
 
-    
-     <!-- Chart.js-->
-    
+
+    <!-- Estilos visuais da dashboard -->
+    <link rel="stylesheet" href="dash-geral.css" />
+
+    <!-- Chart.js via CDN — biblioteca para renderizar os gráficos (usada na etapa de JS) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
@@ -143,11 +145,13 @@
         <section class="panorama">
 
           <div class="panorama__info">
-            <h2 class="panorama__titulo">Panorama da Operação</h2>
-            <p class="panorama__descricao">
-              Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
-            </p>
-            <span class="panorama__leitura">ÚLTIMA LEITURA   HÁ 38 SEG</span>
+            <div>
+              <h2 class="panorama__titulo">Panorama da Operação</h2>
+              <p class="panorama__descricao">
+                Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
+              </p>
+            </div>
+            <span class="panorama__leitura">ÚLTIMA LEITURA&nbsp;&nbsp;HÁ 38 SEG</span>
           </div>
 
           <!-- Grid com os 4 cartões de KPI -->

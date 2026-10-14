@@ -1,0 +1,70 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+
+:root {
+  /* Fundos escuros — sidebar e cabeçalho */
+  --fundo-pagina:      #0b1420;   
+  --fundo-sidebar:     #0d1930;   
+  --fundo-header:      #0d1930;  
+
+  /* Fundos das seções inferiores (blocos de gráfico e eventos) */
+  --fundo-bloco:       #111e35;
+  --fundo-bloco-hover: #162440;
+  --borda-bloco:       #1c2f52;
+
+  /* Fundos claros — KPI cards e tabela de servidores */
+  --fundo-card-claro:       #ffffff;  
+  --fundo-card-claro-alt:   #f7f9fc; 
+  --fundo-card-claro-hover: #eef2f8;   
+  --borda-card-claro:       #dde4f0;   
+  --sombra-card-claro: 0 2px 12px rgba(10, 20, 50, 0.12); 
+
+  /* Cores de status */
+  --cor-online:   #16a34a;  
+  --cor-atencao:  #d97706;  
+  --cor-offline:  #dc2626;   
+  --cor-roxo:     #7c3aed;   
+  --cor-ciano:    #0891b2;   
+  --cor-info:     #2563eb;  
+
+  
+  --texto-claro-primario:   #0f172a;   
+  --texto-claro-secundario: #4b5e7a;   
+  --texto-claro-apagado:    #94a3b8;   
+
+  /* Cores de texto para seções ESCURAS (blocos inferiores, sidebar, header) */
+  --texto-escuro-primario:   #e8f0fe;
+  --texto-escuro-secundario: #7a95c0;
+  --texto-escuro-apagado:    #3d5680;
+
+  /* Dimensão da sidebar */
+  --largura-sidebar: 200px;
+
+  
+  --raio-card:   8px;
+  --raio-badge:  20px;
+  --raio-status: 4px;
+  --raio-btn:    6px;
+}
+
+
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  background-color: var(--fundo-pagina);
+  color: var(--texto-escuro-primario);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+ul { list-style: none; }
+a  { text-decoration: none; color: inherit; }
+
