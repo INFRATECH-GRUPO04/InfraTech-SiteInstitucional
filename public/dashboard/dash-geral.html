@@ -473,7 +473,48 @@
             </ul>
           </div>
 
-     
+          <!-- Log de eventos do dia -->
+          <div class="bloco-eventos">
+            <h3 class="bloco__titulo">O que Aconteceu Hoje</h3>
+
+            <ul class="lista-eventos">
+
+              <!-- Cada evento tem: servidor, descrição e horário -->
+              <li class="evento evento--atencao">
+                <span class="evento__servidor">SRV-BR-03</span>
+                <span class="evento__descricao">CPU acima de 75% — possível gargalo de aplicação</span>
+                <span class="evento__hora">09:42</span>
+              </li>
+
+              <li class="evento evento--offline">
+                <span class="evento__servidor">SRV-BR-04</span>
+                <span class="evento__descricao">Ficou offline — sem resposta ao health-check</span>
+                <span class="evento__hora">08:14</span>
+              </li>
+
+              <li class="evento evento--atencao">
+                <span class="evento__servidor">SRV-BR-03</span>
+                <span class="evento__descricao">RAM acima de 80% — risco de lentidão detectado</span>
+                <span class="evento__hora">07:35</span>
+              </li>
+
+              <li class="evento evento--ok">
+                <span class="evento__servidor">SRV-BR-01</span>
+                <span class="evento__descricao">Uptime atingiu 99.8% — SLA cumprido</span>
+                <span class="evento__hora">06:52</span>
+              </li>
+
+              <li class="evento evento--ok">
+                <span class="evento__servidor">TODOS</span>
+                <span class="evento__descricao">Backup automático concluído sem erros</span>
+                <span class="evento__hora">04:00</span>
+              </li>
+
+              <li class="evento evento--ok">
+                <span class="evento__servidor">SRV-BR-02</span>
+                <span class="evento__descricao">Reiniciado com sucesso após atualização</span>
+                <span class="evento__hora">03:22</span>
+              </li>
 
             </ul>
           </div>
