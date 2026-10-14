@@ -140,3 +140,78 @@
 
 
         
+        <section class="panorama">
+
+          <div class="panorama__info">
+            <h2 class="panorama__titulo">Panorama da Operação</h2>
+            <p class="panorama__descricao">
+              Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
+            </p>
+            <span class="panorama__leitura">ÚLTIMA LEITURA   HÁ 38 SEG</span>
+          </div>
+
+          <!-- Grid com os 4 cartões de KPI -->
+          <div class="kpi-grid">
+
+            <!-- KPI 1: Servidores Online -->
+            <div class="kpi-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone">☰</span>
+                <span class="kpi-card__alerta kpi-card__alerta--offline">↓ 1 offline</span>
+              </div>
+              <p class="kpi-card__valor">4<span class="kpi-card__valor--total">/6</span></p>
+              <p class="kpi-card__rotulo">Servidores Online</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
+                ● SRV-BR-04 offline — <span class="kpi-card__link">Ação necessária</span>
+              </p>
+            </div>
+
+            <!-- KPI 2: Disponibilidade dos Serviços -->
+            <div class="kpi-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--verde">◎</span>
+                <span class="kpi-card__alerta kpi-card__alerta--ok">99% de disponibilidade hoje</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--verde">Estável</p>
+              <p class="kpi-card__rotulo">Disponibilidade dos Serviços</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--ok">
+                ● Menos de 15 min de parada no mês
+              </p>
+            </div>
+
+            <!-- KPI 3: Problemas que Precisam de Atenção -->
+            <div class="kpi-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--laranja">⚠</span>
+                <span class="kpi-card__alerta kpi-card__alerta--offline">1 offline · 1 sobrecarregado</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--laranja">2</p>
+              <p class="kpi-card__rotulo">Problemas que Precisam de Atenção</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
+                ● SRV-BR-04 parado — <span class="kpi-card__link">Verificar com a equipe de TI</span>
+              </p>
+            </div>
+
+
+            <!-- KPI 4: Tráfego de Rede -->
+            <div class="kpi-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--roxo">↗</span>
+                <span class="kpi-card__alerta kpi-card__alerta--info">pico observado às 00h</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--roxo">88 <span class="kpi-card__valor--unidade">Mbps</span></p>
+              <p class="kpi-card__rotulo">Tráfego de Rede</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--neutro">
+                ● Sem classificação: limite ainda não definido pelo cliente
+              </p>
+            </div>
+
+          </div>
+          <!-- fecha os quadradinhos das kpis -->
+
+        </section>
+        <!-- fecha a parte de cima que tem as kpis-->
+
+
+      
+</html>
