@@ -86,7 +86,7 @@
                     <div class="box-modificar" id="box_modificar">
                     </div>
 
-                    <div class="footer-crud" id="footer_crud">
+                    <div class="footer-crud" id="footer_crud" >
                     </div>
                     <div class="trecho-inicial" id="trecho_inicial">
                         <div class="texto-inicial">Seleciona um usuário <img src="../../assets/icon/icon_user2.svg" style="width: 1.2vw;"></div>
@@ -179,16 +179,22 @@
 
     idFuncionarioSelecionado = null
     funcionarioSelecionado = null
+    
     function selecionarFuncionario(id) {
         idFuncionarioSelecionado = id
 
-        head_crud.style.display = "flex"
-        botoes_modificar.style.display = "flex"
-        box_modificar.style.display = "flex"
-        footer_crud.style.display = "flex"
-        trecho_inicial.style.display = "none"
+        var todos = document.querySelectorAll(".box-funcionario");
+    for (var i = 0; i < todos.length; i++) {
+        todos[i].classList.remove("selecionado");
+    }
 
-        box_funcionario = document.getElementById(`func_${id}`);
+    document.getElementById(`func_${id}`).classList.add("selecionado");
+
+    head_crud.style.display = "flex";
+    botoes_modificar.style.display = "flex";
+    box_modificar.style.display = "flex";
+    footer_crud.style.display = "flex";
+    trecho_inicial.style.display = "none";
 
         fetch(`/gerenciar_funcionario/buscarDadosUsuarioEspecifico/${id}`, { cache: 'no-store' })
             .then(function (response) {
@@ -218,20 +224,6 @@
 
                         iniciais = func.nome.split(" ")
                             .map(n => n[0]).slice(0, 2).join("").toUpperCase();
-
-                        box_funcionario.innerHTML = `
-    <a class="container-funcionario-selecionado">
-            <div class="hover-funcionario">
-                <div class="circulo-iniciais">${iniciais}</div>
-                <div class="infos-escritas">
-                    <div class="nome-funcionario">${func.nome}</div>
-                    <div class="cargo-servidor">
-                        <div class="${tipoAcesso}">${acesso}</div>
-                        <div class="servidor">${servidores}</div>
-                    </div>
-                </div>
-            </div>
-        </a>`
 
                         head_crud.innerHTML = `<div class="crud-identificacao">
                             <div class="circulo-iniciais-crud" style="width: 3.6vw; height: 3.6vw;">${iniciais}</div>
@@ -270,7 +262,7 @@
                             <div class="titulo-retorno">
                                 <div class="subtitulo-box-crud"> <img src="../../assets/icon/icon_user2.svg"
                                         class="img-titulo">INFORMAÇÕES DO FUNCIONÁRIO</div>
-                                <div class="retorno" id="retorno">AAAAAAAAAAAAAAAAAAAAAAA</div>
+                                <div class="retorno" id="retorno"></div>
                             </div>
                             <div class="container-dados">
                                 <div class="box-dados" >
@@ -405,6 +397,12 @@
                     for (var i = 0; i < resposta.length; i++) {
                         var srv = resposta[i];
 
+                        if(srv.status_sistema == 1){
+                            cor = "#05DF72"
+                        } else if(srv.status_sistema == 0){
+                            cor = "#FB2C36"
+                        }
+
                         box_servidores.innerHTML += `
                         <div class="servidor-crud">
                             <label class="checkbox-custom">
@@ -413,8 +411,8 @@
                             </label>
                             <div class="infos-servidor">
                                 <div class="nome-servidor">${srv.nome}</div>
-                                <div class="localizacao">São Paulo</div>
                             </div>
+                            <div class="bola-ativo" style= "background-color: ${cor};"></div>
                         </div>`;
                     }
 
