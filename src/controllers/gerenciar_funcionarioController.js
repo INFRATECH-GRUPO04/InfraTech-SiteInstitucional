@@ -45,15 +45,27 @@ function deletarUsuario(req, res) {
 }
 
 function buscarServidoresPorEmpresa(req, res) {
-  var id = req.params.id;
-  console.log("id do controller:", id)
+  var idEmpresa = req.params.idEmpresa;
+  var idFuncionario = req.params.idFuncionario;
 
-  gerenciar_funcionarioModel.buscarServidoresPorEmpresa(id).then((resultado) => {
-    res.status(200).json(resultado);
-  }).catch((erro) => {
-    console.log(erro);
-    res.status(500).json(erro.sqlMessage);
-  });
+  gerenciar_funcionarioModel.buscarServidoresPorEmpresa(idEmpresa, idFuncionario)
+    .then((resultado) => res.status(200).json(resultado))
+    .catch((erro) => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function alterarServidores(req, res) {
+  var idFuncionario = Number(req.params.id);
+  var servidores = (req.body.servidores || []).map(Number);
+
+  gerenciar_funcionarioModel.alterarServidores(idFuncionario, servidores)
+    .then(() => res.status(200).send("Acessos atualizados"))
+    .catch((erro) => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
 }
 
 module.exports = {
@@ -61,5 +73,6 @@ module.exports = {
     buscarDadosUsuario,
     buscarDadosUsuarioEspecifico,
     deletarUsuario,
-    buscarServidoresPorEmpresa
+    buscarServidoresPorEmpresa,
+    alterarServidores
 };

@@ -52,17 +52,40 @@ function deletarUsuario(id) {
   });
 }
 
-function buscarServidoresPorEmpresa(id) {
-  console.log("id do model:", id)
+function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
   var instrucaoSql = `
     SELECT 
-    s.idServidor,
-    s.fk_empresa,    
-    s.nome, 
-    s.status_sistema
+        s.idServidor,
+        s.nome,
+        s.status_sistema,
+        (sf.fk_funcionario IS NOT NULL) AS temAcesso
     FROM servidor s
-    WHERE s.fk_empresa = ${id};`;
+    LEFT JOIN servidor_funcionario sf 
+           ON sf.fkServidor = s.idServidor
+          AND sf.fk_funcionario = ${idFuncionario}
+    WHERE s.fk_empresa = ${idEmpresa};`;
   return database.executar(instrucaoSql);
+}
+
+function alterarServidores(idFuncionario, servidores) {
+  var apagar = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${idFuncionario};`;
+
+  return database.executar(apagar).then(function () {
+    if (servidores.length === 0) {
+      return;   // nenhum marcado: só removeu os acessos
+    }
+
+    var valores = servidores
+      .map(function (idServidor) {
+        return `(${idFuncionario}, ${idServidor})`;
+      })
+      .join(", ");
+
+    var inserir = `
+      INSERT INTO servidor_funcionario (fk_funcionario, fkServidor)
+      VALUES ${valores};`;
+    return database.executar(inserir);
+  });
 }
 
 module.exports = {
@@ -70,6 +93,7 @@ module.exports = {
     buscarDadosUsuario,
     buscarDadosUsuarioEspecifico,
     deletarUsuario,
-    buscarServidoresPorEmpresa
+    buscarServidoresPorEmpresa,
+    alterarServidores
   };
   

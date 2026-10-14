@@ -404,6 +404,7 @@ a, button{
     border: none;
     font-weight: 400;
     transition: 0.5s;
+    margin-right: 2vw;
     
 }
 

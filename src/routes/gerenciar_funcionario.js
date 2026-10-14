@@ -24,8 +24,12 @@ router.delete("/deletarUsuario/:id", function (req, res) {
   gerenciar_funcionarioController.deletarUsuario(req, res);
 });
 
-router.get("/buscarServidoresPorEmpresa/:id", function (req, res) {
+router.get("/buscarServidoresPorEmpresa/:idEmpresa/:idFuncionario", function (req, res) {
   gerenciar_funcionarioController.buscarServidoresPorEmpresa(req, res);
+});
+
+router.put("/alterarServidores/:id", function (req, res) {
+  gerenciar_funcionarioController.alterarServidores(req, res);
 });
 
 module.exports = router;
