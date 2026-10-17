@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="../../assets/icon/logo.png">
+    <link rel="stylesheet" href="../../compartilhado/css/global.css">
+    <link rel="stylesheet" href="../../paginas/pos-login/painel/painel.css">
+    <script src="../../compartilhado/js/sessao.js"></script>
+    <title>Dashboard Específica</title>
+</head>
+
+<body class="pagina-painel">
+
+    <!-- SIDEBAR -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="../../paginas/pos-login/painel/painel.html" title="InfraTech">
+                <img src="../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../especifica-servidor/dash-especifica.html" class="nav-item ativo">
+            <img src="../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+        <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+        <a href="../../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="../../paginas/pos-login/funcionarios/modificar_funcionario.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <div class="container-dash">
+        <div class="container-graficos">
+            <div class="container-titulo">
+                <div class="titulo-conteudo">
+                    <div class="dados-servidor">
+
+                    </div>
+                    <div class="visao-geral">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-recursos">
+                <div class="container-kpis">
+                    <div class="kpi-cpu"></div>
+                    <div class="kpi-ram"></div>
+                    <div class="kpi-disco"></div>
+                </div>
+                <div class="container-grafico-recursos">
+
+                </div>
+            </div>
+            <div class="container-rede-e-alertas">
+                <div class="container-rede">
+
+                </div>
+                <div class="container-alertas">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
