@@ -4,9 +4,7 @@ body{
     
 }
 
-*{
-    font-family: "JetBrains Mono", monospace;
-}
+
 
 a, button{
     cursor: pointer;
@@ -73,10 +71,11 @@ a, button{
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-evenly;
 }
 .boxes-funcionario{
     height: 70vh;
-    width: 22vw;
+    width: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -212,7 +211,7 @@ a, button{
 } */
 
 .cargo-admin{
-    font-size: 0.9vw;
+    font-size: 0.7vw;
     width: 4vw;
     height: 1.5vw;
     display: flex;
@@ -225,7 +224,7 @@ a, button{
 }
 
 .cargo-infratech{
-    font-size: 0.9vw;
+    font-size: 0.7vw;
     width: 4.6vw;
     height: 1.5vw;
     display: flex;
@@ -238,7 +237,7 @@ a, button{
 }
 
 .cargo-usuario{
-    font-size: 1vw;
+    font-size: 0.7vw;
     width: 4vw;
     height: 1.5vw;
     display: flex;
@@ -497,7 +496,7 @@ a, button{
 
 .servidor-crud{
     width: 45%;
-    height: 17%;
+    height: 19%;
     margin-top: 1vw;
     background-color: #ffffff07;
     border: #ffffff20 solid 1px;
@@ -697,31 +696,6 @@ a, button{
     background-color: #d00b0b;
     color: #fff;
     transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.servidor-crud .checkbox-custom {
-    display: flex;
-    align-items: center;
-    width: 1vw;
-    height: 1vw;
-    margin: 0;
-    padding: 0;
-    background: none;
-    border: none;
-}
-
-/* .servidor-crud .checkbox-custom input[type="checkbox"] {
-    position: static;
-    opacity: 1;
-    width: 1.1vw;
-    height: 14px;
-    margin: 0;
-    accent-color: #0d6efd;
-    cursor: pointer;
-} */
-
-.servidor-crud .checkbox-custom .checkmark {
-    display: none;
 }
 
 .checkbox{
