@@ -146,9 +146,31 @@ function CodigoEmpresa(req, res) {
     }
 }
 
+function verificar(req, res) {
+    var codigo = req.query.codigo || req.body.codigo;
+
+    if (codigo == undefined) {
+        res.status(400).send("Seu código está indefinido!");
+    } else {
+        login_cadastroModel.verificar(codigo)
+            .then(function (resultado) {
+                if (resultado.length > 0) {
+                    res.status(200).json(resultado);
+                } else {
+                    res.status(204).send("Nenhum código encontrado!");
+                }
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage || erro);
+            });
+    }
+}
+
 module.exports = {
     autenticar,
     cadastrar,
     EmailsIguais,
-    CodigoEmpresa
-}
+    CodigoEmpresa,
+    verificar
+};

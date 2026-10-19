@@ -74,7 +74,9 @@ function contarVinculos(idEmpresa) {
     var id = Number(idEmpresa);
     var instrucaoSql = `
         SELECT
+            (SELECT COUNT(*) FROM servidor WHERE fk_empresa = ${id} AND status_sistema = 1) AS qtdServidores,
             (SELECT COUNT(*) FROM servidor WHERE fk_empresa = ${id} AND status_sistema = 1) AS qtd_servidores,
+            (SELECT COUNT(*) FROM funcionario WHERE fk_empresa = ${id} AND tipo_acesso = 'FUNCIONARIO' AND status_sistema = 1) AS qtdFuncionarios,
             (SELECT COUNT(*) FROM funcionario WHERE fk_empresa = ${id} AND tipo_acesso = 'FUNCIONARIO' AND status_sistema = 1) AS qtd_funcionarios;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
