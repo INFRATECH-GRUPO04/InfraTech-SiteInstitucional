@@ -11,9 +11,10 @@
 
     <!-- Chart.js via CDN — biblioteca para renderizar os gráficos (usada na etapa de JS) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../compartilhado/js/sessao.js"></script>
   </head>
 
-  <body>
+  <body onload="validarSessao()">
 
     <!-- divide a tela em sidebar + conteúdo -->
     <div class="layout">
@@ -107,7 +108,7 @@
 
        
         <div class="sidebar__rodape">
-          <button class="sidebar__btn-sair">
+          <button class="sidebar__btn-sair" onclick="limparSessao()">
             <span>↩</span> Sair
           </button>
         </div>

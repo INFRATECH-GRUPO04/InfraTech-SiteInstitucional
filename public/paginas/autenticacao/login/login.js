@@ -52,7 +52,13 @@ function entrar() {
                 }
 
                 setTimeout(() => {
-                    window.location.href = '../../pos-login/painel/painel.html';
+                    var tipoAcesso = (json.adm || json.tipoAcesso || "").toUpperCase();
+                    if (tipoAcesso === "ADMIN") {
+                        window.location.href = '../../pos-login/empresas/gerenciar_empresa.html';
+                    } else {
+                        // Gestores e Funcionários caem direto na dashboard
+                        window.location.href = '../../../dashboard/dash-geral.html';
+                    }
                 }, 1000);
             });
         } else {
