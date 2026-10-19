@@ -17,6 +17,7 @@ function buscarDadosUsuario(id) {
         f.id_funcionario,
         f.nome,
         f.tipo_acesso,
+        f.status_sistema,
         (SELECT COUNT(*) 
            FROM servidor_funcionario sf 
           WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
@@ -35,6 +36,7 @@ function buscarDadosUsuarioEspecifico(id) {
         f.email,
         f.senha,
         f.cpf,
+        f.status_sistema,
         (SELECT COUNT(*) 
            FROM servidor_funcionario sf 
           WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
@@ -50,6 +52,20 @@ function deletarUsuario(id) {
   return database.executar(apagarVinculos).then(function () {
     return database.executar(apagarFuncionario);
   });
+}
+
+function desativarUsuario(id) {
+  var instrucaoSql = `
+    UPDATE funcionario set status_sistema = 0
+    WHERE id_funcionario = ${id};`;
+  return database.executar(instrucaoSql);
+}
+
+function ativarUsuario(id) {
+  var instrucaoSql = `
+    UPDATE funcionario set status_sistema = 1
+    WHERE id_funcionario = ${id};`;
+  return database.executar(instrucaoSql);
 }
 
 function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
@@ -94,6 +110,8 @@ module.exports = {
     buscarDadosUsuario,
     buscarDadosUsuarioEspecifico,
     deletarUsuario,
+    desativarUsuario,
+    ativarUsuario,
     buscarServidoresPorEmpresa,
     alterarServidores
   };

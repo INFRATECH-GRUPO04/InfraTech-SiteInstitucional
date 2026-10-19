@@ -43,6 +43,27 @@ function deletarUsuario(req, res) {
     res.status(500).json(erro.sqlMessage);
   });
 }
+function desativarUsuario(req, res) {
+  var idFuncionario = req.params.id;
+
+  gerenciar_funcionarioModel.desativarUsuario(idFuncionario)
+    .then((resultado) => res.status(200).json(resultado))
+    .catch((erro) => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function ativarUsuario(req, res) {
+  var idFuncionario = req.params.id;
+
+  gerenciar_funcionarioModel.ativarUsuario(idFuncionario)
+    .then((resultado) => res.status(200).json(resultado))
+    .catch((erro) => {
+      console.log(erro);
+      res.status(500).json(erro.sqlMessage);
+    });
+}
 
 function buscarServidoresPorEmpresa(req, res) {
   var idEmpresa = req.params.idEmpresa;
@@ -61,18 +82,21 @@ function alterarServidores(req, res) {
   var servidores = (req.body.servidores || []).map(Number);
 
   gerenciar_funcionarioModel.alterarServidores(idFuncionario, servidores)
-    .then(() => res.status(200).send("Acessos atualizados"))
+    .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);
       res.status(500).json(erro.sqlMessage);
     });
 }
 
+
 module.exports = {
   buscarNomeEmpresa,
     buscarDadosUsuario,
     buscarDadosUsuarioEspecifico,
     deletarUsuario,
+    desativarUsuario,
+    ativarUsuario,
     buscarServidoresPorEmpresa,
     alterarServidores
 };
