@@ -8,7 +8,12 @@
     <link rel="icon" href="../../assets/icon/logo.png">
     <link rel="stylesheet" href="../../compartilhado/css/global.css">
     <link rel="stylesheet" href="../../paginas/pos-login/painel/painel.css">
+    <link rel="stylesheet" href="dash-especifica.css">
     <script src="../../compartilhado/js/sessao.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
     <title>Dashboard Específica</title>
 </head>
 
@@ -78,36 +83,35 @@
     <div class="container-dash">
         <div class="container-graficos">
             <div class="container-titulo">
-                <div class="titulo-conteudo">
-                    <div class="dados-servidor">
-                        <div id="imagem-servidor">
-                            <img src="../../assets/imgs/servidores.png" alt="">
+                <div class="dados-servidor">
+                    <div id="imagem-servidor">
+                        <img src="../../assets/imgs/servidores.png" alt="">
+                    </div>
+                    <div class="texto-servidor">
+                        <div class="texto-superior">
+                            <h4>SRV-BR-01</h4>
+                            <span class="ponto-status"></span>
+                            <span class="texto-negrito">Online</span>
                         </div>
-                        <div class="texto-servidor">
-                            <div class="texto-superior">
-                                <h4>SRV-BR-01</h4>
-                                <span class="ponto-status"></span>
-                                <h4>Online</h4>
-                            </div>
-                            <div class="texto-inferior"></div>
+                        <div class="texto-inferior">
                             <h5>São Paulo</h5>
                         </div>
                     </div>
-                    <div class="visao-geral">
-                        <div class="conteudo-visao-geral">
-                            <h5>Visão Geral - Última Atualização: 11:35h</h5>
-                        </div>
+                </div>
+                <div class="visao-geral">
+                    <div class="conteudo-visao-geral">
+                        <h5>Visão Geral - Última Atualização: 11:35h</h5>
                     </div>
                 </div>
             </div>
 
             <div class="container-recursos">
                 <div class="container-kpis">
-                    <div class="kpi-cpu">
+                    <div class="kpi">
                         <div class="porcentagem">
                             <h2>42%</h2>
                         </div>
-                        <div>
+                        <div class="titulo-kpi">
                             <h3>CPU Atual</h3>
                         </div>
                         <div class="barra-carregamento"></div>
@@ -116,11 +120,11 @@
                             <h5>Seguro</h5>
                         </div>
                     </div>
-                    <div class="kpi-ram">
+                    <div class="kpi">
                         <div class="porcentagem">
                             <h2>67%</h2>
                         </div>
-                        <div>
+                        <div class="titulo-kpi">
                             <h3>RAM Atual</h3>
                         </div>
                         <div class="barra-carregamento"></div>
@@ -129,11 +133,11 @@
                             <h5>Seguro</h5>
                         </div>
                     </div>
-                    <div class="kpi-disco">
+                    <div class="kpi">
                         <div class="porcentagem">
                             <h2>54%</h2>
                         </div>
-                        <div>
+                        <div class="titulo-kpi">
                             <h3>Disco Atual</h3>
                         </div>
                         <div class="barra-carregamento"></div>
@@ -150,8 +154,8 @@
                     <div class="subtitulo">
                         <h4>CPU, RAM e Disco ao longo do dia</h4>
                     </div>
-                    <div class="grafico">
-
+                    <div class="container-canvas-recursos">
+                        <canvas id="graficoRecursos"></canvas>
                     </div>
                 </div>
             </div>
@@ -163,58 +167,70 @@
                     <div class="subtitulo">
                         <h4>Medições horárias em Mbps</h4>
                     </div>
-                    <div class="grafico">
-
+                    <div class="container-canvas-rede">
+                        <canvas id="graficoBanda"></canvas>
                     </div>
                 </div>
                 <div class="container-alertas">
                     <div class="titulo">
                         <h3>Alertas do Servidor</h3>
-                        </div>
-                        <div class="alertas">
+                    </div>
+                    <div class="alertas">
+                        <div>
+                            <div class="nome-servidor">
+                                <span class="ponto-status-vermelho"></span>
+                                <h5>SRV-BR-01</h5>
+                            </div>
                             <div>
-                                <div>
-                                    <span class="ponto-status"></span>
-                                    <h5>SRV-BR-01</h5>
-                                </div>
-                                <div>
-                                    <h6>CPU acima de 75% — possível gargalo de aplicação</h6>
-                                </div>
-                                <div>
-                                    <h6>09:47</h6>
-                                </div>
+                                <h6>CPU acima de 75% — possível gargalo de aplicação</h6>
+                            </div>
+                            <div>
+                                <h6>09:47</h6>
+                            </div>
 
+                        </div>
+                        <div>
+                            <div class="nome-servidor">
+                                <span class="ponto-status-laranja"></span>
+                                <h5>SRV-BR-01</h5>
                             </div>
                             <div>
-                                <div>
-                                    <span class="ponto-status"></span>
-                                    <h5>SRV-BR-01</h5>
-                                </div>
-                                <div>
-                                    <h6>RAM acima de 80% — risco de lentidão detectado</h6>
-                                </div>
-                                <div>
-                                    <h6>08:20</h6>
-                                </div>
+                                <h6>RAM acima de 80% — risco de lentidão detectado</h6>
                             </div>
                             <div>
-                                <div>
-                                    <span class="ponto-status"></span>
-                                    <h5>SRV-BR-01</h5>
-                                </div>
-                                <div>
-                                    <h6>Reiniciado com sucesso após atualização</h6>
-                                </div>
-                                <div>
-                                    <h6>07:38</h6>
-                                </div>
+                                <h6>08:20</h6>
                             </div>
                         </div>
+                        <div>
+                            <div class="nome-servidor">
+                                <span class="ponto-status"></span>
+                                <h5>SRV-BR-01</h5>
+                            </div>
+                            <div>
+                                <h6>Reiniciado com sucesso após atualização</h6>
+                            </div>
+                            <div>
+                                <h6>07:38</h6>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="nome-servidor">
+                                <span class="ponto-status-laranja"></span>
+                                <h5>SRV-BR-01</h5>
+                            </div>
+                            <div>
+                                <h6>RAM acima de 72% — risco de lentidão detectado</h6>
+                            </div>
+                            <div>
+                                <h6>07:05</h6>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <script src="dash-especifica.js"></script>
 </body>
 
 </html>

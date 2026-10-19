@@ -1,0 +1,263 @@
+.container-dash {
+    width: 100%;
+}
+
+.container-graficos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+}
+
+.container-titulo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 97%;
+    background-color: #FFFFFF;
+    border: solid white;
+    border-radius: 10px;
+    padding: 16px 24px;
+    margin-top: 15px;
+}
+
+.container-titulo h4,
+.container-titulo h5 {
+    color: black;
+    margin: 0;
+}
+
+.texto-inferior h5 {
+    color: #9AB0C4;
+    font-weight: 400;
+}
+
+#imagem-servidor {
+    background-color: rgba(148, 229, 244, 0.15);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    width: 50px;
+    border-radius: 10px;
+}
+
+#imagem-servidor img {
+    width: 30px;
+    height: auto;
+}
+
+.dados-servidor {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+}
+
+.texto-servidor {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.texto-superior {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.texto-negrito {
+    font-weight: 700;
+    color: #10B981;
+    background-color: #D1FAE5;
+    padding: 2px 10px;
+    border-radius: 12px;
+}
+
+.visao-geral {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    border: solid #E2E8F0;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.container-recursos {
+    width: 100%;
+}
+
+.container-kpis {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 20px 24px;
+}
+
+.porcentagem h2 {
+    color: #10B981;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.status-kpi h5 {
+    color: #10B981;
+    margin: 0;
+}
+
+.status-kpi {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-kpi .ponto-status {
+    width: 6px;
+    height: 6px;
+}
+
+.titulo-kpi h3 {
+    color: black;
+    font-weight: 700;
+}
+
+.barra-carregamento {
+    width: 100%;
+    height: 6px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+.kpi:nth-child(1) .barra-carregamento {
+    background: linear-gradient(to right, #10B981 42%, #F1F5F9 42%);
+}
+
+.kpi:nth-child(2) .barra-carregamento {
+    background: linear-gradient(to right, #10B981 67%, #F1F5F9 67%);
+}
+
+.kpi:nth-child(3) .barra-carregamento {
+    background: linear-gradient(to right, #10B981 54%, #F1F5F9 54%);
+}
+
+.container-grafico-recursos {
+    background-color: #FFFFFF;
+    border: solid white;
+    border-radius: 10px;
+    margin-left: 10px;
+    padding: 24px 28px;
+    width: 98%;
+}
+
+.container-canvas-recursos {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.container-grafico-recursos h3 {
+    color: black;
+}
+
+.subtitulo h4 {
+    color: #9AB0C4;
+    font-weight: 400;
+}
+
+.container-rede-e-alertas {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px;
+    width: 100%;
+}
+
+.container-rede {
+    background-color: #FFFFFF;
+    border: solid white;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 24px 28px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.container-canvas-rede {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.container-rede h3 {
+    color: black;
+}
+
+.container-alertas {
+    background-color: #FFFFFF;
+    border: solid white;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 15px;
+    margin-right: 10px;
+}
+
+.container-alertas h5,
+.container-alertas h3 {
+    color: black;
+}
+
+.container-alertas h6 {
+    color: black;
+    font-weight: 400;
+}
+
+.nome-servidor h5 {
+    color: black;
+    margin: 0;
+}
+
+.nome-servidor {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ponto-status-vermelho {
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+}
+
+.ponto-status-laranja {
+    width: 8px;
+    height: 8px;
+    background-color: orange;
+    border-radius: 50%;
+}
+
+.alertas {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
