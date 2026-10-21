@@ -138,11 +138,30 @@ function excluir(req, res) {
         });
 }
 
+function atualizarChave(req, res) {
+    var idServidor = req.params.idServidor;
+    var codigo = req.body.codigoServer;
+
+    if (codigo == undefined) {
+        res.status(400).send("O codigo está undefined!");
+    } else {
+        servidorModel.atualizarChave(idServidor, codigo)
+            .then(function (resultado) {
+                res.status(200).json(resultado);
+            }).catch(function (erro) {
+                console.log(erro);
+                console.log("Houve um erro ao atualizar: ", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
 module.exports = {
     cadastrar,
     cadastrarComponente,
     listar,
     listarComponentesPorServidor,
     atualizar,
-    excluir
+    excluir,
+    atualizarChave
 }

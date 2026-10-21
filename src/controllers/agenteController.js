@@ -2,8 +2,8 @@ var crypto = require('crypto');
 var agenteModel = require("../models/agenteModel");
 
 function buscarPorChave(req, res) {
-  let text_chave_hash = req.body.chaveHashServer
-  const hash = crypto.createHash('sha256').update(text_chave_hash).digest('hex');
+  let codigo = req.body.codigoServer
+  const hash = crypto.createHash('sha256').update(codigo).digest('hex');
 
   agenteModel.buscarPorChave(hash).then((resultado) => {
     if (resultado.length > 0) {

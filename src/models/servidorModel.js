@@ -56,11 +56,20 @@ function cadastrar(nome,idEmpresa) {
         });
     }
 
+    function atualizarChave(idServidor, codigo) {
+        var instrucaoSql = `
+            UPDATE servidor SET chave_hash = SHA2('${codigo}', 256) WHERE id_servidor = ${idServidor};
+        `;
+        console.log("Executando a instrução SQL: \n" + instrucaoSql);
+        return database.executar(instrucaoSql);
+    }
+
 module.exports = {
     cadastrar,
     cadastrarComponente,
     listar,
     listarComponentesPorServidor,
     atualizar,
-    excluir
+    excluir,
+    atualizarChave
 };
