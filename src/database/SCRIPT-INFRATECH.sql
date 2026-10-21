@@ -83,8 +83,11 @@ CREATE TABLE servidor (
     id_servidor INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
     nome VARCHAR(45) NULL,
-    status_sistema TINYINT NOT NULL,
+    status_sistema TINYINT NOT NULL DEFAULT 1,
     dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- VERIFICAÇÕES PARA O SCRIPT DE CAPTURA:
+    chave_hash CHAR(64) NULL UNIQUE,
+    dt_ultimo_envio DATETIME NULL,
 
     CONSTRAINT cfk_empresa
         FOREIGN KEY (fk_empresa)
