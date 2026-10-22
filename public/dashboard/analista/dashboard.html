@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disponibilidade e SLA | InfraTech</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../compartilhado/css/global.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="disponibilidade.css">
+</head>
+<body>
+  <div class="layout">
+
+    <!-- ===== Sidebar (classes mantidas: estilos vêm do global.css/dashboard.css) ===== -->
+    <aside class="header-left">
+      <div class="logo">
+        <a href="../../paginas/pos-login/painel/painel.html" title="InfraTech">
+          <img src="../../assets/icon/logo.png" alt="InfraTech">
+        </a>
+      </div>
+
+      <hr class="linha">
+
+      <h3 class="nav-categoria">
+        <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Servidores
+      </h3>
+
+      <a href="../especifica-servidor/dash-especifica.html" class="nav-item ativo">
+        <img src="../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+        Dashboard
+      </a>
+      <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+        <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar Host
+      </a>
+      <a href="../../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+        <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+      </a>
+
+      <h3 class="nav-categoria secao-funcionarios">
+        <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+        Funcionários
+      </h3>
+
+      <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+        <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+        Cadastrar Token
+      </a>
+      <a href="gerenciar_funcionario.html" class="nav-item">
+        <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon">
+        Gerenciar
+      </a>
+
+      <h3 class="nav-categoria secao-empresas">
+        <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Empresas
+      </h3>
+
+      <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+        <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Gerenciar
+      </a>
+      <a href="../../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+        <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar Empresa
+      </a>
+
+      <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+        <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+      </div>
+    </aside>
+
+    <!-- ===== Área principal ===== -->
+    <main class="principal">
+
+      <header class="topbar">
+        <h1 class="topbar__titulo">Disponibilidade</h1>
+
+        <div class="topbar__info">
+          <button type="button" class="seletor-ambiente status-ok" aria-label="Selecionar ambiente">
+            <span>Produção</span>
+            <span class="seletor-ambiente__seta" aria-hidden="true">▾</span>
+          </button>
+
+          <ul class="resumo-status" aria-label="Resumo dos servidores">
+            <li class="resumo-status__item status-ok">4 online</li>
+            <li class="resumo-status__item status-atencao">1 atenção</li>
+            <li class="resumo-status__item status-critico">1 offline</li>
+          </ul>
+
+          <time class="topbar__data" datetime="2026-10-14T11:03">14/10/2026 11:03</time>
+        </div>
+      </header>
+
+      <div class="conteudo">
+
+        <!-- Cabeçalho da página -->
+        <section class="cabecalho-pagina">
+          <div>
+            <h2 class="cabecalho-pagina__titulo">Disponibilidade e SLA</h2>
+            <p class="cabecalho-pagina__descricao">
+              Transforma a última leitura em estado online/offline e traduz
+              cada nível de SLA em tempo de parada permitido.
+            </p>
+          </div>
+          <p class="cabecalho-pagina__atualizacao">ÚLTIMA LEITURA · HÁ 38 SEG</p>
+        </section>
+
+        <!-- Indicadores -->
+        <section class="indicadores" aria-label="Indicadores de disponibilidade">
+
+          <article class="indicador status-atencao">
+            <div class="indicador__topo">
+              <span class="indicador__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </span>
+              <span class="indicador__etiqueta">↘ -0,4 p.p. nesta semana</span>
+            </div>
+            <p class="indicador__valor">98,7%</p>
+            <h3 class="indicador__nome">Disponibilidade média</h3>
+            <p class="indicador__observacao">Abaixo da meta de 99,0%</p>
+          </article>
+
+          <article class="indicador status-critico">
+            <div class="indicador__topo">
+              <span class="indicador__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </span>
+              <span class="indicador__etiqueta">1 ocorrência hoje</span>
+            </div>
+            <p class="indicador__valor">18 min</p>
+            <h3 class="indicador__nome">Tempo de indisponibilidade</h3>
+            <p class="indicador__observacao">SRV-BR-04 sem leitura desde 08:14</p>
+          </article>
+
+          <article class="indicador status-ok">
+            <div class="indicador__topo">
+              <span class="indicador__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="8" rx="2"/>
+                  <rect x="2" y="13" width="20" height="8" rx="2"/>
+                  <line x1="6" y1="7" x2="6.01" y2="7"/>
+                  <line x1="6" y1="17" x2="6.01" y2="17"/>
+                </svg>
+              </span>
+              <span class="indicador__etiqueta status-neutro">Meta mensal: 99,0%</span>
+            </div>
+            <p class="indicador__valor">3/6</p>
+            <h3 class="indicador__nome">Servidores no SLA</h3>
+            <p class="indicador__observacao status-atencao">3 servidores exigem acompanhamento</p>
+          </article>
+
+        </section>
+
+        <!-- Tabela de compromisso -->
+        <section class="painel">
+          <h3 class="painel__titulo">Compromisso de disponibilidade</h3>
+          <p class="painel__subtitulo">
+            Quanto cada servidor entregou e quanto tempo de queda o SLA contratado permite
+          </p>
+
+          <div class="tabela-rolagem">
+            <table class="tabela-sla">
+              <thead>
+                <tr>
+                  <th scope="col">Servidor</th>
+                  <th scope="col">Última leitura</th>
+                  <th scope="col">Disponibilidade</th>
+                  <th scope="col">Meta</th>
+                  <th scope="col">Parada permitida/mês</th>
+                  <th scope="col">Impacto</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="celula-servidor">SRV-BR-01</td>
+                  <td class="celula-leitura status-ok" >há 38 seg</td>
+                  <td class="celula-disponibilidade celula-numero status-ok">99,8%</td>
+                  <td class="celula-numero">99,0%</td>
+                  <td class="celula-numero">7h 12min</td>
+                  <td><span class="selo-impacto status-ok">Dentro do compromisso</span></td>
+                </tr>
+                <tr>
+                  <td class="celula-servidor">SRV-BR-02</td>
+                  <td class="celula-leitura status-ok">há 38 seg</td>
+                  <td class="celula-disponibilidade celula-numero status-ok">99,5%</td>
+                  <td class="celula-numero">99,0%</td>
+                  <td class="celula-numero">7h 12min</td>
+                  <td><span class="selo-impacto status-ok">Dentro do compromisso</span></td>
+                </tr>
+                <tr>
+                  <td class="celula-servidor">SRV-BR-03</td>
+                  <td class="celula-leitura status-ok">há 38 seg</td>
+                  <td class="celula-disponibilidade celula-numero status-atencao">96,2%</td>
+                  <td class="celula-numero">99,0%</td>
+                  <td class="celula-numero">7h 12min</td>
+                  <td><span class="selo-impacto status-atencao">Risco de descumprimento</span></td>
+                </tr>
+                <tr>
+                  <td class="celula-servidor">SRV-BR-04</td>
+                  <td class="celula-leitura status-critico">há 18 min</td>
+                  <td class="celula-disponibilidade celula-numero status-critico">0%</td>
+                  <td class="celula-numero">99,0%</td>
+                  <td class="celula-numero">7h 12min</td>
+                  <td><span class="selo-impacto status-critico">Serviço indisponível</span></td>
+                </tr>
+                <tr>
+                  <td class="celula-servidor">SRV-BR-05</td>
+                  <td class="celula-leitura status-ok">há 38 seg</td>
+                  <td class="celula-disponibilidade celula-numero status-atencao">98,7%</td>
+                  <td class="celula-numero">99,0%</td>
+                  <td class="celula-numero">7h 12min</td>
+                  <td><span class="selo-impacto status-atencao">Risco de descumprimento</span></td>
+                </tr>
+                <tr>
+                  <td class="celula-servidor">SRV-BR-06</td>
+                  <td class="celula-leitura status-ok">há 38 seg</td>
+                  <td class="celula-disponibilidade celula-numero status-ok">99,1%</td>
+                  <td class="celula-numero">99,0%</td>
+                  <td class="celula-numero">7h 12min</td>
+                  <td><span class="selo-impacto status-ok">Dentro do compromisso</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
