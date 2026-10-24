@@ -5,7 +5,7 @@
     --cor-fundo: #050b12;
     --cor-fundo-secundario: #07101a;
     --cor-fundo-sidebar: #03080e;
-    --cor-card: #0b1622;
+    --cor-card: #172a45;
     --cor-input: #071018;
 
     --cor-branco: #ffffff;
@@ -49,6 +49,23 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
     background-color: var(--cor-fundo);
+    scrollbar-width: thin;
+    scrollbar-color: #00cfff #050b12;
+}
+
+::-webkit-scrollbar {
+    width: 8px; 
+    height: 8px; 
+}
+
+::-webkit-scrollbar-track {
+    background: #050b12; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #0b1622; 
+    border-radius: 4px; 
+    border: 1px solid rgba(0, 207, 255, 0.2); 
 }
 
 body {
@@ -131,7 +148,7 @@ header.cabecalho {
 
 header.cabecalho.scrolled {
     background-color: rgba(3, 8, 14, 0.96);
-    border-bottom-color: rgba(0, 207, 255, 0.16);
+    border-bottom-color: #00cfff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -150,7 +167,7 @@ header.cabecalho.scrolled {
 }
 
 .logo-header img {
-    width: 38px;
+    width: 50px;
     height: 38px;
 }
 
@@ -468,7 +485,7 @@ input::placeholder, textarea::placeholder {
 /* ----------- Rodapé ----------- */
 .rodape {
     padding: 40px 20px 20px;
-    background-color: var(--cor-fundo-secundario);
+    background-color: #050b12;
     border-top: 1px solid var(--cor-borda);
     margin-top: auto;
 }
