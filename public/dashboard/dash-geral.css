@@ -1,54 +1,43 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-
 :root {
-  /* Fundos escuros — sidebar e cabeçalho */
-  --fundo-pagina:      #0b1420;   
-  --fundo-sidebar:     #0d1930;   
-  --fundo-header:      #0d1930;  
+  /* Fundo da página e áreas escuras */
+  --fundo-pagina:      #080f1a;
+  --fundo-sidebar:     #0d1930;
+  --fundo-header:      #0d1930;
 
-  /* Fundos das seções inferiores (blocos de gráfico e eventos) */
-  --fundo-bloco:       #111e35;
-  --fundo-bloco-hover: #162440;
-  --borda-bloco:       #1c2f52;
+  /* Fundos dos cartões brancos fiéis ao layout de referência */
+  --fundo-card:        #ffffff;
+  --fundo-card-alt:    #f8fafc;
+  --borda-card:        #e2e8f0;
+  --sombra-card:       0 2px 8px rgba(0, 0, 0, 0.12);
 
-  /* Fundos claros — KPI cards e tabela de servidores */
-  --fundo-card-claro:       #ffffff;  
-  --fundo-card-claro-alt:   #f7f9fc; 
-  --fundo-card-claro-hover: #eef2f8;   
-  --borda-card-claro:       #dde4f0;   
-  --sombra-card-claro: 0 2px 12px rgba(10, 20, 50, 0.12); 
+  /* Borda sutil de divisores escuros */
+  --borda-bloco:       #162440;
 
-  /* Cores de status */
-  --cor-online:   #16a34a;  
-  --cor-atencao:  #d97706;  
-  --cor-offline:  #dc2626;   
-  --cor-roxo:     #7c3aed;   
-  --cor-ciano:    #0891b2;   
-  --cor-info:     #2563eb;  
+  /* Paleta de status */
+  --cor-online:        #10b981;
+  --cor-atencao:       #f59e0b;
+  --cor-offline:       #ef4444;
+  --cor-roxo:          #9333ea;
+  --cor-ciano:         #0284c7;
+  --cor-ciano-destaque:#00d2df;
 
-  
-  --texto-claro-primario:   #0f172a;   
-  --texto-claro-secundario: #4b5e7a;   
-  --texto-claro-apagado:    #94a3b8;   
+  /* Tipografia clara (seções escuras) */
+  --texto-escuro-primario:   #ffffff;
+  --texto-escuro-secundario: #94a3b8;
+  --texto-escuro-apagado:    #64748b;
 
-  /* Cores de texto para seções ESCURAS (blocos inferiores, sidebar, header) */
-  --texto-escuro-primario:   #e8f0fe;
-  --texto-escuro-secundario: #7a95c0;
-  --texto-escuro-apagado:    #3d5680;
+  /* Tipografia escura (cartões brancos) */
+  --texto-card-titulo:       #0f172a;
+  --texto-card-corpo:        #334155;
+  --texto-card-suave:        #64748b;
+  --texto-card-apagado:      #94a3b8;
 
-  /* Dimensão da sidebar */
-  --largura-sidebar: 200px;
-
-  
-  --raio-card:   8px;
-  --raio-badge:  20px;
-  --raio-status: 4px;
-  --raio-btn:    6px;
+  /* Dimensões */
+  --largura-sidebar:   210px;
+  --raio-card:         12px;
 }
-
-
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -57,7 +46,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 13px;
   background-color: var(--fundo-pagina);
   color: var(--texto-escuro-primario);
@@ -68,16 +57,16 @@ body {
 ul { list-style: none; }
 a  { text-decoration: none; color: inherit; }
 
-
-/* Grid de 2 colunas: sidebar fixa à esquerda + área de conteúdo*/
+/* Estrutura de grid da página: sidebar fixa + conteúdo */
 .layout {
   display: grid;
   grid-template-columns: var(--largura-sidebar) 1fr;
   min-height: 100vh;
 }
 
-
-/* sidebar*/
+/* =========================================================
+   BARRA LATERAL (SIDEBAR EXISTENTE NO SITE MANTIDA)
+========================================================= */
 .sidebar {
   background-color: var(--fundo-sidebar);
   border-right: 1px solid var(--borda-bloco);
@@ -87,20 +76,21 @@ a  { text-decoration: none; color: inherit; }
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  z-index: 20;
 }
 
-/* area do logo */
+/* Área do logotipo */
 .sidebar__logo {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-bottom: 1px solid var(--borda-bloco);
 }
 
 .sidebar__logo-icone {
   font-size: 18px;
-  color: #22d3ee;   /* ciano brilhante do ícone */
+  color: #22d3ee;
   line-height: 1;
 }
 
@@ -112,7 +102,7 @@ a  { text-decoration: none; color: inherit; }
   text-transform: uppercase;
 }
 
-/* Navegação principal */
+/* Navegação da sidebar */
 .sidebar__nav {
   padding: 10px 0;
 }
@@ -122,12 +112,11 @@ a  { text-decoration: none; color: inherit; }
   flex-direction: column;
 }
 
-
 .nav__item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 16px;
+  padding: 10px 18px;
   font-size: 12px;
   font-weight: 400;
   color: var(--texto-escuro-secundario);
@@ -137,10 +126,9 @@ a  { text-decoration: none; color: inherit; }
 }
 
 .nav__item:hover {
-  background-color: rgba(255,255,255,0.04);
-  color: var(--texto-escuro-primario);
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
 }
-
 
 .nav__item--ativo {
   background-color: rgba(34, 211, 238, 0.08);
@@ -156,9 +144,9 @@ a  { text-decoration: none; color: inherit; }
   flex-shrink: 0;
 }
 
-/* bloco de status dos servidores na sidebar */
+/* Bloco de status rápido dos servidores na sidebar */
 .sidebar__servidores {
-  padding: 14px 16px;
+  padding: 14px 18px;
   border-top: 1px solid var(--borda-bloco);
   flex: 1;
 }
@@ -172,7 +160,6 @@ a  { text-decoration: none; color: inherit; }
   margin-bottom: 10px;
 }
 
-/* Linha de cada servidor na sidebar */
 .servidor-item {
   display: flex;
   align-items: center;
@@ -199,15 +186,807 @@ a  { text-decoration: none; color: inherit; }
 .servidor-item__uso {
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--texto-escuro-primario);
+  color: #e8f0fe;
 }
 
-/* Texto "OFF" em vermelho */
 .servidor-item__uso--offline {
   color: var(--cor-offline);
 }
 
-/* Pontos coloridos — sidebar */
 .servidor-item__ponto--online  { background-color: var(--cor-online);  }
 .servidor-item__ponto--atencao { background-color: var(--cor-atencao); }
 .servidor-item__ponto--offline { background-color: var(--cor-offline); }
+
+/* Rodapé com botão de sair */
+.sidebar__rodape {
+  padding: 14px 18px;
+  border-top: 1px solid var(--borda-bloco);
+  margin-top: auto;
+}
+
+.sidebar__btn-sair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--texto-escuro-secundario);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+
+.sidebar__btn-sair:hover {
+  color: #ef4444;
+}
+
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+========================================================= */
+.conteudo-principal {
+  background-color: var(--fundo-pagina);
+  padding: 24px 36px 48px 36px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   CABEÇALHO SUPERIOR
+========================================================= */
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cabecalho__titulo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--cor-ciano-destaque);
+  text-transform: uppercase;
+}
+
+.cabecalho__direita {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge--ambiente {
+  background-color: #0b1a2d;
+  color: #38bdf8;
+  border: 1px solid #163654;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  font-family: inherit;
+}
+
+.badge--ambiente:hover {
+  background-color: #0f243f;
+}
+
+.badge__ponto--verde {
+  color: var(--cor-online);
+}
+
+.badge--online {
+  color: var(--cor-online);
+  font-weight: 500;
+}
+
+.badge--atencao {
+  color: var(--cor-atencao);
+  font-weight: 500;
+}
+
+.badge--offline {
+  color: var(--cor-offline);
+  font-weight: 500;
+}
+
+.cabecalho__hora {
+  color: var(--texto-escuro-apagado);
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* =========================================================
+   SEÇÃO: PANORAMA DA OPERAÇÃO
+========================================================= */
+.panorama {
+  margin-bottom: 24px;
+}
+
+.panorama__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.panorama__tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cor-ciano-destaque);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.panorama__titulo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.panorama__descricao {
+  font-size: 13px;
+  color: var(--texto-escuro-secundario);
+  max-width: 820px;
+  line-height: 1.5;
+}
+
+.panorama__leitura {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--texto-escuro-apagado);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   GRADE DE CARTÕES DE KPI (FUNDO BRANCO)
+========================================================= */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background-color: var(--fundo-card);
+  border-radius: var(--raio-card);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--sombra-card);
+  min-height: 145px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+.kpi-card__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.kpi-card__icone {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-card__icone--verde {
+  background-color: #e6f9f0;
+  color: #10b981;
+}
+
+.kpi-card__icone--ciano {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.kpi-card__icone--laranja {
+  background-color: #fee2e2;
+  color: #ea580c;
+}
+
+.kpi-card__icone--roxo {
+  background-color: #f3e8ff;
+  color: #9333ea;
+}
+
+.kpi-card__alerta {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.4;
+}
+
+.kpi-card__alerta--perigo {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.kpi-card__alerta--ok {
+  background-color: #d1fae5;
+  color: #059669;
+}
+
+.kpi-card__alerta--laranja {
+  background-color: #ffedd5;
+  color: #d97706;
+}
+
+.kpi-card__alerta--roxo {
+  background-color: #ede9fe;
+  color: #7c3aed;
+}
+
+.kpi-card__valor {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.kpi-card__valor--verde {
+  color: #0d9488;
+}
+
+.kpi-card__valor--total {
+  font-size: 26px;
+  font-weight: 600;
+  color: #0d9488;
+}
+
+.kpi-card__valor--ciano {
+  color: #0284c7;
+  font-size: 28px;
+}
+
+.kpi-card__valor--laranja {
+  color: #ea580c;
+}
+
+.kpi-card__valor--perigo {
+  color: #dc2626;
+}
+
+.kpi-card__valor--roxo {
+  color: #7c3aed;
+  font-size: 30px;
+}
+
+.kpi-card__valor--unidade {
+  font-size: 22px;
+  font-weight: 600;
+  color: #7c3aed;
+  margin-left: 3px;
+}
+
+.kpi-card__rotulo {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--texto-card-titulo);
+  margin-bottom: 12px;
+}
+
+.kpi-card__detalhe {
+  font-size: 11.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.35;
+}
+
+.kpi-card__detalhe--perigo {
+  color: #dc2626;
+}
+
+.kpi-card__detalhe--ok {
+  color: #16a34a;
+}
+
+.kpi-card__detalhe--neutro {
+  color: var(--texto-card-suave);
+}
+
+.kpi-card__link {
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* =========================================================
+   TABELA: STATUS DOS SERVIDORES (FUNDO BRANCO)
+========================================================= */
+.status-servidores {
+  background-color: var(--fundo-card);
+  border-radius: var(--raio-card);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--sombra-card);
+}
+
+.status-servidores__info {
+  margin-bottom: 18px;
+}
+
+.status-servidores__titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--texto-card-titulo);
+  margin-bottom: 4px;
+}
+
+.status-servidores__descricao {
+  font-size: 12px;
+  color: var(--texto-card-apagado);
+}
+
+.tabela-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tabela-servidores {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabela-servidores thead th {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--texto-card-apagado);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+}
+
+.tabela-servidores tbody td {
+  padding: 16px 14px;
+  font-size: 12.5px;
+  color: var(--texto-card-corpo);
+  vertical-align: middle;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.tabela-servidores__linha {
+  transition: background-color 0.15s;
+}
+
+.tabela-servidores__linha:hover {
+  background-color: #f8fafc;
+  cursor: pointer;
+}
+
+/* Destaque sutil da linha de servidor em atenção */
+.tabela-servidores__linha--atencao {
+  background-color: #fffdf5;
+}
+
+.tabela-servidores__linha--atencao:hover {
+  background-color: #fffbeb;
+}
+
+.celula-servidor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.celula-servidor__nome {
+  font-weight: 700;
+  color: var(--texto-card-titulo);
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+/* Pontos de status */
+.ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.ponto--online {
+  background-color: var(--cor-online);
+}
+
+.ponto--atencao {
+  background-color: var(--cor-atencao);
+}
+
+.ponto--offline {
+  background-color: var(--cor-offline);
+}
+
+.ponto--neutro {
+  background-color: #94a3b8;
+}
+
+/* Badges de situação */
+.status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.status--online {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.status--atencao {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.status--offline {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Colunas de métricas com número acima e barra embaixo */
+.celula-metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 80px;
+}
+
+.celula-metrica__valor {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.celula-metrica__valor--ok {
+  color: #059669;
+}
+
+.celula-metrica__valor--atencao {
+  color: #d97706;
+}
+
+.celula-metrica__vazio {
+  color: var(--texto-card-apagado);
+  font-size: 14px;
+}
+
+.barra-progresso {
+  width: 75px;
+  height: 5px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barra-progresso__fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.barra-progresso__fill--ok {
+  background-color: var(--cor-online);
+}
+
+.barra-progresso__fill--atencao {
+  background-color: var(--cor-atencao);
+}
+
+/* Coluna de disponibilidade */
+.celula-disponibilidade {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.disponibilidade--estavel {
+  color: #059669;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.disponibilidade--instavel {
+  color: #d97706;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.disponibilidade--offline {
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.disponibilidade__detalhe {
+  color: var(--texto-card-apagado);
+  font-size: 10.5px;
+}
+
+/* Botão Ver detalhes */
+.tabela-servidores__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.tabela-servidores__link:hover {
+  background-color: #bae6fd;
+  color: #0369a1;
+}
+
+/* =========================================================
+   SEÇÃO INFERIOR: GRÁFICOS E HISTÓRICO DE EVENTOS
+========================================================= */
+.secao-inferior {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.bloco-card {
+  background-color: var(--fundo-card);
+  border-radius: var(--raio-card);
+  padding: 22px 24px;
+  box-shadow: var(--sombra-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Bloco 1: Gráfico de Rede */
+.bloco__cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.bloco__titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--texto-card-titulo);
+  margin-bottom: 4px;
+}
+
+.bloco__descricao {
+  font-size: 11.5px;
+  color: var(--texto-card-apagado);
+  max-width: 440px;
+  line-height: 1.4;
+}
+
+.badge--mbps {
+  background-color: #ede9fe;
+  color: #7c3aed;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.bloco-rede__grafico {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Bloco 2: Gráfico de Rosca de Saúde */
+.bloco-saude__grafico {
+  position: relative;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 16px 0;
+}
+
+.legenda-saude {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 14px;
+  margin-top: auto;
+}
+
+.legenda-saude li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--texto-card-corpo);
+}
+
+.legenda__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legenda-saude strong {
+  font-weight: 700;
+  color: var(--texto-card-titulo);
+  font-size: 13px;
+}
+
+/* Bloco 3: Lista de Eventos */
+.lista-eventos {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  max-height: 250px;
+  padding-right: 6px;
+}
+
+/* Barra de rolagem personalizada e limpa */
+.lista-eventos::-webkit-scrollbar {
+  width: 4px;
+}
+
+.lista-eventos::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.lista-eventos::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.evento {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.evento__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.evento__servidor {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--texto-card-titulo);
+  font-family: 'Courier New', monospace;
+}
+
+.evento__descricao {
+  font-size: 11.5px;
+  color: var(--texto-card-corpo);
+  line-height: 1.35;
+  padding-left: 13px;
+}
+
+.evento__hora {
+  font-size: 10.5px;
+  color: var(--texto-card-apagado);
+  padding-left: 13px;
+}
+
+/* =========================================================
+   BOTÃO FLUTUANTE DE AJUDA
+========================================================= */
+.btn-ajuda {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #1e293b;
+  color: #ffffff;
+  border: 1px solid #334155;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  transition: transform 0.2s, background-color 0.2s;
+  font-family: inherit;
+}
+
+.btn-ajuda:hover {
+  background-color: #334155;
+  transform: scale(1.06);
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+@media (max-width: 1280px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .secao-inferior {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .conteudo-principal {
+    padding: 16px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
