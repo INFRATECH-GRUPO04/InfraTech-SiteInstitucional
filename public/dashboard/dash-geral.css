@@ -3,19 +3,18 @@
 :root {
   /* Fundo da página e áreas escuras */
   --fundo-pagina:      #080f1a;
-  --fundo-sidebar:     #0d1930;
-  --fundo-header:      #0d1930;
+  --fundo-sidebar:     #03080e;
 
-  /* Fundos dos cartões brancos fiéis ao layout de referência */
+  /* Cores dos cartões brancos */
   --fundo-card:        #ffffff;
   --fundo-card-alt:    #f8fafc;
   --borda-card:        #e2e8f0;
   --sombra-card:       0 2px 8px rgba(0, 0, 0, 0.12);
 
-  /* Borda sutil de divisores escuros */
+  /* Divisores escuros */
   --borda-bloco:       #162440;
 
-  /* Paleta de status */
+  /* Cores de status */
   --cor-online:        #10b981;
   --cor-atencao:       #f59e0b;
   --cor-offline:       #ef4444;
@@ -23,26 +22,32 @@
   --cor-ciano:         #0284c7;
   --cor-ciano-destaque:#00d2df;
 
-  /* Tipografia clara (seções escuras) */
+  /* Textos em áreas escuras */
   --texto-escuro-primario:   #ffffff;
   --texto-escuro-secundario: #94a3b8;
   --texto-escuro-apagado:    #64748b;
 
-  /* Tipografia escura (cartões brancos) */
+  /* Textos em cartões brancos */
   --texto-card-titulo:       #0f172a;
   --texto-card-corpo:        #334155;
   --texto-card-suave:        #64748b;
   --texto-card-apagado:      #94a3b8;
 
-  /* Dimensões */
-  --largura-sidebar:   210px;
+  /* Medidas */
+  --largura-sidebar:   240px;
   --raio-card:         12px;
 }
 
+/* Reset básico */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0 !important;
 }
 
 body {
@@ -57,34 +62,45 @@ body {
 ul { list-style: none; }
 a  { text-decoration: none; color: inherit; }
 
-/* Estrutura principal da página com barra lateral padrão (header-left) */
+/* Estrutura principal da página */
 body.pagina-dash-geral {
   display: flex;
   min-height: 100vh;
   background-color: var(--fundo-pagina);
   margin: 0;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.layout {
-  display: flex;
-  width: 100%;
-  min-height: 100vh;
-}
-
-/* =========================================================
-   CONTEÚDO PRINCIPAL
-========================================================= */
+/* Conteúdo principal da página */
 .conteudo-principal {
+  flex: 1;
+  min-width: 0;
   background-color: var(--fundo-pagina);
   padding: 24px 36px 48px 36px;
-  min-height: 100vh;
-  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
-/* =========================================================
-   CABEÇALHO SUPERIOR
-========================================================= */
+/* Anula estilos fixos herdados do header institucional */
+header.cabecalho-dash,
+header.cabecalho {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 1 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Cabeçalho da dashboard */
+.cabecalho-dash,
 .cabecalho {
   display: flex;
   justify-content: space-between;
@@ -94,6 +110,7 @@ body.pagina-dash-geral {
   gap: 16px;
 }
 
+.cabecalho-dash__titulo,
 .cabecalho__titulo {
   font-size: 20px;
   font-weight: 800;
@@ -102,6 +119,7 @@ body.pagina-dash-geral {
   text-transform: uppercase;
 }
 
+.cabecalho-dash__direita,
 .cabecalho__direita {
   display: flex;
   align-items: center;
@@ -153,6 +171,7 @@ body.pagina-dash-geral {
   font-weight: 500;
 }
 
+.cabecalho-dash__hora,
 .cabecalho__hora {
   color: var(--texto-escuro-apagado);
   font-size: 12px;
@@ -161,9 +180,7 @@ body.pagina-dash-geral {
   letter-spacing: 0.3px;
 }
 
-/* =========================================================
-   SEÇÃO: PANORAMA DA OPERAÇÃO
-========================================================= */
+/* Seção panorama da operação */
 .panorama {
   margin-bottom: 24px;
 }
@@ -211,9 +228,7 @@ body.pagina-dash-geral {
   white-space: nowrap;
 }
 
-/* =========================================================
-   GRADE DE CARTÕES DE KPI (FUNDO BRANCO)
-========================================================= */
+/* Grade de cartões KPI */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -382,9 +397,7 @@ body.pagina-dash-geral {
   text-decoration: underline;
 }
 
-/* =========================================================
-   TABELA: STATUS DOS SERVIDORES (FUNDO BRANCO)
-========================================================= */
+/* Seção tabela de servidores */
 .status-servidores {
   background-color: var(--fundo-card);
   border-radius: var(--raio-card);
@@ -448,7 +461,7 @@ body.pagina-dash-geral {
   cursor: pointer;
 }
 
-/* Destaque sutil da linha de servidor em atenção */
+/* Linha com status de atenção */
 .tabela-servidores__linha--atencao {
   background-color: #fffdf5;
 }
@@ -471,7 +484,7 @@ body.pagina-dash-geral {
   font-size: 13px;
 }
 
-/* Pontos de status */
+/* Pontos coloridos de status */
 .ponto {
   width: 7px;
   height: 7px;
@@ -496,7 +509,7 @@ body.pagina-dash-geral {
   background-color: #94a3b8;
 }
 
-/* Badges de situação */
+/* Pílulas de situação */
 .status {
   font-size: 11px;
   font-weight: 600;
@@ -521,7 +534,7 @@ body.pagina-dash-geral {
   color: #ef4444;
 }
 
-/* Colunas de métricas com número acima e barra embaixo */
+/* Células com barras de uso */
 .celula-metrica {
   display: flex;
   flex-direction: column;
@@ -568,7 +581,7 @@ body.pagina-dash-geral {
   background-color: var(--cor-atencao);
 }
 
-/* Coluna de disponibilidade */
+/* Célula de disponibilidade */
 .celula-disponibilidade {
   display: flex;
   flex-direction: column;
@@ -599,7 +612,7 @@ body.pagina-dash-geral {
   font-size: 10.5px;
 }
 
-/* Botão Ver detalhes */
+/* Botão de ver detalhes */
 .tabela-servidores__link {
   display: inline-flex;
   align-items: center;
@@ -620,9 +633,7 @@ body.pagina-dash-geral {
   color: #0369a1;
 }
 
-/* =========================================================
-   SEÇÃO INFERIOR: GRÁFICOS E HISTÓRICO DE EVENTOS
-========================================================= */
+/* Seção inferior de gráficos e eventos */
 .secao-inferior {
   display: grid;
   grid-template-columns: 1.8fr 1fr 1fr;
@@ -640,7 +651,7 @@ body.pagina-dash-geral {
   justify-content: space-between;
 }
 
-/* Bloco 1: Gráfico de Rede */
+/* Gráfico de rede */
 .bloco__cabecalho {
   display: flex;
   justify-content: space-between;
@@ -683,7 +694,7 @@ body.pagina-dash-geral {
   margin-top: 10px;
 }
 
-/* Bloco 2: Gráfico de Rosca de Saúde */
+/* Gráfico de saúde */
 .bloco-saude__grafico {
   position: relative;
   height: 130px;
@@ -723,7 +734,7 @@ body.pagina-dash-geral {
   font-size: 13px;
 }
 
-/* Bloco 3: Lista de Eventos */
+/* Histórico de eventos */
 .lista-eventos {
   list-style: none;
   display: flex;
@@ -734,7 +745,6 @@ body.pagina-dash-geral {
   padding-right: 6px;
 }
 
-/* Barra de rolagem personalizada e limpa */
 .lista-eventos::-webkit-scrollbar {
   width: 4px;
 }
@@ -781,9 +791,7 @@ body.pagina-dash-geral {
   padding-left: 13px;
 }
 
-/* =========================================================
-   BOTÃO FLUTUANTE DE AJUDA
-========================================================= */
+/* Botão flutuante de ajuda */
 .btn-ajuda {
   position: fixed;
   bottom: 20px;
@@ -811,9 +819,7 @@ body.pagina-dash-geral {
   transform: scale(1.06);
 }
 
-/* =========================================================
-   RESPONSIVIDADE
-========================================================= */
+/* Responsividade */
 @media (max-width: 1280px) {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -825,7 +831,7 @@ body.pagina-dash-geral {
 }
 
 @media (max-width: 768px) {
-  .layout {
+  body.pagina-dash-geral {
     flex-direction: column;
   }
 

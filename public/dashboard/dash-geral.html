@@ -19,98 +19,95 @@
 
   <body class="pagina-dash-geral">
 
-    <!-- Divisão da tela: sidebar fixa + conteúdo principal -->
-    <div class="layout">
+    <!-- Barra lateral padrão -->
+    <aside class="header-left">
+      <div class="logo">
+        <a href="../paginas/pos-login/painel/painel.html" title="InfraTech Painel">
+          <img src="../assets/icon/logo.png" alt="InfraTech">
+        </a>
+      </div>
 
-      <!-- Barra lateral padrão idêntica às outras telas do sistema -->
-      <aside class="header-left">
-        <div class="logo">
-          <a href="../paginas/pos-login/painel/painel.html" title="InfraTech Painel">
-            <img src="../assets/icon/logo.png" alt="InfraTech">
-          </a>
+      <hr class="linha">
+
+      <h3 class="nav-categoria">
+        <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Servidores
+      </h3>
+
+      <a href="./dash-geral.html" class="nav-item ativo">
+        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+        Dashboard
+      </a>
+      <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar Host
+      </a>
+      <a href="../paginas/pos-login/servidores/cadastro_instancia.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Instâncias
+      </a>
+      <a href="../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+      </a>
+
+      <h3 class="nav-categoria secao-funcionarios">
+        <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+        Funcionários
+      </h3>
+
+      <a href="../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+        <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+        Cadastrar Token
+      </a>
+      <a href="../paginas/pos-login/funcionarios/modificar_funcionario.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Modificar
+      </a>
+
+      <h3 class="nav-categoria secao-empresas">
+        <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Empresas
+      </h3>
+
+      <a href="../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Gerenciar
+      </a>
+      <a href="../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar Empresa
+      </a>
+
+      <div class="btn-logout" onclick="sessionStorage.clear(); window.location.href='../paginas/autenticacao/login/login.html';" title="Sair do Sistema">
+        <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+      </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="conteudo-principal">
+
+      <!-- Cabeçalho da dashboard -->
+      <header class="cabecalho-dash">
+        <div class="cabecalho-dash__esquerda">
+          <h1 class="cabecalho-dash__titulo">VISÃO GERAL</h1>
         </div>
 
-        <hr class="linha">
+        <div class="cabecalho-dash__direita">
+          <!-- Seletor de ambiente -->
+          <button class="badge badge--ambiente" type="button">
+            <span class="badge__ponto badge__ponto--verde">●</span> Produção ▾
+          </button>
 
-        <h3 class="nav-categoria">
-          <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
-          Servidores
-        </h3>
+          <!-- Contadores de status da frota -->
+          <span class="badge badge--online">● 4 online</span>
+          <span class="badge badge--atencao">● 1 atenção</span>
+          <span class="badge badge--offline">● 1 offline</span>
 
-        <a href="./dash-geral.html" class="nav-item ativo">
-          <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-          Dashboard
-        </a>
-        <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
-          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-          Cadastrar Host
-        </a>
-        <a href="../paginas/pos-login/servidores/cadastro_instancia.html" class="nav-item">
-          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-          Instâncias
-        </a>
-        <a href="../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
-          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-          Modificar
-        </a>
-
-        <h3 class="nav-categoria secao-funcionarios">
-          <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
-          Funcionários
-        </h3>
-
-        <a href="../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
-          <img src="../assets/imgs/token.png" alt="" class="menu-icon">
-          Cadastrar Token
-        </a>
-        <a href="../paginas/pos-login/funcionarios/modificar_funcionario.html" class="nav-item">
-          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-          Modificar
-        </a>
-
-        <h3 class="nav-categoria secao-empresas">
-          <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
-          Empresas
-        </h3>
-
-        <a href="../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
-          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-          Gerenciar
-        </a>
-        <a href="../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
-          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-          Cadastrar Empresa
-        </a>
-
-        <div class="btn-logout" onclick="sessionStorage.clear(); window.location.href='../paginas/autenticacao/login/login.html';" title="Sair do Sistema">
-          <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+          <!-- Relógio com data e hora -->
+          <span class="cabecalho-dash__hora" id="relogio">24/10/2026 20:09</span>
         </div>
-      </aside>
-
-      <!-- Conteúdo Principal -->
-      <main class="conteudo-principal">
-
-        <!-- Cabeçalho superior -->
-        <header class="cabecalho">
-          <div class="cabecalho__esquerda">
-            <h1 class="cabecalho__titulo">VISÃO GERAL</h1>
-          </div>
-
-          <div class="cabecalho__direita">
-            <!-- Seletor de ambiente -->
-            <button class="badge badge--ambiente" type="button">
-              <span class="badge__ponto badge__ponto--verde">●</span> Produção ▾
-            </button>
-
-            <!-- Contadores de status da frota -->
-            <span class="badge badge--online">● 4 online</span>
-            <span class="badge badge--atencao">● 1 atenção</span>
-            <span class="badge badge--offline">● 1 offline</span>
-
-            <!-- Relógio com data e hora -->
-            <span class="cabecalho__hora" id="relogio">24/10/2026 20:09</span>
-          </div>
-        </header>
+      </header>
 
         <!-- Seção: Panorama da Operação -->
         <section class="panorama">
@@ -596,8 +593,6 @@
         </div>
 
       </main>
-
-    </div>
 
     <!-- Botão flutuante de ajuda no canto inferior direito -->
     <button class="btn-ajuda" title="Ajuda">?</button>
