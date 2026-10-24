@@ -4,107 +4,87 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>InfraTech – Visão Geral</title>
+    <link rel="icon" href="../assets/icon/logo.png" type="image/png" />
 
-    <!-- Estilos visuais da dashboard -->
+    <!-- Estilos globais compartilhados e estilos visuais da dashboard -->
+    <link rel="stylesheet" href="../compartilhado/css/global.css" />
     <link rel="stylesheet" href="dash-geral.css" />
+
+    <!-- Script de sessão do usuário -->
+    <script src="../compartilhado/js/sessao.js"></script>
 
     <!-- Chart.js via CDN para renderizar os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
-  <body>
+  <body class="pagina-dash-geral">
 
     <!-- Divisão da tela: sidebar fixa + conteúdo principal -->
     <div class="layout">
 
-      <!-- Barra lateral (mantendo a estrutura existente no projeto) -->
-      <aside class="sidebar">
-
-        <!-- Logo da empresa -->
-        <div class="sidebar__logo">
-          <span class="sidebar__logo-icone">⬡</span>
-          <span class="sidebar__logo-texto">INFRATECH</span>
+      <!-- Barra lateral padrão idêntica às outras telas do sistema -->
+      <aside class="header-left">
+        <div class="logo">
+          <a href="../paginas/pos-login/painel/painel.html" title="InfraTech Painel">
+            <img src="../assets/icon/logo.png" alt="InfraTech">
+          </a>
         </div>
 
-        <!-- Menu de navegação principal -->
-        <nav class="sidebar__nav">
-          <ul>
-            <li class="nav__item nav__item--ativo">
-              <span class="nav__icone">▦</span>
-              <span class="nav__texto">Visão Geral</span>
-            </li>
+        <hr class="linha">
 
-            <li class="nav__item">
-              <span class="nav__icone">♥</span>
-              <span class="nav__texto">Saúde e Capacidade</span>
-            </li>
+        <h3 class="nav-categoria">
+          <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+          Servidores
+        </h3>
 
-            <li class="nav__item">
-              <span class="nav__icone">◎</span>
-              <span class="nav__texto">Disponibilidade</span>
-            </li>
+        <a href="./dash-geral.html" class="nav-item ativo">
+          <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+          Dashboard
+        </a>
+        <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+          Cadastrar Host
+        </a>
+        <a href="../paginas/pos-login/servidores/cadastro_instancia.html" class="nav-item">
+          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+          Instâncias
+        </a>
+        <a href="../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+          Modificar
+        </a>
 
-            <li class="nav__item">
-              <span class="nav__icone">↗</span>
-              <span class="nav__texto">Rede</span>
-            </li>
+        <h3 class="nav-categoria secao-funcionarios">
+          <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+          Funcionários
+        </h3>
 
-            <li class="nav__item">
-              <span class="nav__icone">🔔</span>
-              <span class="nav__texto">Alertas e Regras</span>
-            </li>
-          </ul>
-        </nav>
+        <a href="../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+          <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+          Cadastrar Token
+        </a>
+        <a href="../paginas/pos-login/funcionarios/modificar_funcionario.html" class="nav-item">
+          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+          Modificar
+        </a>
 
-        <!-- Bloco de status rápido dos servidores na barra lateral -->
-        <div class="sidebar__servidores">
-          <p class="sidebar__servidores-titulo">STATUS DOS SERVIDORES</p>
-          <ul>
-            <li class="servidor-item">
-              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
-              <span class="servidor-item__nome">SRV-BR-01</span>
-              <span class="servidor-item__uso">42%</span>
-            </li>
+        <h3 class="nav-categoria secao-empresas">
+          <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+          Empresas
+        </h3>
 
-            <li class="servidor-item">
-              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
-              <span class="servidor-item__nome">SRV-BR-02</span>
-              <span class="servidor-item__uso">28%</span>
-            </li>
+        <a href="../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+          Gerenciar
+        </a>
+        <a href="../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+          <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+          Cadastrar Empresa
+        </a>
 
-            <li class="servidor-item">
-              <span class="servidor-item__ponto servidor-item__ponto--atencao"></span>
-              <span class="servidor-item__nome">SRV-BR-03</span>
-              <span class="servidor-item__uso">78%</span>
-            </li>
-
-            <li class="servidor-item">
-              <span class="servidor-item__ponto servidor-item__ponto--offline"></span>
-              <span class="servidor-item__nome">SRV-BR-04</span>
-              <span class="servidor-item__uso servidor-item__uso--offline">OFF</span>
-            </li>
-
-            <li class="servidor-item">
-              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
-              <span class="servidor-item__nome">SRV-BR-05</span>
-              <span class="servidor-item__uso">35%</span>
-            </li>
-
-            <li class="servidor-item">
-              <span class="servidor-item__ponto servidor-item__ponto--online"></span>
-              <span class="servidor-item__nome">SRV-BR-06</span>
-              <span class="servidor-item__uso">21%</span>
-            </li>
-          </ul>
+        <div class="btn-logout" onclick="sessionStorage.clear(); window.location.href='../paginas/autenticacao/login/login.html';" title="Sair do Sistema">
+          <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
         </div>
-
-        <!-- Rodapé da sidebar com botão sair -->
-        <div class="sidebar__rodape">
-          <button class="sidebar__btn-sair" onclick="window.location.href='../index.html'">
-            <span>↩</span> Sair
-          </button>
-        </div>
-
       </aside>
 
       <!-- Conteúdo Principal -->
