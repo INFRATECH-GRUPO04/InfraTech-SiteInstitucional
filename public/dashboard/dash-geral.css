@@ -819,31 +819,330 @@ header.cabecalho {
   transform: scale(1.06);
 }
 
-/* Responsividade */
-@media (max-width: 1280px) {
-  .kpi-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .secao-inferior {
-    grid-template-columns: 1fr;
-  }
+/* Botão hambúrguer — oculto no desktop */
+.btn-hamburguer-dash {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 1100;
+  background-color: #0d1930;
+  border: 1px solid #1c2f52;
+  color: var(--cor-ciano-destaque);
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.2s;
+  font-family: inherit;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-@media (max-width: 768px) {
+.btn-hamburguer-dash:hover {
+  background-color: #162440;
+  transform: scale(1.06);
+}
+
+/* Overlay escuro atrás da sidebar no mobile */
+.overlay-sidebar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.overlay-sidebar.visivel {
+  display: block;
+}
+
+/* Responsividade — tablet (até 991px) */
+@media (max-width: 991px) {
+  .btn-hamburguer-dash {
+    display: flex;
+  }
+
   body.pagina-dash-geral {
     flex-direction: column;
   }
 
-  .header-left {
-    display: none;
+  /* Sidebar vira drawer lateral oculto */
+  body.pagina-dash-geral .header-left {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    min-width: 260px;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 1050;
+    transition: left 0.3s ease;
+    background-color: #03080e;
+    border-right: 1px solid #1c2f52;
+    overflow-y: auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 24px 16px;
+    box-shadow: none;
   }
 
+  /* Sidebar aberta */
+  body.pagina-dash-geral .header-left.aberta {
+    left: 0;
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Mantém categorias e separador visíveis no drawer */
+  body.pagina-dash-geral .header-left hr.linha {
+    display: block;
+  }
+
+  body.pagina-dash-geral .header-left .nav-categoria {
+    display: flex;
+  }
+
+  /* Sobrescreve os estilos inline do global.css para manter layout vertical */
+  body.pagina-dash-geral .header-left .nav-item {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 3px;
+    font-size: 13px;
+  }
+
+  body.pagina-dash-geral .header-left .btn-logout {
+    width: 100%;
+    height: 42px;
+    margin-top: auto;
+    margin-left: 0;
+    padding: 0 16px;
+  }
+
+  body.pagina-dash-geral .header-left .logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  body.pagina-dash-geral .header-left .logo img {
+    max-width: 120px;
+  }
+
+  /* Conteúdo com espaço para o botão hambúrguer */
   .conteudo-principal {
-    padding: 16px;
+    padding: 68px 24px 40px 24px;
+    width: 100%;
+  }
+
+  /* Cabeçalho empilha título e indicadores */
+  .cabecalho-dash {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .cabecalho-dash__titulo {
+    font-size: 16px;
+  }
+
+  /* Indicadores de status ficam em linha */
+  .cabecalho-dash__direita {
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* KPIs em 2 colunas */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Seção inferior empilha */
+  .secao-inferior {
+    grid-template-columns: 1fr;
+  }
+
+  /* Tabela com scroll horizontal */
+  .tabela-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .panorama__info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Responsividade — celular (até 768px) */
+@media (max-width: 768px) {
+  .conteudo-principal {
+    padding: 64px 16px 32px 16px;
+  }
+
+  .cabecalho-dash__titulo {
+    font-size: 14px;
+    letter-spacing: 0.8px;
+  }
+
+  .cabecalho-dash__cargo {
+    font-size: 12px;
+  }
+
+  .cabecalho-dash__direita {
+    gap: 8px;
+    font-size: 11.5px;
+  }
+
+  .badge--ambiente {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .status-frota {
+    font-size: 11px;
+  }
+
+  .panorama__titulo {
+    font-size: 20px;
+  }
+
+  .panorama__descricao {
+    font-size: 12px;
   }
 
   .kpi-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .kpi-card {
+    padding: 16px 18px;
+    min-height: 125px;
+  }
+
+  .kpi-card__valor {
+    font-size: 26px;
+  }
+
+  .kpi-card__rotulo {
+    font-size: 12.5px;
+  }
+
+  .status-servidores {
+    padding: 18px 14px;
+  }
+
+  .status-servidores__titulo {
+    font-size: 16px;
+  }
+
+  .bloco-card {
+    padding: 18px 16px;
+  }
+
+  .bloco__titulo {
+    font-size: 14px;
+  }
+
+  .lista-eventos {
+    max-height: 200px;
+  }
+
+  .btn-ajuda {
+    bottom: 14px;
+    right: 14px;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
   }
 }
+
+/* Responsividade — celular pequeno (até 480px) */
+@media (max-width: 480px) {
+  .btn-hamburguer-dash {
+    top: 10px;
+    left: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .conteudo-principal {
+    padding: 56px 12px 28px 12px;
+  }
+
+  .cabecalho-dash__titulo {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  /* KPIs em 1 coluna */
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .kpi-card {
+    padding: 14px 16px;
+    min-height: 110px;
+  }
+
+  .kpi-card__valor {
+    font-size: 24px;
+  }
+
+  .panorama__titulo {
+    font-size: 18px;
+  }
+
+  .status-servidores {
+    padding: 14px 10px;
+  }
+
+  .tabela-servidores thead th {
+    padding: 10px 10px;
+    font-size: 10px;
+  }
+
+  .tabela-servidores tbody td {
+    padding: 12px 10px;
+    font-size: 11.5px;
+  }
+
+  .tabela-servidores__link {
+    padding: 5px 10px;
+    font-size: 10.5px;
+  }
+
+  .bloco-card {
+    padding: 14px 12px;
+  }
+
+  .bloco__titulo {
+    font-size: 13px;
+  }
+
+  .bloco__descricao {
+    font-size: 10.5px;
+  }
+
+  .legenda-saude li {
+    font-size: 11px;
+  }
+
+  .evento__servidor {
+    font-size: 11px;
+  }
+
+  .evento__descricao {
+    font-size: 10.5px;
+  }
+}
+

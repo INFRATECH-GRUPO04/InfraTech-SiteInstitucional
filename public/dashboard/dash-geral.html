@@ -19,8 +19,16 @@
 
   <body class="pagina-dash-geral">
 
+    <!-- Botão hambúrguer para abrir a sidebar em telas menores -->
+    <button class="btn-hamburguer-dash" id="btn_hamburguer" type="button" aria-label="Abrir menu de navegação">
+      &#9776;
+    </button>
+
+    <!-- Overlay escuro ao abrir sidebar no mobile -->
+    <div class="overlay-sidebar" id="overlay_sidebar"></div>
+
     <!-- Barra lateral padrão -->
-    <aside class="header-left">
+    <aside class="header-left" id="sidebar_dash">
       <div class="logo">
         <a href="../paginas/pos-login/painel/painel.html" title="InfraTech Painel">
           <img src="../assets/icon/logo.png" alt="InfraTech">

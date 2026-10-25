@@ -144,6 +144,36 @@ function inicializarGraficoSaude() {
   });
 }
 
+// Controle do menu hambúrguer para telas menores
+function inicializarHamburguer() {
+  const btnHamburguer = document.getElementById('btn_hamburguer');
+  const sidebar = document.getElementById('sidebar_dash');
+  const overlay = document.getElementById('overlay_sidebar');
+
+  if (!btnHamburguer || !sidebar || !overlay) return;
+
+  // Abre ou fecha a sidebar
+  btnHamburguer.addEventListener('click', function () {
+    sidebar.classList.toggle('aberta');
+    overlay.classList.toggle('visivel');
+  });
+
+  // Fecha ao clicar no overlay
+  overlay.addEventListener('click', function () {
+    sidebar.classList.remove('aberta');
+    overlay.classList.remove('visivel');
+  });
+
+  // Fecha ao clicar em um link do menu
+  const itensMenu = sidebar.querySelectorAll('.nav-item, .btn-logout');
+  itensMenu.forEach(function (item) {
+    item.addEventListener('click', function () {
+      sidebar.classList.remove('aberta');
+      overlay.classList.remove('visivel');
+    });
+  });
+}
+
 // Inicialização automática ao carregar o DOM
 document.addEventListener('DOMContentLoaded', function () {
   carregarUsuario();
@@ -151,4 +181,5 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(atualizarRelogio, 1000);
   inicializarGraficoRede();
   inicializarGraficoSaude();
+  inicializarHamburguer();
 });
