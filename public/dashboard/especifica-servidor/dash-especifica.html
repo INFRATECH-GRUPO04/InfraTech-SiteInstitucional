@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="../../assets/icon/logo.png">
+    <link rel="stylesheet" href="../../compartilhado/css/global.css">
+    <link rel="stylesheet" href="../../paginas/pos-login/painel/painel.css">
+    <script src="../../compartilhado/js/sessao.js"></script>
+    <title>Dashboard Específica</title>
+</head>
+
+<body class="pagina-painel">
+
+    <!-- SIDEBAR -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="../../paginas/pos-login/painel/painel.html" title="InfraTech">
+                <img src="../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../especifica-servidor/dash-especifica.html" class="nav-item ativo">
+            <img src="../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard
+        </a>
+        <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+        <a href="../../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <a href="../../paginas/pos-login/funcionarios/modificar_funcionario.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar
+        </a>
+
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <div class="container-dash">
+        <div class="container-graficos">
+            <div class="container-titulo">
+                <div class="titulo-conteudo">
+                    <div class="dados-servidor">
+                        <div id="imagem-servidor">
+                            <img src="../../assets/imgs/servidores.png" alt="">
+                        </div>
+                        <div class="texto-servidor">
+                            <div class="texto-superior">
+                                <h4>SRV-BR-01</h4>
+                                <span class="ponto-status"></span>
+                                <h4>Online</h4>
+                            </div>
+                            <div class="texto-inferior"></div>
+                            <h5>São Paulo</h5>
+                        </div>
+                    </div>
+                    <div class="visao-geral">
+                        <div class="conteudo-visao-geral">
+                            <h5>Visão Geral - Última Atualização: 11:35h</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-recursos">
+                <div class="container-kpis">
+                    <div class="kpi-cpu">
+                        <div class="porcentagem">
+                            <h2>42%</h2>
+                        </div>
+                        <div>
+                            <h3>CPU Atual</h3>
+                        </div>
+                        <div class="barra-carregamento"></div>
+                        <div class="status-kpi">
+                            <span class="ponto-status"></span>
+                            <h5>Seguro</h5>
+                        </div>
+                    </div>
+                    <div class="kpi-ram">
+                        <div class="porcentagem">
+                            <h2>67%</h2>
+                        </div>
+                        <div>
+                            <h3>RAM Atual</h3>
+                        </div>
+                        <div class="barra-carregamento"></div>
+                        <div class="status-kpi">
+                            <span class="ponto-status"></span>
+                            <h5>Seguro</h5>
+                        </div>
+                    </div>
+                    <div class="kpi-disco">
+                        <div class="porcentagem">
+                            <h2>54%</h2>
+                        </div>
+                        <div>
+                            <h3>Disco Atual</h3>
+                        </div>
+                        <div class="barra-carregamento"></div>
+                        <div class="status-kpi">
+                            <span class="ponto-status"></span>
+                            <h5>Seguro</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-grafico-recursos">
+                    <div class="titulo">
+                        <h3>Uso de Recursos — 24h</h3>
+                    </div>
+                    <div class="subtitulo">
+                        <h4>CPU, RAM e Disco ao longo do dia</h4>
+                    </div>
+                    <div class="grafico">
+
+                    </div>
+                </div>
+            </div>
+            <div class="container-rede-e-alertas">
+                <div class="container-rede">
+                    <div class="titulo">
+                        <h3>Uso de Banda ao Longo do Dia</h3>
+                    </div>
+                    <div class="subtitulo">
+                        <h4>Medições horárias em Mbps</h4>
+                    </div>
+                    <div class="grafico">
+
+                    </div>
+                </div>
+                <div class="container-alertas">
+                    <div class="titulo">
+                        <h3>Alertas do Servidor</h3>
+                        </div>
+                        <div class="alertas">
+                            <div>
+                                <div>
+                                    <span class="ponto-status"></span>
+                                    <h5>SRV-BR-01</h5>
+                                </div>
+                                <div>
+                                    <h6>CPU acima de 75% — possível gargalo de aplicação</h6>
+                                </div>
+                                <div>
+                                    <h6>09:47</h6>
+                                </div>
+
+                            </div>
+                            <div>
+                                <div>
+                                    <span class="ponto-status"></span>
+                                    <h5>SRV-BR-01</h5>
+                                </div>
+                                <div>
+                                    <h6>RAM acima de 80% — risco de lentidão detectado</h6>
+                                </div>
+                                <div>
+                                    <h6>08:20</h6>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <span class="ponto-status"></span>
+                                    <h5>SRV-BR-01</h5>
+                                </div>
+                                <div>
+                                    <h6>Reiniciado com sucesso após atualização</h6>
+                                </div>
+                                <div>
+                                    <h6>07:38</h6>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,49 +1,100 @@
 var database = require("../database/config");
 
-function buscarPorId(id) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE id_empresa = ${id}`;
-  return database.executar(instrucaoSql);
-}
-
-function listar() {
-  var instrucaoSql = `SELECT id_empresa AS id, razao_social, cnpj FROM empresa`;
-  return database.executar(instrucaoSql);
-}
-
-function buscarPorCnpj(cnpj) {
-  var instrucaoSql = `SELECT * FROM empresa WHERE cnpj = '${cnpj}'`;
-  return database.executar(instrucaoSql);
-}
-
-function cadastrarEndereco(cep, logradouro, bairro, numero, complemento, estado, cidade) {
+function buscarNomeEmpresa(id) {
   var instrucaoSql = `
-    INSERT INTO endereco (cep, logradouro, bairro, numero, complemento, estado, cidade) 
-    VALUES ('${cep}', '${logradouro}', '${bairro}', '${numero}', '${complemento || ""}', '${estado}', '${cidade}');
-  `;
+    SELECT 
+        id_empresa,
+        razao_social,
+        nome_fantasia
+    FROM empresa
+    WHERE id_empresa = ${id};`;
   return database.executar(instrucaoSql);
 }
 
-function cadastrarEmpresa(razaoSocial, nomeFantasia, cnpj, segmento, emailEmpresa, telefoneEmpresa, fkEndereco) {
+function buscarDadosUsuario(id) {
   var instrucaoSql = `
-    INSERT INTO empresa (razao_social, nome_fantasia, cnpj, segmento_atuacao, email, telefone, status_sistema, dt_cadastro, fk_endereco) 
-    VALUES ('${razaoSocial}', '${nomeFantasia || ""}', '${cnpj}', '${segmento}', '${emailEmpresa}', '${telefoneEmpresa}', 1, NOW(), ${fkEndereco});
-  `;
+    SELECT 
+        f.id_funcionario,
+        f.nome,
+        f.tipo_acesso,
+        (SELECT COUNT(*) 
+           FROM servidor_funcionario sf 
+          WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
+    FROM funcionario f
+    WHERE f.fk_empresa = ${id};`;
   return database.executar(instrucaoSql);
 }
 
-function cadastrarRepresentante(fkEmpresa, nomeResponsavel, dtNascimentoResponsavel, emailResponsavel, senha, cpf) {
+function buscarDadosUsuarioEspecifico(id) {
   var instrucaoSql = `
-    INSERT INTO funcionario (fk_empresa, adm, nome, data_nascimento, email, senha, cpf, status_sistema, dt_cadastro) 
-    VALUES (${fkEmpresa}, 1, '${nomeResponsavel}', '${dtNascimentoResponsavel}', '${emailResponsavel}', '${senha}', '${cpf}', 1, NOW());
-  `;
+    SELECT 
+        f.id_funcionario,
+        f.tipo_acesso,
+        f.nome,
+        DATE_FORMAT(f.data_nascimento, '%d/%m/%Y') AS dataNascimento,
+        f.email,
+        f.senha,
+        f.cpf,
+        (SELECT COUNT(*) 
+           FROM servidor_funcionario sf 
+          WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
+    FROM funcionario f
+    WHERE f.id_funcionario = ${id};`;
   return database.executar(instrucaoSql);
+}
+
+function deletarUsuario(id) {
+  var apagarVinculos = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${id};`;
+  var apagarFuncionario = `DELETE FROM funcionario WHERE id_funcionario = ${id};`;
+  
+  return database.executar(apagarVinculos).then(function () {
+    return database.executar(apagarFuncionario);
+  });
+}
+
+function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
+  var instrucaoSql = `
+    SELECT 
+        s.id_servidor,
+        s.nome,
+        s.localizacao,
+        s.status_sistema,
+        (sf.fk_funcionario IS NOT NULL) AS temAcesso
+    FROM servidor s
+    LEFT JOIN servidor_funcionario sf 
+           ON sf.fk_servidor = s.id_servidor
+          AND sf.fk_funcionario = ${idFuncionario}
+    WHERE s.fk_empresa = ${idEmpresa};`;
+  return database.executar(instrucaoSql);
+}
+
+function alterarServidores(idFuncionario, servidores) {
+  var apagar = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${idFuncionario};`;
+
+  return database.executar(apagar).then(function () {
+    if (servidores.length === 0) {
+      return;   // nenhum marcado: só removeu os acessos
+    }
+
+    var valores = servidores
+      .map(function (idServidor) {
+        return `(${idFuncionario}, ${idServidor})`;
+      })
+      .join(", ");
+
+    var inserir = `
+      INSERT INTO servidor_funcionario (fk_funcionario, fk_servidor)
+      VALUES ${valores};`;
+    return database.executar(inserir);
+  });
 }
 
 module.exports = {
-  buscarPorCnpj,
-  buscarPorId,
-  listar,
-  cadastrarEndereco,
-  cadastrarEmpresa,
-  cadastrarRepresentante
-};
+  buscarNomeEmpresa,
+    buscarDadosUsuario,
+    buscarDadosUsuarioEspecifico,
+    deletarUsuario,
+    buscarServidoresPorEmpresa,
+    alterarServidores
+  };
+  
