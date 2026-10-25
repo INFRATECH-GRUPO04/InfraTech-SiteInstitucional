@@ -90,38 +90,39 @@
       <!-- Cabeçalho da dashboard -->
       <header class="cabecalho-dash">
         <div class="cabecalho-dash__esquerda">
-          <h1 class="cabecalho-dash__titulo">VISÃO GERAL</h1>
+          <h1 class="cabecalho-dash__titulo">
+            BEM-VINDO, <span id="nome_usuario">USUÁRIO</span> <span class="cabecalho-dash__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
+          </h1>
         </div>
 
         <div class="cabecalho-dash__direita">
           <!-- Seletor de ambiente -->
           <button class="badge badge--ambiente" type="button">
-            <span class="badge__ponto badge__ponto--verde">●</span> Produção ▾
+            <span class="ponto-ambiente">•</span> Produção ▼
           </button>
 
-          <!-- Contadores de status da frota -->
-          <span class="badge badge--online">● 4 online</span>
-          <span class="badge badge--atencao">● 1 atenção</span>
-          <span class="badge badge--offline">● 1 offline</span>
+          <!-- Alertas de servidores -->
+          <span class="status-frota status-frota--online">• 4 online</span>
+          <span class="status-frota status-frota--atencao">• 1 atenção</span>
+          <span class="status-frota status-frota--offline">• 1 offline</span>
 
           <!-- Relógio com data e hora -->
-          <span class="cabecalho-dash__hora" id="relogio">24/10/2026 20:09</span>
+          <span class="cabecalho-dash__hora" id="relogio">24/10/2026 20:48</span>
         </div>
       </header>
 
-        <!-- Seção: Panorama da Operação -->
-        <section class="panorama">
+      <!-- Seção: Panorama da Operação -->
+      <section class="panorama">
 
-          <div class="panorama__info">
-            <div>
-              <span class="panorama__tag">TELA 1 DE 6</span>
-              <h2 class="panorama__titulo">Panorama da Operação</h2>
-              <p class="panorama__descricao">
-                Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
-              </p>
-            </div>
-            <span class="panorama__leitura">ÚLTIMA LEITURA &nbsp;·&nbsp; HÁ 38 SEG</span>
+        <div class="panorama__info">
+          <div>
+            <h2 class="panorama__titulo">Panorama da Operação</h2>
+            <p class="panorama__descricao">
+              Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
+            </p>
           </div>
+          <span class="panorama__leitura">ÚLTIMA LEITURA &nbsp;·&nbsp; HÁ 38 SEG</span>
+        </div>
 
           <!-- Grade com os 4 cartões de métricas (KPIs) -->
           <div class="kpi-grid">
@@ -597,118 +598,8 @@
     <!-- Botão flutuante de ajuda no canto inferior direito -->
     <button class="btn-ajuda" title="Ajuda">?</button>
 
-    <!-- Scripts de inicialização dos gráficos e relógio -->
-    <script>
-      // Atualização em tempo real do relógio
-      function atualizarRelogio() {
-        const agora = new Date();
-        const dia = String(agora.getDate()).padStart(2, '0');
-        const mes = String(agora.getMonth() + 1).padStart(2, '0');
-        const ano = agora.getFullYear();
-        const horas = String(agora.getHours()).padStart(2, '0');
-        const minutos = String(agora.getMinutes()).padStart(2, '0');
-        const el = document.getElementById('relogio');
-        if (el) {
-          el.textContent = `${dia}/${mes}/${ano} ${horas}:${minutos}`;
-        }
-      }
-      atualizarRelogio();
-      setInterval(atualizarRelogio, 1000);
-
-      // Gráfico de Área / Linha do Tráfego de Rede
-      const ctxRede = document.getElementById('grafico-rede');
-      if (ctxRede) {
-        const gradiente = ctxRede.getContext('2d').createLinearGradient(0, 0, 0, 180);
-        gradiente.addColorStop(0, 'rgba(168, 85, 247, 0.22)');
-        gradiente.addColorStop(1, 'rgba(168, 85, 247, 0.00)');
-
-        new Chart(ctxRede, {
-          type: 'line',
-          data: {
-            labels: ['00h', '04h', '08h', '12h', '16h', '20h'],
-            datasets: [{
-              label: 'Tráfego',
-              data: [18, 16, 68, 88, 42, 26],
-              borderColor: '#9333ea',
-              borderWidth: 2.2,
-              backgroundColor: gradiente,
-              fill: true,
-              tension: 0.45,
-              pointRadius: 0,
-              pointHoverRadius: 5,
-              pointBackgroundColor: '#9333ea'
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return ` ${context.parsed.y} Mbps`;
-                  }
-                }
-              }
-            },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: {
-                  color: '#94a3b8',
-                  font: { family: 'Inter', size: 11 }
-                }
-              },
-              y: {
-                min: 0,
-                max: 100,
-                ticks: {
-                  stepSize: 25,
-                  color: '#94a3b8',
-                  font: { family: 'Inter', size: 11 }
-                },
-                grid: {
-                  color: '#f1f5f9'
-                }
-              }
-            }
-          }
-        });
-      }
-
-      // Gráfico de Rosca (Donut) do Resumo de Saúde
-      const ctxSaude = document.getElementById('grafico-saude');
-      if (ctxSaude) {
-        new Chart(ctxSaude, {
-          type: 'doughnut',
-          data: {
-            labels: ['Online', 'Atenção', 'Offline'],
-            datasets: [{
-              data: [4, 1, 1],
-              backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-              borderWidth: 0,
-              hoverOffset: 3
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: function(context) {
-                    return ` ${context.label}: ${context.parsed}`;
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    </script>
+    <!-- Script principal da dashboard -->
+    <script src="dash-geral.js"></script>
 
   </body>
 </html>

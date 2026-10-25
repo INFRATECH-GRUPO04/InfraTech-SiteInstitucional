@@ -114,61 +114,71 @@ header.cabecalho {
 .cabecalho__titulo {
   font-size: 20px;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   color: var(--cor-ciano-destaque);
   text-transform: uppercase;
+}
+
+.cabecalho-dash__cargo {
+  font-weight: 700;
+  opacity: 0.95;
 }
 
 .cabecalho-dash__direita,
 .cabecalho__direita {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 12px;
+  gap: 16px;
+  font-size: 12.5px;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
+/* Seletor de ambiente */
 .badge--ambiente {
   background-color: #0b1a2d;
   color: #38bdf8;
   border: 1px solid #163654;
-  padding: 5px 14px;
-  border-radius: 20px;
+  padding: 4px 12px;
+  border-radius: 6px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.15s;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .badge--ambiente:hover {
   background-color: #0f243f;
 }
 
-.badge__ponto--verde {
+.ponto-ambiente {
   color: var(--cor-online);
+  font-size: 13px;
+  line-height: 1;
 }
 
-.badge--online {
-  color: var(--cor-online);
-  font-weight: 500;
+/* Alertas de status da frota */
+.status-frota {
+  font-size: 12.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
 }
 
-.badge--atencao {
-  color: var(--cor-atencao);
-  font-weight: 500;
+.status-frota--online {
+  color: #10b981;
 }
 
-.badge--offline {
-  color: var(--cor-offline);
-  font-weight: 500;
+.status-frota--atencao {
+  color: #f59e0b;
+}
+
+.status-frota--offline {
+  color: #ef4444;
 }
 
 .cabecalho-dash__hora,
@@ -176,7 +186,7 @@ header.cabecalho {
   color: var(--texto-escuro-apagado);
   font-size: 12px;
   font-weight: 500;
-  margin-left: 6px;
+  margin-left: 8px;
   letter-spacing: 0.3px;
 }
 
@@ -192,16 +202,6 @@ header.cabecalho {
   margin-bottom: 20px;
   gap: 16px;
   flex-wrap: wrap;
-}
-
-.panorama__tag {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--cor-ciano-destaque);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
 }
 
 .panorama__titulo {
