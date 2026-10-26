@@ -130,6 +130,31 @@ function atualizar(req, res) {
     }
 }
 
+function atualizarComponente(req, res) {
+    var idComponente = req.params.idComponente;
+    var capacidade = req.body.capacidadeServer;
+    var idMetrica = req.body.idMetricaServer;
+    var limiteAtencao = req.body.limiteAtencaoServer;
+    var limiteCritico = req.body.limiteCriticoServer;
+
+    if (idComponente == undefined) {
+        res.status(400).send("O id do componente é obrigatório!");
+    } else if (capacidade == undefined || capacidade <= 0) {
+        res.status(400).send("A capacidade deve ser maior que zero!");
+    } else if (limiteAtencao != undefined && limiteCritico != undefined && Number(limiteAtencao) >= Number(limiteCritico)) {
+        res.status(400).send("O limite de atenção deve ser menor que o limite crítico!");
+    } else {
+        servidorModel.atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao, limiteCritico)
+            .then(function (resultado) {
+                res.status(200).json(resultado);
+            }).catch(function (erro) {
+                console.log(erro);
+                console.log("Houve um erro ao atualizar o componente: ", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
 function excluir(req, res) {
     var idServidor = req.params.idServidor;
 
@@ -149,5 +174,6 @@ module.exports = {
     listar,
     listarComponentesPorServidor,
     atualizar,
+    atualizarComponente,
     excluir
 };

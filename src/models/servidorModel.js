@@ -55,6 +55,19 @@ function atualizar(idServidor, nome) {
     return database.executar(instrucaoSql);
 }
 
+function atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao, limiteCritico) {
+    var inst1 = `UPDATE componente SET capacidade_total = ${capacidade} WHERE id_componente = ${idComponente};`;
+    console.log("Executando a instrução SQL: \n" + inst1);
+
+    return database.executar(inst1).then(function () {
+        if (idMetrica && limiteAtencao != undefined && limiteCritico != undefined) {
+            var inst2 = `UPDATE metrica SET limite_atencao = ${limiteAtencao}, limite_critico = ${limiteCritico} WHERE id_metrica = ${idMetrica};`;
+            console.log("Executando a instrução SQL: \n" + inst2);
+            return database.executar(inst2);
+        }
+    });
+}
+
 function excluir(idServidor) {
     // Exclusão em cascata respeitando as Foreign Keys: metrica -> componente -> servidor_funcionario -> servidor
     var instDeletarMetricas = `DELETE FROM metrica WHERE fk_componente IN (SELECT id_componente FROM componente WHERE fk_servidor = ${idServidor});`;
@@ -90,5 +103,6 @@ module.exports = {
     listar,
     listarComponentesPorServidor,
     atualizar,
+    atualizarComponente,
     excluir
 };
