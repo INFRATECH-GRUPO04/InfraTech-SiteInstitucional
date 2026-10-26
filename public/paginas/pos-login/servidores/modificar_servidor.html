@@ -123,16 +123,16 @@
                 COMPONENTES VINCULADOS
             </div>
 
-            <!-- Container preenchido dinamicamente pelo JS -->
-            <div id="componentes-lista" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="estado-vazio" style="text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
+            <!-- Container preenchido dinamicamente pelo JS (Grade 2x2) -->
+            <div id="componentes-lista" class="grade-componentes">
+                <div class="estado-vazio" style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
                     <p style="margin: 0; font-size: 0.95rem;">Selecione um servidor acima para visualizar e gerenciar seus recursos.</p>
                 </div>
             </div>
 
             <div class="acoes-rodape">
-                <button type="button" class="botao-perigo" onclick="excluirServidor()">Excluir Servidor</button>
-                <button type="button" class="botao-primario" onclick="atualizarServidor()">Salvar Alterações</button>
+                <button type="button" class="btn-danger" onclick="excluirServidor()">Excluir Servidor</button>
+                <button type="button" class="btn-cyan" onclick="atualizarServidor()">Salvar Alterações</button>
             </div>
         </div>
     </main>

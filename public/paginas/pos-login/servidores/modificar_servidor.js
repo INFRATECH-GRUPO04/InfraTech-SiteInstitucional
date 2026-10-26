@@ -35,7 +35,7 @@ function buscarComponentes() {
 
     if (idServidor == "") {
         document.getElementById("componentes-lista").innerHTML = `
-            <div class="estado-vazio" style="text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
+            <div class="estado-vazio" style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
                 <p style="margin: 0; font-size: 0.95rem;">Selecione um servidor acima para visualizar e gerenciar seus recursos.</p>
             </div>
         `;
@@ -53,7 +53,7 @@ function buscarComponentes() {
             if (resposta.ok) {
                 if (resposta.status == 204) {
                     document.getElementById("componentes-lista").innerHTML = `
-                        <div class="estado-vazio" style="text-align: center; padding: 24px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
+                        <div class="estado-vazio" style="grid-column: 1 / -1; text-align: center; padding: 24px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
                             <p style="margin: 0; font-size: 0.9rem;">Nenhum componente vinculado a este servidor.</p>
                         </div>
                     `;
@@ -68,23 +68,37 @@ function buscarComponentes() {
 
                     for (let i = 0; i < resposta.length; i++) {
                         var c = resposta[i];
+                        var tipoNorm = String(c.tipo || "").toLowerCase().trim();
+
+                        var nomeTipoFormatado = "CPU";
+                        var rotuloCapacidade = "NÚCLEOS (CORES)";
+                        var unidadePadrao = "Cores";
+
+                        if (tipoNorm === "ram") {
+                            nomeTipoFormatado = "Memória RAM";
+                            rotuloCapacidade = "MEMÓRIA TOTAL";
+                            unidadePadrao = "GB";
+                        } else if (tipoNorm === "disco") {
+                            nomeTipoFormatado = "Disco SSD";
+                            rotuloCapacidade = "ARMAZENAMENTO";
+                            unidadePadrao = "GB";
+                        } else if (tipoNorm === "rede") {
+                            nomeTipoFormatado = "Rede";
+                            rotuloCapacidade = "LARGURA DE BANDA";
+                            unidadePadrao = "Mbps";
+                        }
                         
-                        // Cria a div do componente com identificadores específicos
                         var html = `
                             <div class="linha-componente-novo" id="linha-comp-${c.id_componente}">
                                 <div class="coluna-componente">
                                     <label>TIPO</label>
-                                    <select class="controle-formulario" style="appearance: none; -webkit-appearance: none;" disabled>
-                                        <option value="cpu" ${c.tipo == 'cpu' ? 'selected' : ''}>CPU</option>
-                                        <option value="ram" ${c.tipo == 'ram' ? 'selected' : ''}>Memória RAM</option>
-                                        <option value="disco" ${c.tipo == 'disco' ? 'selected' : ''}>Disco SSD</option>
-                                    </select>
+                                    <span class="rotulo-componente-texto" style="padding: 10px 0;">${nomeTipoFormatado}</span>
                                 </div>
                                 <div class="coluna-componente">
-                                    <label>CAPACIDADE</label>
+                                    <label>${rotuloCapacidade}</label>
                                     <div class="grupo-entrada-alocacao">
                                         <input type="number" class="controle-formulario" id="capacidade-comp-${c.id_componente}" value="${c.capacidade_total}" min="1" style="width: 100%;">
-                                        <span>${c.unidade_capacidade || (c.tipo == 'cpu' ? 'Cores' : 'GB')}</span>
+                                        <span>${c.unidade_capacidade || unidadePadrao}</span>
                                     </div>
                                 </div>
                                 <div class="coluna-componente pequena">
@@ -146,9 +160,11 @@ function atualizarServidor() {
             let atencao = inputAtencao ? Number(inputAtencao.value) : undefined;
             let critico = inputCritico ? Number(inputCritico.value) : undefined;
 
-            let nomeComp = c.tipo.toUpperCase();
-            if (c.tipo === "ram") nomeComp = "Memória RAM";
-            if (c.tipo === "disco") nomeComp = "Disco SSD";
+            let tipoNorm = String(c.tipo || "").toLowerCase().trim();
+            let nomeComp = "CPU";
+            if (tipoNorm === "ram") nomeComp = "Memória RAM";
+            else if (tipoNorm === "disco") nomeComp = "Disco SSD";
+            else if (tipoNorm === "rede") nomeComp = "Rede";
 
             if (!cap || cap <= 0) {
                 return alert(`A capacidade do componente ${nomeComp} deve ser maior que zero!`);

@@ -13,7 +13,7 @@ function cadastrar(nome, idEmpresa) {
 function cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico) {
     console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrarComponente():", fkServidor, tipoComponente, capacidade);
 
-    var unidadeCapacidade = tipoComponente === 'cpu' ? 'Cores' : 'GB';
+    var unidadeCapacidade = tipoComponente === 'cpu' ? 'Cores' : (tipoComponente === 'rede' ? 'Mbps' : 'GB');
     var inst1 = `INSERT INTO componente (tipo, capacidade_total, unidade_capacidade, fk_servidor, status_monitoramento) VALUES ('${tipoComponente}', ${capacidade}, '${unidadeCapacidade}', ${fkServidor}, 1);`;
     console.log("Executando a instrução SQL: \n" + inst1);
 
@@ -42,7 +42,7 @@ function listarComponentesPorServidor(idServidor) {
             m.limite_atencao,
             m.limite_critico 
         FROM componente c
-        LEFT JOIN metrica m ON m.fk_componente = c.id_componente AND (m.nome = 'uso_percentual' OR m.nome IS NULL)
+        LEFT JOIN metrica m ON m.fk_componente = c.id_componente AND (m.nome = 'uso_percentual' OR (c.tipo = 'rede' AND m.nome = 'perda_pacotes'))
         WHERE c.fk_servidor = ${idServidor};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);

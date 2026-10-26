@@ -55,10 +55,11 @@ function cadastrarComponente(req, res) {
     } else if (Number(limiteAtencao) >= Number(limiteCritico)) {
         res.status(400).send("O limite de atenção deve ser menor que o limite crítico!");
     } else {
-        // Mapear fkComponente (1,2,3) para tipo string ('cpu', 'ram', 'disco')
+        // Mapear fkComponente (1,2,3,4) para tipo string ('cpu', 'ram', 'disco', 'rede')
         var tipoComponente = "cpu";
-        if (fkComponente == 2) tipoComponente = "ram";
-        else if (fkComponente == 3) tipoComponente = "disco";
+        if (fkComponente == 2 || fkComponente == "ram") tipoComponente = "ram";
+        else if (fkComponente == 3 || fkComponente == "disco") tipoComponente = "disco";
+        else if (fkComponente == 4 || fkComponente == "rede") tipoComponente = "rede";
 
         servidorModel.cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico)
             .then(

@@ -6,6 +6,7 @@ window.onload = function () {
     adicionarComponente("cpu");
     adicionarComponente("ram");
     adicionarComponente("disco");
+    adicionarComponente("rede");
 };
 
 function adicionarComponente(tipoInit = "cpu") {
@@ -16,20 +17,42 @@ function adicionarComponente(tipoInit = "cpu") {
     inputsLista.push(div.id);
 
     let isCpu = tipoInit === "cpu";
+    let rotulo = "CPU";
+    let unidadeCap = "Cores";
+    let capPadrao = 8;
+    let atencaoPadrao = 75;
+    let criticoPadrao = 90;
+
+    if (tipoInit === "ram") {
+        rotulo = "Memória RAM";
+        unidadeCap = "GB";
+        capPadrao = 32;
+        atencaoPadrao = 80;
+        criticoPadrao = 95;
+    } else if (tipoInit === "disco") {
+        rotulo = "Disco SSD";
+        unidadeCap = "GB";
+        capPadrao = 1000;
+        atencaoPadrao = 80;
+        criticoPadrao = 95;
+    } else if (tipoInit === "rede") {
+        rotulo = "Rede";
+        unidadeCap = "Mbps";
+        capPadrao = 1000;
+        atencaoPadrao = 75;
+        criticoPadrao = 90;
+    }
 
     div.innerHTML = `
         <div class="linha-alocacao">
             <div class="rotulo-alocacao">
-                <select class="controle-formulario" style="width: 100%; border: none; background-color: transparent; padding: 0; font-weight: bold; color: white;" id="input${contador}" disabled>
-                    <option value="cpu" ${tipoInit === 'cpu' ? 'selected' : ''}>CPU</option>
-                    <option value="ram" ${tipoInit === 'ram' ? 'selected' : ''}>Memória RAM</option>
-                    <option value="disco" ${tipoInit === 'disco' ? 'selected' : ''}>Disco SSD</option>
-                </select>
+                <span class="rotulo-componente-texto">${rotulo}</span>
+                <input type="hidden" id="input${contador}" value="${tipoInit}">
             </div>
             <div class="entradas-alocacao" style="margin-left: auto;">
                 <div class="grupo-entrada-alocacao">
-                    <input type="number" class="controle-formulario" id="input-capacidade${contador}" value="${isCpu ? 8 : (tipoInit === 'ram' ? 32 : 1000)}" min="1">
-                    <span id="b${contador}">${isCpu ? 'Cores' : 'GB'}</span>
+                    <input type="number" class="controle-formulario" id="input-capacidade${contador}" value="${capPadrao}" min="1">
+                    <span id="b${contador}">${unidadeCap}</span>
                 </div>
             </div>
         </div>
@@ -37,12 +60,12 @@ function adicionarComponente(tipoInit = "cpu") {
             <div class="grupo-limite-alerta" style="margin-left: 0;">
                 <label>Atenção:</label>
                 <div class="grupo-entrada-alocacao">
-                    <input type="number" class="controle-formulario" id="input-atencao${contador}" value="${isCpu ? 75 : 80}" min="1" max="100" style="width: 70px;">
+                    <input type="number" class="controle-formulario" id="input-atencao${contador}" value="${atencaoPadrao}" min="1" max="100" style="width: 70px;">
                     <span>%</span>
                 </div>
                 <label style="margin-left: 15px;">Crítico:</label>
                 <div class="grupo-entrada-alocacao">
-                    <input type="number" class="controle-formulario" id="input-critico${contador}" value="${isCpu ? 90 : 95}" min="1" max="100" style="width: 70px;">
+                    <input type="number" class="controle-formulario" id="input-critico${contador}" value="${criticoPadrao}" min="1" max="100" style="width: 70px;">
                     <span>%</span>
                 </div>
             </div>
@@ -62,6 +85,8 @@ function trocarComplemento(selectElement, spanId) {
     let span = document.getElementById(spanId);
     if (selectElement.value == "cpu") {
         span.innerHTML = "Cores";
+    } else if (selectElement.value == "rede") {
+        span.innerHTML = "Mbps";
     } else if (selectElement.value == "ram" || selectElement.value == "disco") {
         span.innerHTML = "GB";
     }
@@ -92,6 +117,7 @@ function cadastrarServidorCompleto() {
         let nomeComp = componente.toUpperCase();
         if (componente === "ram") nomeComp = "Memória RAM";
         if (componente === "disco") nomeComp = "Disco SSD";
+        if (componente === "rede") nomeComp = "Rede";
 
         if (!capacidade || capacidade <= 0) {
             alert(`A capacidade do componente ${nomeComp} deve ser maior que zero!`);
@@ -160,6 +186,7 @@ function cadastrarServidorCompleto() {
                 if (componente == "cpu") valorComponente = 1;
                 else if (componente == "ram") valorComponente = 2;
                 else if (componente == "disco") valorComponente = 3;
+                else if (componente == "rede") valorComponente = 4;
 
                 return fetch("/servidor/cadastrar/componente", {
                     method: "POST",
