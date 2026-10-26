@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../compartilhado/css/global.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="disponibilidade.css">
 </head>
 <body>
@@ -118,11 +118,7 @@
 
           <article class="indicador status-atencao">
             <div class="indicador__topo">
-              <span class="indicador__icone" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                </svg>
-              </span>
+              <div class="indicador__icone"><img src="../../assets/icon/pulso.svg" class="svg" ></div>
               <span class="indicador__etiqueta">↘ -0,4 p.p. nesta semana</span>
             </div>
             <p class="indicador__valor">98,7%</p>
@@ -132,12 +128,8 @@
 
           <article class="indicador status-critico">
             <div class="indicador__topo">
-              <span class="indicador__icone" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <polyline points="12 6 12 12 16 14"/>
-                </svg>
-              </span>
+              <div class="indicador__icone"><img src="../../assets/icon/disponibilidade.svg" class="svg" ></div>
+              
               <span class="indicador__etiqueta">1 ocorrência hoje</span>
             </div>
             <p class="indicador__valor">18 min</p>
@@ -147,14 +139,7 @@
 
           <article class="indicador status-ok">
             <div class="indicador__topo">
-              <span class="indicador__icone" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="3" width="20" height="8" rx="2"/>
-                  <rect x="2" y="13" width="20" height="8" rx="2"/>
-                  <line x1="6" y1="7" x2="6.01" y2="7"/>
-                  <line x1="6" y1="17" x2="6.01" y2="17"/>
-                </svg>
-              </span>
+              <div class="indicador__icone"><img src="../../assets/icon/servidor.svg" class="svg" ></div>
               <span class="indicador__etiqueta status-neutro">Meta mensal: 99,0%</span>
             </div>
             <p class="indicador__valor">3/6</p>
@@ -175,7 +160,7 @@
             <table class="tabela-sla">
               <thead>
                 <tr>
-                  <th scope="col">Servidor</th>
+                  <th scope="col" >Servidor</th>
                   <th scope="col">Última leitura</th>
                   <th scope="col">Disponibilidade</th>
                   <th scope="col">Meta</th>
