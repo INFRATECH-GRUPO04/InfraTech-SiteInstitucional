@@ -80,6 +80,45 @@ function cadastrarServidorCompleto() {
         return;
     }
 
+    // Validação individual dos componentes e limites de alerta
+    for (let i = 0; i < inputsLista.length; i++) {
+        let id = inputsLista[i];
+        let indice = id.substring(1);
+        let componente = document.getElementById(`input${indice}`).value;
+        let capacidade = Number(document.getElementById(`input-capacidade${indice}`).value);
+        let limiteAtencao = Number(document.getElementById(`input-atencao${indice}`).value);
+        let limiteCritico = Number(document.getElementById(`input-critico${indice}`).value);
+
+        let nomeComp = componente.toUpperCase();
+        if (componente === "ram") nomeComp = "Memória RAM";
+        if (componente === "disco") nomeComp = "Disco SSD";
+
+        if (!capacidade || capacidade <= 0) {
+            alert(`A capacidade do componente ${nomeComp} deve ser maior que zero!`);
+            return;
+        }
+
+        if (componente === "cpu" && !Number.isInteger(capacidade)) {
+            alert(`A quantidade de núcleos da CPU deve ser um número inteiro!`);
+            return;
+        }
+
+        if (isNaN(limiteAtencao) || limiteAtencao < 1 || limiteAtencao > 100) {
+            alert(`O limite de atenção do componente ${nomeComp} deve estar entre 1% e 100%!`);
+            return;
+        }
+
+        if (isNaN(limiteCritico) || limiteCritico < 1 || limiteCritico > 100) {
+            alert(`O limite crítico do componente ${nomeComp} deve estar entre 1% e 100%!`);
+            return;
+        }
+
+        if (limiteAtencao >= limiteCritico) {
+            alert(`No componente ${nomeComp}, o limite de atenção (${limiteAtencao}%) deve ser menor que o limite crítico (${limiteCritico}%)!`);
+            return;
+        }
+    }
+
     // 1. Cadastra o Servidor
     fetch("/servidor/cadastrar", {
         method: "POST",

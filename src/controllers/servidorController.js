@@ -2,17 +2,13 @@ var servidorModel = require("../models/servidorModel");
 
 
 function cadastrar(req, res) {
-    // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
     var nomeServidor = req.body.nomeServer;
     var idEmpresa = req.body.idEmpresaServer;
 
-    // Faça as validações dos valores
     if (nomeServidor == undefined) {
         res.status(400).send("Seu nome está undefined!");
     } else {
-
-        // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        servidorModel.cadastrar(nomeServidor,idEmpresa)
+        servidorModel.cadastrar(nomeServidor, idEmpresa)
             .then(
                 function (resultado) {
                     var idServidor = resultado.insertId;
@@ -45,15 +41,19 @@ function cadastrarComponente(req, res) {
         res.status(400).send("Seu fk está undefined!");
     } else if (fkComponente == undefined) {
         res.status(400).send("Seu fkComponente está undefined!");
-    } else if (capacidade == undefined) {
-        res.status(400).send("Sua capacidade está undefined!");
+    } else if (capacidade == undefined || capacidade <= 0) {
+        res.status(400).send("A capacidade deve ser maior que zero!");
     } else if (limiteAtencao == undefined || limiteCritico == undefined) {
         res.status(400).send("Os limites de alerta estão undefined!");
+    } else if (Number(limiteAtencao) < 1 || Number(limiteAtencao) > 100 || Number(limiteCritico) < 1 || Number(limiteCritico) > 100) {
+        res.status(400).send("Os limites de alerta devem estar entre 1% e 100%!");
+    } else if (Number(limiteAtencao) >= Number(limiteCritico)) {
+        res.status(400).send("O limite de atenção deve ser menor que o limite crítico!");
     } else {
         // Mapear fkComponente (1,2,3) para tipo string ('cpu', 'ram', 'disco')
         var tipoComponente = "cpu";
-        if(fkComponente == 2) tipoComponente = "ram";
-        else if(fkComponente == 3) tipoComponente = "disco";
+        if (fkComponente == 2) tipoComponente = "ram";
+        else if (fkComponente == 3) tipoComponente = "disco";
 
         servidorModel.cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico)
             .then(
@@ -145,4 +145,4 @@ module.exports = {
     listarComponentesPorServidor,
     atualizar,
     excluir
-}
+};
