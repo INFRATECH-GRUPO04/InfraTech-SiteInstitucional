@@ -84,7 +84,7 @@ function enviar(req, res) {
     var conteudo = linhas.join("\n");
 
     // O nome é montado aqui, no back-end. O script não escolhe onde grava.
-    var nomeArquivo = "bronze/" + lote + "_empresa-" + idEmpresa + "_servidor-" + idServidor + "_" + tipo + ".csv";
+    var nomeArquivo = "01-bronze/" + lote + "_empresa-" + idEmpresa + "_servidor-" + idServidor + "_" + tipo + ".csv";
 
     var gravacao;
     if (process.env.S3_BUCKET) {
