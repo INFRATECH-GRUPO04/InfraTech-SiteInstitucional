@@ -50,13 +50,23 @@ function atualizar(idServidor, nome) {
 }
 
 function excluir(idServidor) {
-    // Exclusão em cascata deve ser feita pelo backend se não houver ON DELETE CASCADE
-    var inst3 = `DELETE FROM componente WHERE fk_servidor_componente = ${idServidor};`;
-    return database.executar(inst3).then(function() {
-        var inst4 = `DELETE FROM servidor_funcionario WHERE fk_servidor = ${idServidor};`;
-        return database.executar(inst4).then(function() {
-            var inst5 = `DELETE FROM servidor WHERE id_servidor = ${idServidor};`;
-            return database.executar(inst5);
+    // Exclusão em cascata respeitando as Foreign Keys: metrica -> componente -> servidor_funcionario -> servidor
+    var instDeletarMetricas = `DELETE FROM metrica WHERE fk_componente IN (SELECT id_componente FROM componente WHERE fk_servidor = ${idServidor});`;
+    console.log("Executando a instrução SQL: \n" + instDeletarMetricas);
+
+    return database.executar(instDeletarMetricas).then(function () {
+        var instDeletarComponentes = `DELETE FROM componente WHERE fk_servidor = ${idServidor};`;
+        console.log("Executando a instrução SQL: \n" + instDeletarComponentes);
+
+        return database.executar(instDeletarComponentes).then(function () {
+            var instDeletarVinculos = `DELETE FROM servidor_funcionario WHERE fk_servidor = ${idServidor};`;
+            console.log("Executando a instrução SQL: \n" + instDeletarVinculos);
+
+            return database.executar(instDeletarVinculos).then(function () {
+                var instDeletarServidor = `DELETE FROM servidor WHERE id_servidor = ${idServidor};`;
+                console.log("Executando a instrução SQL: \n" + instDeletarServidor);
+                return database.executar(instDeletarServidor);
+            });
         });
     });
 }
