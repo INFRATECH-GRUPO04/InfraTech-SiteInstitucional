@@ -34,7 +34,11 @@ function buscarComponentes() {
     var nomeInput = document.getElementById("mod_nome_servidor");
 
     if (idServidor == "") {
-        document.getElementById("componentes-lista").innerHTML = "";
+        document.getElementById("componentes-lista").innerHTML = `
+            <div class="estado-vazio" style="text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
+                <p style="margin: 0; font-size: 0.95rem;">Selecione um servidor acima para visualizar e gerenciar seus recursos.</p>
+            </div>
+        `;
         nomeInput.value = "";
         listaComponentesServidor = [];
         return;
@@ -48,7 +52,11 @@ function buscarComponentes() {
         .then(function(resposta) {
             if (resposta.ok) {
                 if (resposta.status == 204) {
-                    document.getElementById("componentes-lista").innerHTML = "<p>Nenhum componente encontrado.</p>";
+                    document.getElementById("componentes-lista").innerHTML = `
+                        <div class="estado-vazio" style="text-align: center; padding: 24px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
+                            <p style="margin: 0; font-size: 0.9rem;">Nenhum componente vinculado a este servidor.</p>
+                        </div>
+                    `;
                     listaComponentesServidor = [];
                     return;
                 }
