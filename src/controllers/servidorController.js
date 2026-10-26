@@ -5,27 +5,32 @@ function cadastrar(req, res) {
     var nomeServidor = req.body.nomeServer;
     var idEmpresa = req.body.idEmpresaServer;
 
-    if (nomeServidor == undefined) {
-        res.status(400).send("Seu nome está undefined!");
+    if (nomeServidor == undefined || String(nomeServidor).trim().length == 0) {
+        res.status(400).send("O nome do servidor é obrigatório!");
+    } else if (idEmpresa == undefined || isNaN(Number(idEmpresa))) {
+        res.status(400).send("Identificação da empresa está indefinida!");
     } else {
-        servidorModel.cadastrar(nomeServidor, idEmpresa)
-            .then(
-                function (resultado) {
-                    var idServidor = resultado.insertId;
-                    res.status(201).json({
-                        idServidor: idServidor
-                    });
+        servidorModel.buscarPorNomeEEmpresa(nomeServidor, idEmpresa)
+            .then(function (resultadoBusca) {
+                if (resultadoBusca.length > 0) {
+                    res.status(409).send("Já existe um servidor cadastrado com este nome nesta empresa!");
+                } else {
+                    servidorModel.cadastrar(nomeServidor, idEmpresa)
+                        .then(function (resultado) {
+                            var idServidor = resultado.insertId;
+                            res.status(201).json({
+                                idServidor: idServidor
+                            });
+                        }).catch(function (erro) {
+                            console.log(erro);
+                            console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+                            res.status(500).json(erro.sqlMessage);
+                        });
                 }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao realizar o cadastro! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+            }).catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
     }
 }
 

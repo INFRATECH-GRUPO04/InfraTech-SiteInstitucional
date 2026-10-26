@@ -119,6 +119,13 @@ function cadastrarServidorCompleto() {
         }
     }
 
+    var idEmpresa = sessionStorage.ID_EMPRESA;
+    if (!idEmpresa) {
+        alert("Sessão inválida ou empresa não identificada. Por favor, realize o login novamente.");
+        window.location.href = "/paginas/autenticacao/login/login.html";
+        return;
+    }
+
     // 1. Cadastra o Servidor
     fetch("/servidor/cadastrar", {
         method: "POST",
@@ -127,12 +134,13 @@ function cadastrarServidorCompleto() {
         },
         body: JSON.stringify({
             nomeServer: nomeServidor,
-            idEmpresaServer: sessionStorage.ID_EMPRESA || 1 // fallback
+            idEmpresaServer: idEmpresa
         })
     })
-        .then(function (resposta) {
+        .then(async function (resposta) {
             if (!resposta.ok) {
-                throw new Error("Houve um erro ao cadastrar o servidor!");
+                let msg = await resposta.text();
+                throw new Error(msg || "Houve um erro ao cadastrar o servidor!");
             }
             return resposta.json();
         })
@@ -181,6 +189,6 @@ function cadastrarServidorCompleto() {
         })
         .catch(function (erro) {
             console.log("#ERRO:", erro);
-            alert("Erro ao cadastrar servidor.");
+            alert(erro.message || "Erro ao cadastrar servidor.");
         });
 }

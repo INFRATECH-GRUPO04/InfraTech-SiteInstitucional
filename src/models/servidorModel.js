@@ -77,9 +77,16 @@ function excluir(idServidor) {
     });
 }
 
+function buscarPorNomeEEmpresa(nome, idEmpresa) {
+    var instrucaoSql = `SELECT id_servidor FROM servidor WHERE nome = '${nome}' AND fk_empresa = ${idEmpresa};`;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
 module.exports = {
     cadastrar,
     cadastrarComponente,
+    buscarPorNomeEEmpresa,
     listar,
     listarComponentesPorServidor,
     atualizar,
