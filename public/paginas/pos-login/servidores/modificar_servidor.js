@@ -18,7 +18,7 @@ function listarServidores() {
                     for (let i = 0; i < resposta.length; i++) {
                         var servidor = resposta[i];
                         var option = document.createElement("option");
-                        option.value = servidor.idServidor;
+                        option.value = servidor.id_servidor || servidor.idServidor;
                         option.innerHTML = servidor.nome;
                         select.appendChild(option);
                     }
@@ -71,20 +71,20 @@ function buscarComponentes() {
                                     <label>CAPACIDADE</label>
                                     <div class="grupo-entrada-alocacao">
                                         <input type="number" class="controle-formulario" value="${c.capacidade_total}" style="width: 100%;">
-                                        <span>${c.tipo == 'cpu' ? 'Cores' : 'GB'}</span>
+                                        <span>${c.unidade_capacidade || (c.tipo == 'cpu' ? 'Cores' : 'GB')}</span>
                                     </div>
                                 </div>
                                 <div class="coluna-componente pequena">
                                     <label>ATENÇÃO</label>
                                     <div class="grupo-entrada-alocacao">
-                                        <input type="number" class="controle-formulario" value="${c.limite_atencao}" style="width: 100%;">
+                                        <input type="number" class="controle-formulario" value="${c.limite_atencao || ''}" style="width: 100%;">
                                         <span>%</span>
                                     </div>
                                 </div>
                                 <div class="coluna-componente pequena">
                                     <label>CRÍTICO</label>
                                     <div class="grupo-entrada-alocacao">
-                                        <input type="number" class="controle-formulario" value="${c.limite_critico}" style="width: 100%;">
+                                        <input type="number" class="controle-formulario" value="${c.limite_critico || ''}" style="width: 100%;">
                                         <span>%</span>
                                     </div>
                                 </div>

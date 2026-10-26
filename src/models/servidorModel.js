@@ -34,10 +34,16 @@ function listar(idEmpresa) {
 function listarComponentesPorServidor(idServidor) {
     var instrucaoSql = `
         SELECT 
-            c.id_componente, c.tipo, c.capacidade_total,
-            c.limite_atencao, c.limite_critico 
+            c.id_componente,
+            c.tipo,
+            c.capacidade_total,
+            c.unidade_capacidade,
+            m.id_metrica,
+            m.limite_atencao,
+            m.limite_critico 
         FROM componente c
-        WHERE c.fk_servidor_componente = ${idServidor};
+        LEFT JOIN metrica m ON m.fk_componente = c.id_componente AND (m.nome = 'uso_percentual' OR m.nome IS NULL)
+        WHERE c.fk_servidor = ${idServidor};
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
