@@ -1,5 +1,127 @@
+:root {
+  /* Superfícies */
+  --cor-fundo: #050b16;
+  --cor-topbar: #0a1628;
+  --cor-card: #ffffff;
+  --cor-borda-card: rgba(0, 80, 160, 0.08);
+  --cor-linha-tabela: #eef2f7;
+ 
+  /* Texto */
+  --cor-titulo: #f5f9ff;
+  --cor-texto-suave: #668099;
+  --cor-texto-card: #0f1f2e;
+  --cor-texto-card-suave: #4a6080;
+  --cor-rotulo: #8ea4b8;
+ 
+  /* Semânticas */
+  --cor-destaque: #00b8d9;
+  --cor-ok: #10b981;
+  --cor-atencao: #f59e0b;
+  --cor-critico: #ef4444;
+ 
+  /* Tipografia */
+  --fonte-titulo: "Rajdhani", "Segoe UI", sans-serif;
+  --fonte-texto: "Inter", "Segoe UI", system-ui, sans-serif;
+  --fonte-mono: "JetBrains Mono", "Consolas", monospace;
+ 
+  /* Medidas */
+  --largura-sidebar: 282px;
+  --altura-topbar: 56px;
+  --espaco-pagina: 24px;
+  --raio-card: 12px;
+  --sombra-card: 0 4px 16px rgba(0, 30, 80, 0.04),
+    0 1px 4px rgba(0, 30, 80, 0.06);
+}
+
+
 .container-dash {
     width: 100%;
+}
+
+/* ---------- Barra superior ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 var(--altura-topbar);
+  padding: 0 var(--espaco-pagina);
+  background: var(--cor-topbar);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+ 
+.topbar__titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #00d4ff;
+}
+ 
+.topbar__info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+ 
+.seletor-ambiente {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.15);
+  border-radius: 6px;
+  color: #8aaabf;
+  font: 600 12px/1.4 var(--fonte-texto);
+  cursor: pointer;
+}
+ 
+.seletor-ambiente__seta {
+  font-size: 10px;
+  color: #c0ccd8;
+}
+ 
+.resumo-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+ 
+.resumo-status__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px/1.4 var(--fonte-texto);
+  color: var(--cor-status);
+}
+ 
+.resumo-status__item::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cor-status);
+}
+ 
+.topbar__data {
+  font: 400 12px/1.4 var(--fonte-mono);
+  color: #4a6080;
+}
+ 
+/* ---------- Modificadores de status (reutilizados em toda a página) ---------- */
+.status-ok {
+  --cor-status: var(--cor-ok);
+}
+.status-atencao {
+  --cor-status: var(--cor-atencao);
+}
+.status-critico {
+  --cor-status: var(--cor-critico);
 }
 
 .container-graficos {
