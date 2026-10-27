@@ -133,6 +133,73 @@ abasRecursos.forEach((aba, indice) => {
 
 const ctxrede = document.getElementById('graficoBanda').getContext('2d');
 
+const faixasMatriz = [
+  { nome: 'Madrugada', indices: [0, 1, 2, 3] },
+  { nome: 'Manhã', indices: [4, 5, 6] },
+  { nome: 'Tarde', indices: [7, 8, 9] },
+  { nome: 'Noite', indices: [10, 11, 12] }
+];
+const metricasAtuais = Object.fromEntries(
+  [...document.querySelectorAll('[data-metrica-atual]')].map((elemento) => [
+    elemento.dataset.metricaAtual,
+    Number.parseFloat(elemento.textContent)
+  ])
+);
+
+function classeEstado(valor) {
+  if (valor > 90) return 'critico';
+  if (valor > 70) return 'atencao';
+  return 'ideal';
+}
+
+function nomeEstado(valor) {
+  const estado = classeEstado(valor);
+  return estado === 'critico' ? 'Crítico' : estado === 'atencao' ? 'Atenção' : 'Seguro';
+}
+
+function renderizarMatrizCalor() {
+  const corpo = document.getElementById('corpoMatrizCalor');
+  corpo.replaceChildren(...Object.entries(recursos).map(([chave, recurso]) => {
+    const linha = document.createElement('tr');
+    const componente = document.createElement('th');
+    componente.scope = 'row';
+    componente.textContent = recurso.label;
+    linha.append(componente);
+
+    faixasMatriz.forEach((faixa) => {
+      const pico = Math.max(...faixa.indices.map((indice) => recurso.data[indice]));
+      const celula = document.createElement('td');
+      celula.className = `matriz-${classeEstado(pico)}`;
+      celula.textContent = `${pico}%`;
+      celula.setAttribute('aria-label', `${recurso.label}, ${faixa.nome}: pico de ${pico}%`);
+      linha.append(celula);
+    });
+
+    return linha;
+  }));
+}
+
+function renderizarAlertasAtuais() {
+  const corpo = document.getElementById('corpoAlertasServidor');
+  corpo.replaceChildren(...Object.entries(recursos).map(([chave, recurso]) => {
+    const valor = metricasAtuais[chave];
+    const linha = document.createElement('tr');
+    const componente = document.createElement('th');
+    componente.scope = 'row';
+    componente.textContent = recurso.label;
+    const uso = document.createElement('td');
+    uso.textContent = `${valor}%`;
+    const estado = document.createElement('td');
+    estado.className = `alerta-estado alerta-${classeEstado(valor)}`;
+    estado.textContent = nomeEstado(valor);
+    linha.append(componente, uso, estado);
+    return linha;
+  }));
+}
+
+renderizarMatrizCalor();
+renderizarAlertasAtuais();
+
 const gradientUpload = ctxrede.createLinearGradient(0, 0, 0, 300);
 gradientUpload.addColorStop(0, 'rgba(139, 92, 246, 0.25)'); 
 gradientUpload.addColorStop(1, 'rgba(139, 92, 246, 0.0)'); 

@@ -127,7 +127,7 @@
                 <div class="container-kpis">
                     <div class="kpi">
                         <div class="porcentagem">
-                            <h2>42%</h2>
+                            <h2 data-metrica-atual="cpu">42%</h2>
                         </div>
                         <div class="titulo-kpi">
                             <h3>CPU Atual</h3>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="kpi">
                         <div class="porcentagem">
-                            <h2>67%</h2>
+                            <h2 data-metrica-atual="ram">67%</h2>
                         </div>
                         <div class="titulo-kpi">
                             <h3>RAM Atual</h3>
@@ -153,7 +153,7 @@
                     </div>
                     <div class="kpi">
                         <div class="porcentagem">
-                            <h2>54%</h2>
+                            <h2 data-metrica-atual="disco">54%</h2>
                         </div>
                         <div class="titulo-kpi">
                             <h3>Disco Atual</h3>
@@ -188,73 +188,48 @@
                 </div>
             </div>
             <div class="container-rede-e-alertas">
-                <div class="container-rede">
-                    <div class="titulo">
-                        <h3>Uso de Banda ao Longo do Dia</h3>
-                    </div>
-                    <div class="subtitulo">
-                        <h4>Medições horárias em Mbps</h4>
-                    </div>
-                    <div class="container-canvas-rede">
-                        <canvas id="graficoBanda"></canvas>
-                    </div>
-                </div>
-                <div class="container-alertas">
-                    <div class="titulo">
-                        <h3>Alertas do Servidor</h3>
-                    </div>
-                    <div class="alertas">
+                <section class="container-rede" aria-labelledby="tituloGraficoBanda">
+                    <div class="titulo"><h3 id="tituloGraficoBanda">Uso de Banda ao Longo do Dia</h3></div>
+                    <div class="subtitulo"><h4>Medições ao longo das últimas 24h em Mbps</h4></div>
+                    <div class="container-canvas-rede"><canvas id="graficoBanda"></canvas></div>
+                </section>
+                <section class="container-matriz-calor" aria-labelledby="tituloMatrizCalor">
+                    <div class="cabecalho-matriz">
                         <div>
-                            <div class="nome-servidor">
-                                <span class="ponto-status-vermelho"></span>
-                                <h5>SRV-BR-01</h5>
-                            </div>
-                            <div>
-                                <h6>CPU acima de 75% — possível gargalo de aplicação</h6>
-                            </div>
-                            <div>
-                                <h6>09:47</h6>
-                            </div>
-
+                            <h3 id="tituloMatrizCalor">Matriz de Calor</h3>
+                            <p>Pico de utilização de CPU, RAM e Disco em cada faixa das últimas 24h.</p>
                         </div>
-                        <div>
-                            <div class="nome-servidor">
-                                <span class="ponto-status-laranja"></span>
-                                <h5>SRV-BR-01</h5>
-                            </div>
-                            <div>
-                                <h6>RAM acima de 80% — risco de lentidão detectado</h6>
-                            </div>
-                            <div>
-                                <h6>08:20</h6>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="nome-servidor">
-                                <span class="ponto-status"></span>
-                                <h5>SRV-BR-01</h5>
-                            </div>
-                            <div>
-                                <h6>Reiniciado com sucesso após atualização</h6>
-                            </div>
-                            <div>
-                                <h6>07:38</h6>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="nome-servidor">
-                                <span class="ponto-status-laranja"></span>
-                                <h5>SRV-BR-01</h5>
-                            </div>
-                            <div>
-                                <h6>RAM acima de 72% — risco de lentidão detectado</h6>
-                            </div>
-                            <div>
-                                <h6>07:05</h6>
-                            </div>
-                        </div>
+                        <span class="periodo-matriz">Últimas 24h</span>
                     </div>
-                </div>
+                    <div class="legenda-matriz" aria-label="Legenda de utilização">
+                        <span><i class="faixa-ideal"></i> Ideal ≤70%</span>
+                        <span><i class="faixa-atencao"></i> Atenção &gt;70–90%</span>
+                        <span><i class="faixa-critica"></i> Crítico &gt;90%</span>
+                    </div>
+                    <div class="tabela-matriz-wrap">
+                        <table class="tabela-matriz">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Componente</th>
+                                    <th scope="col">Madrugada<span>00–06h</span></th>
+                                    <th scope="col">Manhã<span>08–12h</span></th>
+                                    <th scope="col">Tarde<span>14–18h</span></th>
+                                    <th scope="col">Noite<span>20–24h</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpoMatrizCalor"></tbody>
+                        </table>
+                    </div>
+                </section>
+                <section class="container-alertas" aria-labelledby="tituloAlertasServidor">
+                    <div class="titulo"><h3 id="tituloAlertasServidor">Alertas e Estado Atual do Servidor</h3></div>
+                    <div class="tabela-alertas-wrap">
+                        <table class="tabela-alertas">
+                            <thead><tr><th scope="col">Componente</th><th scope="col">Uso atual</th><th scope="col">Estado</th></tr></thead>
+                            <tbody id="corpoAlertasServidor"></tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
