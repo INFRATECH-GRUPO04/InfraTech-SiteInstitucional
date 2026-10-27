@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <link rel="icon" href="../../assets/icon/logo.png">
+
+    <link rel="stylesheet" href="../../compartilhado/css/global.css">
+
+    <link rel="stylesheet" href="../../paginas/pos-login/painel/painel.css">
+
+    <link rel="stylesheet" href="dash-especifica.css">
+
+    <script src="../../compartilhado/js/sessao.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Dashboard Específica</title>
+
+</head>
+
+
+
+<body class="pagina-painel">
+
+
+
+<!-- SIDEBAR -->
+
+    <aside class="header-left">
+
+        <div class="logo">
+
+            <a href="../../paginas/pos-login/painel/painel.html" title="InfraTech">
+
+                <img src="../../assets/icon/logo.png" alt="InfraTech">
+
+            </a>
+
+        </div>
+
+
+
+        <hr class="linha">
+
+
+
+        <h3 class="nav-categoria">
+
+            <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+
+            Servidores
+
+        </h3>
+
+
+
+        <a href="../especifica-servidor/dash-especifica.html" class="nav-item ativo">
+
+            <img src="../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+
+            Dashboard
+
+        </a>
+
+        <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+
+            Cadastrar Host
+
+        </a>
+
+        <a href="../../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+
+            Modificar
+
+        </a>
+
+
+
+        <h3 class="nav-categoria secao-funcionarios">
+
+            <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+
+            Funcionários
+
+        </h3>
+
+
+
+        <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+
+            <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+
+            Cadastrar Token
+
+        </a>
+
+        <a href="../../paginas/pos-login/funcionarios/modificar_funcionario.html" class="nav-item">
+
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+
+            Modificar
+
+        </a>
+
+
+
+        <h3 class="nav-categoria secao-empresas">
+
+            <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+
+            Empresas
+
+        </h3>
+
+
+
+        <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+
+            Gerenciar
+
+        </a>
+
+        <a href="../empresas/cadastro_empresa.html" class="nav-item">
+
+            <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+
+            Cadastrar Empresa
+
+        </a>
+
+
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+
+            <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+
+        </div>
+
+    </aside>
+
+
+
+    <div class="container-dash">
+
+        <header class="topbar">
+
+        <h1 class="topbar__titulo">Engenharia de Dados & Telemetria</h1>
+
+
+
+        <div class="topbar__info">
+
+          <button type="button" class="seletor-ambiente status-ok" aria-label="Selecionar ambiente">
+
+            <span>Produção</span>
+
+            <span class="seletor-ambiente__seta" aria-hidden="true">▾</span>
+
+          </button>
+
+
+
+          <ul class="resumo-status" aria-label="Resumo dos servidores">
+
+            <li class="resumo-status__item status-ok">4 online</li>
+
+            <li class="resumo-status__item status-atencao">1 atenção</li>
+
+            <li class="resumo-status__item status-critico">1 offline</li>
+
+          </ul>
+
+
+
+          <time class="topbar__data" datetime="2026-10-14T11:38">14/10/2026 11:38</time>
+
+        </div>
+
+      </header>
+
+        <div class="container-graficos">
+
+            <div class="container-titulo">
+
+                <div class="dados-servidor">
+
+                    <div id="imagem-servidor">
+
+                        <img src="../../assets/imgs/servidores.png" alt="">
+
+                    </div>
+
+                    <div class="texto-servidor">
+
+                        <div class="texto-superior">
+
+                            <h4>SRV-BR-01</h4>
+
+                            <span class="ponto-status"></span>
+
+                            <span class="texto-negrito">Online</span>
+
+                        </div>
+
+                        <div class="texto-inferior">
+
+                            <h5>São Paulo</h5>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="visao-geral">
+
+                    <div class="conteudo-visao-geral">
+
+                        <h5>Visão Geral - Última Atualização: 11:35h</h5>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="container-recursos">
+
+                <div class="container-kpis">
+
+                    <div class="kpi">
+
+                        <div class="porcentagem">
+
+                            <h2>42%</h2>
+
+                        </div>
+
+                        <div class="titulo-kpi">
+
+                            <h3>CPU Atual</h3>
+
+                        </div>
+
+                        <div class="barra-carregamento"></div>
+
+                        <div class="status-kpi">
+
+                            <span class="ponto-status"></span>
+
+                            <h5>Seguro</h5>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi">
+
+                        <div class="porcentagem">
+
+                            <h2>67%</h2>
+
+                        </div>
+
+                        <div class="titulo-kpi">
+
+                            <h3>RAM Atual</h3>
+
+                        </div>
+
+                        <div class="barra-carregamento"></div>
+
+                        <div class="status-kpi">
+
+                            <span class="ponto-status"></span>
+
+                            <h5>Seguro</h5>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kpi">
+
+                        <div class="porcentagem">
+
+                            <h2>54%</h2>
+
+                        </div>
+
+                        <div class="titulo-kpi">
+
+                            <h3>Disco Atual</h3>
+
+                        </div>
+
+                        <div class="barra-carregamento"></div>
+
+                        <div class="status-kpi">
+
+                            <span class="ponto-status"></span>
+
+                            <h5>Seguro</h5>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="container-abas" role="tablist" aria-label="Gráficos de recursos">
+
+                    <button type="button" class="aba-recurso ativa" role="tab" aria-selected="true"
+
+                        data-aba="geral">Visão Geral</button>
+
+                    <button type="button" class="aba-recurso" role="tab" aria-selected="false"
+
+                        data-aba="cpu">CPU</button>
+
+                    <button type="button" class="aba-recurso" role="tab" aria-selected="false"
+
+                        data-aba="ram">RAM</button>
+
+                    <button type="button" class="aba-recurso" role="tab" aria-selected="false"
+
+                        data-aba="disco">Disco</button>
+
+                </div>
+
+                <div class="container-grafico-recursos" id="painel-geral" role="tabpanel">
+
+                    <div class="titulo">
+
+                        <h3>Uso de Recursos — 24h</h3>
+
+                    </div>
+
+                    <div class="subtitulo">
+
+                        <h4>CPU, RAM e Disco ao longo do dia</h4>
+
+                    </div>
+
+                    <div class="container-canvas-recursos">
+
+                        <canvas id="graficoRecursos"></canvas>
+
+                    </div>
+
+                </div>
+
+
+
+<!--Divisão para os gráficos  individuais -->
+
+                <div class="container-grafico-recursos" id="painel-cpu" role="tabpanel" hidden>
+
+                    <div class="titulo">
+
+                        <h3>CPU — Uso nas últimas 24h</h3>
+
+                    </div>
+
+                    <div class="subtitulo">
+
+                        <h4>CPU ao longo do dia · limite de 75%</h4>
+
+                    </div>
+
+                    <div class="container-canvas-recursos">
+
+                        <canvas id="graficoCpu"></canvas>
+
+                    </div>
+
+                </div>
+
+                <div class="container-grafico-recursos" id="painel-ram" role="tabpanel" hidden>
+
+                    <div class="titulo">
+
+                        <h3>RAM — Uso nas últimas 24h</h3>
+
+                    </div>
+
+                    <div class="subtitulo">
+
+                        <h4>RAM ao longo do dia · limite de 80%</h4>
+
+                    </div>
+
+                    <div class="container-canvas-recursos">
+
+                        <canvas id="graficoRam"></canvas>
+
+                    </div>
+
+                </div>
+
+                <div class="container-grafico-recursos" id="painel-disco" role="tabpanel" hidden>
+
+                    <div class="titulo">
+
+                        <h3>Disco — Uso nas últimas 24h</h3>
+
+                    </div>
+
+                    <div class="subtitulo">
+
+                        <h4>Disco ao longo do dia · limite de 85%</h4>
+
+                    </div>
+
+                    <div class="container-canvas-recursos">
+
+                        <canvas id="graficoDisco"></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="container-rede-e-alertas">
+
+                <div class="container-rede">
+
+                    <div class="titulo">
+
+                        <h3>Uso de Banda ao Longo do Dia</h3>
+
+                    </div>
+
+                    <div class="subtitulo">
+
+                        <h4>Medições horárias em Mbps</h4>
+
+                    </div>
+
+                    <div class="container-canvas-rede">
+
+                        <canvas id="graficoBanda"></canvas>
+
+                    </div>
+
+                </div>
+
+                <div class="container-alertas">
+
+                    <div class="titulo">
+
+                        <h3>Alertas do Servidor</h3>
+
+                    </div>
+
+                    <div class="alertas">
+
+                        <div>
+
+                            <div class="nome-servidor">
+
+                                <span class="ponto-status-vermelho"></span>
+
+                                <h5>SRV-BR-01</h5>
+
+                            </div>
+
+                            <div>
+
+                                <h6>CPU acima de 75% — possível gargalo de aplicação</h6>
+
+                            </div>
+
+                            <div>
+
+                                <h6>09:47</h6>
+
+                            </div>
+
+
+
+                        </div>
+
+                        <div>
+
+                            <div class="nome-servidor">
+
+                                <span class="ponto-status-laranja"></span>
+
+                                <h5>SRV-BR-01</h5>
+
+                            </div>
+
+                            <div>
+
+                                <h6>RAM acima de 80% — risco de lentidão detectado</h6>
+
+                            </div>
+
+                            <div>
+
+                                <h6>08:20</h6>
+
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <div class="nome-servidor">
+
+                                <span class="ponto-status"></span>
+
+                                <h5>SRV-BR-01</h5>
+
+                            </div>
+
+                            <div>
+
+                                <h6>Reiniciado com sucesso após atualização</h6>
+
+                            </div>
+
+                            <div>
+
+                                <h6>07:38</h6>
+
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <div class="nome-servidor">
+
+                                <span class="ponto-status-laranja"></span>
+
+                                <h5>SRV-BR-01</h5>
+
+                            </div>
+
+                            <div>
+
+                                <h6>RAM acima de 72% — risco de lentidão detectado</h6>
+
+                            </div>
+
+                            <div>
+
+                                <h6>07:05</h6>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="dash-especifica.js"></script>
+
+</body>
+
+
+
+</html>
