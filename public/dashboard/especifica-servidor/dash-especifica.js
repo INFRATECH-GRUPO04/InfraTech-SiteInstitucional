@@ -1,41 +1,26 @@
+const horasRecursos = ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'];
+const recursos = {
+  cpu: { label: 'CPU', data: [5, 10, 2, 1, 30, 50, 48, 32, 26, 25, 23, 10, 0], color: '#00bcd4', titulo: 'Uso de CPU — 24h', subtitulo: 'Utilização do processador ao longo do dia' },
+  disco: { label: 'Disco', data: [5, 11, 3, 2, 35, 55, 56, 42, 30, 28, 26, 12, 0], color: '#10b981', titulo: 'Uso de Disco — 24h', subtitulo: 'Utilização do armazenamento ao longo do dia' },
+  ram: { label: 'RAM', data: [10, 12, 5, 3, 45, 68, 65, 50, 42, 38, 30, 15, 0], color: '#8b5cf6', titulo: 'Uso de RAM — 24h', subtitulo: 'Utilização da memória ao longo do dia' }
+};
+
+function criarDatasetRecurso(recurso) {
+  return { label: recurso.label, data: recurso.data, borderColor: recurso.color, backgroundColor: recurso.color,
+    borderWidth: 2, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 };
+}
+
+const abasRecursos = [...document.querySelectorAll('.aba-recurso')];
+const tituloGraficoRecursos = document.getElementById('tituloGraficoRecursos');
+const subtituloGraficoRecursos = document.getElementById('subtituloGraficoRecursos');
+const painelGraficoRecursos = document.getElementById('graficoRecursosPainel');
 const ctxrecursos = document.getElementById('graficoRecursos').getContext('2d');
 
 const graficoRecursos = new Chart(ctxrecursos, {
   type: 'line',
   data: {
-    labels: ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'],
-    datasets: [
-      {
-        label: 'CPU',
-        data: [5, 10, 2, 1, 30, 50, 48, 32, 26, 25, 23, 10, 0],
-        borderColor: '#00bcd4',
-        backgroundColor: '#00bcd4',
-        borderWidth: 2,
-        tension: 0.4,      // deixa a linha curvada
-        pointRadius: 0,    // esconde os pontinhos
-        pointHoverRadius: 5 // tamanho da bolinha que aparece
-      },
-      {
-        label: 'Disco',
-        data: [5, 11, 3, 2, 35, 55, 56, 42, 30, 28, 26, 12, 0],
-        borderColor: '#10b981', 
-        backgroundColor: '#10b981',
-        borderWidth: 2,
-        tension: 0.4,
-        pointRadius: 0,
-        pointHoverRadius: 5
-      },
-      {
-        label: 'RAM',
-        data: [10, 12, 5, 3, 45, 68, 65, 50, 42, 38, 30, 15, 0],
-        borderColor: '#8b5cf6',
-        backgroundColor: '#8b5cf6',
-        borderWidth: 2,
-        tension: 0.4,
-        pointRadius: 0,
-        pointHoverRadius: 5
-      }
-    ]
+    labels: horasRecursos,
+    datasets: [recursos.cpu, recursos.ram, recursos.disco].map(criarDatasetRecurso)
   },
   options: {
     responsive: true,
@@ -106,6 +91,44 @@ const graficoRecursos = new Chart(ctxrecursos, {
       }
     }
   }
+});
+
+function selecionarRecurso(aba) {
+  const chave = aba.dataset.recurso;
+  const visaoGeral = chave === 'geral';
+
+  abasRecursos.forEach((item) => {
+    const selecionada = item === aba;
+    item.classList.toggle('ativa', selecionada);
+    item.setAttribute('aria-selected', String(selecionada));
+    item.tabIndex = selecionada ? 0 : -1;
+  });
+
+  painelGraficoRecursos.setAttribute('aria-labelledby', aba.id);
+  tituloGraficoRecursos.textContent = visaoGeral ? 'Uso de Recursos — 24h' : recursos[chave].titulo;
+  subtituloGraficoRecursos.textContent = visaoGeral
+    ? 'CPU, RAM e Disco ao longo do dia'
+    : recursos[chave].subtitulo;
+  graficoRecursos.data.datasets = visaoGeral
+    ? [recursos.cpu, recursos.ram, recursos.disco].map(criarDatasetRecurso)
+    : [criarDatasetRecurso(recursos[chave])];
+  graficoRecursos.options.plugins.legend.display = visaoGeral;
+  graficoRecursos.options.plugins.annotation.annotations.linhaLimite.label.display = !visaoGeral;
+  graficoRecursos.options.plugins.annotation.annotations.linhaLimite.label.content = visaoGeral
+    ? '' : `${recursos[chave].label} — limite 80%`;
+  graficoRecursos.update();
+}
+
+abasRecursos.forEach((aba, indice) => {
+  aba.addEventListener('click', () => selecionarRecurso(aba));
+  aba.addEventListener('keydown', (evento) => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(evento.key)) return;
+    evento.preventDefault();
+    const proximo = evento.key === 'Home' ? 0 : evento.key === 'End' ? abasRecursos.length - 1
+      : (indice + (evento.key === 'ArrowRight' ? 1 : -1) + abasRecursos.length) % abasRecursos.length;
+    abasRecursos[proximo].focus();
+    selecionarRecurso(abasRecursos[proximo]);
+  });
 });
 
 const ctxrede = document.getElementById('graficoBanda').getContext('2d');

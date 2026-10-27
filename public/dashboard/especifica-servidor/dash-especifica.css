@@ -307,8 +307,10 @@
 .container-rede-e-alertas {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    margin: 5px;
+    align-items: stretch;
+    gap: 12px;
+    margin: 5px 0 18px;
+    padding: 0 10px;
     width: 100%;
 }
 
@@ -316,16 +318,18 @@
     background-color: #FFFFFF;
     border: solid white;
     border-radius: 10px;
-    margin: 5px;
+    margin: 0;
     padding: 24px 28px;
-    width: 100%;
-    max-width: 800px;
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    max-width: none;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .container-canvas-rede {
     position: relative;
-    height: 250px;
+    height: 340px;
     width: 100%;
 }
 
@@ -337,9 +341,10 @@
     background-color: #FFFFFF;
     border: solid white;
     border-radius: 10px;
-    margin: 5px;
+    flex: 0 0 320px;
+    min-width: 260px;
+    margin: 0;
     padding: 15px;
-    margin-right: 10px;
 }
 
 .container-alertas h5,
@@ -382,4 +387,83 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+}
+
+
+/* abas de navegação dos gráficos individuais  (Visão Geral / CPU / RAM / Disco)  */
+.container-abas {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    width: fit-content;
+    max-width: calc(100% - 30px);
+    margin: 15px 0 10px 15px;
+    padding: 6px;
+    background-color: #EEF2F7;
+    border-radius: 15px;
+}
+
+.aba-recurso {
+    flex: 0 0 auto;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    color: #9AB0C4;
+    background-color: transparent;
+    border: none;
+    border-radius: 11px;
+    padding: 10px 22px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.aba-recurso:hover {
+    color: #64748B;
+}
+
+.aba-recurso.ativa {
+    color: #0F172A;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.10);
+}
+
+.aba-recurso:focus-visible {
+    outline: 2px solid #00BCD4;
+    outline-offset: 2px;
+}
+
+.container-grafico-recursos[hidden] {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .container-abas {
+        gap: 2px;
+        padding: 5px;
+        border-radius: 14px;
+    }
+
+    .aba-recurso {
+        padding: 12px 6px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 900px) {
+    .container-rede-e-alertas {
+        flex-direction: column;
+    }
+
+    .container-alertas {
+        flex-basis: auto;
+        min-width: 0;
+    }
+
+    .container-canvas-rede {
+        height: 300px;
+    }
 }
