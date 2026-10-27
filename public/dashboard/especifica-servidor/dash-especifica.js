@@ -305,3 +305,4 @@ const graficoBanda = new Chart(ctxrede, {
     }
   }
 });
+// teste de modificacao
