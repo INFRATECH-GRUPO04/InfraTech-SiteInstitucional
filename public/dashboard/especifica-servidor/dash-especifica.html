@@ -121,45 +121,30 @@
 
             <div class="container-recursos">
                 <div class="container-kpis">
-                    <div class="kpi">
-                        <div class="porcentagem">
-                            <h2 data-metrica-atual="cpu">42%</h2>
-                        </div>
-                        <div class="titulo-kpi">
-                            <h3>CPU Atual</h3>
-                        </div>
-                        <div class="barra-carregamento"></div>
-                        <div class="status-kpi">
-                            <span class="ponto-status"></span>
-                            <h5>Seguro</h5>
-                        </div>
-                    </div>
-                    <div class="kpi">
-                        <div class="porcentagem">
-                            <h2 data-metrica-atual="ram">67%</h2>
-                        </div>
-                        <div class="titulo-kpi">
-                            <h3>RAM Atual</h3>
-                        </div>
-                        <div class="barra-carregamento"></div>
-                        <div class="status-kpi">
-                            <span class="ponto-status"></span>
-                            <h5>Seguro</h5>
-                        </div>
-                    </div>
-                    <div class="kpi">
-                        <div class="porcentagem">
-                            <h2 data-metrica-atual="disco">54%</h2>
-                        </div>
-                        <div class="titulo-kpi">
-                            <h3>Disco Atual</h3>
-                        </div>
-                        <div class="barra-carregamento"></div>
-                        <div class="status-kpi">
-                            <span class="ponto-status"></span>
-                            <h5>Seguro</h5>
-                        </div>
-                    </div>
+                    <article class="kpi kpi-cpu">
+                        <div class="cabecalho-kpi"><h3>CPU — Média diária</h3><span aria-hidden="true">▦</span></div>
+                        <div class="porcentagem"><h2 id="kpiCpuMedia">—</h2></div>
+                        <div class="barra-carregamento" data-barra="cpu"></div>
+                        <p class="meta-kpi">25 out · 00–24h · utilização média</p>
+                    </article>
+                    <article class="kpi kpi-ram">
+                        <div class="cabecalho-kpi"><h3>RAM — Média diária</h3><span aria-hidden="true">▰</span></div>
+                        <div class="porcentagem"><h2 id="kpiRamMedia">—</h2></div>
+                        <div class="barra-carregamento" data-barra="ram"></div>
+                        <p class="meta-kpi">25 out · 00–24h · utilização média</p>
+                    </article>
+                    <article class="kpi kpi-disco">
+                        <div class="cabecalho-kpi"><h3>Disco — Média diária</h3><span aria-hidden="true">▱</span></div>
+                        <div class="porcentagem"><h2 id="kpiDiscoMedia">—</h2></div>
+                        <div class="barra-carregamento" data-barra="disco"></div>
+                        <p class="meta-kpi">25 out · 00–24h · utilização média</p>
+                    </article>
+                    <article class="kpi kpi-critico">
+                        <div class="cabecalho-kpi"><h3>Total de Horas em Estado Crítico</h3><span aria-hidden="true">◷</span></div>
+                        <div class="porcentagem"><h2 id="kpiTempoCritico">—</h2></div>
+                        <div class="barra-carregamento barra-carregamento-critica"></div>
+                        <p class="meta-kpi">25 out · período acima de 90%</p>
+                    </article>
                 </div>
                 <div class="container-abas" role="tablist" aria-label="Gráficos de recursos do servidor">
                     <button class="aba-recurso ativa" id="aba-visao-geral" type="button" role="tab"
@@ -176,7 +161,7 @@
                         <h3 id="tituloGraficoRecursos">Uso de Recursos — 24h</h3>
                     </div>
                     <div class="subtitulo">
-                        <h4 id="subtituloGraficoRecursos">CPU, RAM e Disco ao longo do dia</h4>
+                        <h4 id="subtituloGraficoRecursos">CPU, RAM e Disco · 25 out 2026 · 00–24h · uso em %</h4>
                     </div>
                     <div class="container-canvas-recursos">
                         <canvas id="graficoRecursos"></canvas>
@@ -186,7 +171,7 @@
             <div class="container-rede-e-alertas">
                 <section class="container-rede" aria-labelledby="tituloGraficoBanda">
                     <div class="titulo"><h3 id="tituloGraficoBanda">Uso de Banda ao Longo do Dia</h3></div>
-                    <div class="subtitulo"><h4>Medições ao longo das últimas 24h em Mbps</h4></div>
+                    <div class="subtitulo"><h4>25 out 2026 · medições em Mbps</h4></div>
                     <div class="container-canvas-rede"><canvas id="graficoBanda"></canvas></div>
                 </section>
                 <section class="container-matriz-calor" aria-labelledby="tituloMatrizCalor">
@@ -214,15 +199,6 @@
                                 </tr>
                             </thead>
                             <tbody id="corpoMatrizCalor"></tbody>
-                        </table>
-                    </div>
-                </section>
-                <section class="container-alertas" aria-labelledby="tituloAlertasServidor">
-                    <div class="titulo"><h3 id="tituloAlertasServidor">Alertas e Estado Atual do Servidor</h3></div>
-                    <div class="tabela-alertas-wrap">
-                        <table class="tabela-alertas">
-                            <thead><tr><th scope="col">Componente</th><th scope="col">Uso atual</th><th scope="col">Estado</th></tr></thead>
-                            <tbody id="corpoAlertasServidor"></tbody>
                         </table>
                     </div>
                 </section>

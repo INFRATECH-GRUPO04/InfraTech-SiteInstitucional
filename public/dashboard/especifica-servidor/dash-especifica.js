@@ -1,8 +1,8 @@
 const horasRecursos = ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'];
 const recursos = {
-  cpu: { label: 'CPU', data: [5, 10, 2, 1, 30, 50, 48, 32, 26, 25, 23, 10, 0], color: '#00bcd4', titulo: 'Uso de CPU — 24h', subtitulo: 'Utilização do processador ao longo do dia' },
-  disco: { label: 'Disco', data: [5, 11, 3, 2, 35, 55, 56, 42, 30, 28, 26, 12, 0], color: '#10b981', titulo: 'Uso de Disco — 24h', subtitulo: 'Utilização do armazenamento ao longo do dia' },
-  ram: { label: 'RAM', data: [10, 12, 5, 3, 45, 68, 65, 50, 42, 38, 30, 15, 0], color: '#8b5cf6', titulo: 'Uso de RAM — 24h', subtitulo: 'Utilização da memória ao longo do dia' }
+  cpu: { label: 'CPU', data: [40, 36, 36, 38, 44, 40, 38, 42, 46, 50, 94, 72, 38.9], color: '#25AFC0', titulo: 'Uso de CPU — 24h', subtitulo: 'Utilização do processador ao longo do dia' },
+  disco: { label: 'Disco', data: [43, 40, 40, 43, 51, 47, 46, 52, 58, 64, 94, 74, 66.9], color: '#20A881', titulo: 'Uso de Disco — 24h', subtitulo: 'Utilização do armazenamento ao longo do dia' },
+  ram: { label: 'RAM', data: [52, 49, 49, 52, 60, 56, 55, 61, 67, 76, 98, 78, 67.3], color: '#8050C7', titulo: 'Uso de RAM — 24h', subtitulo: 'Utilização da memória ao longo do dia' }
 };
 
 function criarDatasetRecurso(recurso) {
@@ -47,14 +47,14 @@ const graficoRecursos = new Chart(ctxrecursos, {
         annotations: {
           linhaLimite: {
             type: 'line',
-            yMin: 80,
-            yMax: 80,
+            yMin: 90,
+            yMax: 90,
             borderColor: '#ef4444',
             borderWidth: 1.5,
             borderDash: [4, 4],   //tracejado
             label: {
               display: true,
-              content: '80',
+              content: '90%',
               position: 'end',
               backgroundColor: 'transparent',
               color: '#ef4444',
@@ -115,7 +115,7 @@ function selecionarRecurso(aba) {
   graficoRecursos.options.plugins.legend.display = visaoGeral;
   graficoRecursos.options.plugins.annotation.annotations.linhaLimite.label.display = !visaoGeral;
   graficoRecursos.options.plugins.annotation.annotations.linhaLimite.label.content = visaoGeral
-    ? '' : `${recursos[chave].label} — limite 80%`;
+    ? '' : `${recursos[chave].label} — limite crítico 90%`;
   graficoRecursos.update();
 }
 
@@ -139,22 +139,23 @@ const faixasMatriz = [
   { nome: 'Tarde', indices: [7, 8, 9] },
   { nome: 'Noite', indices: [10, 11, 12] }
 ];
-const metricasAtuais = Object.fromEntries(
-  [...document.querySelectorAll('[data-metrica-atual]')].map((elemento) => [
-    elemento.dataset.metricaAtual,
-    Number.parseFloat(elemento.textContent)
-  ])
-);
+const formatoPercentual = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1
+});
+
+function media(recurso) {
+  return recurso.data.reduce((total, valor) => total + valor, 0) / recurso.data.length;
+}
+
+function formatarPercentual(valor) {
+  return `${formatoPercentual.format(valor)}%`;
+}
 
 function classeEstado(valor) {
   if (valor > 90) return 'critico';
   if (valor > 70) return 'atencao';
   return 'ideal';
-}
-
-function nomeEstado(valor) {
-  const estado = classeEstado(valor);
-  return estado === 'critico' ? 'Crítico' : estado === 'atencao' ? 'Atenção' : 'Seguro';
 }
 
 function renderizarMatrizCalor() {
@@ -170,7 +171,7 @@ function renderizarMatrizCalor() {
       const pico = Math.max(...faixa.indices.map((indice) => recurso.data[indice]));
       const celula = document.createElement('td');
       celula.className = `matriz-${classeEstado(pico)}`;
-      celula.textContent = `${pico}%`;
+      celula.textContent = formatarPercentual(pico);
       celula.setAttribute('aria-label', `${recurso.label}, ${faixa.nome}: pico de ${pico}%`);
       linha.append(celula);
     });
@@ -179,26 +180,43 @@ function renderizarMatrizCalor() {
   }));
 }
 
-function renderizarAlertasAtuais() {
-  const corpo = document.getElementById('corpoAlertasServidor');
-  corpo.replaceChildren(...Object.entries(recursos).map(([chave, recurso]) => {
-    const valor = metricasAtuais[chave];
-    const linha = document.createElement('tr');
-    const componente = document.createElement('th');
-    componente.scope = 'row';
-    componente.textContent = recurso.label;
-    const uso = document.createElement('td');
-    uso.textContent = `${valor}%`;
-    const estado = document.createElement('td');
-    estado.className = `alerta-estado alerta-${classeEstado(valor)}`;
-    estado.textContent = nomeEstado(valor);
-    linha.append(componente, uso, estado);
-    return linha;
-  }));
+function calcularMinutosCriticos() {
+  const limite = 90;
+  let minutos = 0;
+
+  for (let indice = 0; indice < horasRecursos.length - 1; indice += 1) {
+    const picoInicio = Math.max(...Object.values(recursos).map((recurso) => recurso.data[indice]));
+    const picoFim = Math.max(...Object.values(recursos).map((recurso) => recurso.data[indice + 1]));
+    const duracaoIntervalo = 120;
+
+    if (picoInicio >= limite && picoFim >= limite) {
+      minutos += duracaoIntervalo;
+    } else if (picoInicio < limite && picoFim > limite) {
+      minutos += ((picoFim - limite) / (picoFim - picoInicio)) * duracaoIntervalo;
+    } else if (picoInicio > limite && picoFim < limite) {
+      minutos += ((picoInicio - limite) / (picoInicio - picoFim)) * duracaoIntervalo;
+    }
+  }
+
+  return Math.round(minutos);
+}
+
+function renderizarKpis() {
+  const idsKpis = { cpu: 'kpiCpuMedia', ram: 'kpiRamMedia', disco: 'kpiDiscoMedia' };
+  Object.entries(idsKpis).forEach(([chave, id]) => {
+    const valor = media(recursos[chave]);
+    document.getElementById(id).textContent = formatarPercentual(valor);
+    document.querySelector(`[data-barra="${chave}"]`).style.setProperty('--kpi-progresso', `${valor}%`);
+  });
+
+  const minutosCriticos = calcularMinutosCriticos();
+  const horas = Math.floor(minutosCriticos / 60);
+  const minutos = minutosCriticos % 60;
+  document.getElementById('kpiTempoCritico').textContent = `${horas}h ${String(minutos).padStart(2, '0')}min`;
 }
 
 renderizarMatrizCalor();
-renderizarAlertasAtuais();
+renderizarKpis();
 
 const gradientUpload = ctxrede.createLinearGradient(0, 0, 0, 300);
 gradientUpload.addColorStop(0, 'rgba(139, 92, 246, 0.25)'); 
