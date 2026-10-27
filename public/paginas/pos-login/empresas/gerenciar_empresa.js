@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    if (sessionStorage.TIPO_ACESSO !== "ADMIN") {
+    if (sessionStorage.TIPO_ACESSO !== "ADMIN" && sessionStorage.TIPO_ACESSO !== "INFRATECH") {
         window.location.replace("/paginas/pos-login/painel/painel.html");
         return;
     }

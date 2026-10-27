@@ -17,7 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
-  <body class="pagina-dash-geral">
+  <body class="pagina-dash-geral" onload="validarSessao()">
 
     <!-- Botão hambúrguer para abrir a sidebar em telas menores -->
     <button class="btn-hamburguer-dash" id="btn_hamburguer" type="button" aria-label="Abrir menu de navegação">
@@ -50,9 +50,7 @@
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
         Cadastrar Host
       </a>
-      <a href="../paginas/pos-login/servidores/cadastro_instancia.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
-        Instâncias
       </a>
       <a href="../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">

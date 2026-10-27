@@ -39,20 +39,19 @@ app.use("/crypto", cryptoRouter);
 app.use("/servidor", servidorRouter);
 app.use("/cadastro_empresa", cadastro_empresaRouter);
 app.use("/gerenciar_empresa", gerenciar_empresaRouter);
+app.use("/gerenciar-empresa", gerenciar_empresaRouter);
 app.use("/gerenciar_funcionario", gerenciarFuncionarioRouter);
 
 
 app.listen(PORTA_APP, function () {
     console.log(`
-█████  █   █  █████  ████    ███   █████  █████   ████  █   █
-  █    ██  █  █      █   █  █   █    █    █      █      █   █
-  █    ██  █  █      █   █  █   █    █    █      █      █   █
-  █    █ █ █  ████   ████   █████    █    ████   █      █████
-  █    █  ██  █      █ █    █   █    █    █      █      █   █
-  █    █  ██  █      █  █   █   █    █    █      █      █   █
-█████  █   █  █      █   █  █   █    █    █████   ████  █   █
-
-             INFRAESTRUTURA + TECNOLOGIA
+    ##   ##  ######   #####             ####       ##     ######     ##              ##  ##    ####    ######  
+    ##   ##  ##       ##  ##            ## ##     ####      ##      ####             ##  ##     ##         ##  
+    ##   ##  ##       ##  ##            ##  ##   ##  ##     ##     ##  ##            ##  ##     ##        ##   
+    ## # ##  ####     #####    ######   ##  ##   ######     ##     ######   ######   ##  ##     ##       ##    
+    #######  ##       ##  ##            ##  ##   ##  ##     ##     ##  ##            ##  ##     ##      ##     
+    ### ###  ##       ##  ##            ## ##    ##  ##     ##     ##  ##             ####      ##     ##      
+    ##   ##  ######   #####             ####     ##  ##     ##     ##  ##              ##      ####    ######  
     \n\n\n                                                                                                 
     Servidor do seu site já está rodando! Acesse o caminho a seguir para visualizar .: http://${HOST_APP}:${PORTA_APP} :. \n\n
     Você está rodando sua aplicação em ambiente de .:${process.env.AMBIENTE_PROCESSO}:. \n\n
