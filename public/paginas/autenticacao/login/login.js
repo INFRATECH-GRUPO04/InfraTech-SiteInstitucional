@@ -52,7 +52,8 @@ function entrar() {
                 }
 
                 setTimeout(() => {
-                    window.location.href = '../../pos-login/painel/painel.html';
+                    var destino = typeof obterDestinoInicial === 'function' ? obterDestinoInicial(sessionStorage.TIPO_ACESSO) : '../../pos-login/painel/painel.html';
+                    window.location.href = destino;
                 }, 1000);
             });
         } else {

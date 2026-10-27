@@ -19,7 +19,8 @@ function autenticar(email, senha) {
 }
 
 function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso) {
-    var tipoFinal = (tipoAcesso === 'ADMIN' || tipoAcesso === 'GESTOR') ? tipoAcesso : 'FUNCIONARIO';
+    var tiposValidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
+    var tipoFinal = tiposValidos.includes(tipoAcesso) ? tipoAcesso : 'ANALISTA_DADOS';
     var instrucaoSql = `
         INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf) 
         VALUES ('${fkEmpresa}', '${tipoFinal}', '${nome}', '${data_nascimento}', '${email}', '${senha}', '${cpf}');

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard NOC | InfraTech</title>
+<link rel="icon" href="../../../assets/icon/logo.png">
+<link rel="stylesheet" href="../../../compartilhado/css/global.css">
+<link rel="stylesheet" href="../painel/painel.css">
+<script src="../../../compartilhado/js/sessao.js"></script>
+</head>
+<body class="pagina-painel" onload="validarSessao()">
+<aside class="header-left">
+<div class="logo"><a href="#"><img src="../../../assets/icon/logo.png" alt="InfraTech"></a></div>
+<hr class="linha">
+<h3 class="nav-categoria secao-dashboards">
+<img src="../../../assets/imgs/dashboards.png" class="menu-icon-title"> Dashboards
+</h3>
+<a href="#" class="nav-item ativo">
+<img src="../../../assets/imgs/dashboards.png" class="menu-icon"> Dashboard NOC
+</a>
+<div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+<img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+</div>
+</aside>
+<main class="conteudo-painel">
+<header class="barra-superior-painel">
+<div class="migalhas"><span class="text-muted">InfraTech</span> / <span>Dashboard NOC</span></div>
+<div class="usuario-sessao"><span class="ponto-status"></span><span id="nome_usuario" class="nome-usuario">Dashboard NOC</span></div>
+</header>
+<div class="container-em-breve-wrapper">
+<div class="card-em-breve">
+<div class="badge-em-breve">NETWORK OPERATIONS CENTER</div>
+<h1 class="titulo-em-breve">DASHBOARD <span class="text-cyan">NOC</span></h1>
+<p class="descricao-em-breve">Monitoramento em tempo real de latência, disponibilidade de pacotes, alarmes e incidentes críticos de rede.</p>
+</div>
+</div>
+</main>
+</body>
+</html>

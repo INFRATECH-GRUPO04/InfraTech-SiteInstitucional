@@ -57,7 +57,7 @@ CREATE TABLE empresa (
 CREATE TABLE funcionario (
     id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
-    tipo_acesso ENUM('GESTOR', 'ADMIN', 'FUNCIONARIO')
+    tipo_acesso ENUM('INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO')
         NOT NULL DEFAULT 'FUNCIONARIO',
     nome VARCHAR(45) NULL,
     data_nascimento DATETIME NULL,

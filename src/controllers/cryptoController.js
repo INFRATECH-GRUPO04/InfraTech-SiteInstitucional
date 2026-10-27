@@ -27,12 +27,12 @@ function gerarCodigo(req, res) {
         return res.status(400).send("ID da empresa inválido.");
     }
 
-    if (perm_funcionario === "COMUM") {
-        perm_funcionario = "FUNCIONARIO";
+    var perfisPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
+    if (perm_funcionario === 'COMUM') {
+        perm_funcionario = 'ANALISTA_DADOS';
     }
-
-    if (perm_funcionario !== "ADMIN" && perm_funcionario !== "FUNCIONARIO") {
-        perm_funcionario = "FUNCIONARIO";
+    if (!perfisPermitidos.includes(perm_funcionario)) {
+        perm_funcionario = 'ANALISTA_DADOS';
     }
 
     var token_final = gerarCodigoToken();

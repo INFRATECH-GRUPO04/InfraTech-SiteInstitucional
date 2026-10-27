@@ -40,7 +40,7 @@ function atualizarBotoes() {
 function focarEtapa(numero) {
     const alvo = {
         1: qtdInput,
-        2: permissaoSelecionada() || document.getElementById("perm_funcionario") || document.getElementById("perm_admin") || document.getElementById("qtd1"),
+        2: permissaoSelecionada() || document.getElementById("perm_analista_dados") || document.getElementById("perm_gestor") || document.getElementById("perm_infratech"),
         3: btnCopiar
     }[numero];
 
