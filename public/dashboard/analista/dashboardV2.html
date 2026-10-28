@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dashboardV2.css">
+    <link rel="stylesheet" href="../../compartilhado/css/global.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="pagina">
+        <aside class="header-left">
+            <div class="logo">
+                <a href="../../paginas/pos-login/painel/painel.html" title="InfraTech">
+                    <img src="../../assets/icon/logo.png" alt="InfraTech">
+                </a>
+            </div>
+
+            <hr class="linha">
+
+            <h3 class="nav-categoria">
+                <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+                Servidores
+            </h3>
+
+            <a href="../especifica-servidor/dash-especifica.html" class="nav-item ativo">
+                <img src="../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+                Dashboard
+            </a>
+            <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Cadastrar Host
+            </a>
+            <a href="../../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Modificar
+            </a>
+
+            <h3 class="nav-categoria secao-funcionarios">
+                <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+                Funcionários
+            </h3>
+
+            <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+                <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+                Cadastrar Token
+            </a>
+            <a href="gerenciar_funcionario.html" class="nav-item">
+                <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon">
+                Gerenciar
+            </a>
+
+            <h3 class="nav-categoria secao-empresas">
+                <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+                Empresas
+            </h3>
+
+            <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Gerenciar
+            </a>
+            <a href="../../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Cadastrar Empresa
+            </a>
+
+            <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+                <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+            </div>
+        </aside>
+
+        <div class="conteudo">
+
+            <!-- Barra superior -->
+            <div class="topbar">
+                <div class="topbar-titulo">Saúde e Capacidade</div>
+
+                <div class="topbar-info">
+                    <div class="seletor-ambiente">
+                        <span class="ponto estado--ok"></span>
+                        <span class="seletor-ambiente-nome">Produção</span>
+                        <span class="seletor-ambiente-seta">▾</span>
+                    </div>
+
+                    <div class="status-resumo">
+                        <div class="status-item estado--ok">
+                            <span class="ponto"></span>4 online
+                        </div>
+                        <div class="status-item estado--atencao">
+                            <span class="ponto"></span>1 atenção
+                        </div>
+                        <div class="status-item estado--critico">
+                            <span class="ponto"></span>1 offline
+                        </div>
+                    </div>
+
+                    <div class="topbar-data">14/10/2026 11:02</div>
+                </div>
+            </div>
+
+            <div class="area-principal">
+                <div class="painel">
+
+                    <!-- Introdução da página -->
+                    <div class="introducao">
+                        <div class="introducao-texto">
+                            <div class="introducao-titulo">Saúde e Capacidade</div>
+                            <div class="introducao-descricao">
+                                Ranking por severidade para decidir onde agir primeiro.
+                                Percentuais mostram pressão; GB livres mostram a distância
+                                real até o problema.
+                            </div>
+                        </div>
+                        <div class="ultima-leitura">ÚLTIMA LEITURA · HÁ 38 SEG</div>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="kpis">
+                        <div class="cartao kpi kpi--cpu estado--critico">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/relogioIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge">SRV-BR-03 · +23% vs ontem</div>
+                            </div>
+                            <div class="kpi-valor">78%</div>
+                            <div class="kpi-titulo">CPU mais pressionada</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Risco de lentidão se persistir por 5 min
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+
+                        <div class="cartao kpi kpi--ram estado--atencao">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/memoriaIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge">SRV-BR-03 · 83% em uso</div>
+                            </div>
+                            <div class="kpi-valor">5 GB</div>
+                            <div class="kpi-titulo">Menor memória disponível</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Próximo passo: investigar processos
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+
+                        <div class="cartao kpi kpi--disco estado--atencao">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/espacoIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge">SRV-BR-03 · 71% ocupado</div>
+                            </div>
+                            <div class="kpi-valor">116 GB</div>
+                            <div class="kpi-titulo">Menor espaço disponível</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Esgota em ~58 dias no ritmo atual
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico + ranking -->
+                    <div class="paineis">
+
+                        <div class="cartao cartao--frota">
+                            <div class="cartao-titulo">Comparativo da Frota</div>
+                            <div class="cartao-subtitulo">CPU, RAM e Disco na leitura mais recente</div>
+                            <div class="grafico">
+                                <canvas id="myChart" class="grafico-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="cartao cartao--prioridade">
+                            <div class="cartao-titulo">Prioridade de Investigação</div>
+                            <div class="cartao-subtitulo">
+                                Ordenado pelo recurso mais severo; clique para abrir o diagnóstico
+                            </div>
+
+                            <div class="ranking">
+                                <div class="ranking-item ranking-item--destaque estado--atencao">
+                                    <span class="ranking-posicao">#1</span>
+                                    <span class="ranking-servidor">SRV-BR-03</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">83%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#2</span>
+                                    <span class="ranking-servidor">SRV-BR-01</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">67%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#3</span>
+                                    <span class="ranking-servidor">SRV-BR-04</span>
+                                    <span class="ranking-recurso">Sem leitura</span>
+                                    <span class="ranking-valor">—</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#4</span>
+                                    <span class="ranking-servidor">SRV-BR-02</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">51%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#5</span>
+                                    <span class="ranking-servidor">SRV-BR-06</span>
+                                    <span class="ranking-recurso">Disco</span>
+                                    <span class="ranking-valor">45%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#6</span>
+                                    <span class="ranking-servidor">SRV-BR-05</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">44%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        
+        const labels = Utils.months({ count: 7 });
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'My First Dataset',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 205, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(201, 203, 207, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            },
+        };
+        </script>
+</body>
+
+</html>
