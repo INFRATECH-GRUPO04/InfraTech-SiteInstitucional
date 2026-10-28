@@ -1,8 +1,8 @@
 const horasRecursos = ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'];
 const recursos = {
-  cpu: { label: 'CPU', data: [40, 36, 36, 38, 44, 40, 38, 42, 46, 50, 94, 72, 38.9], color: '#25AFC0', titulo: 'Uso de CPU — 24h', subtitulo: 'Utilização do processador ao longo do dia' },
-  disco: { label: 'Disco', data: [43, 40, 40, 43, 51, 47, 46, 52, 58, 64, 94, 74, 66.9], color: '#20A881', titulo: 'Uso de Disco — 24h', subtitulo: 'Utilização do armazenamento ao longo do dia' },
-  ram: { label: 'RAM', data: [52, 49, 49, 52, 60, 56, 55, 61, 67, 76, 98, 78, 67.3], color: '#8050C7', titulo: 'Uso de RAM — 24h', subtitulo: 'Utilização da memória ao longo do dia' }
+  cpu: { label: 'CPU', data: [32, 30, 30, 37, 65, 40, 38, 42, 46, 50, 94, 72, 38.9], color: '#25AFC0', titulo: 'Uso de CPU — 24h', subtitulo: 'Utilização do processador ao longo do dia' },
+  disco: { label: 'Disco', data: [43, 37, 40, 43, 51, 47, 46, 52, 58, 64, 97, 74, 66.9], color: '#20A881', titulo: 'Uso de Disco — 24h', subtitulo: 'Utilização do armazenamento ao longo do dia' },
+  ram: { label: 'RAM', data: [77, 33, 49, 52, 60, 56, 55, 61, 86, 76, 70, 78, 67.3], color: '#8050C7', titulo: 'Uso de RAM — 24h', subtitulo: 'Utilização da memória ao longo do dia' }
 };
 
 function criarDatasetRecurso(recurso) {
@@ -134,10 +134,19 @@ abasRecursos.forEach((aba, indice) => {
 const ctxrede = document.getElementById('graficoBanda').getContext('2d');
 
 const faixasMatriz = [
-  { nome: 'Madrugada', indices: [0, 1, 2, 3] },
-  { nome: 'Manhã', indices: [4, 5, 6] },
-  { nome: 'Tarde', indices: [7, 8, 9] },
-  { nome: 'Noite', indices: [10, 11, 12] }
+  { nome: 'Manhã', horario: '06–12h', indices: [3, 4, 5, 6] },
+  { nome: 'Tarde', horario: '12–18h', indices: [6, 7, 8, 9] },
+  { nome: 'Noite', horario: '18–24h', indices: [9, 10, 11, 12] },
+  { nome: 'Madrugada', horario: '00–06h', indices: [0, 1, 2, 3] }
+];
+const semanaMatriz = [
+  { dia: 'Segunda · 19/10', picos: [56, 68, 84, 48], minutosCriticos: [0, 0, 0, 0] },
+  { dia: 'Terça · 20/10', picos: [58, 72, 88, 51], minutosCriticos: [0, 0, 0, 0] },
+  { dia: 'Quarta · 21/10', picos: [61, 76, 91, 55], minutosCriticos: [0, 0, 60, 0] },
+  { dia: 'Quinta · 22/10', picos: [60, 79, 92, 57], minutosCriticos: [0, 0, 70, 0] },
+  { dia: 'Sexta · 23/10', picos: [64, 85, 96, 68], minutosCriticos: [0, 0, 90, 0] },
+  { dia: 'Sábado · 24/10', picos: [69, 93, 99, 82], minutosCriticos: [0, 75, 121, 0] },
+  { dia: 'Domingo · 25/10', picos: null, minutosCriticos: [0, 0, 0, 0] }
 ];
 const formatoPercentual = new Intl.NumberFormat('pt-BR', {
   minimumFractionDigits: 1,
@@ -160,19 +169,26 @@ function classeEstado(valor) {
 
 function renderizarMatrizCalor() {
   const corpo = document.getElementById('corpoMatrizCalor');
-  corpo.replaceChildren(...Object.entries(recursos).map(([chave, recurso]) => {
-    const linha = document.createElement('tr');
-    const componente = document.createElement('th');
-    componente.scope = 'row';
-    componente.textContent = recurso.label;
-    linha.append(componente);
+  const dadosDomingo = faixasMatriz.map((faixa) => Math.max(
+    ...Object.values(recursos).flatMap((recurso) => faixa.indices.map((indice) => recurso.data[indice]))
+  ));
+  semanaMatriz.at(-1).picos = dadosDomingo;
+  semanaMatriz.at(-1).minutosCriticos[2] = calcularMinutosAcimaLimite([9, 10, 11, 12]);
 
-    faixasMatriz.forEach((faixa) => {
-      const pico = Math.max(...faixa.indices.map((indice) => recurso.data[indice]));
+  corpo.replaceChildren(...semanaMatriz.map((dia) => {
+    const linha = document.createElement('tr');
+    const rotuloDia = document.createElement('th');
+    rotuloDia.scope = 'row';
+    rotuloDia.textContent = dia.dia;
+    linha.append(rotuloDia);
+
+    dia.picos.forEach((pico, indice) => {
+      const faixa = faixasMatriz[indice];
       const celula = document.createElement('td');
       celula.className = `matriz-${classeEstado(pico)}`;
-      celula.textContent = formatarPercentual(pico);
-      celula.setAttribute('aria-label', `${recurso.label}, ${faixa.nome}: pico de ${pico}%`);
+      celula.textContent = `${Math.round(pico)}%`;
+      celula.title = `${dia.dia} · ${faixa.nome} ${faixa.horario}: pico de ${Math.round(pico)}%${dia.minutosCriticos[indice] ? ` · ${dia.minutosCriticos[indice]} min em estado crítico` : ''}`;
+      celula.setAttribute('aria-label', `${dia.dia}, ${faixa.nome}: pico máximo de CPU, RAM ou Disco de ${Math.round(pico)}%`);
       linha.append(celula);
     });
 
@@ -180,25 +196,24 @@ function renderizarMatrizCalor() {
   }));
 }
 
-function calcularMinutosCriticos() {
+function calcularMinutosAcimaLimite(indices) {
   const limite = 90;
   let minutos = 0;
 
-  for (let indice = 0; indice < horasRecursos.length - 1; indice += 1) {
-    const picoInicio = Math.max(...Object.values(recursos).map((recurso) => recurso.data[indice]));
-    const picoFim = Math.max(...Object.values(recursos).map((recurso) => recurso.data[indice + 1]));
-    const duracaoIntervalo = 120;
-
-    if (picoInicio >= limite && picoFim >= limite) {
-      minutos += duracaoIntervalo;
-    } else if (picoInicio < limite && picoFim > limite) {
-      minutos += ((picoFim - limite) / (picoFim - picoInicio)) * duracaoIntervalo;
-    } else if (picoInicio > limite && picoFim < limite) {
-      minutos += ((picoInicio - limite) / (picoInicio - picoFim)) * duracaoIntervalo;
-    }
+  for (let ponto = 0; ponto < indices.length - 1; ponto += 1) {
+    const indice = indices[ponto];
+    const inicio = Math.max(...Object.values(recursos).map((recurso) => recurso.data[indice]));
+    const fim = Math.max(...Object.values(recursos).map((recurso) => recurso.data[indice + 1]));
+    if (inicio >= limite && fim >= limite) minutos += 120;
+    else if (inicio < limite && fim > limite) minutos += ((fim - limite) / (fim - inicio)) * 120;
+    else if (inicio > limite && fim < limite) minutos += ((inicio - limite) / (inicio - fim)) * 120;
   }
 
   return Math.round(minutos);
+}
+
+function calcularMinutosCriticos() {
+  return semanaMatriz.reduce((total, dia) => total + dia.minutosCriticos.reduce((soma, minutos) => soma + minutos, 0), 0);
 }
 
 function renderizarKpis() {

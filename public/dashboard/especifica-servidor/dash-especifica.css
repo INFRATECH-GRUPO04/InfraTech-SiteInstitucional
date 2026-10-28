@@ -459,6 +459,10 @@
     text-align: left;
 }
 
+.tabela-matriz tbody tr:nth-last-child(-n + 2) th {
+    font-weight: 700;
+}
+
 .tabela-matriz thead th span {
     display: block;
     color: #8EA4B8;

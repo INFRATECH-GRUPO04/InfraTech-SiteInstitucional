@@ -82,19 +82,23 @@
 
     <div class="container-dash">
         <header class="topbar">
-            <h1 class="topbar__titulo">Engenharia de Dados &amp; Telemetria</h1>
-            <div class="topbar__info">
-                <button type="button" class="seletor-ambiente status-ok" aria-label="Selecionar ambiente">
-                    <span>Produção</span><span class="seletor-ambiente__seta" aria-hidden="true">▾</span>
-                </button>
-                <ul class="resumo-status" aria-label="Resumo dos servidores">
-                    <li class="resumo-status__item status-ok">4 online</li>
-                    <li class="resumo-status__item status-atencao">1 atenção</li>
-                    <li class="resumo-status__item status-critico">1 offline</li>
-                </ul>
-                <time class="topbar__data" datetime="2026-10-14T11:38">14/10/2026 11:38</time>
-            </div>
-        </header>
+        <h1 class="topbar__titulo">Engenharia de Dados & Telemetria</h1>
+
+        <div class="topbar__info">
+          <button type="button" class="seletor-ambiente status-ok" aria-label="Selecionar ambiente">
+            <span>Produção</span>
+            <span class="seletor-ambiente__seta" aria-hidden="true">▾</span>
+          </button>
+
+          <ul class="resumo-status" aria-label="Resumo dos servidores">
+            <li class="resumo-status__item status-ok">4 online</li>
+            <li class="resumo-status__item status-atencao">1 atenção</li>
+            <li class="resumo-status__item status-critico">1 offline</li>
+          </ul>
+
+          <time class="topbar__data" datetime="2026-10-25T11:35">25/10/2026 11:35</time>
+        </div>
+      </header>
         <div class="container-graficos">
             <div class="container-titulo">
                 <div class="dados-servidor">
@@ -143,7 +147,7 @@
                         <div class="cabecalho-kpi"><h3>Total de Horas em Estado Crítico</h3><span aria-hidden="true">◷</span></div>
                         <div class="porcentagem"><h2 id="kpiTempoCritico">—</h2></div>
                         <div class="barra-carregamento barra-carregamento-critica"></div>
-                        <p class="meta-kpi">25 out · período acima de 90%</p>
+                        <p class="meta-kpi">19–25 out 2026 · semana completa</p>
                     </article>
                 </div>
                 <div class="container-abas" role="tablist" aria-label="Gráficos de recursos do servidor">
@@ -178,9 +182,9 @@
                     <div class="cabecalho-matriz">
                         <div>
                             <h3 id="tituloMatrizCalor">Matriz de Calor</h3>
-                            <p>Pico de utilização de CPU, RAM e Disco em cada faixa das últimas 24h.</p>
+                            <p>Pico máximo de CPU, RAM ou Disco em cada faixa do dia.</p>
                         </div>
-                        <span class="periodo-matriz">Últimas 24h</span>
+                        <span class="periodo-matriz">19–25 out 2026</span>
                     </div>
                     <div class="legenda-matriz" aria-label="Legenda de utilização">
                         <span><i class="faixa-ideal"></i> Ideal ≤70%</span>
@@ -191,11 +195,11 @@
                         <table class="tabela-matriz">
                             <thead>
                                 <tr>
-                                    <th scope="col">Componente</th>
+                                    <th scope="col">DIA / PICO (%)</th>
+                                    <th scope="col">Manhã<span>06–12h</span></th>
+                                    <th scope="col">Tarde<span>12–18h</span></th>
+                                    <th scope="col">Noite<span>18–24h</span></th>
                                     <th scope="col">Madrugada<span>00–06h</span></th>
-                                    <th scope="col">Manhã<span>08–12h</span></th>
-                                    <th scope="col">Tarde<span>14–18h</span></th>
-                                    <th scope="col">Noite<span>20–24h</span></th>
                                 </tr>
                             </thead>
                             <tbody id="corpoMatrizCalor"></tbody>
