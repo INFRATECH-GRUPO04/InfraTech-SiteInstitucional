@@ -114,8 +114,8 @@
                     <div class="footer-crud" id="footer_crud">
                     </div>
                     <div class="trecho-inicial" id="trecho_inicial">
-                        <div class="texto-inicial">Seleciona um usuário <img src="../../../../assets/icon/icon_user2.svg"
-                                style="width: 1.2vw;"></div>
+                        <div class="texto-inicial">Seleciona um usuário <img
+                                src="../../../../assets/icon/icon_user2.svg" style="width: 1.2vw;"></div>
                     </div>
                 </div>
             </div>
@@ -128,7 +128,7 @@
 
 <script>
 
-var idEmpresa = sessionStorage.ID_EMPRESA;
+    var idEmpresa = sessionStorage.ID_EMPRESA;
     var idUsuario = sessionStorage.ID_USUARIO;
 
     head_crud.style.display = "none"
@@ -156,6 +156,7 @@ var idEmpresa = sessionStorage.ID_EMPRESA;
         })
 
     function listarUsuarios(resposta) {
+        boxes_funcionario.innerHTML = "";
 
         for (var i = 0; i < resposta.length; i++) {
             func = resposta[i];
@@ -179,6 +180,13 @@ var idEmpresa = sessionStorage.ID_EMPRESA;
                 servidores = `${func.qtdServidores} Servidores`
             }
 
+            cor_status = "";
+            if (func.status_sistema == 1) {
+                cor_status = "#05DF72"
+            } else {
+                cor_status = "#FF0000"
+            }
+
             iniciais = func.nome.split(" ")
                 .map(n => n[0]).slice(0, 2).join("").toUpperCase();
 
@@ -189,7 +197,7 @@ var idEmpresa = sessionStorage.ID_EMPRESA;
                 <div class="hover-funcionario">
                     <div class="circulo-iniciais">${iniciais}</div>
                     <div class="infos-escritas">
-                        <div class="nome-funcionario">${func.nome}</div>
+                        <div class="nome-funcionario">${func.nome}<div class = "bolinha-status" style = "background-color: ${cor_status};"></div></div>
                         <div class="cargo-servidor">
                             <div class="${tipoAcesso}">${acesso}</div>
                             <div class="servidor">${servidores} </div>
@@ -247,6 +255,19 @@ var idEmpresa = sessionStorage.ID_EMPRESA;
                             servidores = `${func.qtdServidores} Servidores`
                         }
 
+                        cor_status = "";
+                        status = "";
+                        largura = "";
+                        if (func.status_sistema == 1) {
+                            cor_status = "#05DF72"
+                            status = "Ativo"
+                            largura = "5.5"
+                        } else {
+                            cor_status = "#FF0000"
+                            status = "Desativado"
+                            largura = "7.3"
+                        }
+
                         iniciais = func.nome.split(" ")
                             .map(n => n[0]).slice(0, 2).join("").toUpperCase();
 
@@ -256,6 +277,10 @@ var idEmpresa = sessionStorage.ID_EMPRESA;
                                 <div class="nome-funcionario" style="font-size: 1.2vw;">${func.nome}</div>
                                 <div class="email-funcionario">${func.email}</div>
                             </div>
+                            <div class= "container-status-sistema-crud" style = "background-color: ${cor_status}30; border: solid 1px ${cor_status}; width: ${largura}vw;">
+                                <div class = "bolinha-crud" style = "background-color: ${cor_status};"></div>
+                                <div class = "status-sistema-crud" style = "color: ${cor_status};">${status}</div>
+                                </div>
                         </div>
                         <div class="servidor-crud-head">${servidores}</div>
                     `
@@ -312,15 +337,80 @@ var idEmpresa = sessionStorage.ID_EMPRESA;
                             `
 
         footer_crud.innerHTML = `<div class="texto-revisao"> Certifique-se de revisar as alterações antes de confirmar</div>
+                            <div class = "botao-ativar-desativar" id = "botao_ativar_desativar">
+                                </div>
                             <div class="box-excluir">
-                            <button class="excluir" onclick="excluirUsuario()">Excluir usuário
-                                <img class="img-excluir" src="../../../../assets/icon/icon_excluir.svg">
-                            </button>
-                        </div>`
+                                <button class="excluir" onclick="excluirUsuario()">Excluir usuário
+                                    <img class="img-excluir" src="../../../../assets/icon/icon_excluir.svg">
+                                    </button>
+                                    </div>`
+
+        if (func.tipo_acesso != "GESTOR") {
+            if (resposta[0].status_sistema == 1) {
+                botao_ativar_desativar.innerHTML = `<button onclick = "desativarUsuario()" class = "botao-desativar" id = "botao_desativar">Desativar</button>`
+
+            } else {
+                botao_ativar_desativar.innerHTML = `<button onclick = "ativarUsuario()" class = "botao-ativar" id = "botao_ativar">Ativar</button>`
+
+            }
+        }
     }
 
     function formatarCpf(cpf) {
         return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+    }
+
+    function desativarUsuario() {
+        fetch(`/gerenciar_funcionario/desativarUsuario/${idFuncionarioSelecionado}`, {
+            method: "PUT",
+            cache: "no-store"
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+
+                        retorno.innerHTML = "Status atualizado com sucesso"
+                        
+                        setInterval(function () {
+                            location.reload();
+                            
+                        }, 1000);
+
+                    })
+
+                } else {
+                    console.log("Nenhum dado encontrado")
+                }
+            })
+            .catch(function (error) {
+                console.error("Erro na obtenção de dados")
+            })
+    }
+
+    function ativarUsuario() {
+        fetch(`/gerenciar_funcionario/ativarUsuario/${idFuncionarioSelecionado}`, {
+            method: "PUT",
+            cache: "no-store"
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+
+                        retorno.innerHTML = "Status atualizado com sucesso"
+
+                        setInterval(function () {
+                            location.reload();
+                            
+                        }, 1000);
+                    })
+
+                } else {
+                    console.log("Nenhum dado encontrado")
+                }
+            })
+            .catch(function (error) {
+                console.error("Erro na obtenção de dados")
+            })
     }
 
 

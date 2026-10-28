@@ -109,6 +109,20 @@ a, button{
     height: 100%;
 }
 
+.nome-funcionario{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bolinha-status{
+    width: 0.7vw;
+    height: 0.7vw;
+    border-radius: 10px;
+}
+
 .circulo-iniciais {
     background-color: #90e5f910;
     width: 3vw;
@@ -308,6 +322,28 @@ a, button{
     color: #00CFFF;
 }
 
+.container-status-sistema-crud{
+    border-radius: 10px;
+    width: 5.5vw;
+    height: 1.8vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.bolinha-crud{
+    width: 0.6vw;
+    height: 0.6vw;
+    border-radius: 10px;
+    flex-shrink: 0;
+
+}
+
+.status-sistema-crud{
+    font-size: 1vw;
+}
+
 /* .crud-identificacao{
     width: 15vw;
     display: flex;
@@ -355,6 +391,36 @@ a, button{
     width: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.botao-ativar-desativar{
+    width: 7vw;
+    height: 100%;
+    margin-left: 5vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.botao-ativar{
+    width: 80%;
+    height: 50%;
+    font-size: 1vw;
+    border: solid 1px #05DF72;
+    border-radius: 15px;
+    color: #05DF72;
+    background-color: #05DF7240;
+}
+
+.botao-desativar{
+    width: 100%;
+    height: 50%;
+    font-size: 1vw;
+    border: solid 1px #FF0000;
+    border-radius: 15px;
+    color: #FF0000;
+    background-color: #FF000040;
 }
 
 .box-excluir{
