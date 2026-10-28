@@ -172,7 +172,9 @@
                             <div class="cartao-titulo">Comparativo da Frota</div>
                             <div class="cartao-subtitulo">CPU, RAM e Disco na leitura mais recente</div>
                             <div class="grafico">
-                                <canvas id="myChart" class="grafico-canvas"></canvas>
+                                <div class="grafico-canvas">
+                                    <canvas id="graficoFrota"></canvas>
+                                </div>
                             </div>
                         </div>
 
@@ -230,46 +232,98 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        
-        const labels = Utils.months({ count: 7 });
-        const data = {
-            labels: labels,
-            datasets: [{
-                label: 'My First Dataset',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 205, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(201, 203, 207, 0.2)'
-                ],
-                borderColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 159, 64)',
-                    'rgb(255, 205, 86)',
-                    'rgb(75, 192, 192)',
-                    'rgb(54, 162, 235)',
-                    'rgb(153, 102, 255)',
-                    'rgb(201, 203, 207)'
-                ],
-                borderWidth: 1
-            }]
+
+        // Dados (valores estimados a partir da imagem; troque pelos dados reais)
+        const servidores = ['BR-01', 'BR-02', 'BR-03', 'BR-05', 'BR-06'];
+
+        const dadosFrota = {
+            cpu: [42, 28, 78, 35, 21],
+            ram: [67, 51, 83, 44, 38],
+            disco: [54, 38, 71, 29, 45],
         };
-        const config = {
+
+        const CORES = {
+            cpu: '#00b8d9',
+            ram: '#7c3aed',
+            disco: '#10b981',
+        };
+
+        const COR_TEXTO = '#7a8fa4';
+
+        // Ordem dos datasets = ordem das barras (CPU, RAM, Disco).
+        // A legenda é reordenada mais abaixo (CPU, Disco, RAM).
+        const serie = (label, chave) => ({
+            label,
+            data: dadosFrota[chave],
+            backgroundColor: CORES[chave],
+            borderRadius: 3,
+            barPercentage: 0.95,
+            categoryPercentage: 0.8,
+        });
+
+        const ordemLegenda = ['CPU', 'Disco', 'RAM'];
+
+        new Chart(document.getElementById('graficoFrota'), {
             type: 'bar',
-            data: data,
+            data: {
+                labels: servidores,
+                datasets: [
+                    serie('CPU', 'cpu'),
+                    serie('RAM', 'ram'),
+                    serie('Disco', 'disco'),
+                ],
+            },
             options: {
+                responsive: true,
+                maintainAspectRatio: false, // preenche o .grafico-canvas
+                font: { family: 'Inter-Regular, sans-serif', size: 11 },
                 scales: {
                     y: {
-                        beginAtZero: true
-                    }
-                }
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 25,
+                            color: COR_TEXTO,
+                            callback: (valor) => valor + '%',
+                        },
+                        grid: { color: '#eef2f6', borderDash: [4, 4] },
+                        border: { color: '#4a5568', dash: [] },
+                    },
+                    x: {
+                        ticks: { color: COR_TEXTO },
+                        grid: { display: false },
+                        border: { color: '#4a5568' },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 8,
+                            boxHeight: 8,
+                            padding: 14,
+                            // CPU, Disco, RAM (diferente da ordem das barras)
+                            sort: (a, b) => ordemLegenda.indexOf(a.text) - ordemLegenda.indexOf(b.text),
+                            generateLabels(chart) {
+                                const itens = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                                itens.forEach((item) => {
+                                    item.fontColor = CORES[item.text.toLowerCase()];
+                                });
+                                return itens;
+                            },
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`,
+                        },
+                    },
+                },
             },
-        };
-        </script>
+        });
+    </script>
 </body>
 
 </html>

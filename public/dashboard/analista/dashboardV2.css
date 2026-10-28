@@ -163,9 +163,6 @@
   gap: calc(16 * var(--u));
 }
 
-.introducao-texto {
-  max-width: 36vw;
-}
 
 .introducao-titulo {
   padding-top: calc(3 * var(--u));
@@ -176,8 +173,10 @@
 }
 
 .introducao-descricao {
-  font: 400 calc(12 * var(--u))/1.5 var(--fonte-regular);
+  font-weight: 400;
+  font-family: var(--fonte-regular);
   color: var(--texto-mudo);
+  font-size: 1vw;
 }
 
 .ultima-leitura {
