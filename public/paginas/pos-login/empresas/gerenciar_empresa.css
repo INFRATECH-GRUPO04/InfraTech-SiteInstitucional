@@ -780,11 +780,6 @@ dialog.modal::backdrop {
     align-items: stretch;
   }
 
-  .pagina-empresas .header-left {
-    position: relative;
-    top: auto;
-  }
-
   .conteudo-empresas {
     padding: 0 16px 40px;
   }

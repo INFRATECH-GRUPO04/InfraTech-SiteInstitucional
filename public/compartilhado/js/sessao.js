@@ -16,6 +16,7 @@ function validarSessao() {
         }
         configurarMenusPorPerfil(tipoAcesso);
         protegerRotaPorPerfil(tipoAcesso);
+        inicializarMenuLateralResponsivo();
     } else {
         window.location.href = "/paginas/autenticacao/login/login.html";
     }
@@ -105,6 +106,46 @@ function configurarMenusPorPerfil(tipoAcesso) {
         } else if (href.includes("cadastro_token") || href.includes("modificar_funcionario")) {
             link.style.display = (ehInfratech || ehGestor) ? "flex" : "none";
         }
+    });
+}
+
+// Injeta e controla o botão hambúrguer global e overlay para drawer lateral
+function inicializarMenuLateralResponsivo() {
+    var sidebar = document.querySelector("aside.header-left");
+    if (!sidebar) return;
+
+    // Evita duplicar se já existir
+    if (document.getElementById("btn_hamburguer_global")) return;
+
+    var btnHamburguer = document.createElement("button");
+    btnHamburguer.id = "btn_hamburguer_global";
+    btnHamburguer.className = "btn-hamburguer-global";
+    btnHamburguer.type = "button";
+    btnHamburguer.setAttribute("aria-label", "Abrir menu de navegação");
+    btnHamburguer.innerHTML = "&#9776;";
+
+    var overlay = document.createElement("div");
+    overlay.id = "overlay_sidebar_global";
+    overlay.className = "overlay-sidebar-global";
+
+    document.body.prepend(overlay);
+    document.body.prepend(btnHamburguer);
+
+    function alternar() {
+        sidebar.classList.toggle("aberta");
+        overlay.classList.toggle("visivel");
+    }
+
+    function fechar() {
+        sidebar.classList.remove("aberta");
+        overlay.classList.remove("visivel");
+    }
+
+    btnHamburguer.addEventListener("click", alternar);
+    overlay.addEventListener("click", fechar);
+
+    sidebar.querySelectorAll(".nav-item, .btn-logout").forEach(function (item) {
+        item.addEventListener("click", fechar);
     });
 }
 
