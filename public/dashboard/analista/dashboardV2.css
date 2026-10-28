@@ -1,0 +1,318 @@
+/* ==========================================================
+   Variáveis
+   --u = 1px do design em 1900x1080. Tudo escala a partir dela:
+   cresce/encolhe com a largura (vw) e com a altura (vh),
+   o que for mais restritivo, então nunca estoura a tela.
+   ========================================================== */
+:root {
+  --u: min(100vw / 1900, 100vh / 1080);
+
+  /* cores de marca / métricas */
+  --ciano: #00b8d9;
+  --roxo: #7c3aed;
+  --verde: #10b981;
+  --laranja: #f59e0b;
+  --vermelho: #ef4444;
+
+  /* textos */
+  --texto-escuro: #0f1f2e;
+  --texto-suave: #9ab0c4;
+  --texto-mudo: #668099;
+
+  /* fontes (nomes originais do Figma) */
+  --fonte-titulo: "Rajdhani-Bold", sans-serif;
+  --fonte-regular: "Inter-Regular", sans-serif;
+  --fonte-semibold: "Inter-SemiBold", sans-serif;
+  --fonte-bold: "Inter-Bold", sans-serif;
+  --fonte-mono: "JetBrainsMono-Regular", sans-serif;
+  --fonte-mono-bold: "JetBrainsMono-Bold", sans-serif;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+.pagina {
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.conteudo,
+.conteudo * {
+  box-sizing: border-box;
+}
+
+/* ==========================================================
+   Estados (definem --estado, usado por badges, pontos, textos)
+   ========================================================== */
+.estado--ok { --estado: var(--verde); }
+.estado--atencao { --estado: var(--laranja); }
+.estado--critico { --estado: var(--vermelho); }
+
+.ponto {
+  flex-shrink: 0;
+  width: calc(6 * var(--u));
+  height: calc(6 * var(--u));
+  border-radius: 50%;
+  background: var(--estado);
+}
+
+/* ==========================================================
+   Estrutura: a tela inteira é 100vh, o miolo se estica
+   ========================================================== */
+.conteudo {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.area-principal {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.painel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+  padding: calc(20 * var(--u));
+}
+
+/* ==========================================================
+   Introdução
+   ========================================================== */
+.introducao {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(16 * var(--u));
+}
+
+
+.introducao-titulo {
+  padding-top: calc(3 * var(--u));
+  font: 700 calc(24 * var(--u))/1.5 var(--fonte-titulo);
+  letter-spacing: calc(0.72 * var(--u));
+  color: #f5f9ff;
+  font-size: 2vw;
+}
+
+.introducao-descricao {
+  font-weight: 400;
+  font-family: var(--fonte-regular);
+  color: var(--texto-mudo);
+  font-size: 1vw;
+}
+
+.ultima-leitura {
+  font: 400 calc(10 * var(--u))/1.5 var(--fonte-mono);
+  color: var(--texto-mudo);
+}
+
+/* ==========================================================
+   Cartão base (KPIs e painéis)
+   ========================================================== */
+.cartao {
+  padding: calc(20 * var(--u));
+  background: #fff;
+  border: 1.33px solid rgba(0, 80, 160, 0.08);
+  border-radius: calc(10 * var(--u));
+  box-shadow: 0 4px 16px rgba(0, 30, 80, 0.04), 0 1px 4px rgba(0, 30, 80, 0.06);
+  height: 30vw;
+}
+
+.cartao-titulo {
+  font: 700 calc(14 * var(--u))/1.5 var(--fonte-bold);
+  color: var(--texto-escuro);
+  font-size: 1.1vw;
+}
+
+.cartao-subtitulo {
+  margin-top: calc(4 * var(--u));
+  font: 400 calc(11 * var(--u))/1.5 var(--fonte-regular);
+  color: var(--texto-suave);
+  font-size: 0.9vw;
+}
+
+/* ==========================================================
+   KPIs  (--cor = cor da métrica | --estado = cor do alerta)
+   ========================================================== */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(14 * var(--u));
+}
+
+.kpi {
+  position: relative;
+  overflow: hidden;
+  padding: calc(18 * var(--u)) calc(20 * var(--u));
+  height: 9vw;
+}
+
+.kpi--cpu { --cor: var(--ciano); }
+.kpi--ram { --cor: var(--roxo); }
+.kpi--disco { --cor: var(--verde); }
+
+.kpi-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(8 * var(--u));
+}
+
+.kpi-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2vw;
+  height: 2vw;
+  border-radius: calc(10 * var(--u));
+  background: color-mix(in srgb, var(--cor) 9%, transparent);
+}
+
+.kpi-icone-img {
+  width: 0.9vw;
+  height: 0.9vw;
+}
+
+.kpi-badge {
+  padding: calc(3 * var(--u)) calc(8 * var(--u));
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--estado) 8%, transparent);
+  font: 700 calc(10 * var(--u))/1.5 var(--fonte-bold);
+  color: var(--estado);
+  white-space: nowrap;
+  font-size: 0.6vw;
+}
+
+.kpi-valor {
+  margin-top: 0.7vw;
+  font: 700 calc(30 * var(--u))/1 var(--fonte-titulo);
+  color: var(--cor);
+}
+
+.kpi-titulo {
+  margin-top: 0.4vw;
+  font: 600 calc(12 * var(--u))/1.5 var(--fonte-semibold);
+  color: var(--texto-escuro);
+  font-size: 1vw;
+}
+
+.kpi-alerta {
+  display: flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+  margin-top: 0.2vw;
+  font: 600 calc(10 * var(--u))/1.5 var(--fonte-semibold);
+  color: var(--estado);
+  font-size: 0.7vw;
+}
+
+.kpi-alerta .ponto {
+  width: calc(5 * var(--u));
+  height: calc(5 * var(--u));
+}
+
+.kpi-barra {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: calc(3 * var(--u));
+  background: var(--cor);
+  opacity: 0.35;
+}
+
+/* ==========================================================
+   Painéis: ocupam toda a altura que sobra
+   ========================================================== */
+.paineis {
+  flex: 1;
+  min-height: 0;
+  max-height: 30vw;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: calc(16 * var(--u));
+}
+
+.paineis > .cartao {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.grafico {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  padding-top: calc(14 * var(--u));
+}
+
+.grafico-canvas {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ==========================================================
+   Ranking de prioridade (as linhas dividem a altura igualmente)
+   ========================================================== */
+.ranking {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+  padding-top: calc(14 * var(--u));
+}
+
+.ranking-item {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: calc(28 * var(--u)) 1fr calc(90 * var(--u)) calc(70 * var(--u));
+  align-items: center;
+  gap: calc(10 * var(--u));
+  padding: 0 calc(12 * var(--u));
+  background: #f8fafc;
+  border: 1.33px solid #edf2f7;
+  border-radius: calc(8 * var(--u));
+}
+
+.ranking-item--destaque {
+  background: #fff7ed;
+}
+
+.ranking-posicao {
+  font: 700 calc(14 * var(--u))/1.5 var(--fonte-titulo);
+  color: var(--texto-suave);
+  font-size: 0.8vw;
+}
+
+.ranking-servidor {
+  font: 700 calc(11 * var(--u))/1.5 var(--fonte-mono-bold);
+  color: var(--texto-escuro);
+  font-size: 0.9vw;
+}
+
+.ranking-recurso {
+  font: 700 calc(11 * var(--u))/1.5 var(--fonte-bold);
+  color: var(--estado);
+  font-size: 0.7vw;
+}
+
+.ranking-valor {
+  font: 700 calc(18 * var(--u))/1.5 var(--fonte-titulo);
+  color: var(--estado);
+  text-align: right;
+}

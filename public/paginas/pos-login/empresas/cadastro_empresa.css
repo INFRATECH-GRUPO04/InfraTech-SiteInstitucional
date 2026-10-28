@@ -1,26 +1,85 @@
 /* ----------- Cadastro de Empresa ----------- */
 .main {
+    --margem-lateral: 36px;
+
     flex: 1;
     min-width: 0;
-    padding: 24px 36px 60px;
+    padding: 0 0 60px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 28px;
 }
 
-.titulo {
-    font-family: var(--fonte-display);
-    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-    font-weight: 800;
-    color: var(--cor-branco-logo, #ffffff);
+/* ----------- Header (migalhas + usuário) ----------- */
+.barra-superior-painel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 48px;
+    padding: 0 var(--margem-lateral);
+    background: var(--cor-header, #0a111c);
+    border-bottom: 1px solid rgba(0, 207, 255, 0.15);
+}
+
+.migalhas {
+    font-family: var(--fonte-tecnica);
+    font-size: 0.68rem;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--cor-texto-muted, #648294);
+}
+
+.migalhas .text-muted {
+    opacity: 0.75;
+}
+
+.usuario-sessao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ponto-status {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+.nome-usuario {
+    font-family: var(--fonte-tecnica);
+    font-size: 0.68rem;
+    color: var(--cor-texto-muted, #648294);
+}
+
+/* ----------- Título da página ----------- */
+.titulo-pagina {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 var(--margem-lateral);
+    font-family: var(--fonte-tecnica);
+    font-size: 2vw;
+    font-weight: 500;
     letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cor-cyan-claro, #8be0ff);
+}
+
+/* O "|" do HTML vira a barrinha ciano à esquerda */
+.titulo-pagina .destaque {
+    flex-shrink: 0;
+    width: 3px;
+    height: 28px;
+    font-size: 0;
+    background: var(--cor-cyan, #00CFFF);
 }
 
 /* Stepper de Progresso */
 .fluxo {
-    width: 100%;
-    max-width: 800px;
+    width: min(800px, 100% - 2 * var(--margem-lateral));
     margin: 0 auto;
 }
 
@@ -105,14 +164,14 @@
 
 /* Container de Formulário */
 .container-cadastro {
-    width: 100%;
-    max-width: 860px;
+    width: min(860px, 100% - 2 * var(--margem-lateral));
     margin: 0 auto;
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-card);
     background-color: var(--cor-card, #0b1622);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     padding: 30px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -217,6 +276,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     gap: 10px;
 }
 
+.container-sessao:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 10px); /* metade da grade menos metade do gap (20px) */
+}
+
 .sessao {
     color: var(--cor-cyan, #00CFFF);
     font-family: var(--fonte-display);
@@ -291,7 +356,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 @media (max-width: 600px) {
     .main {
-        padding: 20px 16px 40px;
+        --margem-lateral: 16px;
+        padding-bottom: 40px;
     }
 
     .container-cadastro {

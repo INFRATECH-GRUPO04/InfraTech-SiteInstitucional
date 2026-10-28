@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dashboardV2.css">
+    <link rel="stylesheet" href="../../compartilhado/css/global.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div class="pagina">
+        <aside class="header-left">
+            <div class="logo">
+                <a href="../../paginas/pos-login/painel/painel.html" title="InfraTech">
+                    <img src="../../assets/icon/logo.png" alt="InfraTech">
+                </a>
+            </div>
+
+            <hr class="linha">
+
+            <h3 class="nav-categoria">
+                <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+                Servidores
+            </h3>
+
+            <a href="../especifica-servidor/dash-especifica.html" class="nav-item ativo">
+                <img src="../../assets/imgs/dashboards.png" alt="" class="menu-icon">
+                Dashboard
+            </a>
+            <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Cadastrar Host
+            </a>
+            <a href="../../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Modificar
+            </a>
+
+            <h3 class="nav-categoria secao-funcionarios">
+                <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+                Funcionários
+            </h3>
+
+            <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+                <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+                Cadastrar Token
+            </a>
+            <a href="gerenciar_funcionario.html" class="nav-item">
+                <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon">
+                Gerenciar
+            </a>
+
+            <h3 class="nav-categoria secao-empresas">
+                <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+                Empresas
+            </h3>
+
+            <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Gerenciar
+            </a>
+            <a href="../../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Cadastrar Empresa
+            </a>
+
+            <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+                <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+            </div>
+        </aside>
+
+        <div class="conteudo">
+            <div class="area-principal">
+                <div class="painel">
+
+                    <!-- Introdução da página -->
+                    <div class="introducao">
+                        <div class="introducao-texto">
+                            <div class="introducao-titulo">Saúde e Capacidade</div>
+                            <div class="introducao-descricao">
+                                Ranking por severidade para decidir onde agir primeiro.
+                                Percentuais mostram pressão; GB livres mostram a distância
+                                real até o problema.
+                            </div>
+                        </div>
+                        <div class="ultima-leitura">ÚLTIMA LEITURA · HÁ 38 SEG</div>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="kpis">
+                        <div class="cartao kpi kpi--cpu estado--critico">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/relogioIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge">SRV-BR-03 · +23% vs ontem</div>
+                            </div>
+                            <div class="kpi-valor">78%</div>
+                            <div class="kpi-titulo">CPU mais pressionada</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Risco de lentidão se persistir por 5 min
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+
+                        <div class="cartao kpi kpi--ram estado--atencao">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/memoriaIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge">SRV-BR-03 · 83% em uso</div>
+                            </div>
+                            <div class="kpi-valor">5 GB</div>
+                            <div class="kpi-titulo">Menor memória disponível</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Próximo passo: investigar processos
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+
+                        <div class="cartao kpi kpi--disco estado--atencao">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/espacoIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge">SRV-BR-03 · 71% ocupado</div>
+                            </div>
+                            <div class="kpi-valor">116 GB</div>
+                            <div class="kpi-titulo">Menor espaço disponível</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Esgota em ~58 dias no ritmo atual
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico + ranking -->
+                    <div class="paineis">
+
+                        <div class="cartao cartao--frota">
+                            <div class="cartao-titulo">Comparativo da Frota</div>
+                            <div class="cartao-subtitulo">CPU, RAM e Disco na leitura mais recente</div>
+                            <div class="grafico">
+                                <div class="grafico-canvas">
+                                    <canvas id="graficoFrota"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cartao cartao--prioridade">
+                            <div class="cartao-titulo">Prioridade de Investigação</div>
+                            <div class="cartao-subtitulo">
+                                Ordenado pelo recurso mais severo; clique para abrir o diagnóstico
+                            </div>
+
+                            <div class="ranking">
+                                <div class="ranking-item ranking-item--destaque estado--atencao">
+                                    <span class="ranking-posicao">#1</span>
+                                    <span class="ranking-servidor">SRV-BR-03</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">83%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#2</span>
+                                    <span class="ranking-servidor">SRV-BR-01</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">67%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#3</span>
+                                    <span class="ranking-servidor">SRV-BR-04</span>
+                                    <span class="ranking-recurso">Sem leitura</span>
+                                    <span class="ranking-valor">—</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#4</span>
+                                    <span class="ranking-servidor">SRV-BR-02</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">51%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#5</span>
+                                    <span class="ranking-servidor">SRV-BR-06</span>
+                                    <span class="ranking-recurso">Disco</span>
+                                    <span class="ranking-valor">45%</span>
+                                </div>
+                                <div class="ranking-item estado--ok">
+                                    <span class="ranking-posicao">#6</span>
+                                    <span class="ranking-servidor">SRV-BR-05</span>
+                                    <span class="ranking-recurso">RAM</span>
+                                    <span class="ranking-valor">44%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        // Dados (valores estimados a partir da imagem; troque pelos dados reais)
+        const servidores = ['BR-01', 'BR-02', 'BR-03', 'BR-05', 'BR-06'];
+
+        const dadosFrota = {
+            cpu: [42, 28, 78, 35, 21],
+            ram: [67, 51, 83, 44, 38],
+            disco: [54, 38, 71, 29, 45],
+        };
+
+        const CORES = {
+            cpu: '#00b8d9',
+            ram: '#7c3aed',
+            disco: '#10b981',
+        };
+
+        const COR_TEXTO = '#7a8fa4';
+
+        // Ordem dos datasets = ordem das barras (CPU, RAM, Disco).
+        // A legenda é reordenada mais abaixo (CPU, Disco, RAM).
+        const serie = (label, chave) => ({
+            label,
+            data: dadosFrota[chave],
+            backgroundColor: CORES[chave],
+            borderRadius: 3,
+            barPercentage: 0.95,
+            categoryPercentage: 0.8,
+        });
+
+        const ordemLegenda = ['CPU', 'Disco', 'RAM'];
+
+        new Chart(document.getElementById('graficoFrota'), {
+            type: 'bar',
+            data: {
+                labels: servidores,
+                datasets: [
+                    serie('CPU', 'cpu'),
+                    serie('RAM', 'ram'),
+                    serie('Disco', 'disco'),
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // preenche o .grafico-canvas
+                font: { family: 'Inter-Regular, sans-serif', size: 11 },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 25,
+                            color: COR_TEXTO,
+                            callback: (valor) => valor + '%',
+                        },
+                        grid: { color: '#eef2f6', borderDash: [4, 4] },
+                        border: { color: '#4a5568', dash: [] },
+                    },
+                    x: {
+                        ticks: { color: COR_TEXTO },
+                        grid: { display: false },
+                        border: { color: '#4a5568' },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 8,
+                            boxHeight: 8,
+                            padding: 14,
+                            // CPU, Disco, RAM (diferente da ordem das barras)
+                            sort: (a, b) => ordemLegenda.indexOf(a.text) - ordemLegenda.indexOf(b.text),
+                            generateLabels(chart) {
+                                const itens = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                                itens.forEach((item) => {
+                                    item.fontColor = CORES[item.text.toLowerCase()];
+                                });
+                                return itens;
+                            },
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`,
+                        },
+                    },
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>
