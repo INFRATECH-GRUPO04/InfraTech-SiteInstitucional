@@ -1,3 +1,5 @@
+-- DROP DATABASE infratech;
+
 -- =====================================================
 -- CRIACAO E SELECAO DO BANCO DE DADOS
 -- =====================================================
@@ -83,6 +85,7 @@ CREATE TABLE servidor (
     id_servidor INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
     nome VARCHAR(45) NULL,
+    localizacao VARCHAR(200),
     status_sistema TINYINT NOT NULL,
     dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
 
@@ -251,7 +254,7 @@ INSERT INTO funcionario (
 (3, 'GESTOR', 'Luana Pereira', '2003-03-18', 'luana@techplay.com', 'senhaLp1', '94784210876', 1),
 (3, 'FUNCIONARIO', 'Rafael Nunes', '1995-09-01', 'rafael@techplay.com', '123456', '33344455516', 1),
 (3, 'FUNCIONARIO', 'Debora Martins', '2000-12-20', 'debora@techplay.com', '123456', '44455566627', 1),
-(3, 'FUNCIONARIO', 'Fernanda Melo', '1994-07-08', 'fernanda@techplay.com', '123456', '55566677738', 1),
+(3, 'FUNCIONARIO', 'Fernanda Melo', '1994-07-08', 'fernanda@techplay.com', '123456', '55566677738', 0),
 (4, 'GESTOR', NULL, NULL, 'gestor@arenanordeste.com.br', 'trocarSenha1', NULL, 1),
 (4, 'FUNCIONARIO', 'Igor Ramos', '1996-11-23', 'igor@arenanordeste.com.br', '123456', '66677788849', 1),
 (4, 'FUNCIONARIO', 'Juliana Prado', '1993-04-17', 'juliana@arenanordeste.com.br', '123456', '77788899950', 0),
@@ -266,17 +269,27 @@ INSERT INTO funcionario (
 
 INSERT INTO servidor (
     nome,
+    localizacao,
     fk_empresa,
     status_sistema
 ) VALUES
-('SRV-INFRA-01', 1, 1),
-('SRV-INFRA-02', 1, 1),
-('SRV-GAMECLOUD-01', 2, 1),
-('SRV-GAMECLOUD-02', 2, 1),
-('SRV-GAMECLOUD-LEGADO', 2, 0),
-('SRV-TECHPLAY-01', 3, 1),
-('SRV-TECHPLAY-02', 3, 1),
-('SRV-ARENA-01', 4, 1);
+('SRV-GAMECLOUD-01', 'São Paulo/SP, Brasil', 2, 1),          -- id 1: GameCloud, ativo
+('SRV-GAMECLOUD-02', 'Rio de Janeiro/RJ, Brasil', 2, 1),     -- id 2: GameCloud, ativo
+('SRV-GAMECLOUD-03', 'Belo Horizonte/MG, Brasil', 2, 1),     -- id 3: GameCloud, ativo
+('SRV-GAMECLOUD-04', 'Curitiba/PR, Brasil', 2, 1),           -- id 4: GameCloud, ativo
+('SRV-GAMECLOUD-BACKUP', 'Porto Alegre/RS, Brasil', 2, 0),   -- id 5: GameCloud, desativado
+('SRV-GAMECLOUD-LEGADO', 'Campinas/SP, Brasil', 2, 0),       -- id 6: GameCloud, desativado
+('SRV-TECHPLAY-01', 'São Paulo/SP, Brasil', 3, 1),           -- id 7: TechPlay, ativo
+('SRV-TECHPLAY-02', 'Brasília/DF, Brasil', 3, 1),            -- id 8: TechPlay, ativo
+('SRV-TECHPLAY-03', 'Rio de Janeiro/RJ, Brasil', 3, 1),      -- id 9: TechPlay, ativo
+('SRV-TECHPLAY-04', 'Curitiba/PR, Brasil', 3, 1),            -- id 10: TechPlay, ativo
+('SRV-INFRA-02', 'Campinas/SP, Brasil', 3, 1),               -- id 11: TechPlay, ativo
+('SRV-TECHPLAY-LEGADO', 'São Paulo/SP, Brasil', 3, 0),       -- id 12: TechPlay, desativado
+('SRV-ARENA-02', 'Fortaleza/CE, Brasil', 4, 1),              -- id 13: Arena Nordeste, ativo
+('SRV-ARENA-03', 'Maceió/AL, Brasil', 4, 1),                 -- id 14: Arena Nordeste, ativo
+('SRV-ARENA-01', 'Recife/PE, Brasil', 4, 1),                 -- id 15: Arena Nordeste, ativo
+('SRV-INFRA-01', 'Salvador/BA, Brasil', 4, 1),               -- id 16: Arena Nordeste, ativo
+('SRV-ARENA-LEGADO', 'Recife/PE, Brasil', 4, 0);             -- id 17: Arena Nordeste, desativado
 
 
 -- =====================================================
@@ -289,8 +302,27 @@ INSERT INTO servidor_funcionario (
     fk_funcionario,
     fk_servidor
 ) VALUES
-(4, 3),
-(9, 6);
+-- GameCloud (empresa 2)
+(4, 1),    -- Bianca: SRV-GAMECLOUD-01
+(4, 2),    -- Bianca: SRV-GAMECLOUD-02
+(4, 3),    -- Bianca: SRV-GAMECLOUD-03
+(5, 1),    -- Caio (desativado): SRV-GAMECLOUD-01
+(5, 4),    -- Caio (desativado): SRV-GAMECLOUD-04
+(6, 2),    -- Diego (cadastro incompleto): SRV-GAMECLOUD-02
+
+-- TechPlay (empresa 3)
+(8, 7),    -- Rafael: SRV-TECHPLAY-01
+(8, 10),   -- Rafael: SRV-TECHPLAY-04
+(9, 7),    -- Debora: SRV-TECHPLAY-01
+(9, 9),    -- Debora: SRV-TECHPLAY-03
+(10, 8),   -- Fernanda (antes sem vínculo): SRV-TECHPLAY-02
+
+-- Arena Nordeste (empresa 4)
+(12, 15),  -- Igor: SRV-ARENA-01
+(12, 13),  -- Igor: SRV-ARENA-02
+(13, 17),  -- Juliana (desativada): SRV-ARENA-LEGADO
+(14, 14),  -- Kaique: SRV-ARENA-03
+(14, 16);  -- Kaique: SRV-INFRA-01
 
 
 -- =====================================================
