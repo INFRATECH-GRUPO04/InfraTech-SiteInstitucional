@@ -17,7 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
-  <body class="pagina-dash-geral" onload="validarSessao()">
+  <body class="pagina-dash-geral">
 
     <!-- Barra lateral padrão -->
     <aside class="header-left" id="sidebar_dash">
@@ -34,18 +34,6 @@
         Servidores
       </h3>
 
-      <a href="./dash-geral.html" class="nav-item ativo">
-        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-        Visão Geral
-      </a>
-      <a href="./especifica-servidor/dash-especifica.html" class="nav-item">
-        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-        Host Específico
-      </a>
-      <a href="./analista/dashboard.html" class="nav-item">
-        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-        SLA & Disponibilidade
-      </a>
       <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
         Cadastrar Host
@@ -215,7 +203,7 @@
           <div class="status-servidores__info">
             <h2 class="status-servidores__titulo">Status dos Servidores</h2>
             <p class="status-servidores__descricao">
-              Clique em qualquer linha para ver o diagnóstico completo daquele servidor
+              Acompanhe as métricas e a disponibilidade atual de cada servidor
             </p>
           </div>
 
@@ -275,7 +263,7 @@
                       <small class="disponibilidade__detalhe">99.8% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 02: Online -->
@@ -318,7 +306,7 @@
                       <small class="disponibilidade__detalhe">99.5% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 03: Atenção (linha destacada em amarelo suave) -->
@@ -361,7 +349,7 @@
                       <small class="disponibilidade__detalhe">96.2% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 04: Offline -->
@@ -382,7 +370,7 @@
                       <span class="disponibilidade disponibilidade--offline">Fora do ar</span>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 05: Online -->
@@ -425,7 +413,7 @@
                       <small class="disponibilidade__detalhe">98.7% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 06: Online -->
@@ -468,7 +456,7 @@
                       <small class="disponibilidade__detalhe">99.1% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
               </tbody>

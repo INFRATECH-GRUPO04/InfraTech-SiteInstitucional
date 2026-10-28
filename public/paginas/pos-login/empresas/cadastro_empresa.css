@@ -1,14 +1,15 @@
 /* ----------- Cadastro de Empresa ----------- */
 .main {
-    --margem-lateral: 36px;
+    --margem-lateral: clamp(20px, 3vw, 48px);
 
     flex: 1;
     min-width: 0;
-    padding: 0 0 60px;
+    min-height: 100vh;
+    padding: 0 0 32px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: clamp(20px, 2.5vh, 30px);
 }
 
 /* ----------- Header (migalhas + usuário) ----------- */
@@ -60,10 +61,10 @@
     align-items: center;
     gap: 12px;
     padding: 0 var(--margem-lateral);
-    font-family: var(--fonte-tecnica);
-    font-size: 2vw;
-    font-weight: 500;
-    letter-spacing: 1px;
+    font-family: var(--fonte-display);
+    font-size: clamp(1.65rem, 2.1vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: var(--cor-cyan-claro, #8be0ff);
 }
@@ -79,7 +80,7 @@
 
 /* Stepper de Progresso */
 .fluxo {
-    width: min(800px, 100% - 2 * var(--margem-lateral));
+    width: calc(100% - 2 * var(--margem-lateral));
     margin: 0 auto;
 }
 
@@ -164,7 +165,7 @@
 
 /* Container de Formulário */
 .container-cadastro {
-    width: min(860px, 100% - 2 * var(--margem-lateral));
+    width: calc(100% - 2 * var(--margem-lateral));
     margin: 0 auto;
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-card);

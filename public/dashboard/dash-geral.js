@@ -176,11 +176,7 @@ function inicializarHamburguer() {
 
 function inicializarTabelaLinhas() {
   document.querySelectorAll('.tabela-servidores__linha').forEach(function (linha) {
-    linha.style.cursor = 'pointer';
-    linha.addEventListener('click', function (e) {
-      if (e.target.closest('a')) return;
-      window.location.href = './especifica-servidor/dash-especifica.html';
-    });
+    linha.style.cursor = 'default';
   });
 }
 

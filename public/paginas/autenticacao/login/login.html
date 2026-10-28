@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - InfraTech</title>
+    <script>
+        if (window.location.protocol === "file:") {
+            var caminhoLocal = decodeURIComponent(window.location.pathname).replace(/\\/g, "/");
+            var marcadorPublico = "/public/";
+            var indicePublico = caminhoLocal.lastIndexOf(marcadorPublico);
+
+            if (indicePublico !== -1) {
+                var rotaLocal = caminhoLocal.slice(indicePublico + marcadorPublico.length);
+                window.location.replace("http://localhost:8080/" + rotaLocal);
+            }
+        }
+    </script>
     <link rel="icon" href="/assets/icon/logo.png">
 
     <link rel="stylesheet" href="/compartilhado/css/global.css">

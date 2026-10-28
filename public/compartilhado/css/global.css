@@ -234,6 +234,11 @@ header.cabecalho.scrolled {
     user-select: none;
 }
 
+/* O controle do menu é injetado pelo JS, mas só aparece no breakpoint móvel. */
+.btn-hamburguer-global {
+    display: none;
+}
+
 .header-left .logo {
     width: 100%;
     display: flex;
