@@ -40,8 +40,6 @@
             <img src="/assets/imgs/modificar.png" alt="" class="menu-icon">
             Cadastrar Host
         </a>
-            <img src="/assets/imgs/modificar.png" alt="" class="menu-icon">
-        </a>
         <a href="../servidores/modificar_servidor.html" class="nav-item">
             <img src="/assets/imgs/modificar.png" alt="" class="menu-icon">
             Modificar
@@ -152,7 +150,7 @@
         <form id="form_edicao" class="modal-form" novalidate>
             <div class="modal-cabecalho">
                 <h2 class="modal-titulo" id="editar_titulo">Editar empresa</h2>
-                <button type="button" class="btn-fechar" id="btn_fechar_edicao" aria-label="Fechar modal">✕</button>
+                <button type="button" class="btn-fechar" id="btn_fechar_edicao" data-fechar aria-label="Fechar modal">✕</button>
             </div>
             <div class="modal-corpo">
                 <p class="aviso-edicao" id="edicao_aviso" role="alert" hidden></p>
@@ -214,7 +212,7 @@
                 </div>
             </div>
             <div class="modal-rodape">
-                <button type="button" class="btn btn-fantasma" id="btn_cancelar_edicao">Cancelar</button>
+                <button type="button" class="btn btn-fantasma" id="btn_cancelar_edicao" data-fechar>Cancelar</button>
                 <button type="submit" class="btn btn-ciano" id="btn_salvar_edicao">Salvar alterações</button>
             </div>
         </form>
@@ -223,17 +221,20 @@
     <dialog id="dlg_confirmar" class="modal modal-estreito" aria-labelledby="confirmar_titulo">
         <div class="modal-cabecalho">
             <h2 class="modal-titulo" id="confirmar_titulo"></h2>
+            <button type="button" class="btn-fechar" id="btn_fechar_confirmar" data-fechar aria-label="Fechar modal">✕</button>
         </div>
         <div class="modal-corpo">
-            <p class="confirmar-msg" id="confirmar_msg"></p>
+            <div id="confirmar_texto" class="confirmar-texto"></div>
+            <ul class="lista-mudancas" id="confirmar_lista" hidden></ul>
+            <p class="aviso-erro" id="confirmar_erro" role="alert" hidden></p>
         </div>
         <div class="modal-rodape">
-            <button type="button" class="btn btn-fantasma" id="btn_cancelar_confirmar">Voltar</button>
-            <button type="button" class="btn" id="btn_executar_confirmar">Confirmar</button>
+            <button type="button" class="btn btn-fantasma" id="btn_confirmar_cancelar">Cancelar</button>
+            <button type="button" class="btn btn-principal" id="btn_confirmar_ok">Confirmar</button>
         </div>
     </dialog>
 
-    <div class="notificacao" id="toast" role="status" aria-live="polite" hidden></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 </body>
 

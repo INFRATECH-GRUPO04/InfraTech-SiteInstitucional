@@ -619,14 +619,19 @@
     }
 
     function limparErros() {
-        edicaoAviso.hidden = true;
-        edicaoAviso.textContent = "";
+        if (edicaoAviso) {
+            edicaoAviso.hidden = true;
+            edicaoAviso.textContent = "";
+        }
 
         CAMPOS.forEach(function (campo) {
             var input = document.getElementById(campo.id);
-            input.closest(".campo").classList.remove("com-erro");
+            if (!input) return;
+            var c = input.closest(".campo") || input.closest(".campo-grupo");
+            if (c) c.classList.remove("com-erro");
             input.removeAttribute("aria-invalid");
-            document.getElementById("erro_" + campo.id).textContent = "";
+            var errEl = document.getElementById("erro_" + campo.id);
+            if (errEl) errEl.textContent = "";
         });
     }
 
@@ -688,9 +693,12 @@
                 return;
             }
             var input = document.getElementById(campo.id);
-            input.closest(".campo").classList.add("com-erro");
+            if (!input) return;
+            var c = input.closest(".campo") || input.closest(".campo-grupo");
+            if (c) c.classList.add("com-erro");
             input.setAttribute("aria-invalid", "true");
-            document.getElementById("erro_" + campo.id).textContent = mensagem;
+            var errEl = document.getElementById("erro_" + campo.id);
+            if (errEl) errEl.textContent = mensagem;
             if (!primeiro) {
                 primeiro = input;
             }
@@ -800,11 +808,14 @@
     // Some com a mensagem de erro de um campo assim que a pessoa volta a mexer nele
     CAMPOS.forEach(function (campo) {
         var input = document.getElementById(campo.id);
+        if (!input) return;
         var aoMudar = function () {
-            input.closest(".campo").classList.remove("com-erro");
+            var c = input.closest(".campo") || input.closest(".campo-grupo");
+            if (c) c.classList.remove("com-erro");
             input.removeAttribute("aria-invalid");
-            document.getElementById("erro_" + campo.id).textContent = "";
-            edicaoAviso.hidden = true;
+            var errEl = document.getElementById("erro_" + campo.id);
+            if (errEl) errEl.textContent = "";
+            if (edicaoAviso) edicaoAviso.hidden = true;
         };
         input.addEventListener("input", aoMudar);
         input.addEventListener("change", aoMudar);
