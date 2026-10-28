@@ -25,7 +25,7 @@
     display: inline-block;
     color: var(--cor-cyan);
     font-family: var(--fonte-mono);
-    font-size: 0.75rem;
+    font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 2px;
     margin-bottom: 6px;
@@ -63,6 +63,9 @@
     justify-content: center;
     text-align: center;
     background: radial-gradient(circle at 50% 25%, rgba(0, 207, 255, 0.08) 0%, transparent 60%);
+ background-image: url('../../../assets/imgs/banner-game.jpg');
+ background-size: cover;
+ background-position: center center;
 }
 
 .conteudo-hero {
@@ -75,13 +78,13 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0, 207, 255, 0.06);
+    background: #172a45;
     border: 1px solid rgba(0, 207, 255, 0.18);
     border-radius: var(--raio-pill);
     padding: 6px 16px;
     margin-bottom: 20px;
     font-family: var(--fonte-mono);
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     font-weight: 700;
     color: var(--cor-cyan);
     letter-spacing: 1px;
@@ -129,6 +132,7 @@
     color: var(--cor-texto);
     font-size: clamp(0.95rem, 1.6vw, 1.1rem);
     line-height: 1.7;
+    width: 550px;
 }
 
 .botoes-banner {
@@ -298,14 +302,14 @@
     font-family: var(--fonte-display);
     font-size: 1.4rem;
     font-weight: 800;
-    color: rgba(0, 207, 255, 0.15);
+    color: var(--cor-cyan);
 }
 
 .sub-titulo-func {
     margin: 0 0 8px 0;
     color: var(--cor-cyan);
     font-family: var(--fonte-mono);
-    font-size: 0.72rem;
+    font-size: 0.90rem;
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -380,8 +384,9 @@
 .etapa p {
     margin: 0;
     color: var(--cor-texto-suave);
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     line-height: 1.6;
+    text-align: center;
 }
 
 /* =========================================================
@@ -417,30 +422,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 25%;
+    object-position: center 40%;
     opacity: 0.95;
-    transition: transform var(--transicao);
-}
-
-.equipe-foto-container:hover .equipe-foto-grupo {
-    transform: scale(1.02);
-}
-
-.equipe-foto-badge {
-    position: absolute;
-    left: 14px;
-    bottom: 14px;
-    background: rgba(3, 8, 14, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 6px 12px;
-    border-radius: 6px;
-}
-
-.equipe-foto-badge span {
-    color: var(--cor-cyan);
-    font-family: var(--fonte-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
 }
 
 .equipe-home-texto {
@@ -633,41 +616,6 @@
     font-weight: 600;
 }
 
-.box-acesso-home {
-    background: rgba(0, 207, 255, 0.03);
-    border: 1px solid var(--cor-borda);
-    border-radius: 14px;
-    padding: 22px;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.box-acesso-icone {
-    font-size: 1.8rem;
-    line-height: 1;
-}
-
-.box-acesso-titulo {
-    font-family: var(--fonte-display);
-    font-size: 1rem;
-    color: var(--cor-branco);
-    margin: 0 0 6px 0;
-}
-
-.box-acesso-texto {
-    color: var(--cor-texto-suave);
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin: 0 0 14px 0;
-}
-
-.box-acesso-botoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
 /* Card do Formulário de Contato */
 .card-formulario-contato {
     background-color: var(--cor-card);
@@ -776,4 +724,10 @@
         width: 100%;
         max-width: 300px;
     }
+}
+
+@media (max-width: 600px) {
+    .frase-banner p {
+    width: 300px;
+}
 }
