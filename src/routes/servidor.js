@@ -23,6 +23,10 @@ router.put("/editar/:idServidor", function (req, res) {
     servidorController.atualizar(req, res);
 });
 
+router.put("/editar/componente/:idComponente", function (req, res) {
+    servidorController.atualizarComponente(req, res);
+});
+
 router.delete("/deletar/:idServidor", function (req, res) {
     servidorController.excluir(req, res);
 });

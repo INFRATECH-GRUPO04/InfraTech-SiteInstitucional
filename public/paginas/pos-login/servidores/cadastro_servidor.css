@@ -191,6 +191,20 @@ body.pagina-servidores {
     fill: currentColor;
 }
 
+/* Grade de Componentes (2 na primeira linha e 2 na segunda) */
+.grade-componentes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+}
+
+@media (max-width: 860px) {
+    .grade-componentes {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Caixa de Alocação de Componente */
 .caixa-alocacao {
     background-color: rgba(7, 16, 26, 0.5);
@@ -218,7 +232,16 @@ body.pagina-servidores {
 .rotulo-alocacao {
     font-size: 0.92rem;
     font-weight: 700;
-    min-width: 140px;
+    min-width: 120px;
+}
+
+.rotulo-componente-texto {
+    color: var(--cor-branco, #ffffff);
+    font-family: var(--fonte-display, sans-serif);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: inline-block;
 }
 
 .entradas-alocacao {
@@ -326,6 +349,57 @@ body.pagina-servidores {
     padding-top: 20px;
     flex-wrap: wrap;
     gap: 14px;
+}
+
+/* Compatibilidade de Estilo para Botões */
+.botao-primario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 20px;
+    border-radius: var(--raio);
+    font-family: var(--fonte-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all var(--transicao);
+    background-color: var(--cor-cyan);
+    border: 1px solid var(--cor-cyan);
+    color: #050b12 !important;
+    box-shadow: 0 0 12px rgba(0, 207, 255, 0.25);
+}
+
+.botao-primario:hover {
+    background-color: var(--cor-cyan-hover);
+    border-color: var(--cor-cyan-hover);
+    box-shadow: 0 0 18px rgba(0, 207, 255, 0.45);
+    transform: translateY(-1px);
+}
+
+.botao-perigo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 20px;
+    border-radius: var(--raio);
+    font-family: var(--fonte-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all var(--transicao);
+    background-color: #dc2626;
+    color: #ffffff !important;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.botao-perigo:hover {
+    background-color: #b91c1c;
 }
 
 /* Responsividade */

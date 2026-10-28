@@ -2,34 +2,35 @@ var servidorModel = require("../models/servidorModel");
 
 
 function cadastrar(req, res) {
-    // Crie uma variável que vá recuperar os valores do arquivo cadastro.html
     var nomeServidor = req.body.nomeServer;
     var idEmpresa = req.body.idEmpresaServer;
 
-    // Faça as validações dos valores
-    if (nomeServidor == undefined) {
-        res.status(400).send("Seu nome está undefined!");
+    if (nomeServidor == undefined || String(nomeServidor).trim().length == 0) {
+        res.status(400).send("O nome do servidor é obrigatório!");
+    } else if (idEmpresa == undefined || isNaN(Number(idEmpresa))) {
+        res.status(400).send("Identificação da empresa está indefinida!");
     } else {
-
-        // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        servidorModel.cadastrar(nomeServidor,idEmpresa)
-            .then(
-                function (resultado) {
-                    var idServidor = resultado.insertId;
-                    res.status(201).json({
-                        idServidor: idServidor
-                    });
+        servidorModel.buscarPorNomeEEmpresa(nomeServidor, idEmpresa)
+            .then(function (resultadoBusca) {
+                if (resultadoBusca.length > 0) {
+                    res.status(409).send("Já existe um servidor cadastrado com este nome nesta empresa!");
+                } else {
+                    servidorModel.cadastrar(nomeServidor, idEmpresa)
+                        .then(function (resultado) {
+                            var idServidor = resultado.insertId;
+                            res.status(201).json({
+                                idServidor: idServidor
+                            });
+                        }).catch(function (erro) {
+                            console.log(erro);
+                            console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+                            res.status(500).json(erro.sqlMessage);
+                        });
                 }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    console.log(
-                        "\nHouve um erro ao realizar o cadastro! Erro: ",
-                        erro.sqlMessage
-                    );
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+            }).catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage);
+            });
     }
 }
 
@@ -45,15 +46,20 @@ function cadastrarComponente(req, res) {
         res.status(400).send("Seu fk está undefined!");
     } else if (fkComponente == undefined) {
         res.status(400).send("Seu fkComponente está undefined!");
-    } else if (capacidade == undefined) {
-        res.status(400).send("Sua capacidade está undefined!");
+    } else if (capacidade == undefined || capacidade <= 0) {
+        res.status(400).send("A capacidade deve ser maior que zero!");
     } else if (limiteAtencao == undefined || limiteCritico == undefined) {
         res.status(400).send("Os limites de alerta estão undefined!");
+    } else if (Number(limiteAtencao) < 1 || Number(limiteAtencao) > 100 || Number(limiteCritico) < 1 || Number(limiteCritico) > 100) {
+        res.status(400).send("Os limites de alerta devem estar entre 1% e 100%!");
+    } else if (Number(limiteAtencao) >= Number(limiteCritico)) {
+        res.status(400).send("O limite de atenção deve ser menor que o limite crítico!");
     } else {
-        // Mapear fkComponente (1,2,3) para tipo string ('cpu', 'ram', 'disco')
+        // Mapear fkComponente (1,2,3,4) para tipo string ('cpu', 'ram', 'disco', 'rede')
         var tipoComponente = "cpu";
-        if(fkComponente == 2) tipoComponente = "ram";
-        else if(fkComponente == 3) tipoComponente = "disco";
+        if (fkComponente == 2 || fkComponente == "ram") tipoComponente = "ram";
+        else if (fkComponente == 3 || fkComponente == "disco") tipoComponente = "disco";
+        else if (fkComponente == 4 || fkComponente == "rede") tipoComponente = "rede";
 
         servidorModel.cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico)
             .then(
@@ -125,6 +131,31 @@ function atualizar(req, res) {
     }
 }
 
+function atualizarComponente(req, res) {
+    var idComponente = req.params.idComponente;
+    var capacidade = req.body.capacidadeServer;
+    var idMetrica = req.body.idMetricaServer;
+    var limiteAtencao = req.body.limiteAtencaoServer;
+    var limiteCritico = req.body.limiteCriticoServer;
+
+    if (idComponente == undefined) {
+        res.status(400).send("O id do componente é obrigatório!");
+    } else if (capacidade == undefined || capacidade <= 0) {
+        res.status(400).send("A capacidade deve ser maior que zero!");
+    } else if (limiteAtencao != undefined && limiteCritico != undefined && Number(limiteAtencao) >= Number(limiteCritico)) {
+        res.status(400).send("O limite de atenção deve ser menor que o limite crítico!");
+    } else {
+        servidorModel.atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao, limiteCritico)
+            .then(function (resultado) {
+                res.status(200).json(resultado);
+            }).catch(function (erro) {
+                console.log(erro);
+                console.log("Houve um erro ao atualizar o componente: ", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            });
+    }
+}
+
 function excluir(req, res) {
     var idServidor = req.params.idServidor;
 
@@ -144,5 +175,6 @@ module.exports = {
     listar,
     listarComponentesPorServidor,
     atualizar,
+    atualizarComponente,
     excluir
-}
+};

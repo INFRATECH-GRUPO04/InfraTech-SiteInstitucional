@@ -1,10 +1,8 @@
 var database = require("../database/config")
 
-function cadastrar(nome,idEmpresa) {
+function cadastrar(nome, idEmpresa) {
     console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome);
     
-    // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
-    //  e na ordem de inserção dos dados.
     var instrucaoSql = `
         INSERT INTO servidor (nome, fk_empresa, status_sistema) VALUES ('${nome}', ${idEmpresa}, 1);
     `;
@@ -12,55 +10,99 @@ function cadastrar(nome,idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
-    function cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico) {
-        console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrarComponente():", fkServidor, tipoComponente, capacidade);
+function cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico) {
+    console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrarComponente():", fkServidor, tipoComponente, capacidade);
 
-        var inst1 = `INSERT INTO componente (tipo, capacidade_total, limite_atencao, limite_critico, fk_servidor_componente) VALUES('${tipoComponente}', ${capacidade}, ${limiteAtencao}, ${limiteCritico}, ${fkServidor});`;
-        console.log("Executando a instrução SQL: \n" + inst1);
-        return database.executar(inst1);
-    }
+    var unidadeCapacidade = tipoComponente === 'cpu' ? 'Cores' : (tipoComponente === 'rede' ? 'Mbps' : 'GB');
+    var inst1 = `INSERT INTO componente (tipo, capacidade_total, unidade_capacidade, fk_servidor, status_monitoramento) VALUES ('${tipoComponente}', ${capacidade}, '${unidadeCapacidade}', ${fkServidor}, 1);`;
+    console.log("Executando a instrução SQL: \n" + inst1);
 
-    function listar(idEmpresa) {
-        var instrucaoSql = `SELECT id_servidor, nome, status_sistema FROM servidor WHERE fk_empresa = ${idEmpresa};`;
-        console.log("Executando a instrução SQL: \n" + instrucaoSql);
-        return database.executar(instrucaoSql);
-    }
+    return database.executar(inst1).then(function (resultadoComponente) {
+        var idComponente = resultadoComponente.insertId;
+        var inst2 = `INSERT INTO metrica (fk_componente, nome, unidade, limite_atencao, limite_critico, status_monitoramento) VALUES (${idComponente}, 'uso_percentual', '%', ${limiteAtencao}, ${limiteCritico}, 1);`;
+        console.log("Executando a instrução SQL: \n" + inst2);
+        return database.executar(inst2);
+    });
+}
 
-    function listarComponentesPorServidor(idServidor) {
-        var instrucaoSql = `
-            SELECT 
-                c.id_componente, c.tipo, c.capacidade_total,
-                c.limite_atencao, c.limite_critico 
-            FROM componente c
-            WHERE c.fk_servidor_componente = ${idServidor};
-        `;
-        console.log("Executando a instrução SQL: \n" + instrucaoSql);
-        return database.executar(instrucaoSql);
-    }
+function listar(idEmpresa) {
+    var instrucaoSql = `SELECT id_servidor, nome, status_sistema FROM servidor WHERE fk_empresa = ${idEmpresa};`;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
 
-    function atualizar(idServidor, nome) {
-        var instrucaoSql = `UPDATE servidor SET nome = '${nome}' WHERE id_servidor = ${idServidor};`;
-        console.log("Executando a instrução SQL: \n" + instrucaoSql);
-        return database.executar(instrucaoSql);
-    }
+function listarComponentesPorServidor(idServidor) {
+    var instrucaoSql = `
+        SELECT 
+            c.id_componente,
+            c.tipo,
+            c.capacidade_total,
+            c.unidade_capacidade,
+            m.id_metrica,
+            m.limite_atencao,
+            m.limite_critico 
+        FROM componente c
+        LEFT JOIN metrica m ON m.fk_componente = c.id_componente AND (m.nome = 'uso_percentual' OR (c.tipo = 'rede' AND m.nome = 'perda_pacotes'))
+        WHERE c.fk_servidor = ${idServidor};
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
 
-    function excluir(idServidor) {
-        // Exclusão em cascata deve ser feita pelo backend se não houver ON DELETE CASCADE
-        var inst3 = `DELETE FROM componente WHERE fk_servidor_componente = ${idServidor};`;
-        return database.executar(inst3).then(function() {
-            var inst4 = `DELETE FROM servidor_funcionario WHERE fk_servidor = ${idServidor};`;
-            return database.executar(inst4).then(function() {
-                var inst5 = `DELETE FROM servidor WHERE id_servidor = ${idServidor};`;
-                return database.executar(inst5);
+function atualizar(idServidor, nome) {
+    var instrucaoSql = `UPDATE servidor SET nome = '${nome}' WHERE id_servidor = ${idServidor};`;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao, limiteCritico) {
+    var inst1 = `UPDATE componente SET capacidade_total = ${capacidade} WHERE id_componente = ${idComponente};`;
+    console.log("Executando a instrução SQL: \n" + inst1);
+
+    return database.executar(inst1).then(function () {
+        if (idMetrica && limiteAtencao != undefined && limiteCritico != undefined) {
+            var inst2 = `UPDATE metrica SET limite_atencao = ${limiteAtencao}, limite_critico = ${limiteCritico} WHERE id_metrica = ${idMetrica};`;
+            console.log("Executando a instrução SQL: \n" + inst2);
+            return database.executar(inst2);
+        }
+    });
+}
+
+function excluir(idServidor) {
+    // Exclusão em cascata respeitando as Foreign Keys: metrica -> componente -> servidor_funcionario -> servidor
+    var instDeletarMetricas = `DELETE FROM metrica WHERE fk_componente IN (SELECT id_componente FROM componente WHERE fk_servidor = ${idServidor});`;
+    console.log("Executando a instrução SQL: \n" + instDeletarMetricas);
+
+    return database.executar(instDeletarMetricas).then(function () {
+        var instDeletarComponentes = `DELETE FROM componente WHERE fk_servidor = ${idServidor};`;
+        console.log("Executando a instrução SQL: \n" + instDeletarComponentes);
+
+        return database.executar(instDeletarComponentes).then(function () {
+            var instDeletarVinculos = `DELETE FROM servidor_funcionario WHERE fk_servidor = ${idServidor};`;
+            console.log("Executando a instrução SQL: \n" + instDeletarVinculos);
+
+            return database.executar(instDeletarVinculos).then(function () {
+                var instDeletarServidor = `DELETE FROM servidor WHERE id_servidor = ${idServidor};`;
+                console.log("Executando a instrução SQL: \n" + instDeletarServidor);
+                return database.executar(instDeletarServidor);
             });
         });
-    }
+    });
+}
+
+function buscarPorNomeEEmpresa(nome, idEmpresa) {
+    var instrucaoSql = `SELECT id_servidor FROM servidor WHERE nome = '${nome}' AND fk_empresa = ${idEmpresa};`;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
 
 module.exports = {
     cadastrar,
     cadastrarComponente,
+    buscarPorNomeEEmpresa,
     listar,
     listarComponentesPorServidor,
     atualizar,
+    atualizarComponente,
     excluir
 };
