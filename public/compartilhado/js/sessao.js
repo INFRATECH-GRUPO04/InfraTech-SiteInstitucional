@@ -27,11 +27,11 @@ function obterDestinoInicial(tipoAcesso) {
     if (tipo === "INFRATECH" || tipo === "ADMIN") {
         return "/paginas/pos-login/empresas/gerenciar_empresa.html";
     } else if (tipo === "GESTOR") {
-        return "/paginas/pos-login/painel/painel.html";
-    } else if (tipo === "ANALISTA_NOC") {
-        return "/paginas/pos-login/dashboards/dashboard_noc.html";
+        return "/dashboard/dash-geral.html";
+    } else if (tipo === "ANALISTA_DADOS" || tipo === "ANALISTA_NOC" || tipo === "FUNCIONARIO") {
+        return "/dashboard/dash-geral.html";
     } else {
-        return "/paginas/pos-login/dashboards/dashboard_dados.html";
+        return "/dashboard/dash-geral.html";
     }
 }
 
@@ -41,33 +41,28 @@ function protegerRotaPorPerfil(tipoAcesso) {
 
     var ehInfratech = (tipo === "INFRATECH" || tipo === "ADMIN");
     var ehGestor = (tipo === "GESTOR");
-    var ehAnalistaDados = (tipo === "ANALISTA_DADOS" || tipo === "FUNCIONARIO");
-    var ehAnalistaNoc = (tipo === "ANALISTA_NOC");
-
-    if (ehAnalistaDados) {
-        if (!rota.includes("dashboard_dados.html")) {
-            window.location.href = "/paginas/pos-login/dashboards/dashboard_dados.html";
-        }
-        return;
-    }
-
-    if (ehAnalistaNoc) {
-        if (!rota.includes("dashboard_noc.html")) {
-            window.location.href = "/paginas/pos-login/dashboards/dashboard_noc.html";
-        }
-        return;
-    }
+    var ehAnalista = (!ehInfratech && !ehGestor);
 
     if (ehInfratech) {
-        if (rota.includes("/servidores/") || rota.includes("dashboard_noc.html") || rota.includes("dashboard_dados.html")) {
+        // Admin InfraTech só gerencia Empresas e Funcionários
+        if (rota.includes("/servidores/") || rota.includes("/dashboard/")) {
             window.location.href = "/paginas/pos-login/empresas/gerenciar_empresa.html";
         }
         return;
     }
 
     if (ehGestor) {
-        if (rota.includes("/empresas/") || rota.includes("dashboard_noc.html") || rota.includes("dashboard_dados.html")) {
-            window.location.href = "/paginas/pos-login/painel/painel.html";
+        // Gestor da empresa cliente não acessa gestão de empresas de outros clientes
+        if (rota.includes("/empresas/")) {
+            window.location.href = "/dashboard/dash-geral.html";
+        }
+        return;
+    }
+
+    if (ehAnalista) {
+        // Analista e funcionário não acessam gestão de empresas, equipe (funcionários) nem cadastro de hosts
+        if (rota.includes("/empresas/") || rota.includes("/funcionarios/") || rota.includes("/servidores/")) {
+            window.location.href = "/dashboard/dash-geral.html";
         }
         return;
     }
@@ -77,6 +72,7 @@ function configurarMenusPorPerfil(tipoAcesso) {
     var tipo = (tipoAcesso || "").toUpperCase();
     var ehInfratech = (tipo === "INFRATECH" || tipo === "ADMIN");
     var ehGestor = (tipo === "GESTOR");
+    var ehAnalista = (!ehInfratech && !ehGestor);
 
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
@@ -84,27 +80,40 @@ function configurarMenusPorPerfil(tipoAcesso) {
     var categorias = sidebar.querySelectorAll(".nav-categoria");
     var links = sidebar.querySelectorAll("a.nav-item");
 
+    // 1. Controle de Categorias
     categorias.forEach(function (cat) {
         var texto = cat.textContent.toLowerCase();
-        if (texto.includes("servidores")) {
-            cat.style.display = ehGestor ? "flex" : "none";
-        } else if (texto.includes("funcion")) {
-            cat.style.display = (ehInfratech || ehGestor) ? "flex" : "none";
-        } else if (texto.includes("empresa")) {
+        var classes = cat.className.toLowerCase();
+
+        if (texto.includes("empresa") || classes.includes("secao-empresas")) {
             cat.style.display = ehInfratech ? "flex" : "none";
+        } else if (texto.includes("funcion") || classes.includes("secao-funcionarios")) {
+            cat.style.display = (ehInfratech || ehGestor) ? "flex" : "none";
+        } else if (texto.includes("servidor") || texto.includes("dash") || classes.includes("secao-dashboards")) {
+            cat.style.display = (ehGestor || ehAnalista) ? "flex" : "none";
         }
     });
 
+    // 2. Controle de Links
     links.forEach(function (link) {
         var href = (link.getAttribute("href") || "").toLowerCase();
         var texto = link.textContent.toLowerCase();
 
-        if (href.includes("servidores") || href.includes("painel.html")) {
-            link.style.display = ehGestor ? "flex" : "none";
-        } else if (href.includes("empresas")) {
+        // Links de Empresas (só Infratech/Admin)
+        if (href.includes("empresa") || texto.includes("empresa")) {
             link.style.display = ehInfratech ? "flex" : "none";
-        } else if (href.includes("cadastro_token") || href.includes("modificar_funcionario")) {
+        }
+        // Links de Gestão de Funcionários (só Infratech e Gestor - ANALISTA NUNCA PODE)
+        else if (href.includes("funcionario") || href.includes("token") || texto.includes("token") || (texto.includes("gerenciar") && !href.includes("empresa"))) {
             link.style.display = (ehInfratech || ehGestor) ? "flex" : "none";
+        }
+        // Links de Configuração de Hosts (Cadastrar Host, Modificar Servidor) -> Só Gestor!
+        else if (href.includes("cadastro_servidor") || href.includes("modificar_servidor") || texto.includes("cadastrar host") || texto.includes("modificar")) {
+            link.style.display = ehGestor ? "flex" : "none";
+        }
+        // Links de Dashboards -> Gestor e Analistas (Admin NÃO vê dashboards de servidores de clientes)
+        else if (href.includes("dash") || href.includes("painel") || texto.includes("dash") || texto.includes("em breve")) {
+            link.style.display = (ehGestor || ehAnalista) ? "flex" : "none";
         }
     });
 }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script src="../../compartilhado/js/sessao.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Disponibilidade e SLA | InfraTech</title>
@@ -11,9 +12,9 @@
 
   <link rel="stylesheet" href="../../compartilhado/css/global.css">
   <link rel="stylesheet" href="dashboard.css">
-  <link rel="stylesheet" href="disponibilidade.css">
+  
 </head>
-<body>
+<body onload="validarSessao()">
   <div class="layout">
 
     <!-- ===== Sidebar (classes mantidas: estilos vêm do global.css/dashboard.css) ===== -->

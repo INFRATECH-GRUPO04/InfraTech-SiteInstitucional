@@ -19,18 +19,10 @@
 
   <body class="pagina-dash-geral" onload="validarSessao()">
 
-    <!-- Botão hambúrguer para abrir a sidebar em telas menores -->
-    <button class="btn-hamburguer-dash" id="btn_hamburguer" type="button" aria-label="Abrir menu de navegação">
-      &#9776;
-    </button>
-
-    <!-- Overlay escuro ao abrir sidebar no mobile -->
-    <div class="overlay-sidebar" id="overlay_sidebar"></div>
-
     <!-- Barra lateral padrão -->
     <aside class="header-left" id="sidebar_dash">
       <div class="logo">
-        <a href="../paginas/pos-login/painel/painel.html" title="InfraTech Painel">
+        <a href="./dash-geral.html" title="InfraTech Painel">
           <img src="../assets/icon/logo.png" alt="InfraTech">
         </a>
       </div>
@@ -44,13 +36,19 @@
 
       <a href="./dash-geral.html" class="nav-item ativo">
         <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-        Dashboard
+        Visão Geral
+      </a>
+      <a href="./especifica-servidor/dash-especifica.html" class="nav-item">
+        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+        Host Específico
+      </a>
+      <a href="./analista/dashboard.html" class="nav-item">
+        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
+        SLA & Disponibilidade
       </a>
       <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
         Cadastrar Host
-      </a>
-        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
       </a>
       <a href="../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
@@ -277,7 +275,7 @@
                       <small class="disponibilidade__detalhe">99.8% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
                 </tr>
 
                 <!-- Servidor 02: Online -->
@@ -320,7 +318,7 @@
                       <small class="disponibilidade__detalhe">99.5% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
                 </tr>
 
                 <!-- Servidor 03: Atenção (linha destacada em amarelo suave) -->
@@ -363,7 +361,7 @@
                       <small class="disponibilidade__detalhe">96.2% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
                 </tr>
 
                 <!-- Servidor 04: Offline -->
@@ -384,7 +382,7 @@
                       <span class="disponibilidade disponibilidade--offline">Fora do ar</span>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
                 </tr>
 
                 <!-- Servidor 05: Online -->
@@ -427,7 +425,7 @@
                       <small class="disponibilidade__detalhe">98.7% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
                 </tr>
 
                 <!-- Servidor 06: Online -->
@@ -470,7 +468,7 @@
                       <small class="disponibilidade__detalhe">99.1% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td><a class="tabela-servidores__link" href="./especifica-servidor/dash-especifica.html">Ver detalhes →</a></td>
                 </tr>
 
               </tbody>
