@@ -96,6 +96,14 @@ function buscarPorNomeEEmpresa(nome, idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+    function atualizarChave(idServidor, codigo) {
+        var instrucaoSql = `
+            UPDATE servidor SET chave_hash = SHA2('${codigo}', 256) WHERE id_servidor = ${idServidor};
+        `;
+        console.log("Executando a instrução SQL: \n" + instrucaoSql);
+        return database.executar(instrucaoSql);
+    }
+
 module.exports = {
     cadastrar,
     cadastrarComponente,
@@ -104,5 +112,6 @@ module.exports = {
     listarComponentesPorServidor,
     atualizar,
     atualizarComponente,
-    excluir
+    excluir,
+    atualizarChave
 };

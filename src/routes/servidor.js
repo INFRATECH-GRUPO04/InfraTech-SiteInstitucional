@@ -31,4 +31,8 @@ router.delete("/deletar/:idServidor", function (req, res) {
     servidorController.excluir(req, res);
 });
 
+router.post("/atualizar-chave/:idServidor", function (req, res) {
+    servidorController.atualizarChave(req, res);
+});
+
 module.exports = router;
