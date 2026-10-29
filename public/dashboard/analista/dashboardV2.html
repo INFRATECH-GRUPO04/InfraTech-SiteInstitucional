@@ -104,12 +104,12 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/relogioIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge" id="kpiCpuBadge">SRV-BR-03 · última leitura</div>
+                                <div class="kpi-badge" id="kpiCpuBadge">Aguardando dados compartilhados</div>
                             </div>
-                            <div class="kpi-valor" id="kpiCpuValor">78%</div>
+                            <div class="kpi-valor" id="kpiCpuValor">—</div>
                             <div class="kpi-titulo">CPU mais pressionada</div>
                             <div class="kpi-alerta">
-                                <span class="ponto"></span>Risco de lentidão se persistir por 5 min
+                                <span class="ponto"></span>Pico de leitura; incidente não confirmado sem histórico temporal
                             </div>
                             <div class="kpi-barra"></div>
                         </div>
@@ -119,12 +119,12 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/memoriaIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge" id="kpiRamBadge">SRV-BR-03 · 83% em uso</div>
+                                <div class="kpi-badge" id="kpiRamBadge">Aguardando dados compartilhados</div>
                             </div>
-                            <div class="kpi-valor" id="kpiRamValor">5 GB</div>
+                            <div class="kpi-valor" id="kpiRamValor">—</div>
                             <div class="kpi-titulo">Menor memória disponível</div>
                             <div class="kpi-alerta">
-                                <span class="ponto"></span>Próximo passo: investigar processos
+                                <span class="ponto"></span>Memória livre estimada pela leitura e capacidade cadastrada
                             </div>
                             <div class="kpi-barra"></div>
                         </div>
@@ -134,12 +134,12 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/espacoIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge" id="kpiDiscoBadge">SRV-BR-03 · 71% ocupado</div>
+                                <div class="kpi-badge" id="kpiDiscoBadge">Aguardando dados compartilhados</div>
                             </div>
-                            <div class="kpi-valor" id="kpiDiscoValor">116 GB</div>
+                            <div class="kpi-valor" id="kpiDiscoValor">—</div>
                             <div class="kpi-titulo">Menor espaço disponível</div>
                             <div class="kpi-alerta">
-                                <span class="ponto"></span>Esgota em ~58 dias no ritmo atual
+                                <span class="ponto"></span>Previsão indisponível: histórico de tendência insuficiente
                             </div>
                             <div class="kpi-barra"></div>
                         </div>
@@ -161,7 +161,7 @@
                         <div class="cartao cartao--prioridade">
                             <div class="cartao-titulo">Prioridade de Investigação</div>
                             <div class="cartao-subtitulo">
-                                Ordenado pelo recurso mais severo; clique para abrir o diagnóstico
+                                Offline primeiro; demais itens por severidade e proximidade do limite. Leituras não confirmam incidentes.
                             </div>
 
                             <div class="ranking" id="rankingServidores"></div>
@@ -190,11 +190,15 @@
         const COR_TEXTO = '#7a8fa4';
         const chavesRecursos = ['cpu', 'ram', 'disco'];
 
-        function maiorRecurso(servidor) {
-            return chavesRecursos
-                .filter((recurso) => Number.isFinite(servidor[recurso]))
-                .map((recurso) => ({ recurso, valor: servidor[recurso] }))
-                .sort((a, b) => b.valor - a.valor)[0];
+        function recursoPrioritario(servidor) {
+            const ordem = { critico: 2, atencao: 1, saudavel: 0, 'sem-dados': -1 };
+            return chavesRecursos.filter((recurso) => servidor[recurso] != null && Number.isFinite(Number(servidor[recurso])))
+                .map((recurso) => {
+                    const limite = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                    const valor = Number(servidor[recurso]);
+                    return { recurso, valor, estado: window.InfraTechAlertas.classificar(recurso, valor, servidor.id), pressao: (valor - limite.atencao) / (limite.critico - limite.atencao) };
+                })
+                .sort((a, b) => ordem[b.estado] - ordem[a.estado] || b.pressao - a.pressao)[0] || null;
         }
 
         function severidade(servidor, recurso) {
@@ -231,15 +235,15 @@
                 return livre < menor.livre ? { servidor, livre } : menor;
             }, { servidor: null, livre: Infinity });
 
-            document.getElementById('kpiCpuBadge').textContent = `${maiorCpu.id} · última leitura`;
+            document.getElementById('kpiCpuBadge').textContent = `${maiorCpu.id} · leitura ${window.InfraTechAlertas.classificar('cpu', maiorCpu.cpu, maiorCpu.id)}`;
             document.getElementById('kpiCpuValor').textContent = `${maiorCpu.cpu}%`;
-            document.getElementById('kpiRamBadge').textContent = `${menorMemoriaLivre.servidor.id} · ${menorMemoriaLivre.servidor.ram}% em uso`;
+            document.getElementById('kpiRamBadge').textContent = `${menorMemoriaLivre.servidor.id} · ${menorMemoriaLivre.servidor.ram}% · ${window.InfraTechAlertas.classificar('ram', menorMemoriaLivre.servidor.ram, menorMemoriaLivre.servidor.id)}`;
             document.getElementById('kpiRamValor').textContent = `${Math.round(menorMemoriaLivre.livre)} GB`;
-            document.getElementById('kpiDiscoBadge').textContent = `${menorDiscoLivre.servidor.id} · ${menorDiscoLivre.servidor.disco}% ocupado`;
+            document.getElementById('kpiDiscoBadge').textContent = `${menorDiscoLivre.servidor.id} · ${menorDiscoLivre.servidor.disco}% · ${window.InfraTechAlertas.classificar('disco', menorDiscoLivre.servidor.disco, menorDiscoLivre.servidor.id)}`;
             document.getElementById('kpiDiscoValor').textContent = `${Math.round(menorDiscoLivre.livre)} GB`;
 
             const offlineTotal = dadosDashboard.servidores.filter((servidor) => servidor.status === 'offline').length;
-            const atencaoTotal = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline' && severidade(servidor) === 'atencao').length;
+            const atencaoTotal = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline' && ['atencao', 'critico'].includes(severidade(servidor))).length;
             const resumo = document.querySelectorAll('.resumo-status__item');
             if (resumo[0]) resumo[0].textContent = `${dadosDashboard.servidores.length - offlineTotal} online`;
             if (resumo[1]) resumo[1].textContent = `${atencaoTotal} atenção · última leitura`;
@@ -262,26 +266,40 @@
                 const ordem = { offline: 4, critico: 3, atencao: 2, saudavel: 1, 'sem-dados': 0 };
                 const estadoA = severidade(a), estadoB = severidade(b);
                 return ordem[estadoB] - ordem[estadoA] || pressaoRelativa(b) - pressaoRelativa(a);
-            });
+            }).filter((servidor) => servidor.status === 'offline' || ['critico', 'atencao'].includes(severidade(servidor)));
+            if (!ordenar.length) {
+                ranking.innerHTML = '<p class="ranking-vazio">Nenhuma leitura exige investigação pelos limites configurados.</p>';
+                return;
+            }
             ranking.replaceChildren(...ordenar.map((servidor, indice) => {
-                const pior = maiorRecurso(servidor);
-                const item = document.createElement('div');
+                const pior = recursoPrioritario(servidor);
                 const estado = severidade(servidor);
                 const estadoClasse = classeSeveridade(estado);
+                const item = document.createElement('article');
                 item.className = `ranking-item ${estadoClasse}`;
-                item.title = servidor.status === 'offline' ? `${servidor.id}: offline` : `${servidor.id}: ${pior ? `${pior.recurso.toUpperCase()} ${pior.valor}% · ${severidade(servidor, pior.recurso)}` : 'Sem leitura válida'}`;
-
-                [
-                    ['ranking-posicao', `#${indice + 1}`],
-                    ['ranking-servidor', servidor.id],
-                    ['ranking-recurso', pior ? pior.recurso.toUpperCase() : 'Sem leitura'],
-                    ['ranking-valor', servidor.status === 'offline' ? 'OFFLINE' : pior ? `${pior.valor}% · ${estado}` : 'SEM DADOS']
-                ].forEach(([classe, texto]) => {
-                    const span = document.createElement('span');
-                    span.className = classe;
-                    span.textContent = texto;
-                    item.appendChild(span);
-                });
+                const topo = document.createElement('div');
+                topo.className = 'ranking-item__topo';
+                const nome = document.createElement('strong');
+                nome.className = 'ranking-servidor';
+                nome.textContent = servidor.id;
+                const estadoTexto = document.createElement('span');
+                estadoTexto.className = 'ranking-estado';
+                estadoTexto.textContent = servidor.status === 'offline' ? 'OFFLINE' : estado === 'saudavel' ? 'SEM ALERTA NA LEITURA' : `LEITURA ${estado.toUpperCase()}`;
+                topo.append(nome, estadoTexto);
+                const descricao = document.createElement('p');
+                descricao.className = 'ranking-recurso';
+                descricao.textContent = servidor.status === 'offline' ? 'Sem leitura atual; indisponibilidade no cenário mock.'
+                    : pior ? `${pior.recurso.toUpperCase()} ${pior.valor}% · ${pior.estado} (atenção ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso].atencao}%, crítico ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso].critico}%)`
+                      : 'Sem dados de recurso para classificar.';
+                const duracao = document.createElement('small');
+                duracao.className = 'ranking-duracao';
+                duracao.textContent = 'Duração e confirmação operacional não disponíveis no histórico mock.';
+                const investigar = document.createElement('a');
+                investigar.className = 'ranking-acao';
+                investigar.href = `../especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(servidor.id)}${pior ? `&recurso=${pior.recurso}` : ''}`;
+                investigar.textContent = 'Investigar →';
+                investigar.setAttribute('aria-label', `Investigar ${servidor.id}${pior ? `, ${pior.recurso} ${pior.valor}%` : ''}`);
+                item.append(topo, descricao, duracao, investigar);
                 return item;
             }));
         }
@@ -353,7 +371,13 @@
                     },
                     tooltip: {
                         callbacks: {
-                            label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}% · ${window.InfraTechAlertas.classificar(ctx.dataset.label.toLowerCase(), ctx.parsed.y, servidoresOnline[ctx.dataIndex].id)}`,
+                            label: (ctx) => {
+                                const recurso = ctx.dataset.label.toLowerCase();
+                                const servidor = servidoresOnline[ctx.dataIndex];
+                                const limite = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                                const estado = window.InfraTechAlertas.classificar(recurso, ctx.parsed.y, servidor.id);
+                                return ` ${servidor.id} · ${ctx.dataset.label}: ${ctx.parsed.y}% · leitura ${estado} · atenção ${limite.atencao}% · crítico ${limite.critico}%`;
+                            },
                         },
                     },
                 },

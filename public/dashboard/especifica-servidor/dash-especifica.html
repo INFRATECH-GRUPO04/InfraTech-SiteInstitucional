@@ -118,20 +118,19 @@
                     </div>
                     <div class="texto-servidor">
                         <div class="texto-superior">
-                            <h4>SRV-BR-01</h4>
+                            <h4 id="servidorSelecionadoNome">SRV-BR-01</h4>
                             <span class="ponto-status"></span>
-                            <span class="texto-negrito">Online</span>
+                            <span class="texto-negrito" id="servidorSelecionadoStatus">Online</span>
                         </div>
                         <div class="texto-inferior">
-                            <h5>São Paulo</h5>
+                            <h5 id="servidorSelecionadoCidade">São Paulo</h5>
                         </div>
                     </div>
                 </div>
                 <div class="visao-geral">
                     <div class="conteudo-visao-geral">
-                        <h5>Visão Geral - Última Atualização: 11:35h</h5>
+                        <h5 id="resumoServidorLeitura">Visão Geral - Última Atualização: 11:35h</h5>
                     </div>
-                    <button class="botao-configurar-alertas" id="abrir-config-alertas" type="button" aria-label="Configurar limites de alerta" title="Configurar limites de alerta" aria-haspopup="dialog">⚙</button>
                 </div>
             </div>
 
@@ -141,19 +140,19 @@
                         <div class="cabecalho-kpi"><h3>CPU — Uso atual</h3><span aria-hidden="true">▦</span></div>
                         <div class="porcentagem"><h2 id="kpiCpuMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="cpu"></div>
-                        <p class="meta-kpi">Leitura registrada · SRV-BR-01 · 25 out</p>
+                        <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-ram">
                         <div class="cabecalho-kpi"><h3>RAM — Uso atual</h3><span aria-hidden="true">▰</span></div>
                         <div class="porcentagem"><h2 id="kpiRamMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="ram"></div>
-                        <p class="meta-kpi">Leitura registrada · SRV-BR-01 · 25 out</p>
+                        <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-disco">
                         <div class="cabecalho-kpi"><h3>Disco — Uso atual</h3><span aria-hidden="true">▱</span></div>
                         <div class="porcentagem"><h2 id="kpiDiscoMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="disco"></div>
-                        <p class="meta-kpi">Leitura registrada · SRV-BR-01 · 25 out</p>
+                        <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-critico">
                         <div class="cabecalho-kpi"><h3>Total de Horas em Estado Crítico</h3><span aria-hidden="true">◷</span></div>
@@ -179,11 +178,21 @@
                     <div class="subtitulo">
                         <h4 id="subtituloGraficoRecursos">CPU, RAM e Disco · 25 out 2026 · 00–24h · uso em %</h4>
                     </div>
+                    <div class="filtros-periodo" role="group" aria-label="Período do histórico de recursos">
+                        <button type="button" disabled title="O mock não possui amostras deste período">1h</button>
+                        <button type="button" disabled title="O mock não possui amostras deste período">6h</button>
+                        <button type="button" class="ativo" aria-pressed="true">24h</button>
+                        <button type="button" disabled title="O mock não possui histórico por servidor para 7 dias">7 dias</button>
+                    </div>
                     <div class="container-canvas-recursos">
                         <canvas id="graficoRecursos"></canvas>
                     </div>
                 </div>
             </div>
+            <section class="analise-comportamento" aria-labelledby="tituloAnaliseComportamento">
+                <h3 id="tituloAnaliseComportamento">Análise de comportamento</h3>
+                <ul id="observacoesComportamento"><li>As observações serão calculadas a partir das séries disponíveis.</li></ul>
+            </section>
             <div class="container-rede-e-alertas">
                 <section class="container-rede" aria-labelledby="tituloGraficoBanda">
                     <div class="titulo"><h3 id="tituloGraficoBanda">Uso de Banda ao Longo do Dia</h3></div>
@@ -194,12 +203,12 @@
                     <div class="cabecalho-matriz">
                         <div>
                             <h3 id="tituloMatrizCalor">Matriz de Calor</h3>
-                            <p>Picos semanais agregados; o conjunto atual não separa servidor nem recurso por faixa.</p>
+                            <p>Mock da frota por faixa horária; severidade pelo padrão global, pois o agregado não separa servidores.</p>
                         </div>
                         <span class="periodo-matriz">19–25 out 2026</span>
                     </div>
                     <div class="legenda-matriz" aria-label="Classificação da matriz">
-                        <span>A matriz mostra picos agregados; os dados não identificam CPU, RAM ou Disco por célula. Por isso, não atribuímos severidade.</span>
+                        <span>Valores simulados compartilhados. A severidade usa o limite global de cada recurso; limites individuais do servidor não alteram este agregado. Passe o cursor para ver o recurso e os limites.</span>
                     </div>
                     <div class="tabela-matriz-wrap">
                         <table class="tabela-matriz">
@@ -219,33 +228,6 @@
             </div>
         </div>
     </div>
-    <dialog class="modal-limites" id="modalLimites" aria-labelledby="tituloLimites">
-      <form id="formLimites" method="dialog">
-        <header class="modal-limites__cabecalho">
-          <div><p>MONITORAMENTO · <span id="servidorConfigNome">SRV-BR-01</span></p><h2 id="tituloLimites">Personalizar limites de alerta</h2>
-            <span>Defina os níveis de utilização considerados normais, de atenção e críticos.</span></div>
-          <button type="button" id="fecharLimites" aria-label="Fechar">×</button>
-        </header>
-        <div class="modal-limites__ajuda"><button id="botaoAjudaLimites" type="button" aria-expanded="false" aria-controls="textoAjudaLimites">?</button>
-          <p id="textoAjudaLimites" hidden>As faixas classificam a utilização observada na última leitura registrada. Picos só devem gerar alertas confirmados após persistirem por tempo suficiente. A série histórica disponível nesta tela não tem amostras recentes por minuto para confirmar duração.</p>
-        </div>
-        <div class="modal-limites__legenda"><span>● Saudável</span><span>● Atenção</span><span>● Crítico</span></div>
-        <div class="modal-limites__grade">
-          <section class="limite-recurso" data-recurso-limite="cpu"><header><strong>CPU</strong><button type="button" class="ajuda-recurso" aria-label="Sobre CPU" data-explicacao="Uso sustentado elevado pode indicar saturação do processador; um pico isolado não confirma problema.">?</button><span>Unidade: %</span></header><label>Atenção começa em <output id="out-cpu-a">70%</output></label><input type="range" min="0" max="99" step="1" value="70" data-faixa="cpu" data-nivel="atencao" aria-label="CPU início de atenção"><label>Crítico começa em <output id="out-cpu-c">85%</output></label><input type="range" min="1" max="100" step="1" value="85" data-faixa="cpu" data-nivel="critico" aria-label="CPU início crítico"><p id="faixa-cpu">Saudável 0–69 · Atenção 70–84 · Crítico 85–100%</p><p class="previa-limite" id="previa-cpu"></p></section>
-          <section class="limite-recurso" data-recurso-limite="ram"><header><strong>RAM</strong><button type="button" class="ajuda-recurso" aria-label="Sobre RAM" data-explicacao="Uso de memória deve ser avaliado junto com memória disponível e pressão de swap. Cache recuperável não deve ser tratado como falta automaticamente.">?</button><span>Unidade: %</span></header><label>Atenção começa em <output id="out-ram-a">75%</output></label><input type="range" min="0" max="99" step="1" value="75" data-faixa="ram" data-nivel="atencao" aria-label="RAM início de atenção"><label>Crítico começa em <output id="out-ram-c">90%</output></label><input type="range" min="1" max="100" step="1" value="90" data-faixa="ram" data-nivel="critico" aria-label="RAM início crítico"><p id="faixa-ram">Saudável 0–74 · Atenção 75–89 · Crítico 90–100%</p><p class="previa-limite" id="previa-ram"></p></section>
-          <section class="limite-recurso" data-recurso-limite="disco"><header><strong>Disco</strong><button type="button" class="ajuda-recurso" aria-label="Sobre Disco" data-explicacao="Este limite trata da ocupação do armazenamento, não do desempenho de I/O ou da velocidade de leitura e gravação.">?</button><span>Unidade: % ocupado</span></header><label>Atenção começa em <output id="out-disco-a">80%</output></label><input type="range" min="0" max="99" step="1" value="80" data-faixa="disco" data-nivel="atencao" aria-label="Disco início de atenção"><label>Crítico começa em <output id="out-disco-c">90%</output></label><input type="range" min="1" max="100" step="1" value="90" data-faixa="disco" data-nivel="critico" aria-label="Disco início crítico"><p id="faixa-disco">Saudável 0–79 · Atenção 80–89 · Crítico 90–100%</p><p class="previa-limite" id="previa-disco"></p></section>
-          <section class="limite-recurso" data-recurso-limite="rede"><header><strong>Rede</strong><button type="button" class="ajuda-recurso" aria-label="Sobre Rede" data-explicacao="A rede é classificada pela porcentagem da capacidade configurada, não por Mbps absolutos. Sem capacidade do link, mostramos Mbps sem avaliar saturação.">?</button><span>Unidade: % da capacidade</span></header><label>Atenção começa em <output id="out-rede-a">70%</output></label><input type="range" min="0" max="99" step="1" value="70" data-faixa="rede" data-nivel="atencao" aria-label="Rede início de atenção"><label>Crítico começa em <output id="out-rede-c">90%</output></label><input type="range" min="1" max="100" step="1" value="90" data-faixa="rede" data-nivel="critico" aria-label="Rede início crítico"><p id="faixa-rede">Saudável 0–69 · Atenção 70–89 · Crítico 90–100%</p><p class="previa-limite" id="previa-rede"></p></section>
-        </div>
-        <fieldset class="escopo-limites"><legend>Aplicar estes limites</legend>
-          <label><input type="radio" name="escopoLimites" value="servidor" checked> Somente neste servidor (SRV-BR-01)</label>
-          <label><input type="radio" name="escopoLimites" value="global"> Padrão global para servidores sem limites próprios</label>
-          <label class="substituir-limites"><input type="checkbox" id="substituirIndividuais"> Aplicar também aos servidores com limites individuais</label>
-        </fieldset>
-        <p class="modal-limites__aviso" id="avisoLimites">Com sessão da empresa, os limites são sincronizados pelo backend. Acesso direto sem login salva no navegador atual.</p>
-        <footer><button type="button" id="restaurarLimites">Restaurar padrão</button><span><button type="button" id="cancelarLimites">Cancelar</button><button class="salvar-limites" type="submit">Salvar limites</button></span></footer>
-      </form>
-    </dialog>
-    <div class="toast-limites" id="alertaLimitesToast" role="status" aria-live="polite" hidden></div>
     <script src="dash-especifica.js"></script>
 </body>
 

@@ -1,13 +1,14 @@
 /* Fonte única das leituras compartilhadas pelas dashboards. */
 window.InfraTechDashboardData = {
+  origem: 'mock',
   dataLeitura: '2026-10-25T11:35:00',
   servidores: [
-    { id: 'SRV-BR-01', cidade: 'São Paulo', status: 'online', cpu: 42, ram: 67, disco: 54, disponibilidade: 99.8, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-02', cidade: 'Rio de Janeiro', status: 'online', cpu: 28, ram: 51, disco: 38, disponibilidade: 99.5, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-03', cidade: 'Curitiba', status: 'online', cpu: 78, ram: 83, disco: 71, disponibilidade: 96.2, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-01', cidade: 'São Paulo', status: 'online', cpu: 42, ram: 67, disco: 54, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-02', cidade: 'Rio de Janeiro', status: 'online', cpu: 28, ram: 51, disco: 38, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-03', cidade: 'Curitiba', status: 'online', cpu: 78, ram: 83, disco: 71, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
     { id: 'SRV-BR-04', cidade: 'Brasília', status: 'offline', cpu: null, ram: null, disco: null, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-05', cidade: 'Recife', status: 'online', cpu: 35, ram: 44, disco: 29, disponibilidade: 98.7, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-06', cidade: 'Salvador', status: 'online', cpu: 21, ram: 38, disco: 45, disponibilidade: 99.1, memoriaTotalGb: 32, discoTotalGb: 400 }
+    { id: 'SRV-BR-05', cidade: 'Recife', status: 'online', cpu: 35, ram: 44, disco: 29, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-06', cidade: 'Salvador', status: 'online', cpu: 21, ram: 38, disco: 45, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 }
   ],
   historicoServidor: {
     'SRV-BR-01': {
@@ -17,26 +18,73 @@ window.InfraTechDashboardData = {
       disco: [43, 37, 40, 43, 51, 47, 46, 52, 58, 64, 97, 74, 54]
     }
   },
+  historicoRedeServidor: {
+    'SRV-BR-01': {
+      horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
+      uploadMbps: [12, 20, 42, 52, 48, 25, 16, 18],
+      downloadMbps: [6, 15, 28, 36, 32, 17, 10, 12]
+    }
+  },
   picoSemanalFrota: [
-    { dia: 'Segunda · 19/10', picos: [56, 68, 84, 48], minutosCriticos: [0, 0, 0, 0] },
-    { dia: 'Terça · 20/10', picos: [58, 72, 88, 51], minutosCriticos: [0, 0, 0, 0] },
-    { dia: 'Quarta · 21/10', picos: [61, 76, 91, 55], minutosCriticos: [0, 0, 60, 0] },
-    { dia: 'Quinta · 22/10', picos: [60, 79, 92, 57], minutosCriticos: [0, 0, 70, 0] },
-    { dia: 'Sexta · 23/10', picos: [64, 85, 96, 68], minutosCriticos: [0, 0, 90, 0] },
-    { dia: 'Sábado · 24/10', picos: [69, 93, 99, 82], minutosCriticos: [0, 75, 121, 0] },
-    { dia: 'Domingo · 25/10', picos: [65, 86, 97, 77], minutosCriticos: [0, 0, 84, 0] }
+    { dia: 'Segunda · 19/10', picos: [56, 68, 84, 48] },
+    { dia: 'Terça · 20/10', picos: [58, 72, 88, 51] },
+    { dia: 'Quarta · 21/10', picos: [61, 76, 91, 55] },
+    { dia: 'Quinta · 22/10', picos: [60, 79, 92, 57] },
+    { dia: 'Sexta · 23/10', picos: [64, 85, 96, 68] },
+    { dia: 'Sábado · 24/10', picos: [69, 93, 99, 82] },
+    { dia: 'Domingo · 25/10', picos: [65, 86, 97, 77] }
   ],
   rede: {
     horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
     mbps: [18, 35, 70, 88, 80, 42, 26, 30],
     picoMbps: 88,
-    capacidadeMbps: null
-  },
-  prioridade: ['SRV-BR-03', 'SRV-BR-04', 'SRV-BR-01', 'SRV-BR-02', 'SRV-BR-06', 'SRV-BR-05']
+    capacidadeMbps: null,
+    escopo: 'SRV-BR-01',
+    uploadMbps: [12, 20, 42, 52, 48, 25, 16, 18],
+    downloadMbps: [6, 15, 28, 36, 32, 17, 10, 12]
+  }
 };
 
-/* Regras compartilhadas pelas três dashboards. A persistência é local até existir
-   endpoint de preferências no backend; as páginas sempre leem esta mesma fonte. */
+/* Pequena API de leitura para manter páginas consumidoras desacopladas do formato do mock. */
+window.InfraTechDashboardData.obterServidores = function () {
+  return this.servidores;
+};
+window.InfraTechDashboardData.obterServidorPorId = function (id) {
+  return this.servidores.find((servidor) => servidor.id === id) || null;
+};
+window.InfraTechDashboardData.obterHistoricoServidor = function (id) {
+  return this.historicoServidor[id] || null;
+};
+window.InfraTechDashboardData.obterHistoricoRedeServidor = function (id) {
+  return this.historicoRedeServidor[id] || null;
+};
+window.InfraTechDashboardData.obterResumoFrota = function () {
+  const servidores = this.servidores;
+  const offline = servidores.filter((servidor) => servidor.status === 'offline');
+  const online = servidores.filter((servidor) => servidor.status === 'online');
+  const atencao = online.filter((servidor) => ['cpu', 'ram', 'disco'].some((recurso) =>
+    window.InfraTechAlertas.classificar(recurso, servidor[recurso], servidor.id) === 'atencao'));
+  const criticos = online.filter((servidor) => ['cpu', 'ram', 'disco'].some((recurso) =>
+    window.InfraTechAlertas.classificar(recurso, servidor[recurso], servidor.id) === 'critico'));
+  return { total: servidores.length, online, offline, atencao, criticos };
+};
+window.InfraTechDashboardData.picoSemanalFrota = window.InfraTechDashboardData.picoSemanalFrota.map((dia, diaIndex) => ({
+  ...dia,
+  picosPorRecurso: dia.picos.map((pico, faixaIndex) => {
+    const responsavel = (diaIndex + faixaIndex) % 3;
+    const reducoes = [6 + ((diaIndex + faixaIndex) % 3), 12 + ((diaIndex * 2 + faixaIndex) % 4)];
+    const valores = [Math.max(0, pico - reducoes[0]), Math.max(0, pico - reducoes[1])];
+    const metrica = {};
+    let cursor = 0;
+    ['cpu', 'ram', 'disco'].forEach((recurso, indice) => {
+      metrica[recurso] = indice === responsavel ? pico : valores[cursor++];
+    });
+    return metrica;
+  })
+}));
+
+/* Regras compartilhadas pelas três dashboards; sincronização usa backend autenticado e
+   armazenamento local como fallback para os acessos diretos sem sessão. */
 window.InfraTechAlertas = (() => {
   const CHAVE_GLOBAL = 'infratech.alertas.global.v2';
   const CHAVE_SERVIDORES = 'infratech.alertas.servidores.v2';
@@ -209,9 +257,18 @@ window.InfraTechAlertas = (() => {
     }
     const condicao = precisaRecuperar ? (amostra) => amostra.valor < limiteRecuperacao
       : (amostra) => ordem[classificar(recurso, amostra.valor, serverId)] >= ordem[alvo];
-    const trecho = validas.filter(condicao);
-    const spansValidos = trecho.length > 1 && trecho[trecho.length - 1].instante - trecho[0].instante >= 60000
-      && trecho.every((amostra, indice) => indice === 0 || amostra.instante - trecho[indice - 1].instante <= 60000);
+    // Uma amostra que sai da condição ou um intervalo sem coleta quebra a sequência.
+    let trecho = [];
+    let spansValidos = false;
+    for (const amostra of validas) {
+      const anterior = trecho[trecho.length - 1];
+      if (!condicao(amostra) || (anterior && amostra.instante - anterior.instante > 60000)) {
+        if (trecho.length > 1 && trecho[trecho.length - 1].instante - trecho[0].instante >= 60000) spansValidos = true;
+        trecho = [];
+      }
+      if (condicao(amostra)) trecho.push(amostra);
+    }
+    if (trecho.length > 1 && trecho[trecho.length - 1].instante - trecho[0].instante >= 60000) spansValidos = true;
     if (!spansValidos) return { estado: `${alvo}-pendente`, media5min, confirmado: false };
     return { estado: precisaRecuperar ? atual : alvo, media5min, confirmado: true };
   }

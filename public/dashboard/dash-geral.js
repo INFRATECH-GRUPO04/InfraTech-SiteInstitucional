@@ -7,6 +7,18 @@ function classificarMetrica(recurso, valor, servidorId) { return window.InfraTec
 function obterCorAlerta(recurso, valor) { return CORES_ALERTA[classificarMetrica(recurso, valor)] || CORES_ALERTA['sem-dados']; }
 function faixaTexto(limites, recurso) { return `Atenção ≥${limites[recurso].atencao}% · Crítico ≥${limites[recurso].critico}%`; }
 
+function gerarResumoExecutivo(dados, servidoresComLeituraAtencao, offline) {
+  const semFaixa = dados.servidores.filter((servidor) => servidor.status === 'online'
+    && !servidoresComLeituraAtencao.some((item) => item.id === servidor.id));
+  const resumo = document.getElementById('resumoExecutivo');
+  if (!resumo) return;
+  const totalSemFaixa = semFaixa.length;
+  const frases = [`${dados.servidores.length} servidores na última leitura: ${totalSemFaixa} sem leitura que exija atenção, ${servidoresComLeituraAtencao.length} com leitura em atenção ou crítica e ${offline.length} offline.`];
+  const prioridade = offline[0] || servidoresComLeituraAtencao[0];
+  if (prioridade) frases.push(`${prioridade.id} é a prioridade de investigação${prioridade.status === 'offline' ? ' por indisponibilidade' : ' por utilização elevada'}.`);
+  resumo.textContent = frases.join(' ');
+}
+
 function atualizarCoresMetricas() {
   const dados = window.InfraTechDashboardData;
   if (!dados) return;
@@ -23,6 +35,17 @@ function atualizarCoresMetricas() {
       const celula = linha.querySelectorAll('.celula-metrica__valor')[indice];
       const barra = linha.querySelectorAll('.barra-progresso__fill')[indice];
       const faixa = classificarMetrica(recurso, valor, servidor.id);
+      const celulaMetricas = linha.querySelectorAll('.celula-metrica')[indice];
+      let estadoTexto = celulaMetricas && celulaMetricas.querySelector('.celula-metrica__estado');
+      if (celulaMetricas && !estadoTexto) {
+        estadoTexto = document.createElement('small');
+        estadoTexto.className = 'celula-metrica__estado';
+        celulaMetricas.append(estadoTexto);
+      }
+      if (estadoTexto) {
+        estadoTexto.className = `celula-metrica__estado metric-color--${faixa}`;
+        estadoTexto.textContent = faixa === 'saudavel' ? 'Saudável' : faixa === 'atencao' ? 'Atenção' : faixa === 'critico' ? 'Crítico' : 'Sem dados';
+      }
       estados.push(faixa);
       if (celula) {
         celula.classList.remove('metric-color--saudavel', 'metric-color--atencao', 'metric-color--critico', 'metric-color--sem-dados');
@@ -45,16 +68,43 @@ function atualizarCoresMetricas() {
   });
   const online = dados.servidores.filter((servidor) => servidor.status !== 'offline').length;
   const offline = dados.servidores.length - online;
+  const servidoresOffline = dados.servidores.filter((servidor) => servidor.status === 'offline');
+  const servidoresComAtencao = dados.servidores.filter((servidor) => servidor.status === 'online'
+    && ['cpu', 'ram', 'disco'].some((recurso) => ['atencao', 'critico'].includes(classificarMetrica(recurso, servidor[recurso], servidor.id))));
+  gerarResumoExecutivo(dados, servidoresComAtencao, servidoresOffline);
   const resumoAtencao = document.getElementById('resumo-atencao');
   const resumoOffline = document.getElementById('resumo-offline');
   if (resumoAtencao) resumoAtencao.textContent = `• ${totalAtencao} atenção · última leitura`;
   if (resumoOffline) resumoOffline.textContent = `• ${offline} offline`;
   const problema = document.getElementById('kpi-problemas');
   if (problema) problema.textContent = totalAtencao + offline;
+  const offlineBadge = document.getElementById('servidores-offline-badge');
+  if (offlineBadge) offlineBadge.textContent = offline ? `↗ ${offline} offline` : 'Todos online';
+  const offlineDetalhe = document.getElementById('servidores-offline-detalhe');
+  const linkOffline = document.getElementById('investigar-offline');
+  if (offlineDetalhe) offlineDetalhe.textContent = offline ? `${dados.servidores.find((servidor) => servidor.status === 'offline')?.id} offline` : 'Nenhum servidor offline';
+  if (linkOffline) {
+    linkOffline.hidden = !offline;
+    if (offline) linkOffline.href = `./especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(dados.servidores.find((servidor) => servidor.status === 'offline').id)}`;
+  }
   const problemasBadge = document.getElementById('alerta-problemas-badge');
-  if (problemasBadge) problemasBadge.textContent = `${offline} offline · ${totalAtencao} em atenção`;
+  if (problemasBadge) problemasBadge.textContent = `${offline} offline · ${totalAtencao} ${totalAtencao === 1 ? 'servidor com leitura em atenção/crítica' : 'servidores com leitura em atenção/crítica'}`;
   const problemasDetalhe = document.getElementById('problemas-detalhe');
-  if (problemasDetalhe) problemasDetalhe.textContent = `${offline} offline · ${totalAtencao} servidor(es) com recursos em atenção (última leitura)`;
+  if (problemasDetalhe) {
+    const atencaoPrincipal = dados.servidores.find((servidor) => servidor.status === 'online'
+      && ['cpu', 'ram', 'disco'].some((recurso) => ['atencao', 'critico'].includes(classificarMetrica(recurso, servidor[recurso], servidor.id))));
+    const recursoPrincipal = atencaoPrincipal && ['cpu', 'ram', 'disco'].map((recurso) => ({ recurso, valor: atencaoPrincipal[recurso], estado: classificarMetrica(recurso, atencaoPrincipal[recurso], atencaoPrincipal.id) }))
+      .filter((item) => ['atencao', 'critico'].includes(item.estado)).sort((a, b) => (a.estado === 'critico' ? 1 : 0) - (b.estado === 'critico' ? 1 : 0)).pop();
+    const detalhePrincipal = atencaoPrincipal && recursoPrincipal ? `${atencaoPrincipal.id}: ${recursoPrincipal.recurso.toUpperCase()} ${recursoPrincipal.valor}% (${recursoPrincipal.estado})` : '';
+    problemasDetalhe.textContent = [offline ? `${offline} indisponível` : '', totalAtencao ? `${totalAtencao} com leitura de recurso em atenção` : '', 'incidente persistente sem confirmação temporal', detalhePrincipal].filter(Boolean).join(' · ');
+  }
+  const saudaveisNaLeitura = online - totalAtencao;
+  const contagemSaudavel = document.getElementById('saude-online');
+  const contagemAtencao = document.getElementById('saude-atencao');
+  const contagemOffline = document.getElementById('saude-offline');
+  if (contagemSaudavel) contagemSaudavel.textContent = saudaveisNaLeitura;
+  if (contagemAtencao) contagemAtencao.textContent = totalAtencao;
+  if (contagemOffline) contagemOffline.textContent = offline;
   if (graficoSaude) {
     graficoSaude.data.datasets[0].data = [online - totalAtencao, totalAtencao, offline];
     graficoSaude.update();
@@ -167,6 +217,9 @@ function aplicarLeiturasFrota() {
 
     linha.classList.toggle('tabela-servidores__linha--atencao', false);
     linha.classList.toggle('tabela-servidores__linha--offline', servidor.status === 'offline');
+    const nomeServidor = linha.querySelector('.celula-servidor__nome');
+    if (nomeServidor) nomeServidor.textContent = servidor.id;
+    if (linha.cells[1]) linha.cells[1].textContent = servidor.cidade;
     if (status) {
       status.className = `status status--${servidor.status === 'offline' ? 'offline' : 'online'}`;
       status.textContent = servidor.status === 'offline' ? 'Offline' : 'Online';
@@ -200,10 +253,16 @@ function aplicarLeiturasFrota() {
       }
       if (detalheDisponibilidade) detalheDisponibilidade.remove();
     } else if (disponibilidade) {
-      const estavel = servidor.disponibilidade >= 99;
-      disponibilidade.className = `disponibilidade disponibilidade--${estavel ? 'estavel' : 'instavel'}`;
-      disponibilidade.textContent = estavel ? 'Estável' : 'Instável';
-      if (detalheDisponibilidade) detalheDisponibilidade.textContent = `${servidor.disponibilidade.toFixed(1)}% do tempo`;
+      if (servidor.disponibilidade == null) {
+        disponibilidade.className = 'disponibilidade disponibilidade--sem-dados';
+        disponibilidade.textContent = 'Sem histórico';
+        if (detalheDisponibilidade) detalheDisponibilidade.textContent = 'Período não informado';
+      } else {
+        const estavel = servidor.disponibilidade >= 99;
+        disponibilidade.className = `disponibilidade disponibilidade--${estavel ? 'estavel' : 'instavel'}`;
+        disponibilidade.textContent = estavel ? 'Estável' : 'Instável';
+        if (detalheDisponibilidade) detalheDisponibilidade.textContent = `${servidor.disponibilidade.toFixed(1)}% no período informado`;
+      }
     }
   });
 

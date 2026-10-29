@@ -320,6 +320,8 @@ header.cabecalho {
   color: #7c3aed;
 }
 
+.kpi-card__alerta--neutro { background-color: #f1f5f9; color: #64748b; }
+
 .kpi-card__valor {
   font-size: 32px;
   font-weight: 700;
@@ -547,6 +549,8 @@ header.cabecalho {
   font-weight: 600;
 }
 
+.celula-metrica__estado { font-size: 9.5px; line-height: 1.15; font-weight: 600; }
+
 .celula-metrica__valor--ok {
   color: #059669;
 }
@@ -606,6 +610,8 @@ header.cabecalho {
   font-weight: 700;
   font-size: 12.5px;
 }
+
+.disponibilidade--sem-dados { color: #64748b; font-weight: 600; font-size: 12.5px; }
 
 .disponibilidade__detalhe {
   color: var(--texto-card-apagado);
