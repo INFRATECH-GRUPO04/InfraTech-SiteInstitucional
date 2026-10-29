@@ -52,6 +52,11 @@
 .estado--ok { --estado: var(--verde); }
 .estado--atencao { --estado: var(--laranja); }
 .estado--critico { --estado: var(--vermelho); }
+.estado--sem-dados { --estado: #64748b; }
+.kpi.estado--ok { --estado: #22c55e; }
+.kpi.estado--atencao { --estado: #f59e0b; }
+.kpi.estado--critico { --estado: #ef4444; }
+.kpi.estado--sem-dados { --estado: #64748b; }
 
 .ponto {
   flex-shrink: 0;

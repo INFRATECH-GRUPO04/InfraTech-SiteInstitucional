@@ -113,6 +113,42 @@ function listarComponentesPorServidor(req, res) {
         });
 }
 
+function listarLimitesGlobais(req, res) {
+    var idEmpresa = Number(req.params.idEmpresa);
+    if (!Number.isInteger(idEmpresa) || idEmpresa <= 0) return res.status(400).json({ erro: 'Empresa inválida.' });
+    servidorModel.listarLimitesGlobais(idEmpresa)
+        .then(function (resultado) { res.status(200).json(resultado); })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(503).json({ erro: 'Configuração global indisponível. Verifique a atualização do banco.' });
+        });
+}
+
+function salvarLimitesGlobais(req, res) {
+    var idEmpresa = Number(req.params.idEmpresa);
+    var limites = req.body && req.body.limites;
+    var recursos = ['cpu', 'ram', 'disco', 'rede'];
+    if (!Number.isInteger(idEmpresa) || idEmpresa <= 0 || !limites) return res.status(400).json({ erro: 'Empresa ou limites inválidos.' });
+    var valido = recursos.every(function (recurso) {
+        var faixa = limites[recurso];
+        return faixa && Number.isInteger(Number(faixa.atencao)) && Number.isInteger(Number(faixa.critico))
+            && Number(faixa.atencao) >= 0 && Number(faixa.critico) <= 100
+            && Number(faixa.atencao) < Number(faixa.critico);
+    });
+    if (!valido) return res.status(400).json({ erro: 'Cada limite de atenção deve ser menor que o crítico, entre 0% e 100%.' });
+    servidorModel.salvarLimitesGlobais(idEmpresa, limites)
+        .then(function () {
+            return req.body.substituirIndividuais
+                ? servidorModel.substituirLimitesIndividuais(idEmpresa, limites)
+                : Promise.resolve();
+        })
+        .then(function () { res.status(200).json({ ok: true }); })
+        .catch(function (erro) {
+            console.log(erro);
+            res.status(503).json({ erro: 'Não foi possível salvar no banco. A configuração local continua disponível.' });
+        });
+}
+
 function atualizar(req, res) {
     var idServidor = req.params.idServidor;
     var nome = req.body.nomeServer;
@@ -192,6 +228,8 @@ module.exports = {
     cadastrarComponente,
     listar,
     listarComponentesPorServidor,
+    listarLimitesGlobais,
+    salvarLimitesGlobais,
     atualizar,
     atualizarComponente,
     excluir,
