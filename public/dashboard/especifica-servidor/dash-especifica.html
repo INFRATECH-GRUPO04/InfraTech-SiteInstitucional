@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="../../compartilhado/css/global.css">
     <link rel="stylesheet" href="../../paginas/pos-login/painel/painel.css">
     <link rel="stylesheet" href="dash-especifica.css">
+    <link rel="stylesheet" href="../dashboard-global.css">
     <script src="../../compartilhado/js/sessao.js"></script>
+    <script src="../dashboard-data.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
@@ -17,7 +19,7 @@
     <title>Dashboard Específica</title>
 </head>
 
-<body class="pagina-painel">
+<body class="pagina-painel dashboard-compartilhada">
 
     <!-- SIDEBAR -->
     <aside class="header-left">
@@ -81,6 +83,15 @@
     </aside>
 
     <div class="container-dash">
+        <header class="dashboard-welcome">
+            <h1 class="dashboard-welcome__titulo">Bem-vindo, <span id="nome_usuario">Usuário</span>
+                <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
+            </h1>
+            <div class="dashboard-welcome__meta">
+                <span>InfraTech · Monitoramento</span>
+                <time class="dashboard-welcome__hora" id="relogio"></time>
+            </div>
+        </header>
         <header class="topbar">
         <h1 class="topbar__titulo">Engenharia de Dados & Telemetria</h1>
 
@@ -126,22 +137,22 @@
             <div class="container-recursos">
                 <div class="container-kpis">
                     <article class="kpi kpi-cpu">
-                        <div class="cabecalho-kpi"><h3>CPU — Média diária</h3><span aria-hidden="true">▦</span></div>
+                        <div class="cabecalho-kpi"><h3>CPU — Uso atual</h3><span aria-hidden="true">▦</span></div>
                         <div class="porcentagem"><h2 id="kpiCpuMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="cpu"></div>
-                        <p class="meta-kpi">25 out · 00–24h · utilização média</p>
+                        <p class="meta-kpi">Leitura atual · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-ram">
-                        <div class="cabecalho-kpi"><h3>RAM — Média diária</h3><span aria-hidden="true">▰</span></div>
+                        <div class="cabecalho-kpi"><h3>RAM — Uso atual</h3><span aria-hidden="true">▰</span></div>
                         <div class="porcentagem"><h2 id="kpiRamMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="ram"></div>
-                        <p class="meta-kpi">25 out · 00–24h · utilização média</p>
+                        <p class="meta-kpi">Leitura atual · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-disco">
-                        <div class="cabecalho-kpi"><h3>Disco — Média diária</h3><span aria-hidden="true">▱</span></div>
+                        <div class="cabecalho-kpi"><h3>Disco — Uso atual</h3><span aria-hidden="true">▱</span></div>
                         <div class="porcentagem"><h2 id="kpiDiscoMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="disco"></div>
-                        <p class="meta-kpi">25 out · 00–24h · utilização média</p>
+                        <p class="meta-kpi">Leitura atual · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-critico">
                         <div class="cabecalho-kpi"><h3>Total de Horas em Estado Crítico</h3><span aria-hidden="true">◷</span></div>
@@ -182,7 +193,7 @@
                     <div class="cabecalho-matriz">
                         <div>
                             <h3 id="tituloMatrizCalor">Matriz de Calor</h3>
-                            <p>Pico máximo de CPU, RAM ou Disco em cada faixa do dia.</p>
+                            <p>Pico semanal da frota: maior uso entre CPU, RAM e Disco por faixa.</p>
                         </div>
                         <span class="periodo-matriz">19–25 out 2026</span>
                     </div>

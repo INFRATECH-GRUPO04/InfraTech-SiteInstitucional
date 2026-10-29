@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --dashboard-fundo: #080f1a;
+  --dashboard-fonte: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --dashboard-raio-card: 12px;
+  --dashboard-sidebar-width: 240px;
+  --dashboard-verde-positivo: #10b981;
+}
+
+body.dashboard-compartilhada {
+  font-family: var(--dashboard-fonte);
+  background: var(--dashboard-fundo);
+  --largura-sidebar: var(--dashboard-sidebar-width);
+}
+
+body.dashboard-compartilhada .header-left {
+  box-sizing: border-box;
+  flex: 0 0 var(--dashboard-sidebar-width);
+  width: var(--dashboard-sidebar-width);
+  min-width: var(--dashboard-sidebar-width);
+  max-width: var(--dashboard-sidebar-width);
+  flex-shrink: 0;
+}
+
+/* Verde reservado aos valores positivos dentro dos cards de KPI. */
+body.dashboard-compartilhada .kpi.kpi-positivo {
+  --cor: var(--dashboard-verde-positivo);
+  --cor-kpi: var(--dashboard-verde-positivo);
+}
+
+body.dashboard-compartilhada .kpi.kpi-positivo :is(
+  .kpi-valor,
+  .porcentagem h2,
+  .cabecalho-kpi span
+) {
+  color: var(--dashboard-verde-positivo) !important;
+}
+
+body.dashboard-compartilhada .kpi.kpi-positivo :is(
+  .kpi-barra,
+  .barra-carregamento:not(.barra-carregamento-critica)
+) {
+  background: var(--dashboard-verde-positivo);
+}
+
+body.dashboard-compartilhada .kpi-badge.kpi-badge--positivo {
+  color: #047857;
+  background: #d1fae5;
+}
+
+body.pagina-painel.dashboard-compartilhada .container-dash {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+}
+
+body.dashboard-compartilhada :is(h1, h2, h3, h4, h5, button, input, select) {
+  font-family: var(--dashboard-fonte);
+}
+
+body.dashboard-compartilhada * {
+  font-family: var(--dashboard-fonte) !important;
+}
+
+.dashboard-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  padding: 16px 0;
+  margin: 0 0 20px;
+  border-bottom: 1px solid rgba(0, 207, 255, 0.16);
+}
+
+.dashboard-welcome__titulo,
+.dashboard-welcome .cabecalho-dash__titulo {
+  margin: 0;
+  color: #00d2df;
+  font-size: clamp(1rem, 1.15vw, 1.25rem);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dashboard-welcome__cargo,
+.dashboard-welcome .cabecalho-dash__cargo {
+  color: #d4e3ed;
+  font-size: 0.92em;
+  font-weight: 700;
+}
+
+.dashboard-welcome__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  color: #92abbd;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.dashboard-welcome__hora {
+  color: #648294;
+  font-variant-numeric: tabular-nums;
+}
+
+body.pagina-dash-geral .dashboard-welcome {
+  padding: 0 0 16px;
+}
+
+body.pagina-painel .container-dash > .dashboard-welcome {
+  padding-right: var(--espaco-pagina, 24px);
+  padding-left: var(--espaco-pagina, 24px);
+}
+
+body.dashboard-compartilhada .pagina > .conteudo > .dashboard-welcome {
+  padding-right: calc(20 * var(--u, 1px));
+  padding-left: calc(20 * var(--u, 1px));
+}
+
+body.dashboard-compartilhada :is(
+  .kpi-card,
+  .status-servidores,
+  .cartao,
+  .kpi,
+  .container-grafico-recursos,
+  .container-rede,
+  .container-matriz-calor
+) {
+  border-radius: var(--dashboard-raio-card);
+}
+
+body.dashboard-compartilhada :is(.panorama__titulo, .introducao-titulo, .cartao-titulo, .status-servidores__titulo) {
+  font-family: var(--dashboard-fonte);
+  font-size: clamp(1.15rem, 1.35vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+body.dashboard-compartilhada :is(.container-grafico-recursos .titulo h3, .container-rede .titulo h3, .container-matriz-calor h3) {
+  font-family: var(--dashboard-fonte);
+  font-size: clamp(1rem, 1.15vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+body.dashboard-compartilhada :is(.kpi-card__valor, .kpi-valor, .porcentagem h2) {
+  font-family: var(--dashboard-fonte);
+  font-size: clamp(1.5rem, 2.1vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+body.dashboard-compartilhada .topbar__titulo {
+  font-family: var(--dashboard-fonte);
+  font-size: clamp(1rem, 1.2vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 760px) {
+  body.dashboard-compartilhada .header-left {
+    flex: 0 0 var(--dashboard-sidebar-width) !important;
+    width: var(--dashboard-sidebar-width) !important;
+    min-width: var(--dashboard-sidebar-width) !important;
+    max-width: var(--dashboard-sidebar-width) !important;
+  }
+
+  .dashboard-welcome {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dashboard-welcome__meta {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}

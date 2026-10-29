@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <script src="../../compartilhado/js/sessao.js"></script>
@@ -7,10 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="dashboardV2.css">
     <link rel="stylesheet" href="../../compartilhado/css/global.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="../dashboard-global.css">
+    <script src="../dashboard-data.js"></script>
+    <title>Saúde e Capacidade | InfraTech</title>
 </head>
 
-<body>
+<body class="dashboard-compartilhada">
 
     <div class="pagina">
         <aside class="header-left">
@@ -70,6 +72,15 @@
         </aside>
 
         <div class="conteudo">
+            <header class="dashboard-welcome">
+                <h1 class="dashboard-welcome__titulo">Bem-vindo, <span id="nome_usuario">Usuário</span>
+                    <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
+                </h1>
+                <div class="dashboard-welcome__meta">
+                    <span>InfraTech · Monitoramento</span>
+                    <time class="dashboard-welcome__hora" id="relogio"></time>
+                </div>
+            </header>
             <div class="area-principal">
                 <div class="painel">
 
@@ -83,7 +94,7 @@
                                 real até o problema.
                             </div>
                         </div>
-                        <div class="ultima-leitura">ÚLTIMA LEITURA · HÁ 38 SEG</div>
+                        <div class="ultima-leitura" data-leitura-dashboard>ÚLTIMA LEITURA · 25/10/2026 11:35</div>
                     </div>
 
                     <!-- KPIs -->
@@ -93,9 +104,9 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/relogioIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge">SRV-BR-03 · +23% vs ontem</div>
+                                <div class="kpi-badge" id="kpiCpuBadge">SRV-BR-03 · leitura atual</div>
                             </div>
-                            <div class="kpi-valor">78%</div>
+                            <div class="kpi-valor" id="kpiCpuValor">78%</div>
                             <div class="kpi-titulo">CPU mais pressionada</div>
                             <div class="kpi-alerta">
                                 <span class="ponto"></span>Risco de lentidão se persistir por 5 min
@@ -108,9 +119,9 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/memoriaIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge">SRV-BR-03 · 83% em uso</div>
+                                <div class="kpi-badge" id="kpiRamBadge">SRV-BR-03 · 83% em uso</div>
                             </div>
-                            <div class="kpi-valor">5 GB</div>
+                            <div class="kpi-valor" id="kpiRamValor">5 GB</div>
                             <div class="kpi-titulo">Menor memória disponível</div>
                             <div class="kpi-alerta">
                                 <span class="ponto"></span>Próximo passo: investigar processos
@@ -123,9 +134,9 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/espacoIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge">SRV-BR-03 · 71% ocupado</div>
+                                <div class="kpi-badge" id="kpiDiscoBadge">SRV-BR-03 · 71% ocupado</div>
                             </div>
-                            <div class="kpi-valor">116 GB</div>
+                            <div class="kpi-valor" id="kpiDiscoValor">116 GB</div>
                             <div class="kpi-titulo">Menor espaço disponível</div>
                             <div class="kpi-alerta">
                                 <span class="ponto"></span>Esgota em ~58 dias no ritmo atual
@@ -153,44 +164,7 @@
                                 Ordenado pelo recurso mais severo; clique para abrir o diagnóstico
                             </div>
 
-                            <div class="ranking">
-                                <div class="ranking-item ranking-item--destaque estado--atencao">
-                                    <span class="ranking-posicao">#1</span>
-                                    <span class="ranking-servidor">SRV-BR-03</span>
-                                    <span class="ranking-recurso">RAM</span>
-                                    <span class="ranking-valor">83%</span>
-                                </div>
-                                <div class="ranking-item estado--ok">
-                                    <span class="ranking-posicao">#2</span>
-                                    <span class="ranking-servidor">SRV-BR-01</span>
-                                    <span class="ranking-recurso">RAM</span>
-                                    <span class="ranking-valor">67%</span>
-                                </div>
-                                <div class="ranking-item estado--ok">
-                                    <span class="ranking-posicao">#3</span>
-                                    <span class="ranking-servidor">SRV-BR-04</span>
-                                    <span class="ranking-recurso">Sem leitura</span>
-                                    <span class="ranking-valor">—</span>
-                                </div>
-                                <div class="ranking-item estado--ok">
-                                    <span class="ranking-posicao">#4</span>
-                                    <span class="ranking-servidor">SRV-BR-02</span>
-                                    <span class="ranking-recurso">RAM</span>
-                                    <span class="ranking-valor">51%</span>
-                                </div>
-                                <div class="ranking-item estado--ok">
-                                    <span class="ranking-posicao">#5</span>
-                                    <span class="ranking-servidor">SRV-BR-06</span>
-                                    <span class="ranking-recurso">Disco</span>
-                                    <span class="ranking-valor">45%</span>
-                                </div>
-                                <div class="ranking-item estado--ok">
-                                    <span class="ranking-posicao">#6</span>
-                                    <span class="ranking-servidor">SRV-BR-05</span>
-                                    <span class="ranking-recurso">RAM</span>
-                                    <span class="ranking-valor">44%</span>
-                                </div>
-                            </div>
+                            <div class="ranking" id="rankingServidores"></div>
                         </div>
                     </div>
                 </div>
@@ -201,29 +175,87 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-
-        // Dados (valores estimados a partir da imagem; troque pelos dados reais)
-        const servidores = ['BR-01', 'BR-02', 'BR-03', 'BR-05', 'BR-06'];
-
-        const dadosFrota = {
-            cpu: [42, 28, 78, 35, 21],
-            ram: [67, 51, 83, 44, 38],
-            disco: [54, 38, 71, 29, 45],
+        const dadosDashboard = window.InfraTechDashboardData;
+        const servidoresOnline = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline');
+        const leituras = {
+            cpu: servidoresOnline.map((servidor) => servidor.cpu),
+            ram: servidoresOnline.map((servidor) => servidor.ram),
+            disco: servidoresOnline.map((servidor) => servidor.disco),
         };
-
         const CORES = {
             cpu: '#00b8d9',
             ram: '#7c3aed',
             disco: '#10b981',
         };
-
         const COR_TEXTO = '#7a8fa4';
+        const chavesRecursos = ['cpu', 'ram', 'disco'];
 
-        // Ordem dos datasets = ordem das barras (CPU, RAM, Disco).
-        // A legenda é reordenada mais abaixo (CPU, Disco, RAM).
+        function maiorRecurso(servidor) {
+            return chavesRecursos
+                .filter((recurso) => Number.isFinite(servidor[recurso]))
+                .map((recurso) => ({ recurso, valor: servidor[recurso] }))
+                .sort((a, b) => b.valor - a.valor)[0];
+        }
+
+        function renderizarDestaques() {
+            const maiorCpu = servidoresOnline.reduce((maior, servidor) => servidor.cpu > maior.cpu ? servidor : maior);
+            const menorMemoriaLivre = servidoresOnline.reduce((menor, servidor) => {
+                const livre = servidor.memoriaTotalGb * (1 - servidor.ram / 100);
+                return livre < menor.livre ? { servidor, livre } : menor;
+            }, { servidor: null, livre: Infinity });
+            const menorDiscoLivre = servidoresOnline.reduce((menor, servidor) => {
+                const livre = servidor.discoTotalGb * (1 - servidor.disco / 100);
+                return livre < menor.livre ? { servidor, livre } : menor;
+            }, { servidor: null, livre: Infinity });
+
+            document.getElementById('kpiCpuBadge').textContent = `${maiorCpu.id} · leitura atual`;
+            document.getElementById('kpiCpuValor').textContent = `${maiorCpu.cpu}%`;
+            document.getElementById('kpiRamBadge').textContent = `${menorMemoriaLivre.servidor.id} · ${menorMemoriaLivre.servidor.ram}% em uso`;
+            document.getElementById('kpiRamValor').textContent = `${Math.round(menorMemoriaLivre.livre)} GB`;
+            document.getElementById('kpiDiscoBadge').textContent = `${menorDiscoLivre.servidor.id} · ${menorDiscoLivre.servidor.disco}% ocupado`;
+            document.getElementById('kpiDiscoValor').textContent = `${Math.round(menorDiscoLivre.livre)} GB`;
+
+            [
+                ['cpu', maiorCpu.cpu],
+                ['ram', menorMemoriaLivre.servidor.ram],
+                ['disco', menorDiscoLivre.servidor.disco]
+            ].forEach(([recurso, percentual]) => {
+                const card = document.querySelector(`.kpi--${recurso}`);
+                const positivo = percentual > 60;
+                card.classList.toggle('kpi-positivo', positivo);
+                const badge = card.querySelector('.kpi-badge');
+                if (recurso !== 'cpu') badge.classList.toggle('kpi-badge--positivo', positivo);
+            });
+
+            const ranking = document.getElementById('rankingServidores');
+            ranking.replaceChildren(...dadosDashboard.prioridade.map((id, indice) => {
+                const servidor = dadosDashboard.servidores.find((item) => item.id === id);
+                const pior = maiorRecurso(servidor);
+                const item = document.createElement('div');
+                const estadoClasse = servidor.status === 'offline' ? 'estado--critico'
+                    : servidor.status === 'atencao' ? 'estado--atencao' : 'estado--ok';
+                item.className = `ranking-item ${estadoClasse}${servidor.status === 'atencao' ? ' ranking-item--destaque' : ''}`;
+
+                [
+                    ['ranking-posicao', `#${indice + 1}`],
+                    ['ranking-servidor', servidor.id],
+                    ['ranking-recurso', pior ? pior.recurso.toUpperCase() : 'Sem leitura'],
+                    ['ranking-valor', pior ? `${pior.valor}%` : '—']
+                ].forEach(([classe, texto]) => {
+                    const span = document.createElement('span');
+                    span.className = classe;
+                    span.textContent = texto;
+                    item.appendChild(span);
+                });
+                return item;
+            }));
+        }
+
+        renderizarDestaques();
+
         const serie = (label, chave) => ({
             label,
-            data: dadosFrota[chave],
+            data: leituras[chave],
             backgroundColor: CORES[chave],
             borderRadius: 3,
             barPercentage: 0.95,
@@ -235,7 +267,7 @@
         new Chart(document.getElementById('graficoFrota'), {
             type: 'bar',
             data: {
-                labels: servidores,
+                labels: servidoresOnline.map((servidor) => servidor.id.replace('SRV-', '')),
                 datasets: [
                     serie('CPU', 'cpu'),
                     serie('RAM', 'ram'),
@@ -245,7 +277,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false, // preenche o .grafico-canvas
-                font: { family: 'Inter-Regular, sans-serif', size: 11 },
+                font: { family: 'Inter, sans-serif', size: 11 },
                 scales: {
                     y: {
                         min: 0,
