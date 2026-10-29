@@ -161,11 +161,67 @@
                         <div class="cartao cartao--prioridade">
                             <div class="cartao-titulo">Prioridade de Investigação</div>
                             <div class="cartao-subtitulo">
-                                Offline primeiro; demais itens por severidade e proximidade do limite. Leituras não confirmam incidentes.
+                                Servidores offline e leituras críticas aparecem primeiro.
                             </div>
 
                             <div class="ranking" id="rankingServidores"></div>
                         </div>
+                    </div>
+
+                    <!-- Investigação temporal e histórico operacional -->
+                    <div class="investigacao-paineis">
+                        <section class="cartao cartao--evolucao" aria-labelledby="tituloEvolucao">
+                            <div class="investigacao-cabecalho">
+                                <div>
+                                    <div class="cartao-titulo" id="tituloEvolucao">Evolução dos Recursos</div>
+                                    <div class="cartao-subtitulo">Leituras históricas e limites configurados</div>
+                                </div>
+                                <div class="controles-evolucao">
+                                    <label class="sr-only" for="evolucaoServidor">Servidor</label>
+                                    <select id="evolucaoServidor" aria-label="Selecionar servidor"></select>
+                                    <label class="sr-only" for="evolucaoRecurso">Recurso</label>
+                                    <select id="evolucaoRecurso" aria-label="Selecionar recurso">
+                                        <option value="cpu">CPU</option>
+                                        <option value="ram">RAM</option>
+                                        <option value="disco">Disco</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="evolucao-grafico" id="evolucaoGraficoWrap">
+                                <canvas id="graficoEvolucao" aria-label="Gráfico temporal do recurso selecionado"></canvas>
+                            </div>
+                            <p class="mensagem-historico" id="evolucaoSemDados" hidden>Histórico insuficiente para este servidor e recurso.</p>
+                        </section>
+
+                        <section class="cartao cartao--historico" aria-labelledby="tituloHistoricoAlertas">
+                            <div class="investigacao-cabecalho">
+                                <div>
+                                    <div class="cartao-titulo" id="tituloHistoricoAlertas">Histórico de Alertas</div>
+                                    <div class="cartao-subtitulo">Ocorrências derivadas das leituras disponíveis</div>
+                                </div>
+                            </div>
+                            <div class="filtros-historico" role="group" aria-label="Filtros do histórico de alertas">
+                                <label><span>Severidade</span>
+                                    <select id="filtroSeveridade">
+                                        <option value="todos">Todas</option>
+                                        <option value="critico">Crítico</option>
+                                        <option value="atencao">Atenção</option>
+                                        <option value="normalizado">Normalizado</option>
+                                    </select>
+                                </label>
+                                <label><span>Servidor</span>
+                                    <select id="filtroServidor"><option value="todos">Todos</option></select>
+                                </label>
+                            </div>
+                            <div class="tabela-historico-wrap">
+                                <table class="tabela-historico">
+                                    <thead><tr><th>Horário</th><th>Servidor</th><th>Ocorrência</th><th>Severidade</th><th>Status</th></tr></thead>
+                                    <tbody id="corpoHistoricoAlertas"></tbody>
+                                </table>
+                                <p class="mensagem-historico" id="historicoSemDados" hidden>Não há histórico suficiente para exibir ocorrências.</p>
+                            </div>
+                            <p class="nota-historico">A série mock é espaçada em horas; a persistência operacional não pode ser confirmada com estes dados.</p>
+                        </section>
                     </div>
                 </div>
             </div>
@@ -288,18 +344,16 @@
                 topo.append(nome, estadoTexto);
                 const descricao = document.createElement('p');
                 descricao.className = 'ranking-recurso';
-                descricao.textContent = servidor.status === 'offline' ? 'Sem leitura atual; indisponibilidade no cenário mock.'
-                    : pior ? `${pior.recurso.toUpperCase()} ${pior.valor}% · ${pior.estado} (atenção ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso].atencao}%, crítico ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso].critico}%)`
+                descricao.textContent = servidor.status === 'offline'
+                    ? `Offline desde ${servidor.offlineDesde || 'horário não informado'} · sem leitura atual.`
+                    : pior ? `${pior.recurso.toUpperCase()} em ${pior.valor}% · limite de ${pior.estado === 'critico' ? 'crítico' : 'atenção'}: ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso][pior.estado === 'critico' ? 'critico' : 'atencao']}%.`
                       : 'Sem dados de recurso para classificar.';
-                const duracao = document.createElement('small');
-                duracao.className = 'ranking-duracao';
-                duracao.textContent = 'Duração e confirmação operacional não disponíveis no histórico mock.';
                 const investigar = document.createElement('a');
                 investigar.className = 'ranking-acao';
                 investigar.href = `../especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(servidor.id)}${pior ? `&recurso=${pior.recurso}` : ''}`;
                 investigar.textContent = 'Investigar →';
                 investigar.setAttribute('aria-label', `Investigar ${servidor.id}${pior ? `, ${pior.recurso} ${pior.valor}%` : ''}`);
-                item.append(topo, descricao, duracao, investigar);
+                item.append(topo, descricao, investigar);
                 return item;
             }));
         }
@@ -383,8 +437,195 @@
                 },
             },
         });
+
+        let graficoEvolucao = null;
+        const recursoNome = { cpu: 'CPU', ram: 'RAM', disco: 'Disco' };
+
+        function formatarDataHora(timestamp, hora) {
+            const data = new Date(timestamp);
+            const dataFormatada = Number.isNaN(data.getTime()) ? 'Data indisponível' : new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit' }).format(data);
+            return `${dataFormatada} ${hora || ''}`.trim();
+        }
+
+        function obterHistoricoAlertas() {
+            const eventos = [];
+            const timestamp = dadosDashboard.dataLeitura;
+            const dataLeitura = new Date(timestamp);
+            dadosDashboard.servidores.forEach((servidor) => {
+                if (servidor.status === 'offline') {
+                    const horaOffline = servidor.offlineDesde || 'Horário indisponível';
+                    eventos.push({
+                        timestamp: Number.isNaN(dataLeitura.getTime()) ? 0 : new Date(dataLeitura).setHours(parseInt(horaOffline, 10) || 0, 0, 0, 0),
+                        horario: formatarDataHora(timestamp, horaOffline),
+                        servidor: servidor.id,
+                        ocorrencia: 'Servidor offline',
+                        severidade: 'critico',
+                        status: 'Ativo'
+                    });
+                    return;
+                }
+                const historico = dadosDashboard.obterHistoricoServidor(servidor.id);
+                if (!historico || !historico.horas?.length) return;
+                chavesRecursos.forEach((recurso) => {
+                    const serie = historico[recurso];
+                    if (!Array.isArray(serie)) return;
+                    const alertasHistoricos = [];
+                    serie.forEach((valor, indice) => {
+                        if (valor == null || !Number.isFinite(Number(valor))) return;
+                        const faixa = window.InfraTechAlertas.classificar(recurso, valor, servidor.id);
+                        if (faixa === 'atencao' || faixa === 'critico') alertasHistoricos.push({ valor: Number(valor), indice, faixa });
+                    });
+                    if (!alertasHistoricos.length) return;
+
+                    const leituraAtual = servidor[recurso];
+                    const estadoAtual = window.InfraTechAlertas.classificar(recurso, leituraAtual, servidor.id);
+                    const ativo = estadoAtual === 'atencao' || estadoAtual === 'critico';
+                    const amostraMaisRecente = alertasHistoricos[alertasHistoricos.length - 1];
+                    const amostraPico = alertasHistoricos.reduce((maior, amostra) => amostra.valor > maior.valor ? amostra : maior);
+                    const amostraEvento = ativo ? amostraMaisRecente : amostraPico;
+                    const instante = ativo && !Number.isNaN(dataLeitura.getTime())
+                        ? dataLeitura.getTime()
+                        : Number.isNaN(dataLeitura.getTime()) ? amostraEvento.indice : new Date(dataLeitura).setHours(parseInt(historico.horas[amostraEvento.indice], 10) || 0, 0, 0, 0);
+                    const limites = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                    const nivelLimite = estadoAtual === 'critico' ? 'critico' : 'atencao';
+                    eventos.push({
+                        timestamp: instante,
+                        horario: formatarDataHora(timestamp, ativo ? new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(dataLeitura) : historico.horas[amostraEvento.indice]),
+                        servidor: servidor.id,
+                        ocorrencia: ativo
+                            ? `${recursoNome[recurso]} ${leituraAtual}% · limite ${nivelLimite} ${limites[nivelLimite]}%`
+                            : `${recursoNome[recurso]} normalizado · pico ${amostraPico.valor}%`,
+                        severidade: ativo ? estadoAtual : 'normalizado',
+                        status: ativo ? 'Ativo' : 'Resolvido'
+                    });
+                });
+            });
+            return eventos.sort((a, b) => b.timestamp - a.timestamp);
+        }
+
+        function renderizarHistoricoAlertas() {
+            const corpo = document.getElementById('corpoHistoricoAlertas');
+            const semDados = document.getElementById('historicoSemDados');
+            const filtroSeveridade = document.getElementById('filtroSeveridade').value;
+            const filtroServidor = document.getElementById('filtroServidor').value;
+            const eventos = obterHistoricoAlertas().filter((evento) =>
+                (filtroSeveridade === 'todos' || evento.severidade === filtroSeveridade)
+                && (filtroServidor === 'todos' || evento.servidor === filtroServidor));
+            corpo.replaceChildren();
+            semDados.hidden = eventos.length > 0;
+            eventos.forEach((evento) => {
+                const linha = document.createElement('tr');
+                const classeSeveridade = evento.severidade === 'critico' ? 'critico'
+                    : evento.severidade === 'atencao' ? 'atencao' : 'normalizado';
+                const celulas = [
+                    evento.horario,
+                    evento.servidor,
+                    evento.ocorrencia,
+                    null,
+                    null
+                ];
+                celulas.forEach((texto, indice) => {
+                    const celula = document.createElement('td');
+                    if (indice === 3) {
+                        const selo = document.createElement('span');
+                        selo.className = `historico-severidade historico-severidade--${classeSeveridade}`;
+                        selo.textContent = classeSeveridade === 'critico' ? 'Crítico' : classeSeveridade === 'atencao' ? 'Atenção' : 'Normalizado';
+                        celula.append(selo);
+                    } else if (indice === 4) {
+                        celula.className = `historico-status historico-status--${evento.status === 'Ativo' ? 'ativo' : 'resolvido'}`;
+                        celula.textContent = evento.status;
+                    } else {
+                        celula.textContent = texto;
+                    }
+                    linha.append(celula);
+                });
+                corpo.append(linha);
+            });
+        }
+
+        function renderizarEvolucao() {
+            const servidorId = document.getElementById('evolucaoServidor').value;
+            const recurso = document.getElementById('evolucaoRecurso').value;
+            const historico = dadosDashboard.obterHistoricoServidor(servidorId);
+            const valores = historico?.[recurso];
+            const validos = Array.isArray(valores) ? valores.filter((valor) => valor != null && Number.isFinite(Number(valor))) : [];
+            const graficoWrap = document.getElementById('evolucaoGraficoWrap');
+            const semDados = document.getElementById('evolucaoSemDados');
+            if (!historico?.horas?.length || validos.length < 2) {
+                graficoWrap.hidden = true;
+                semDados.hidden = false;
+                if (graficoEvolucao) { graficoEvolucao.destroy(); graficoEvolucao = null; }
+                return;
+            }
+            graficoWrap.hidden = false;
+            semDados.hidden = true;
+            const limites = window.InfraTechAlertas.obter(servidorId)[recurso];
+            const cor = CORES[recurso];
+            const datasets = [
+                {
+                    label: recursoNome[recurso],
+                    data: valores,
+                    borderColor: cor,
+                    backgroundColor: cor,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: valores.map((valor) => {
+                        const estado = window.InfraTechAlertas.classificar(recurso, valor, servidorId);
+                        return estado === 'critico' ? '#ef4444' : estado === 'atencao' ? '#f59e0b' : cor;
+                    }),
+                    tension: 0.25,
+                    spanGaps: false
+                },
+                { label: `Atenção ${limites.atencao}%`, data: historico.horas.map(() => limites.atencao), borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [6, 5], pointRadius: 0, tension: 0 },
+                { label: `Crítico ${limites.critico}%`, data: historico.horas.map(() => limites.critico), borderColor: '#ef4444', borderWidth: 1.5, borderDash: [6, 5], pointRadius: 0, tension: 0 }
+            ];
+            if (!graficoEvolucao) {
+                graficoEvolucao = new Chart(document.getElementById('graficoEvolucao'), {
+                    type: 'line',
+                    data: { labels: historico.horas, datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 14, color: COR_TEXTO } } },
+                        scales: {
+                            y: { min: 0, max: 100, ticks: { stepSize: 20, color: COR_TEXTO, callback: (valor) => `${valor}%` }, grid: { color: '#eef2f6' } },
+                            x: { ticks: { color: COR_TEXTO, maxRotation: 0, autoSkip: true }, grid: { display: false } }
+                        }
+                    }
+                });
+            } else {
+                graficoEvolucao.data.labels = historico.horas;
+                graficoEvolucao.data.datasets = datasets;
+                graficoEvolucao.update();
+            }
+        }
+
+        function inicializarInvestigacao() {
+            const seletorServidor = document.getElementById('evolucaoServidor');
+            const filtroServidor = document.getElementById('filtroServidor');
+            dadosDashboard.servidores.forEach((servidor) => {
+                const opcaoGrafico = document.createElement('option');
+                opcaoGrafico.value = servidor.id;
+                opcaoGrafico.textContent = `${servidor.id}${servidor.status === 'offline' ? ' · Offline' : ''}`;
+                seletorServidor.append(opcaoGrafico);
+                const opcaoFiltro = opcaoGrafico.cloneNode(true);
+                filtroServidor.append(opcaoFiltro);
+            });
+            seletorServidor.value = dadosDashboard.servidores[0]?.id || '';
+            seletorServidor.addEventListener('change', renderizarEvolucao);
+            document.getElementById('evolucaoRecurso').addEventListener('change', renderizarEvolucao);
+            document.getElementById('filtroSeveridade').addEventListener('change', renderizarHistoricoAlertas);
+            filtroServidor.addEventListener('change', renderizarHistoricoAlertas);
+            renderizarEvolucao();
+            renderizarHistoricoAlertas();
+        }
+
+        inicializarInvestigacao();
         window.addEventListener('infratech:limites-alerta-alterados', renderizarDestaques);
-        window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(renderizarDestaques));
+        window.addEventListener('infratech:limites-alerta-alterados', () => { renderizarEvolucao(); renderizarHistoricoAlertas(); });
+        window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(() => { renderizarDestaques(); renderizarEvolucao(); renderizarHistoricoAlertas(); }));
     </script>
 </body>
 
