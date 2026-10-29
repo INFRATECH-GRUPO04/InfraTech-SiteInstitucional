@@ -157,72 +157,26 @@ function salvarLimitesGlobais(req, res) {
         });
 }
 
-function atualizar(req, res) {
-    var idServidor = req.params.idServidor;
-    var nome = req.body.nomeServer;
-
-    if (nome == undefined) {
-        res.status(400).send("O nome está undefined!");
-    } else {
-        servidorModel.atualizarPorEmpresa(idServidor, req.usuario.empresa, nome)
-            .then(function (resultado) {
-                res.status(200).json(resultado);
-            }).catch(function (erro) {
-                console.log(erro);
-                console.log("Houve um erro ao atualizar: ", erro.sqlMessage);
-                res.status(500).json(erro.sqlMessage);
-            });
-    }
-}
-
-function atualizarComponente(req, res) {
+function atualizarLimitesComponente(req, res) {
     var idComponente = req.params.idComponente;
-    var capacidade = req.body.capacidadeServer;
     var idMetrica = req.body.idMetricaServer;
     var limiteAtencao = req.body.limiteAtencaoServer;
     var limiteCritico = req.body.limiteCriticoServer;
-    var somenteLimites = req.body.capacidadeServer == undefined;
 
     if (idComponente == undefined) {
         res.status(400).send("O id do componente é obrigatório!");
-    } else if (!somenteLimites && (capacidade == undefined || capacidade <= 0)) {
-        res.status(400).send("A capacidade deve ser maior que zero!");
-    } else if (somenteLimites && (!idMetrica || limiteAtencao == undefined || limiteCritico == undefined)) {
+    } else if (!idMetrica || limiteAtencao == undefined || limiteCritico == undefined) {
         res.status(400).json({ erro: 'Informe a métrica e os dois limites que serão ajustados.' });
     } else if (limiteAtencao != undefined && (Number(limiteAtencao) < 0 || Number(limiteAtencao) > 100 || Number(limiteCritico) < 0 || Number(limiteCritico) > 100 || Number(limiteAtencao) >= Number(limiteCritico))) {
         res.status(400).send("O limite de atenção deve ser menor que o limite crítico!");
     } else {
         servidorModel.componentePertenceEmpresa(idComponente, req.usuario.empresa).then(function (componentes) {
             if (!componentes.length) return res.status(403).json({ erro: 'Componente fora da empresa da sua conta.' });
-            if (somenteLimites) {
-                return servidorModel.atualizarLimitesComponenteEmpresa(idComponente, req.usuario.empresa, idMetrica, limiteAtencao, limiteCritico)
-                    .then(function (resultado) { res.status(200).json(resultado); })
-                    .catch(function (erro) { console.log(erro); res.status(500).json({ erro: 'Não foi possível atualizar os limites.' }); });
-            }
-            return servidorModel.atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao, limiteCritico)
-            .then(function (resultado) {
-                res.status(200).json(resultado);
-            }).catch(function (erro) {
-                console.log(erro);
-                console.log("Houve um erro ao atualizar o componente: ", erro.sqlMessage);
-                res.status(500).json(erro.sqlMessage);
-            });
+            return servidorModel.atualizarLimitesComponenteEmpresa(idComponente, req.usuario.empresa, idMetrica, limiteAtencao, limiteCritico)
+                .then(function (resultado) { res.status(200).json(resultado); })
+                .catch(function (erro) { console.log(erro); res.status(500).json({ erro: 'Não foi possível atualizar os limites.' }); });
         });
     }
-}
-
-function excluir(req, res) {
-    var idServidor = req.params.idServidor;
-
-    servidorModel.excluirPorEmpresa(idServidor, req.usuario.empresa)
-        .then(function (resultado) {
-            if (!resultado) return res.status(403).json({ erro: 'Servidor fora da empresa da sua conta.' });
-            res.status(200).json(resultado);
-        }).catch(function (erro) {
-            console.log(erro);
-            console.log("Houve um erro ao excluir: ", erro.sqlMessage);
-            res.status(500).json(erro.sqlMessage);
-        });
 }
 
 function atualizarChave(req, res) {
@@ -250,8 +204,6 @@ module.exports = {
     listarComponentesPorServidor,
     listarLimitesGlobais,
     salvarLimitesGlobais,
-    atualizar,
-    atualizarComponente,
-    excluir,
+    atualizarLimitesComponente,
     atualizarChave
 };

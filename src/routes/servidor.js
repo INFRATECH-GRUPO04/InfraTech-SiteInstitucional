@@ -23,16 +23,8 @@ router.get("/listarComponentes/:idServidor", permitir('monitorar'), function (re
 router.get("/alertas/globais/:idEmpresa", permitir('monitorar'), servidorController.listarLimitesGlobais);
 router.put("/alertas/globais/:idEmpresa", permitir('editarLimites'), servidorController.salvarLimitesGlobais);
 
-router.put("/editar/:idServidor", permitir('administrar'), function (req, res) {
-    servidorController.atualizar(req, res);
-});
-
-router.put("/editar/componente/:idComponente", permitir('editarLimites'), function (req, res) {
-    servidorController.atualizarComponente(req, res);
-});
-
-router.delete("/deletar/:idServidor", permitir('administrar'), function (req, res) {
-    servidorController.excluir(req, res);
+router.put("/alertas/componentes/:idComponente", permitir('editarLimites'), function (req, res) {
+    servidorController.atualizarLimitesComponente(req, res);
 });
 
 router.post("/atualizar-chave/:idServidor", permitir('administrar'), function (req, res) {

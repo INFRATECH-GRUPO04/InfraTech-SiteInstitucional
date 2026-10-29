@@ -207,7 +207,7 @@ function cadastrarServidorCompleto() {
 
             Promise.all(promises).then(() => {
                 alert("Servidor e componentes cadastrados com sucesso!");
-                window.location.href = "modificar_servidor.html";
+                document.getElementById("nome_servidor_id").value = "";
             }).catch(erro => {
                 console.log("#ERRO Componentes:", erro);
                 alert("Servidor cadastrado, mas houve um erro ao salvar um ou mais componentes.");

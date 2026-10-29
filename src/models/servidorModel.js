@@ -53,18 +53,6 @@ function servidorPertenceEmpresa(idServidor, idEmpresa) {
     return database.executar('SELECT id_servidor FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [Number(idServidor), Number(idEmpresa)]);
 }
 
-function atualizarPorEmpresa(idServidor, idEmpresa, nome) {
-    return database.executar('UPDATE servidor SET nome = ? WHERE id_servidor = ? AND fk_empresa = ?', [nome, Number(idServidor), Number(idEmpresa)]);
-}
-
-function excluirPorEmpresa(idServidor, idEmpresa) {
-    return database.executar('SELECT id_servidor FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [Number(idServidor), Number(idEmpresa)])
-        .then(function (servidores) {
-            if (!servidores.length) return null;
-            return excluir(idServidor);
-        });
-}
-
 function atualizarChavePorEmpresa(idServidor, codigo, idEmpresa) {
     return database.executar('UPDATE servidor SET chave_hash = SHA2(?, 256) WHERE id_servidor = ? AND fk_empresa = ?', [codigo, Number(idServidor), Number(idEmpresa)]);
 }
@@ -97,52 +85,11 @@ function substituirLimitesIndividuais(idEmpresa, limites) {
     return database.executar(sql);
 }
 
-function atualizar(idServidor, nome) {
-    var instrucaoSql = `UPDATE servidor SET nome = '${nome}' WHERE id_servidor = ${idServidor};`;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
-}
-
-function atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao, limiteCritico) {
-    var inst1 = `UPDATE componente SET capacidade_total = ${capacidade} WHERE id_componente = ${idComponente};`;
-    console.log("Executando a instrução SQL: \n" + inst1);
-
-    return database.executar(inst1).then(function () {
-        if (idMetrica && limiteAtencao != undefined && limiteCritico != undefined) {
-            var inst2 = `UPDATE metrica SET limite_atencao = ${limiteAtencao}, limite_critico = ${limiteCritico} WHERE id_metrica = ${idMetrica};`;
-            console.log("Executando a instrução SQL: \n" + inst2);
-            return database.executar(inst2);
-        }
-    });
-}
-
 function atualizarLimitesComponenteEmpresa(idComponente, idEmpresa, idMetrica, limiteAtencao, limiteCritico) {
     return database.executar(
         `UPDATE metrica m JOIN componente c ON c.id_componente = m.fk_componente JOIN servidor s ON s.id_servidor = c.fk_servidor SET m.limite_atencao = ?, m.limite_critico = ? WHERE c.id_componente = ? AND m.id_metrica = ? AND s.fk_empresa = ?`,
         [Number(limiteAtencao), Number(limiteCritico), Number(idComponente), Number(idMetrica), Number(idEmpresa)]
     );
-}
-
-function excluir(idServidor) {
-    // Exclusão em cascata respeitando as chaves estrangeiras: metrica -> componente -> servidor_funcionario -> servidor
-    var instDeletarMetricas = `DELETE FROM metrica WHERE fk_componente IN (SELECT id_componente FROM componente WHERE fk_servidor = ${idServidor});`;
-    console.log("Executando a instrução SQL: \n" + instDeletarMetricas);
-
-    return database.executar(instDeletarMetricas).then(function () {
-        var instDeletarComponentes = `DELETE FROM componente WHERE fk_servidor = ${idServidor};`;
-        console.log("Executando a instrução SQL: \n" + instDeletarComponentes);
-
-        return database.executar(instDeletarComponentes).then(function () {
-            var instDeletarVinculos = `DELETE FROM servidor_funcionario WHERE fk_servidor = ${idServidor};`;
-            console.log("Executando a instrução SQL: \n" + instDeletarVinculos);
-
-            return database.executar(instDeletarVinculos).then(function () {
-                var instDeletarServidor = `DELETE FROM servidor WHERE id_servidor = ${idServidor};`;
-                console.log("Executando a instrução SQL: \n" + instDeletarServidor);
-                return database.executar(instDeletarServidor);
-            });
-        });
-    });
 }
 
 function buscarPorNomeEEmpresa(nome, idEmpresa) {
@@ -166,16 +113,11 @@ module.exports = {
     listar,
     listarComponentesPorServidor,
     servidorPertenceEmpresa,
-    atualizarPorEmpresa,
-    excluirPorEmpresa,
     atualizarChavePorEmpresa,
     componentePertenceEmpresa,
     listarLimitesGlobais,
     salvarLimitesGlobais,
     substituirLimitesIndividuais,
-    atualizar,
-    atualizarComponente,
     atualizarLimitesComponenteEmpresa,
-    excluir,
     atualizarChave
 };

@@ -285,9 +285,9 @@ window.InfraTechAlertas = (() => {
       const componente = componentes.find((item) => String(item.tipo).toLowerCase() === recurso);
       if (!componente) throw new Error(`O servidor não possui componente ${recurso.toUpperCase()} configurado para gravar o limite.`);
       const idComponente = componente.id_componente || componente.idComponente;
-      const resposta = await fetch(`/servidor/editar/componente/${idComponente}`, {
+      const resposta = await fetch(`/servidor/alertas/componentes/${idComponente}`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ capacidadeServer: componente.capacidade_total || componente.capacidade, idMetricaServer: componente.id_metrica || componente.idMetrica, limiteAtencaoServer: limites[recurso].atencao, limiteCriticoServer: limites[recurso].critico })
+        body: JSON.stringify({ idMetricaServer: componente.id_metrica || componente.idMetrica, limiteAtencaoServer: limites[recurso].atencao, limiteCriticoServer: limites[recurso].critico })
       });
       if (!resposta.ok) throw new Error(`Falha ao salvar o limite de ${recurso.toUpperCase()} no backend.`);
     });
