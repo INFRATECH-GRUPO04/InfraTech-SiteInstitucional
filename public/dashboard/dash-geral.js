@@ -7,18 +7,6 @@ function classificarMetrica(recurso, valor, servidorId) { return window.InfraTec
 function obterCorAlerta(recurso, valor) { return CORES_ALERTA[classificarMetrica(recurso, valor)] || CORES_ALERTA['sem-dados']; }
 function faixaTexto(limites, recurso) { return `Atenção ≥${limites[recurso].atencao}% · Crítico ≥${limites[recurso].critico}%`; }
 
-function gerarResumoExecutivo(dados, servidoresComLeituraAtencao, offline) {
-  const semFaixa = dados.servidores.filter((servidor) => servidor.status === 'online'
-    && !servidoresComLeituraAtencao.some((item) => item.id === servidor.id));
-  const resumo = document.getElementById('resumoExecutivo');
-  if (!resumo) return;
-  const totalSemFaixa = semFaixa.length;
-  const frases = [`${dados.servidores.length} servidores na última leitura: ${totalSemFaixa} sem leitura que exija atenção, ${servidoresComLeituraAtencao.length} com leitura em atenção ou crítica e ${offline.length} offline.`];
-  const prioridade = offline[0] || servidoresComLeituraAtencao[0];
-  if (prioridade) frases.push(`${prioridade.id} é a prioridade de investigação${prioridade.status === 'offline' ? ' por indisponibilidade' : ' por utilização elevada'}.`);
-  resumo.textContent = frases.join(' ');
-}
-
 function atualizarCoresMetricas() {
   const dados = window.InfraTechDashboardData;
   if (!dados) return;
@@ -69,9 +57,6 @@ function atualizarCoresMetricas() {
   const online = dados.servidores.filter((servidor) => servidor.status !== 'offline').length;
   const offline = dados.servidores.length - online;
   const servidoresOffline = dados.servidores.filter((servidor) => servidor.status === 'offline');
-  const servidoresComAtencao = dados.servidores.filter((servidor) => servidor.status === 'online'
-    && ['cpu', 'ram', 'disco'].some((recurso) => ['atencao', 'critico'].includes(classificarMetrica(recurso, servidor[recurso], servidor.id))));
-  gerarResumoExecutivo(dados, servidoresComAtencao, servidoresOffline);
   const resumoAtencao = document.getElementById('resumo-atencao');
   const resumoOffline = document.getElementById('resumo-offline');
   if (resumoAtencao) resumoAtencao.textContent = `• ${totalAtencao} atenção · última leitura`;
