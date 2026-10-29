@@ -457,6 +457,111 @@ function inicializarTabelaLinhas() {
   });
 }
 
+const DEFINICOES_HISTORICO_ALERTAS = [
+  { servidorId: 'SRV-BR-04', recurso: 'status', indice: 11, titulo: 'Servidor indisponível', status: 'Em andamento', duracao: 'Indisponibilidade registrada desde 22h; duração calculada até a última leitura mock.' },
+  { servidorId: 'SRV-BR-03', recurso: 'cpu', indice: 10, titulo: 'CPU acima do limite', status: 'Pendente de confirmação', duracao: 'Amostras espaçadas em 2h; duração contínua não confirmada.' },
+  { servidorId: 'SRV-BR-03', recurso: 'ram', indice: 10, titulo: 'Memória RAM elevada', status: 'Pendente de confirmação', duracao: 'Amostras espaçadas em 2h; duração contínua não confirmada.' },
+  { servidorId: 'SRV-BR-03', recurso: 'disco', indice: 10, titulo: 'Armazenamento próximo do limite', status: 'Normalizado na leitura', duracao: 'A faixa voltou ao normal na amostra das 22h; não equivale à resolução confirmada de incidente.' },
+  { servidorId: 'SRV-BR-01', recurso: 'cpu', indice: 10, titulo: 'Pico de utilização da CPU', status: 'Normalizado na leitura', duracao: 'A faixa voltou ao normal na amostra das 24h; não equivale à resolução confirmada de incidente.' },
+  { servidorId: 'SRV-BR-01', recurso: 'disco', indice: 10, titulo: 'Pico de utilização do disco', status: 'Normalizado na leitura', duracao: 'A faixa voltou ao normal na amostra das 22h; não equivale à resolução confirmada de incidente.' }
+];
+
+function escaparHTML(valor) {
+  return String(valor ?? '').replace(/[&<>"']/g, (caractere) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[caractere]);
+}
+
+function obterOcorrenciasMock() {
+  const dados = window.InfraTechDashboardData;
+  const dataLeitura = new Date(dados.dataLeitura);
+  const dataTexto = Number.isNaN(dataLeitura.getTime()) ? 'Data indisponível' : new Intl.DateTimeFormat('pt-BR').format(dataLeitura);
+  return DEFINICOES_HISTORICO_ALERTAS.map((definicao) => {
+    const servidor = dados.obterServidorPorId(definicao.servidorId);
+    if (!servidor) return null;
+    if (definicao.recurso === 'status') {
+      const desde = servidor.offlineDesde || '—';
+      const partesHora = desde.match(/^(\d{1,2})h$/);
+      const minutosDuracao = partesHora && !Number.isNaN(dataLeitura.getTime()) ? Math.max(0, dataLeitura.getHours() * 60 + dataLeitura.getMinutes() - Number(partesHora[1]) * 60) : null;
+      const duracao = minutosDuracao == null ? 'Não disponível no mock.' : `${Math.floor(minutosDuracao / 60)}h ${minutosDuracao % 60}min desde ${desde} até a última leitura.`;
+      return { ...definicao, hora: desde, data: dataTexto, valor: 'Sem leitura', severidade: 'critico', servidor, duracao, impacto: 'Serviços vinculados a este servidor não estão cadastrados; o impacto operacional não pode ser determinado.' };
+    }
+    const historico = dados.obterHistoricoServidor(servidor.id);
+    const valor = historico?.[definicao.recurso]?.[definicao.indice];
+    if (valor == null) return null;
+    const severidade = classificarMetrica(definicao.recurso, valor, servidor.id);
+    const hora = historico.horas[definicao.indice];
+    const faixa = window.InfraTechAlertas.obter(servidor.id)[definicao.recurso];
+    const leituraAtual = servidor[definicao.recurso];
+    const estadoAtual = classificarMetrica(definicao.recurso, leituraAtual, servidor.id);
+    const normalizado = estadoAtual === 'saudavel';
+    return {
+      ...definicao,
+      status: normalizado ? 'Normalizado na leitura' : 'Pendente de confirmação',
+      duracao: normalizado
+        ? definicao.duracao
+        : 'A condição aparece em amostras espaçadas em 2h; duração contínua e incidente não confirmados.',
+      hora,
+      data: dataTexto,
+      valor: `${valor}%`,
+      severidade,
+      servidor,
+      faixa: `Atenção ≥${faixa.atencao}% · crítico ≥${faixa.critico}%`,
+      impacto: 'Não há vínculo de serviços neste mock; não é possível afirmar risco ou impacto em aplicações.'
+    };
+  }).filter(Boolean).sort((a, b) => parseInt(b.hora, 10) - parseInt(a.hora, 10));
+}
+
+function renderizarHistoricoAlertas(filtro = 'todos') {
+  const lista = document.getElementById('historicoAlertas');
+  if (!lista) return;
+  const ocorrencias = obterOcorrenciasMock();
+  const visiveis = ocorrencias.filter((ocorrencia) => filtro === 'todos' || ocorrencia.severidade === filtro);
+  lista.innerHTML = '';
+  if (!visiveis.length) {
+    lista.innerHTML = '<li class="historico-alertas__vazio">Nenhuma ocorrência nesta faixa no período simulado.</li>';
+    return;
+  }
+  visiveis.forEach((ocorrencia) => {
+    const item = document.createElement('li');
+    item.className = `ocorrencia ocorrencia--${ocorrencia.severidade}`;
+    const estadoTexto = ocorrencia.severidade === 'critico' ? 'Crítico' : ocorrencia.severidade === 'atencao' ? 'Atenção' : 'Informativo';
+    const recursoQuery = ocorrencia.recurso === 'status' ? 'cpu' : ocorrencia.recurso;
+    const linkDetalhes = `./especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(ocorrencia.servidor.id)}&recurso=${encodeURIComponent(recursoQuery)}`;
+    item.innerHTML = `
+      <div class="ocorrencia__linha">
+        <span class="ocorrencia__ponto" aria-hidden="true"></span>
+        <div class="ocorrencia__resumo">
+          <div class="ocorrencia__titulo-linha"><strong>${escaparHTML(ocorrencia.titulo)}</strong><span class="ocorrencia__severidade ocorrencia__severidade--${ocorrencia.severidade}">${estadoTexto}</span></div>
+          <p>${escaparHTML(ocorrencia.servidor.id)} · ${escaparHTML(ocorrencia.data)} ${escaparHTML(ocorrencia.hora)} · <b>${escaparHTML(ocorrencia.valor)}</b></p>
+          <span class="ocorrencia__status">Status: ${escaparHTML(ocorrencia.status)}</span>
+        </div>
+      </div>
+      <details class="ocorrencia__detalhes">
+        <summary>Ver detalhes</summary>
+        <dl>
+          <div><dt>Duração</dt><dd>${escaparHTML(ocorrencia.duracao)}</dd></div>
+          ${ocorrencia.faixa ? `<div><dt>Limites configurados</dt><dd>${escaparHTML(ocorrencia.faixa)}</dd></div>` : ''}
+          <div><dt>Impacto operacional</dt><dd>${escaparHTML(ocorrencia.impacto)}</dd></div>
+          <div><dt>Responsável</dt><dd>Não atribuído nos dados simulados.</dd></div>
+        </dl>
+        <a href="${linkDetalhes}">Abrir gráfico do servidor e recurso →</a>
+      </details>`;
+    lista.append(item);
+  });
+}
+
+function inicializarHistoricoAlertas() {
+  const filtros = document.querySelectorAll('[data-filtro-alerta]');
+  filtros.forEach((botao) => botao.addEventListener('click', () => {
+    filtros.forEach((item) => {
+      const ativo = item === botao;
+      item.classList.toggle('ativo', ativo);
+      item.setAttribute('aria-pressed', String(ativo));
+    });
+    renderizarHistoricoAlertas(botao.dataset.filtroAlerta);
+  }));
+  renderizarHistoricoAlertas();
+}
+
 // Inicialização automática ao carregar o DOM
 document.addEventListener('DOMContentLoaded', function () {
   carregarUsuario();
@@ -466,6 +571,11 @@ document.addEventListener('DOMContentLoaded', function () {
   inicializarGraficoRede();
   inicializarGraficoSaude();
   inicializarTabelaLinhas();
+  inicializarHistoricoAlertas();
   window.addEventListener('infratech:limites-alerta-alterados', atualizarCoresMetricas);
+  window.addEventListener('infratech:limites-alerta-alterados', () => {
+    const filtroAtivo = document.querySelector('[data-filtro-alerta].ativo')?.dataset.filtroAlerta || 'todos';
+    renderizarHistoricoAlertas(filtroAtivo);
+  });
   window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(atualizarCoresMetricas));
 });
