@@ -97,7 +97,16 @@
                         <h1 class="titulo-token">Cadastrar Token de Acesso</h1>
                         <p>Gere tokens seguros para onboarding de novos colaboradores</p>
                     </div>
+                    <button type="button" class="botao-ajuda-token" id="btn_ajuda_token"
+                        aria-label="Como funciona o token" aria-expanded="false" aria-controls="ajuda_token" title="Como funciona o token">?</button>
                 </div>
+
+                <aside class="ajuda-token" id="ajuda_token" aria-label="Como funciona o token" hidden>
+                    <h2>Como o token funciona</h2>
+                    <p>O token fica vinculado à empresa conectada e ao perfil escolhido na próxima etapa.</p>
+                    <p>A quantidade informada define quantos cadastros podem usar esse código. Cada cadastro concluído consome uma utilização; ao atingir o limite, o token não aceita novos cadastros.</p>
+                    <p>Compartilhe o código apenas com as pessoas que devem entrar na empresa.</p>
+                </aside>
 
                 <ol class="stepper" aria-label="Etapas">
                     <li class="step-dot" data-step="1"><span class="sr-only">Etapa </span>1</li>

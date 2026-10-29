@@ -17,6 +17,8 @@ const btnCopiar = document.getElementById("btn_copiar");
 const avisoCopia = document.getElementById("aviso_copia");
 const btnAvancar = document.getElementById("btn_avancar");
 const btnVoltar = document.getElementById("voltar");
+const btnAjudaToken = document.getElementById("btn_ajuda_token");
+const ajudaToken = document.getElementById("ajuda_token");
 
 const ROTULOS_BOTAO = {
     1: "Continuar →",
@@ -268,5 +270,17 @@ document.querySelectorAll('input[name="permissao"]').forEach(function (radio) {
 btnAvancar.addEventListener("click", avancarEtapa);
 btnVoltar.addEventListener("click", voltarEtapa);
 btnCopiar.addEventListener("click", copiarCodigo);
+btnAjudaToken.addEventListener("click", function () {
+    const aberto = btnAjudaToken.getAttribute("aria-expanded") === "true";
+    btnAjudaToken.setAttribute("aria-expanded", String(!aberto));
+    ajudaToken.hidden = aberto;
+});
+document.addEventListener("keydown", function (evento) {
+    if (evento.key === "Escape" && !ajudaToken.hidden) {
+        ajudaToken.hidden = true;
+        btnAjudaToken.setAttribute("aria-expanded", "false");
+        btnAjudaToken.focus();
+    }
+});
 
 mostrarEtapa(1);

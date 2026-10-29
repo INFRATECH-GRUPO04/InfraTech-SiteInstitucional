@@ -868,6 +868,18 @@ body .intro-pagina p {
     line-height: 1.55;
 }
 
+body:has(.intro-pagina) {
+    --fonte-principal: "Inter", sans-serif;
+    --fonte-display: "Inter", sans-serif;
+    --fonte-mono: "Inter", sans-serif;
+    --fonte-tecnica: "Inter", sans-serif;
+    font-family: "Inter", sans-serif;
+}
+
+body:has(.intro-pagina) :is(button, input, select, textarea) {
+    font-family: "Inter", sans-serif;
+}
+
 body .conteudo-principal.main > .intro-pagina {
     padding-right: var(--margem-lateral, 32px);
     padding-left: var(--margem-lateral, 32px);

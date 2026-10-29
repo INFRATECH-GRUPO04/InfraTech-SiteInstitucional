@@ -20,7 +20,71 @@
     max-width: 580px;
     flex: 0 1 580px;
     align-self: flex-start;
+    position: relative;
     background: linear-gradient(180deg, #0d1a29 0%, #08121c 100%);
+}
+
+.texto-header-forms-token {
+    flex: 1;
+    min-width: 0;
+}
+
+.botao-ajuda-token {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    padding: 0;
+    border: 1px solid rgba(0, 207, 255, 0.55);
+    border-radius: 50%;
+    color: var(--cor-cyan);
+    background: rgba(0, 207, 255, 0.08);
+    font-family: var(--fonte-principal);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color var(--transicao), box-shadow var(--transicao), color var(--transicao);
+}
+
+.botao-ajuda-token:hover,
+.botao-ajuda-token[aria-expanded="true"] {
+    color: #06121d;
+    background: var(--cor-cyan);
+    box-shadow: 0 0 14px rgba(0, 207, 255, 0.28);
+}
+
+.botao-ajuda-token:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.ajuda-token {
+    margin: 16px 24px 0;
+    padding: 14px 16px;
+    border: 1px solid var(--cor-borda-cyan);
+    border-radius: var(--raio);
+    color: var(--cor-texto);
+    background: rgba(0, 207, 255, 0.055);
+}
+
+.ajuda-token h2 {
+    margin: 0 0 6px;
+    color: var(--cor-branco);
+    font-family: var(--fonte-principal);
+    font-size: 0.9rem;
+}
+
+.ajuda-token p {
+    margin: 0 0 5px;
+    color: var(--cor-texto-suave);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.ajuda-token p:last-child {
+    margin-bottom: 0;
 }
 
 /* ----------- Indicador de etapas ----------- */
