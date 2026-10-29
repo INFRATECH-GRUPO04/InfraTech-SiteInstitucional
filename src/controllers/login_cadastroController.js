@@ -14,9 +14,6 @@ function autenticar(req, res) {
         login_cadastroModel.autenticar(email, senha)
             .then(
                 function (resultadoAutenticar) {
-                    console.log(`\nResultados encontrados: ${resultadoAutenticar.length}`);
-                    console.log(`Resultados: ${JSON.stringify(resultadoAutenticar)}`);
-
                     if (resultadoAutenticar.length == 1) {
                         var funcionario = resultadoAutenticar[0];
 
@@ -25,7 +22,6 @@ function autenticar(req, res) {
                             idEmpresa: funcionario.fkEmpresa,
                             nome: funcionario.nome,
                             email: funcionario.email,
-                            senha: funcionario.senha,
                             tipoAcesso: funcionario.tipoAcesso
                         });
                     } else if (resultadoAutenticar.length == 0) {
@@ -43,6 +39,20 @@ function autenticar(req, res) {
             );
     }
 
+}
+
+function verificar(req, res) {
+    var codigo = req.query.codigo;
+    if (!codigo) return res.status(400).send("Seu código está indefinido!");
+
+    login_cadastroModel.verificar(codigo)
+        .then(function (resultado) {
+            if (resultado.length) return res.status(200).json(resultado[0]);
+            return res.status(404).send("Código não encontrado");
+        })
+        .catch(function () {
+            return res.status(500).json({ mensagem: "Não foi possível verificar o código" });
+        });
 }
 
 function cadastrar(req, res) {
@@ -148,6 +158,7 @@ function CodigoEmpresa(req, res) {
 
 module.exports = {
     autenticar,
+    verificar,
     cadastrar,
     EmailsIguais,
     CodigoEmpresa
