@@ -842,3 +842,39 @@ a, button{
 .box-crud{flex:1;min-width:0}
 .cartao-permissoes[hidden]{display:none!important}
 @media(max-width:1000px){.container-gerenciamento.tem-selecao{flex-direction:column}.container-gerenciamento.tem-selecao .boxes-funcionario{flex:0 0 auto;width:100%;min-width:0;height:auto;max-height:34vh}.container-gerenciamento.tem-selecao .box-crud{min-height:420px}}
+
+body:has(.header-left),
+body:has(.header-left) .container_main,
+body:has(.header-left) .main{background:#080d12;color:#edf7ff}
+.header{background:#0b1219;border-bottom-color:#18303d}
+.subtitulo{color:#a9c1d3}
+.cabecalho-funcionarios h1{color:#f2f8fc}
+.cabecalho-funcionarios p{color:#b0c2d0}
+.boxes-funcionario{background:#101820;color:#edf7ff;border:1px solid #243543}
+.boxes-funcionario h2{color:#f2f8fc}
+.busca-funcionarios{border-color:#334958;background:#0b1219;color:#f2f8fc}
+.busca-funcionarios::placeholder{color:#9aafbf;opacity:1}
+.box-funcionario{background:#101820;color:#edf7ff;border-bottom-color:#263744}
+.box-funcionario:hover{background:#14232d}
+.box-funcionario.selecionado{border-color:#00cfff;background:#102732}
+.circulo-iniciais,.circulo-iniciais-crud{background:#123341;color:#42d8fa}
+.nome-funcionario{color:#f0f7fc}
+.email-funcionario,.texto-dado,.titulo-permissoes small,.permissao-limites small,.ajuda-permissoes,.texto-revisao{color:#afc0cd}
+.cargo-analista{background:#123341;color:#72def7}
+.cargo-admin{background:#382b12;color:#ffd078}
+.cargo-infratech{background:#123341;color:#72def7}
+.box-crud{border-color:#263946;background:#101820;color:#edf7ff}
+.head-crud,.footer-crud,.botoes-modificar{border-color:#263946}
+.identificacao .nome-funcionario{color:#f2f8fc}
+.servidor-crud-head{color:#67dcf5;background:#123341}
+.botao-modificar{color:#b2c2ce}
+.botao-modificar.ativo{color:#35d4f5!important;border-bottom-color:#00cfff!important}
+.container-dados,.cartao-permissoes{background:#151f28}
+.box-dados{border-color:#2b3c49;background:#0e161e}
+.dado-funcionario{color:#edf7ff}
+.permissao-limites{border-color:#28566a;background:#102a36;color:#f0f8fc}
+.estado-permissao{background:#263642;color:#d3e0e8}
+.estado-permissao.autorizado{background:#123d30;color:#73e6b1}
+.texto-inicial{color:#c0ced8}
+.trecho-inicial img{filter:brightness(0) saturate(100%) invert(75%) sepia(14%) saturate(1210%) hue-rotate(155deg) brightness(102%)}
+.box-funcionario[hidden]{display:none!important}
