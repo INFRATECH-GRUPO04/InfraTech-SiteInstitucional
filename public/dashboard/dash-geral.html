@@ -9,6 +9,7 @@
     <!-- Estilos globais compartilhados e estilos visuais da dashboard -->
     <link rel="stylesheet" href="../compartilhado/css/global.css" />
     <link rel="stylesheet" href="dash-geral.css" />
+    <link rel="stylesheet" href="dashboard-global.css" />
 
     <!-- Script de sessão do usuário -->
     <script src="../compartilhado/js/sessao.js"></script>
@@ -17,20 +18,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
-  <body class="pagina-dash-geral" onload="validarSessao()">
-
-    <!-- Botão hambúrguer para abrir a sidebar em telas menores -->
-    <button class="btn-hamburguer-dash" id="btn_hamburguer" type="button" aria-label="Abrir menu de navegação">
-      &#9776;
-    </button>
-
-    <!-- Overlay escuro ao abrir sidebar no mobile -->
-    <div class="overlay-sidebar" id="overlay_sidebar"></div>
+  <body class="pagina-dash-geral dashboard-compartilhada">
 
     <!-- Barra lateral padrão -->
     <aside class="header-left" id="sidebar_dash">
       <div class="logo">
-        <a href="../paginas/pos-login/painel/painel.html" title="InfraTech Painel">
+        <a href="./dash-geral.html" title="InfraTech Painel">
           <img src="../assets/icon/logo.png" alt="InfraTech">
         </a>
       </div>
@@ -42,15 +35,9 @@
         Servidores
       </h3>
 
-      <a href="./dash-geral.html" class="nav-item ativo">
-        <img src="../assets/imgs/dashboards.png" alt="" class="menu-icon">
-        Dashboard
-      </a>
       <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
         Cadastrar Host
-      </a>
-        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
       </a>
       <a href="../paginas/pos-login/servidores/modificar_servidor.html" class="nav-item">
         <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
@@ -94,7 +81,7 @@
     <main class="conteudo-principal">
 
       <!-- Cabeçalho da dashboard -->
-      <header class="cabecalho-dash">
+      <header class="cabecalho-dash dashboard-welcome">
         <div class="cabecalho-dash__esquerda">
           <h1 class="cabecalho-dash__titulo">
             BEM-VINDO, <span id="nome_usuario">USUÁRIO</span> <span class="cabecalho-dash__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
@@ -108,9 +95,9 @@
           </button>
 
           <!-- Alertas de servidores -->
-          <span class="status-frota status-frota--online">• 4 online</span>
-          <span class="status-frota status-frota--atencao">• 1 atenção</span>
-          <span class="status-frota status-frota--offline">• 1 offline</span>
+          <span class="status-frota status-frota--online" id="resumo-online">• 4 online</span>
+          <span class="status-frota status-frota--atencao" id="resumo-atencao">• 1 atenção</span>
+          <span class="status-frota status-frota--offline" id="resumo-offline">• 1 offline</span>
 
           <!-- Relógio com data e hora -->
           <span class="cabecalho-dash__hora" id="relogio">24/10/2026 20:48</span>
@@ -127,7 +114,7 @@
               Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
             </p>
           </div>
-          <span class="panorama__leitura">ÚLTIMA LEITURA &nbsp;·&nbsp; HÁ 38 SEG</span>
+          <span class="panorama__leitura" data-leitura-dashboard>ÚLTIMA LEITURA · 25/10/2026 11:35</span>
         </div>
 
           <!-- Grade com os 4 cartões de métricas (KPIs) -->
@@ -146,7 +133,7 @@
                 </span>
                 <span class="kpi-card__alerta kpi-card__alerta--perigo">↗ 1 offline</span>
               </div>
-              <p class="kpi-card__valor kpi-card__valor--verde">4<span class="kpi-card__valor--total">/6</span></p>
+              <p class="kpi-card__valor kpi-card__valor--verde"><span id="servidores-online">4</span><span class="kpi-card__valor--total" id="servidores-total">/6</span></p>
               <p class="kpi-card__rotulo">Servidores Online</p>
               <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
                 <span class="ponto ponto--offline"></span> SRV-BR-04 offline — <span class="kpi-card__link">Ação necessária</span>
@@ -183,7 +170,7 @@
                 </span>
                 <span class="kpi-card__alerta kpi-card__alerta--laranja">1 offline · 1 sobrecarregado</span>
               </div>
-              <p class="kpi-card__valor kpi-card__valor--perigo">2</p>
+              <p class="kpi-card__valor kpi-card__valor--perigo" id="kpi-problemas">2</p>
               <p class="kpi-card__rotulo">Problemas que Precisam de Atenção</p>
               <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
                 <span class="ponto ponto--offline"></span> SRV-BR-04 parado — <span class="kpi-card__link">Verificar com a equipe de TI</span>
@@ -200,7 +187,7 @@
                 </span>
                 <span class="kpi-card__alerta kpi-card__alerta--roxo">pico observado às 09h</span>
               </div>
-              <p class="kpi-card__valor kpi-card__valor--roxo">88 <span class="kpi-card__valor--unidade">Mbps</span></p>
+              <p class="kpi-card__valor kpi-card__valor--roxo"><span id="kpi-rede-atual">88</span> <span class="kpi-card__valor--unidade">Mbps</span></p>
               <p class="kpi-card__rotulo">Tráfego de Rede</p>
               <p class="kpi-card__detalhe kpi-card__detalhe--neutro">
                 <span class="ponto ponto--neutro"></span> Sem classificação: limite ainda não definido pelo cliente
@@ -217,7 +204,7 @@
           <div class="status-servidores__info">
             <h2 class="status-servidores__titulo">Status dos Servidores</h2>
             <p class="status-servidores__descricao">
-              Clique em qualquer linha para ver o diagnóstico completo daquele servidor
+              Acompanhe as métricas e a disponibilidade atual de cada servidor
             </p>
           </div>
 
@@ -277,7 +264,7 @@
                       <small class="disponibilidade__detalhe">99.8% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 02: Online -->
@@ -320,7 +307,7 @@
                       <small class="disponibilidade__detalhe">99.5% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 03: Atenção (linha destacada em amarelo suave) -->
@@ -363,7 +350,7 @@
                       <small class="disponibilidade__detalhe">96.2% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 04: Offline -->
@@ -384,7 +371,7 @@
                       <span class="disponibilidade disponibilidade--offline">Fora do ar</span>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 05: Online -->
@@ -427,7 +414,7 @@
                       <small class="disponibilidade__detalhe">98.7% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
                 <!-- Servidor 06: Online -->
@@ -470,7 +457,7 @@
                       <small class="disponibilidade__detalhe">99.1% do tempo</small>
                     </div>
                   </td>
-                  <td><a class="tabela-servidores__link" href="#">Ver detalhes →</a></td>
+                  <td>—</td>
                 </tr>
 
               </tbody>
@@ -605,6 +592,7 @@
     <button class="btn-ajuda" title="Ajuda">?</button>
 
     <!-- Script principal da dashboard -->
+    <script src="dashboard-data.js"></script>
     <script src="dash-geral.js"></script>
 
   </body>

@@ -147,11 +147,18 @@ async function detalhes(req, res) {
         var gestor = await gerenciarEmpresaModel.buscarGestor(idEmpresa);
         var vinculos = await gerenciarEmpresaModel.contarVinculos(idEmpresa);
 
+        var qtdServ = (vinculos && vinculos.length > 0)
+            ? (vinculos[0].qtdServidores !== undefined ? vinculos[0].qtdServidores : vinculos[0].qtd_servidores)
+            : 0;
+        var qtdFunc = (vinculos && vinculos.length > 0)
+            ? (vinculos[0].qtdFuncionarios !== undefined ? vinculos[0].qtdFuncionarios : vinculos[0].qtd_funcionarios)
+            : 0;
+
         res.status(200).json({
             empresa: empresa[0],
             gestor: gestor.length > 0 ? gestor[0] : null,
-            qtdServidores: vinculos[0].qtdServidores,
-            qtdFuncionarios: vinculos[0].qtdFuncionarios
+            qtdServidores: qtdServ || 0,
+            qtdFuncionarios: qtdFunc || 0
         });
     } catch (erro) {
         responderErro(res, erro, "Não foi possível carregar os detalhes da empresa.");

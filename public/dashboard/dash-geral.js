@@ -13,23 +13,85 @@ function carregarUsuario() {
   }
 
   if (acessoSalvo) {
-    let cargoFormatado = 'GESTOR';
-    const acessoUpper = acessoSalvo.toUpperCase();
-
-    if (acessoUpper === 'ADMIN') {
-      cargoFormatado = 'ADMINISTRADOR';
-    } else if (acessoUpper === 'GESTOR') {
-      cargoFormatado = 'GESTOR';
-    } else if (acessoUpper === 'FUNCIONARIO' || acessoUpper === 'ANALISTA') {
-      cargoFormatado = 'ANALISTA';
-    } else {
-      cargoFormatado = acessoUpper;
-    }
+    const cargoFormatado = typeof formatarCargoDashboard === 'function'
+      ? formatarCargoDashboard(acessoSalvo)
+      : acessoSalvo.toUpperCase();
 
     if (elCargo) {
       elCargo.textContent = cargoFormatado;
     }
   }
+}
+
+function aplicarLeiturasFrota() {
+  const dados = window.InfraTechDashboardData;
+  if (!dados) return;
+
+  const totais = { online: 0, atencao: 0, offline: 0 };
+  dados.servidores.forEach((servidor) => {
+    totais[servidor.status] += 1;
+    const linha = document.querySelector(`[data-servidor="${servidor.id}"]`);
+    if (!linha) return;
+
+    const status = linha.querySelector('.status');
+    const ponto = linha.querySelector('.celula-servidor .ponto');
+    const metricas = linha.querySelectorAll('.celula-metrica__valor');
+    const metricasVazias = linha.querySelectorAll('.celula-metrica__vazio');
+    const disponibilidade = linha.querySelector('.disponibilidade');
+    const detalheDisponibilidade = linha.querySelector('.disponibilidade__detalhe');
+
+    linha.classList.toggle('tabela-servidores__linha--atencao', servidor.status === 'atencao');
+    linha.classList.toggle('tabela-servidores__linha--offline', servidor.status === 'offline');
+    if (status) {
+      status.className = `status status--${servidor.status}`;
+      status.textContent = servidor.status === 'atencao' ? 'Atenção'
+        : servidor.status === 'offline' ? 'Offline' : 'Online';
+    }
+    if (ponto) {
+      ponto.classList.remove('ponto--online', 'ponto--atencao', 'ponto--offline');
+      ponto.classList.add(`ponto--${servidor.status}`);
+    }
+
+    ['cpu', 'ram', 'disco'].forEach((recurso, indice) => {
+      if (servidor[recurso] == null) {
+        if (metricasVazias[indice]) metricasVazias[indice].textContent = '—';
+        return;
+      }
+      const valor = metricas[indice];
+      if (valor) {
+        valor.textContent = `${servidor[recurso]}%`;
+        valor.classList.remove('celula-metrica__valor--ok', 'celula-metrica__valor--atencao');
+        valor.classList.add(servidor.status === 'atencao' ? 'celula-metrica__valor--atencao' : 'celula-metrica__valor--ok');
+      }
+      const barra = linha.querySelectorAll('.barra-progresso__fill')[indice];
+      if (barra) {
+        barra.style.width = `${servidor[recurso]}%`;
+        barra.classList.remove('barra-progresso__fill--ok', 'barra-progresso__fill--atencao');
+        barra.classList.add(servidor.status === 'atencao' ? 'barra-progresso__fill--atencao' : 'barra-progresso__fill--ok');
+      }
+    });
+
+    if (servidor.status === 'offline') {
+      if (disponibilidade) {
+        disponibilidade.className = 'disponibilidade disponibilidade--offline';
+        disponibilidade.textContent = 'Fora do ar';
+      }
+      if (detalheDisponibilidade) detalheDisponibilidade.remove();
+    } else if (disponibilidade) {
+      const estavel = servidor.disponibilidade >= 99;
+      disponibilidade.className = `disponibilidade disponibilidade--${estavel ? 'estavel' : 'instavel'}`;
+      disponibilidade.textContent = estavel ? 'Estável' : 'Instável';
+      if (detalheDisponibilidade) detalheDisponibilidade.textContent = `${servidor.disponibilidade.toFixed(1)}% do tempo`;
+    }
+  });
+
+  document.getElementById('resumo-online').textContent = `• ${totais.online} online`;
+  document.getElementById('resumo-atencao').textContent = `• ${totais.atencao} atenção`;
+  document.getElementById('resumo-offline').textContent = `• ${totais.offline} offline`;
+  document.getElementById('kpi-problemas').textContent = totais.atencao + totais.offline;
+  document.getElementById('servidores-online').textContent = totais.online;
+  document.getElementById('servidores-total').textContent = `/${dados.servidores.length}`;
+  document.getElementById('kpi-rede-atual').textContent = dados.rede.picoMbps;
 }
 
 // Atualização do relógio em tempo real
@@ -58,10 +120,10 @@ function inicializarGraficoRede() {
   new Chart(ctxRede, {
     type: 'line',
     data: {
-      labels: ['00h', '04h', '08h', '12h', '16h', '20h'],
+      labels: window.InfraTechDashboardData.rede.horas,
       datasets: [{
         label: 'Tráfego',
-        data: [18, 16, 68, 88, 42, 26],
+        data: window.InfraTechDashboardData.rede.mbps,
         borderColor: '#9333ea',
         borderWidth: 2.2,
         backgroundColor: gradiente,
@@ -120,7 +182,7 @@ function inicializarGraficoSaude() {
     data: {
       labels: ['Online', 'Atenção', 'Offline'],
       datasets: [{
-        data: [4, 1, 1],
+        data: ['online', 'atencao', 'offline'].map((status) => window.InfraTechDashboardData.servidores.filter((servidor) => servidor.status === status).length),
         backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
         borderWidth: 0,
         hoverOffset: 3
@@ -174,12 +236,19 @@ function inicializarHamburguer() {
   });
 }
 
+function inicializarTabelaLinhas() {
+  document.querySelectorAll('.tabela-servidores__linha').forEach(function (linha) {
+    linha.style.cursor = 'default';
+  });
+}
+
 // Inicialização automática ao carregar o DOM
 document.addEventListener('DOMContentLoaded', function () {
   carregarUsuario();
+  aplicarLeiturasFrota();
   atualizarRelogio();
   setInterval(atualizarRelogio, 1000);
   inicializarGraficoRede();
   inicializarGraficoSaude();
-  inicializarHamburguer();
+  inicializarTabelaLinhas();
 });

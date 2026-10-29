@@ -234,6 +234,11 @@ header.cabecalho.scrolled {
     user-select: none;
 }
 
+/* O controle do menu é injetado pelo JS, mas só aparece no breakpoint móvel. */
+.btn-hamburguer-global {
+    display: none;
+}
+
 .header-left .logo {
     width: 100%;
     display: flex;
@@ -574,47 +579,119 @@ input::placeholder, textarea::placeholder {
         display: flex;
     }
 
-    .header-left {
-        width: 100%;
-        min-width: 100%;
-        height: auto;
-        position: relative;
-        flex-direction: row;
+    /* Botao hamburguer global da sidebar */
+    .btn-hamburguer-global {
+        display: flex;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1100;
+        background-color: var(--cor-header, #0d1930);
+        border: 1px solid var(--cor-borda, #1c2f52);
+        color: var(--cor-cyan, #00CFFF);
+        font-size: 22px;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        cursor: pointer;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px 14px;
-        border-right: 0;
-        border-bottom: 1px solid var(--cor-borda);
+        justify-content: center;
+        transition: background-color 0.2s, transform 0.2s;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn-hamburguer-global:hover {
+        background-color: var(--cor-hover, #162440);
+        transform: scale(1.05);
+    }
+
+    /* Overlay escuro de fundo quando a sidebar abre */
+    .overlay-sidebar-global {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(2px);
+        z-index: 1000;
+    }
+
+    .overlay-sidebar-global.visivel {
+        display: block;
+    }
+
+    /* Sidebar vira gaveta lateral deslizante (Drawer) */
+    .header-left {
+        position: fixed !important;
+        top: 0 !important;
+        left: -290px !important;
+        width: 270px !important;
+        min-width: 270px !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 1050 !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        background-color: var(--cor-fundo-sidebar, #03080e) !important;
+        border-right: 1px solid var(--cor-borda, #1c2f52) !important;
+        border-bottom: none !important;
+        overflow-y: auto !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        padding: 24px 16px !important;
+        gap: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .header-left.aberta {
+        left: 0 !important;
+        box-shadow: 8px 0 28px rgba(0, 0, 0, 0.75) !important;
     }
 
     .header-left .logo {
-        width: auto;
-        margin-bottom: 0;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        margin-bottom: 16px !important;
     }
 
     .header-left .logo img {
-        max-width: 90px;
+        max-width: 120px !important;
     }
 
-    .header-left hr.linha,
+    .header-left hr.linha {
+        display: block !important;
+        width: 100% !important;
+        margin: 4px 0 16px 0 !important;
+    }
+
     .nav-categoria {
-        display: none;
+        display: flex !important;
+        width: 100% !important;
+        margin: 14px 0 6px !important;
     }
 
     .nav-item {
-        width: auto;
-        padding: 6px 10px;
-        margin-bottom: 0;
-        font-size: 12px;
+        width: 100% !important;
+        padding: 10px 14px !important;
+        margin-bottom: 4px !important;
+        font-size: 13px !important;
+        display: flex !important;
     }
 
     .btn-logout {
-        width: auto;
-        height: 36px;
-        margin-top: 0;
-        margin-left: auto;
-        padding: 0 14px;
+        width: 100% !important;
+        height: 42px !important;
+        margin-top: auto !important;
+        margin-left: 0 !important;
+        padding: 0 16px !important;
+    }
+
+    /* Ajuste para que o botao hamburguer nao tampe o conteudo principal */
+    body:has(.header-left) {
+        padding-top: 56px;
     }
 
     .rodape-conteudo {

@@ -74,8 +74,8 @@ function contarVinculos(idEmpresa) {
     var id = Number(idEmpresa);
     var instrucaoSql = `
         SELECT
-            (SELECT COUNT(*) FROM servidor WHERE fk_empresa = ${id} AND status_sistema = 1) AS qtd_servidores,
-            (SELECT COUNT(*) FROM funcionario WHERE fk_empresa = ${id} AND tipo_acesso = 'FUNCIONARIO' AND status_sistema = 1) AS qtd_funcionarios;
+            (SELECT COUNT(*) FROM servidor WHERE fk_empresa = ${id} AND status_sistema = 1) AS qtdServidores,
+            (SELECT COUNT(*) FROM funcionario WHERE fk_empresa = ${id} AND tipo_acesso = 'FUNCIONARIO' AND status_sistema = 1) AS qtdFuncionarios;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
@@ -133,8 +133,8 @@ function atualizarEmpresa(idEmpresa, d, fkEndereco) {
 
     var instrucaoSql = `
         UPDATE empresa SET
-            razaoSocial = ${esc(d.razaoSocial)},
-            nomeFantasia = ${esc(d.nomeFantasia)},
+            razao_social = ${esc(d.razaoSocial)},
+            nome_fantasia = ${esc(d.nomeFantasia)},
             cnpj = ${esc(d.cnpj)},
             segmento_atuacao = ${esc(d.segmentoAtuacao)},
             email = ${esc(d.email)},

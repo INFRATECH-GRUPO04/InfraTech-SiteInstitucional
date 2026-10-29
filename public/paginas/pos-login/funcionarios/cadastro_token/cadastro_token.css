@@ -8,14 +8,18 @@
 
 .block_token {
     width: 100%;
+    min-height: 0;
     display: flex;
     justify-content: center;
-    padding-top: 40px;
+    align-items: flex-start;
+    padding: clamp(24px, 4vh, 40px) clamp(16px, 3vw, 30px);
 }
 
 .bg_token {
     width: 100%;
     max-width: 580px;
+    flex: 0 1 580px;
+    align-self: flex-start;
     background: linear-gradient(180deg, #0d1a29 0%, #08121c 100%);
 }
 

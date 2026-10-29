@@ -1,0 +1,368 @@
+.pagina { 
+  display: flex; 
+  flex-direction: row; 
+  gap: 0px; 
+  align-items: flex-start; 
+  justify-content: flex-start; 
+  flex-shrink: 0; width: 1821.33px; height: 805.33px; position: relative; overflow: hidden; } 
+ 
+/* ---------- Tokens ---------- */
+:root {
+  /* Superfícies */
+  --cor-fundo: #050b16;
+  --cor-topbar: #0a1628;
+  --cor-card: #ffffff;
+  --cor-borda-card: rgba(0, 80, 160, 0.08);
+  --cor-linha-tabela: #eef2f7;
+ 
+  /* Texto */
+  --cor-titulo: #f5f9ff;
+  --cor-texto-suave: #668099;
+  --cor-texto-card: #0f1f2e;
+  --cor-texto-card-suave: #4a6080;
+  --cor-rotulo: #8ea4b8;
+ 
+  /* Semânticas */
+  --cor-destaque: #00b8d9;
+  --cor-ok: #10b981;
+  --cor-atencao: #f59e0b;
+  --cor-critico: #ef4444;
+ 
+  /* Tipografia */
+  --fonte-titulo: "Rajdhani", "Segoe UI", sans-serif;
+  --fonte-texto: "Inter", "Segoe UI", system-ui, sans-serif;
+  --fonte-mono: "JetBrains Mono", "Consolas", monospace;
+ 
+  /* Medidas */
+  --largura-sidebar: 282px;
+  --altura-topbar: 56px;
+  --espaco-pagina: 24px;
+  --raio-card: 12px;
+  --sombra-card: 0 4px 16px rgba(0, 30, 80, 0.04),
+    0 1px 4px rgba(0, 30, 80, 0.06);
+}
+ 
+/* ---------- Estrutura da página ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+ 
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+ 
+body {
+  background: var(--cor-fundo);
+  font-family: var(--fonte-texto);
+}
+ 
+.layout {
+  display: grid;
+  grid-template-columns: var(--largura-sidebar) minmax(0, 1fr);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+ 
+/* Garante que a sidebar ocupe a coluna da esquerda, sem sobrepor o conteúdo */
+.layout > .header-left {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+}
+ 
+.principal {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  width: 100%;
+}
+ 
+/* ---------- Modificadores de status (reutilizados em toda a página) ---------- */
+.status-ok {
+  --cor-status: var(--cor-ok);
+}
+.status-atencao {
+  --cor-status: var(--cor-atencao);
+}
+.status-critico {
+  --cor-status: var(--cor-critico);
+}
+ 
+/* ---------- Área de conteúdo ---------- */
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+  min-height: 0;
+  padding: var(--espaco-pagina);
+  overflow-y: auto;
+}
+ 
+.cabecalho-pagina {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+ 
+.cabecalho-pagina__titulo {
+  margin: 2px 0 0;
+  font: 700 28px/1.2 var(--fonte-titulo);
+  letter-spacing: 0.03em;
+  color: var(--cor-titulo);
+  font-size: 2.7vw;
+}
+ 
+.cabecalho-pagina__descricao {
+  margin: 4px 0 0;
+  font-size: 0.8vw;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+
+}
+ 
+.cabecalho-pagina__atualizacao {
+  margin: 0;
+  font: 400 11px/1.4 var(--fonte-mono);
+  letter-spacing: 0.04em;
+  color: var(--cor-texto-suave);
+  white-space: nowrap;
+  font-size: 0.7vw;
+}
+ 
+/* ---------- Cards de indicadores (KPI) ---------- */
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+ 
+.indicador {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 22px;
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda-card);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+}
+ 
+/* Barra de destaque inferior, na cor do status do card */
+.indicador::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: var(--cor-status);
+  opacity: 0.4;
+}
+ 
+.indicador__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+ 
+.indicador__icone {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--cor-status) 10%, transparent);
+  color: var(--cor-status);
+}
+ 
+.indicador__icone .svg {
+  width: 24px;
+  height: 24px;
+}
+ 
+.indicador__etiqueta {
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--cor-status) 10%, transparent);
+  font: 700 11px/1.4 var(--fonte-texto);
+  color: var(--cor-status);
+  white-space: nowrap;
+}
+ 
+.indicador__valor {
+  margin: 12px 0 0;
+  font: 700 38px/1 var(--fonte-titulo);
+  color: var(--cor-status);
+}
+ 
+.indicador__nome {
+  margin: 6px 0 0;
+  font: 600 13px/1.4 var(--fonte-texto);
+  color: var(--cor-texto-card);
+  font-size: 0.8vw;
+}
+ 
+.indicador__observacao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font: 600 11px/1.4 var(--fonte-texto);
+  color: var(--cor-status);
+  font-size: 0.8vw;
+}
+ 
+/* .indicador__observacao::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+} */
+ 
+/* ---------- Painel da tabela ---------- */
+.painel {
+  padding: 24px;
+  background: var(--cor-card);
+  border: 1px solid var(--cor-borda-card);
+  border-radius: var(--raio-card);
+  box-shadow: var(--sombra-card);
+}
+ 
+.painel__titulo {
+  margin: 0;
+  font: 700 16px/1.4 var(--fonte-texto);
+  color: var(--cor-texto-card);
+  font-size: 1.4vw;
+}
+ 
+.painel__subtitulo {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #7f95a9;
+  font-size: 0.8vw;
+}
+ 
+.tabela-rolagem {
+  margin-top: 16px;
+  overflow-x: auto;
+}
+ 
+.tabela-sla {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+ 
+.tabela-sla th {
+  padding: 10px 16px;
+  border-bottom: 1px solid #e3eaf3;
+  font: 700 11px/1.4 var(--fonte-texto);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cor-rotulo);
+  white-space: nowrap;
+}
+ 
+.tabela-sla td {
+  padding: 0 16px;
+  height: 56px;
+  border-bottom: 1px solid var(--cor-linha-tabela);
+  font-size: 14px;
+  color: var(--cor-texto-card-suave);
+  white-space: nowrap;
+}
+ 
+.tabela-sla tbody tr:last-child td {
+  border-bottom: 0;
+}
+ 
+.tabela-sla tbody tr:hover {
+  background: #f7fafd;
+}
+
+
+ 
+/* Alinhamento numérico à direita não é necessário aqui; usamos tabular-nums
+   para os valores não "pularem" entre linhas. */
+.tabela-sla .celula-numero {
+  font-variant-numeric: tabular-nums;
+  font-size: 1vw;
+}
+ 
+.tabela-sla .celula-servidor {
+  font: 700 12px/1.4 var(--fonte-mono);
+  color: var(--cor-texto-card);
+  font-size: 1vw;
+}
+
+.tabela-sla .celula-leitura {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cor-status);
+  font-size: 1vw;
+}
+
+.tabela-sla .celula-disponibilidade {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cor-status);
+  font-size: 1vw;
+}
+ 
+/* Selo de impacto (texto + ponto colorido) */
+.selo-impacto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--cor-status) 10%, transparent);
+  font: 600 12px/1.4 var(--fonte-texto);
+  color: var(--cor-status);
+  font-size: 0.7vw;
+}
+ 
+.selo-impacto::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+ 
+/* ---------- Telas menores ---------- */
+@media (max-width: 1400px) {
+  .indicadores {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+ 
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+ 
+  .layout > .header-left,
+  .principal {
+    height: auto;
+  }
+ 
+  .cabecalho-pagina {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
