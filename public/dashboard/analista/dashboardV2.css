@@ -20,12 +20,12 @@
   --texto-mudo: #668099;
 
   /* fontes (nomes originais do Figma) */
-  --fonte-titulo: "Rajdhani-Bold", sans-serif;
-  --fonte-regular: "Inter-Regular", sans-serif;
-  --fonte-semibold: "Inter-SemiBold", sans-serif;
-  --fonte-bold: "Inter-Bold", sans-serif;
-  --fonte-mono: "JetBrainsMono-Regular", sans-serif;
-  --fonte-mono-bold: "JetBrainsMono-Bold", sans-serif;
+  --fonte-titulo: var(--fonte-principal);
+  --fonte-regular: var(--fonte-principal);
+  --fonte-semibold: var(--fonte-principal);
+  --fonte-bold: var(--fonte-principal);
+  --fonte-mono: var(--fonte-principal);
+  --fonte-mono-bold: var(--fonte-principal);
 }
 
 * {
@@ -37,13 +37,26 @@
   display: flex;
   align-items: stretch;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
+  min-height: 100vh;
   overflow: hidden;
 }
 
 .conteudo,
 .conteudo * {
   box-sizing: border-box;
+}
+
+.pagina,
+.pagina :is(h1, h2, h3, h4, h5, h6, p, span, a, button, input, select, label) {
+  font-family: var(--fonte-principal);
+}
+
+@media (max-width: 760px) {
+  .introducao-titulo { font-size: clamp(1.25rem, 5vw, 1.75rem); }
+  .introducao-descricao { font-size: 0.9rem; }
+  .kpi-valor { font-size: 1.4rem; }
+  .kpi-badge, .ranking-item { font-size: 0.75rem; }
 }
 
 /* ==========================================================
@@ -101,17 +114,16 @@
 
 .introducao-titulo {
   padding-top: calc(3 * var(--u));
-  font: 700 calc(24 * var(--u))/1.5 var(--fonte-titulo);
+  font: 700 clamp(1.25rem, 1.9vw, 1.75rem)/1.35 var(--fonte-titulo);
   letter-spacing: calc(0.72 * var(--u));
   color: #f5f9ff;
-  font-size: 2vw;
 }
 
 .introducao-descricao {
   font-weight: 400;
   font-family: var(--fonte-regular);
   color: var(--texto-mudo);
-  font-size: 1vw;
+  font-size: clamp(0.875rem, 0.95vw, 1rem);
 }
 
 .ultima-leitura {
@@ -134,14 +146,14 @@
 .cartao-titulo {
   font: 700 calc(14 * var(--u))/1.5 var(--fonte-bold);
   color: var(--texto-escuro);
-  font-size: 1.1vw;
+  font-size: clamp(0.9rem, 1.05vw, 1.1rem);
 }
 
 .cartao-subtitulo {
   margin-top: calc(4 * var(--u));
   font: 400 calc(11 * var(--u))/1.5 var(--fonte-regular);
   color: var(--texto-suave);
-  font-size: 0.9vw;
+  font-size: clamp(0.8rem, 0.85vw, 0.9rem);
 }
 
 /* ==========================================================
@@ -194,7 +206,7 @@
   font: 700 calc(10 * var(--u))/1.5 var(--fonte-bold);
   color: var(--estado);
   white-space: nowrap;
-  font-size: 0.6vw;
+  font-size: clamp(0.7rem, 0.78vw, 0.8rem);
 }
 
 .kpi-valor {
@@ -207,7 +219,7 @@
   margin-top: 0.4vw;
   font: 600 calc(12 * var(--u))/1.5 var(--fonte-semibold);
   color: var(--texto-escuro);
-  font-size: 1vw;
+  font-size: clamp(0.82rem, 0.95vw, 1rem);
 }
 
 .kpi-alerta {
@@ -217,7 +229,7 @@
   margin-top: 0.2vw;
   font: 600 calc(10 * var(--u))/1.5 var(--fonte-semibold);
   color: var(--estado);
-  font-size: 0.7vw;
+  font-size: clamp(0.72rem, 0.78vw, 0.82rem);
 }
 
 .kpi-alerta .ponto {

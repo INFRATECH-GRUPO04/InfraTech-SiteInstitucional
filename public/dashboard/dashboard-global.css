@@ -2,7 +2,7 @@
 
 :root {
   --dashboard-fundo: #080f1a;
-  --dashboard-fonte: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --dashboard-fonte: var(--fonte-principal, 'Inter', sans-serif);
   --dashboard-raio-card: 12px;
   --dashboard-sidebar-width: 240px;
   --dashboard-verde-positivo: #10b981;
@@ -61,6 +61,11 @@ body.dashboard-compartilhada :is(h1, h2, h3, h4, h5, button, input, select) {
 
 body.dashboard-compartilhada * {
   font-family: var(--dashboard-fonte) !important;
+}
+
+body.dashboard-compartilhada .header-left,
+body.dashboard-compartilhada .header-left * {
+  font-family: var(--fonte-principal) !important;
 }
 
 .dashboard-welcome {

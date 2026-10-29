@@ -4,7 +4,7 @@
   gap: 0px; 
   align-items: flex-start; 
   justify-content: flex-start; 
-  flex-shrink: 0; width: 1821.33px; height: 805.33px; position: relative; overflow: hidden; } 
+  flex-shrink: 0; width: 100%; min-height: 100vh; position: relative; overflow: hidden; }
  
 /* ---------- Tokens ---------- */
 :root {
@@ -29,12 +29,12 @@
   --cor-critico: #ef4444;
  
   /* Tipografia */
-  --fonte-titulo: "Rajdhani", "Segoe UI", sans-serif;
-  --fonte-texto: "Inter", "Segoe UI", system-ui, sans-serif;
-  --fonte-mono: "JetBrains Mono", "Consolas", monospace;
+  --fonte-titulo: var(--fonte-principal);
+  --fonte-texto: var(--fonte-principal);
+  --fonte-mono: var(--fonte-principal);
  
   /* Medidas */
-  --largura-sidebar: 282px;
+  --largura-sidebar: 240px;
   --altura-topbar: 56px;
   --espaco-pagina: 24px;
   --raio-card: 12px;

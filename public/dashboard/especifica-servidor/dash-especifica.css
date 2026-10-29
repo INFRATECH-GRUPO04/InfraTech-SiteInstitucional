@@ -20,12 +20,12 @@
   --cor-critico: #ef4444;
  
   /* Tipografia */
-  --fonte-titulo: "Rajdhani", "Segoe UI", sans-serif;
-  --fonte-texto: "Inter", "Segoe UI", system-ui, sans-serif;
-  --fonte-mono: "JetBrains Mono", "Consolas", monospace;
+  --fonte-titulo: var(--fonte-principal);
+  --fonte-texto: var(--fonte-principal);
+  --fonte-mono: var(--fonte-principal);
  
   /* Medidas */
-  --largura-sidebar: 282px;
+  --largura-sidebar: 240px;
   --altura-topbar: 56px;
   --espaco-pagina: 24px;
   --raio-card: 12px;
@@ -272,7 +272,7 @@
     margin: 8px 0 0;
     overflow: hidden;
     color: #8EA4B8;
-    font-size: 9px;
+    font-size: 12px;
     line-height: 1.35;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -452,7 +452,7 @@
 
 .tabela-matriz thead th {
     text-align: center;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .tabela-matriz thead th:first-child {
@@ -466,7 +466,7 @@
 .tabela-matriz thead th span {
     display: block;
     color: #8EA4B8;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 400;
 }
 
@@ -475,7 +475,7 @@
     padding: 7px 6px;
     border-radius: 4px;
     text-align: center;
-    font: 600 10px/1.2 var(--fonte-mono);
+    font: 600 12px/1.3 var(--fonte-mono);
 }
 
 .matriz-ideal { background: #D9F5E9; color: #087A52; }
@@ -575,7 +575,6 @@
         gap: 4px;
     }
 
-    .tabela-matriz {
-        min-width: 460px;
-    }
+    .tabela-matriz { min-width: 460px; }
+    .tabela-matriz-wrap { overflow-x: auto; max-width: 100%; }
 }

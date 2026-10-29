@@ -480,7 +480,7 @@ header.cabecalho {
 .celula-servidor__nome {
   font-weight: 700;
   color: var(--texto-card-titulo);
-  font-family: 'Courier New', monospace;
+  font-family: var(--fonte-principal);
   font-size: 13px;
 }
 
@@ -775,7 +775,7 @@ header.cabecalho {
   font-size: 12px;
   font-weight: 700;
   color: var(--texto-card-titulo);
-  font-family: 'Courier New', monospace;
+  font-family: var(--fonte-principal);
 }
 
 .evento__descricao {
