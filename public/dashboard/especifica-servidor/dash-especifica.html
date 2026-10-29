@@ -131,6 +131,7 @@
                     <div class="conteudo-visao-geral">
                         <h5 id="resumoServidorLeitura">Visão Geral - Última Atualização: 11:35h</h5>
                     </div>
+                    <button type="button" class="botao-configurar-alertas" id="abrir-config-alertas" aria-label="Configurar limites de alerta" title="Configurar limites de alerta" aria-haspopup="dialog">⚙</button>
                 </div>
             </div>
 
@@ -154,13 +155,14 @@
                         <div class="barra-carregamento" data-barra="disco"></div>
                         <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
-                    <article class="kpi kpi-critico">
-                        <div class="cabecalho-kpi"><h3>Total de Horas em Estado Crítico</h3><span aria-hidden="true">◷</span></div>
-                        <div class="porcentagem"><h2 id="kpiTempoCritico">—</h2></div>
-                        <div class="barra-carregamento barra-carregamento-critica"></div>
-                        <p class="meta-kpi">19–25 out 2026 · semana completa</p>
+                    <article class="kpi kpi-rede metric-color--sem-dados" id="kpiRedeCard">
+                        <div class="cabecalho-kpi"><h3>Rede — pico em 24h</h3><span aria-hidden="true">⌁</span></div>
+                        <div class="porcentagem"><h2 id="kpiRedePico">—</h2></div>
+                        <div class="barra-carregamento" data-barra="rede"></div>
+                        <p class="meta-kpi" id="kpiRedeMeta">Sem série histórica de rede</p>
                     </article>
                 </div>
+                <div class="barra-grafico">
                 <div class="container-abas" role="tablist" aria-label="Gráficos de recursos do servidor">
                     <button class="aba-recurso ativa" id="aba-visao-geral" type="button" role="tab"
                         aria-selected="true" aria-controls="graficoRecursosPainel" data-recurso="geral">Visão Geral</button>
@@ -170,7 +172,20 @@
                         aria-selected="false" aria-controls="graficoRecursosPainel" data-recurso="ram" tabindex="-1">RAM</button>
                     <button class="aba-recurso" id="aba-disco" type="button" role="tab"
                         aria-selected="false" aria-controls="graficoRecursosPainel" data-recurso="disco" tabindex="-1">Disco</button>
+                    <button class="aba-recurso" id="aba-rede" type="button" role="tab"
+                        aria-selected="false" aria-controls="graficoRecursosPainel" data-recurso="rede" tabindex="-1">Rede</button>
                 </div>
+                <div class="controles-grafico">
+                    <div class="filtros-periodo" role="group" aria-label="Período do histórico de recursos">
+                        <button type="button" data-periodo="1h" disabled title="O mock não possui amostras deste período">1h</button>
+                        <button type="button" data-periodo="6h" disabled title="O mock não possui amostras deste período">6h</button>
+                        <button type="button" data-periodo="24h" class="ativo" aria-pressed="true">24h</button>
+                        <button type="button" data-periodo="7d" disabled title="O mock não possui histórico por servidor para 7 dias">7 dias</button>
+                        <span class="data-historico" title="Data da série mock">▣ <span id="dataHistoricoLabel">25 out 2026</span></span>
+                    </div>
+                </div>
+                </div>
+                <div class="container-grafico-e-logs">
                 <div class="container-grafico-recursos" id="graficoRecursosPainel" role="tabpanel" aria-labelledby="aba-visao-geral">
                     <div class="titulo">
                         <h3 id="tituloGraficoRecursos">Uso de Recursos — 24h</h3>
@@ -178,27 +193,32 @@
                     <div class="subtitulo">
                         <h4 id="subtituloGraficoRecursos">CPU, RAM e Disco · 25 out 2026 · 00–24h · uso em %</h4>
                     </div>
-                    <div class="filtros-periodo" role="group" aria-label="Período do histórico de recursos">
-                        <button type="button" disabled title="O mock não possui amostras deste período">1h</button>
-                        <button type="button" disabled title="O mock não possui amostras deste período">6h</button>
-                        <button type="button" class="ativo" aria-pressed="true">24h</button>
-                        <button type="button" disabled title="O mock não possui histórico por servidor para 7 dias">7 dias</button>
-                    </div>
                     <div class="container-canvas-recursos">
                         <canvas id="graficoRecursos"></canvas>
                     </div>
                 </div>
-            </div>
-            <section class="analise-comportamento" aria-labelledby="tituloAnaliseComportamento">
-                <h3 id="tituloAnaliseComportamento">Análise de comportamento</h3>
-                <ul id="observacoesComportamento"><li>As observações serão calculadas a partir das séries disponíveis.</li></ul>
-            </section>
-            <div class="container-rede-e-alertas">
-                <section class="container-rede" aria-labelledby="tituloGraficoBanda">
-                    <div class="titulo"><h3 id="tituloGraficoBanda">Uso de Banda ao Longo do Dia</h3></div>
-                    <div class="subtitulo"><h4 id="estadoCapacidadeRede">25 out 2026 · medições em Mbps · capacidade do link não cadastrada</h4></div>
+                <section class="container-rede" id="graficoRedePainel" aria-labelledby="tituloGraficoBanda" hidden>
+                    <div class="titulo"><h3 id="tituloGraficoBanda">Tráfego de Rede — 24h</h3></div>
+                    <div class="subtitulo"><h4 id="estadoCapacidadeRede">Medições em Mbps · capacidade do link não cadastrada</h4></div>
                     <div class="container-canvas-rede"><canvas id="graficoBanda"></canvas></div>
                 </section>
+                <section class="painel-logs" aria-labelledby="tituloLogs">
+                    <header class="painel-logs__cabecalho">
+                        <div><h3 id="tituloLogs">Logs e eventos — 24h</h3>
+                            <p id="descricaoLogs">Leituras registradas no mesmo período do gráfico.</p></div>
+                        <span id="contadorLogs" class="contador-logs">0</span>
+                    </header>
+                    <p class="painel-logs__nota">A severidade usa os mesmos limites dos KPIs. Um registro é uma leitura; não confirma incidente persistente.</p>
+                    <div class="tabela-logs-wrap">
+                        <table class="tabela-logs">
+                            <thead><tr><th>Hora</th><th>Recurso</th><th>Evento</th><th>Faixa</th><th>Valor</th></tr></thead>
+                            <tbody id="corpoLogs"><tr><td colspan="5">Sem histórico disponível para este servidor.</td></tr></tbody>
+                        </table>
+                    </div>
+                </section>
+                </div>
+            </div>
+            <div class="container-rede-e-alertas">
                 <section class="container-matriz-calor" aria-labelledby="tituloMatrizCalor">
                     <div class="cabecalho-matriz">
                         <div>
@@ -228,6 +248,33 @@
             </div>
         </div>
     </div>
+    <dialog class="modal-limites" id="modalLimites" aria-labelledby="tituloLimites">
+      <form id="formLimites" method="dialog">
+        <header class="modal-limites__cabecalho">
+          <div><p>MONITORAMENTO · <span id="servidorConfigNome">SRV-BR-01</span></p><h2 id="tituloLimites">Personalizar limites de alerta</h2>
+            <span>Arraste os marcadores para definir quando as leituras mudam de faixa.</span></div>
+          <button type="button" id="fecharLimites" aria-label="Fechar">×</button>
+        </header>
+        <div class="modal-limites__ajuda"><button id="botaoAjudaLimites" type="button" aria-expanded="false" aria-controls="textoAjudaLimites">?</button>
+          <p id="textoAjudaLimites" hidden>As cores classificam cada leitura assim que o limite muda. O incidente operacional só é confirmado quando a condição persiste nas amostras necessárias. Um pico isolado aparece como leitura crítica, sem confirmar incidente.</p>
+        </div>
+        <div class="modal-limites__legenda"><span>● Saudável</span><span>● Atenção</span><span>● Crítico</span></div>
+        <div class="modal-limites__grade">
+          <section class="limite-recurso"><header><strong>CPU</strong><span>Uso em %</span></header><label>Atenção começa em <output id="out-cpu-a">70%</output></label><input type="range" min="0" max="99" value="70" data-faixa="cpu" data-nivel="atencao" aria-label="CPU: início da atenção"><label>Crítico começa em <output id="out-cpu-c">85%</output></label><input type="range" min="1" max="100" value="85" data-faixa="cpu" data-nivel="critico" aria-label="CPU: início do crítico"><p id="faixa-cpu"></p></section>
+          <section class="limite-recurso"><header><strong>RAM</strong><span>Uso em %</span></header><label>Atenção começa em <output id="out-ram-a">75%</output></label><input type="range" min="0" max="99" value="75" data-faixa="ram" data-nivel="atencao" aria-label="RAM: início da atenção"><label>Crítico começa em <output id="out-ram-c">90%</output></label><input type="range" min="1" max="100" value="90" data-faixa="ram" data-nivel="critico" aria-label="RAM: início do crítico"><p id="faixa-ram"></p></section>
+          <section class="limite-recurso"><header><strong>Disco</strong><span>Ocupação em %</span></header><label>Atenção começa em <output id="out-disco-a">80%</output></label><input type="range" min="0" max="99" value="80" data-faixa="disco" data-nivel="atencao" aria-label="Disco: início da atenção"><label>Crítico começa em <output id="out-disco-c">90%</output></label><input type="range" min="1" max="100" value="90" data-faixa="disco" data-nivel="critico" aria-label="Disco: início do crítico"><p id="faixa-disco"></p></section>
+          <section class="limite-recurso"><header><strong>Rede</strong><span>% da capacidade do link</span></header><label>Atenção começa em <output id="out-rede-a">70%</output></label><input type="range" min="0" max="99" value="70" data-faixa="rede" data-nivel="atencao" aria-label="Rede: início da atenção"><label>Crítico começa em <output id="out-rede-c">90%</output></label><input type="range" min="1" max="100" value="90" data-faixa="rede" data-nivel="critico" aria-label="Rede: início do crítico"><p id="faixa-rede"></p></section>
+        </div>
+        <fieldset class="escopo-limites"><legend>Aplicar estes limites</legend>
+          <label class="escopo-opcao"><input type="radio" name="escopoLimites" value="servidor" checked><span class="escopo-opcao__icone" aria-hidden="true">▤</span><span><strong>Somente neste servidor</strong><small>Aplica os limites apenas ao <b id="escopoServidorLimites">SRV-BR-01</b>.</small></span></label>
+          <label class="escopo-opcao"><input type="radio" name="escopoLimites" value="global"><span class="escopo-opcao__icone" aria-hidden="true">▤</span><span><strong>Padrão global para toda a frota</strong><small>Aplica os mesmos limites a servidores sem configuração individual.</small></span></label>
+          <label class="substituir-limites"><input type="checkbox" id="substituirIndividuais"> Sobrescrever também os limites personalizados dos outros servidores</label>
+        </fieldset>
+        <p class="modal-limites__aviso" id="avisoLimites" role="status">As cores mudam com os limites salvos em todas as dashboards.</p>
+        <footer><button type="button" id="restaurarLimites">Restaurar padrão</button><span><button type="button" id="cancelarLimites">Cancelar</button><button class="salvar-limites" type="submit">Salvar limites</button></span></footer>
+      </form>
+    </dialog>
+    <div class="toast-limites" id="alertaLimitesToast" role="status" aria-live="polite" hidden></div>
     <script src="dash-especifica.js"></script>
 </body>
 

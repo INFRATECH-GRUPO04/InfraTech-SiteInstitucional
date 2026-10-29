@@ -9,6 +9,7 @@ const historicoRedeServidor = dadosDashboard.obterHistoricoRedeServidor(servidor
 const CORES_SEVERIDADE = { saudavel: '#22c55e', atencao: '#f59e0b', critico: '#ef4444', 'sem-dados': '#94a3b8' };
 let limitesAtuais = window.InfraTechAlertas.obter(servidorSelecionado.id);
 const horasRecursos = historicoServidor?.horas || [];
+let recursoSelecionado = parametrosDashboard.get('recurso') || 'geral';
 const recursos = {
   cpu: { label: 'CPU', data: historicoServidor?.cpu || [], color: '#25AFC0', titulo: 'Uso de CPU — 24h', subtitulo: 'Utilização do processador ao longo do dia' },
   disco: { label: 'Disco', data: historicoServidor?.disco || [], color: '#20A881', titulo: 'Uso de Disco — 24h', subtitulo: 'Utilização do armazenamento ao longo do dia' },
@@ -24,6 +25,7 @@ const abasRecursos = [...document.querySelectorAll('.aba-recurso')];
 const tituloGraficoRecursos = document.getElementById('tituloGraficoRecursos');
 const subtituloGraficoRecursos = document.getElementById('subtituloGraficoRecursos');
 const painelGraficoRecursos = document.getElementById('graficoRecursosPainel');
+const painelGraficoRede = document.getElementById('graficoRedePainel');
 const ctxrecursos = document.getElementById('graficoRecursos').getContext('2d');
 
 const graficoRecursos = new Chart(ctxrecursos, {
@@ -121,6 +123,8 @@ const graficoRecursos = new Chart(ctxrecursos, {
 function selecionarRecurso(aba) {
   const chave = aba.dataset.recurso;
   const visaoGeral = chave === 'geral';
+  const redeSelecionada = chave === 'rede';
+  recursoSelecionado = chave;
 
   abasRecursos.forEach((item) => {
     const selecionada = item === aba;
@@ -129,14 +133,28 @@ function selecionarRecurso(aba) {
     item.tabIndex = selecionada ? 0 : -1;
   });
 
+  painelGraficoRecursos.hidden = redeSelecionada;
+  painelGraficoRede.hidden = !redeSelecionada;
+  document.getElementById('tituloLogs').textContent = `Logs e eventos — ${redeSelecionada ? 'Rede' : '24h'}`;
   painelGraficoRecursos.setAttribute('aria-labelledby', aba.id);
+  painelGraficoRede.setAttribute('aria-labelledby', aba.id);
+  document.getElementById('descricaoLogs').textContent = redeSelecionada
+    ? 'Total de upload e download no mesmo horário do gráfico.'
+    : 'Leituras registradas no mesmo período e nas séries do gráfico.';
+  document.getElementById('dataHistoricoLabel').textContent = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(dadosDashboard.dataLeitura));
+  if (redeSelecionada) {
+    renderizarLogs('rede');
+    requestAnimationFrame(() => graficoBanda.resize());
+    return;
+  }
   const possuiHistoricoRecurso = Boolean(historicoServidor?.horas?.length);
   tituloGraficoRecursos.textContent = visaoGeral
     ? (possuiHistoricoRecurso ? 'Uso de Recursos — 24h' : 'Leituras atuais dos recursos')
     : (possuiHistoricoRecurso ? recursos[chave].titulo : `Uso de ${recursos[chave].label} — leitura atual`);
   subtituloGraficoRecursos.textContent = visaoGeral
-    ? historicoServidor ? 'CPU, RAM e Disco · leitura por horário · estados são leitura, não confirmação de incidente' : 'Sem histórico por recurso para este servidor.'
+    ? historicoServidor ? 'CPU, RAM e Disco · limites individuais por aba · leituras não confirmam incidente persistente' : 'Sem histórico por recurso para este servidor.'
     : (possuiHistoricoRecurso ? recursos[chave].subtitulo : `Série temporal não disponível para ${servidorSelecionado.id}.`);
+  graficoRecursos.data.labels = horasRecursos;
   graficoRecursos.data.datasets = visaoGeral
     ? [recursos.cpu, recursos.ram, recursos.disco].map(criarDatasetRecurso)
     : [criarDatasetRecurso(recursos[chave])];
@@ -146,11 +164,14 @@ function selecionarRecurso(aba) {
   const annotations = graficoRecursos.options.plugins.annotation.annotations;
   annotations.linhaAtencao.yMin = annotations.linhaAtencao.yMax = faixa ? faixa.atencao : 70;
   annotations.linhaCritica.yMin = annotations.linhaCritica.yMax = faixa ? faixa.critico : 85;
+  annotations.linhaAtencao.display = !visaoGeral && Boolean(faixa);
+  annotations.linhaCritica.display = !visaoGeral && Boolean(faixa);
   annotations.linhaAtencao.label.display = !visaoGeral;
   annotations.linhaCritica.label.display = !visaoGeral;
   annotations.linhaAtencao.label.content = faixa ? `Atenção ${faixa.atencao}%` : '';
   annotations.linhaCritica.label.content = faixa ? `Crítico ${faixa.critico}%` : '';
   graficoRecursos.update();
+  renderizarLogs(visaoGeral ? 'geral' : chave);
 }
 
 function atualizarIdentidadeServidor() {
@@ -249,62 +270,123 @@ function renderizarKpis() {
     if (valor == null) barra.closest('.kpi').classList.add('metric-color--sem-dados');
   });
 
-  document.getElementById('kpiTempoCritico').textContent = 'Sem histórico';
-  document.getElementById('kpiTempoCritico').closest('.kpi').classList.add('metric-color--sem-dados');
-  const detalhe = document.querySelector('#kpiTempoCritico')?.closest('.kpi')?.querySelector('.meta-kpi');
-  if (detalhe) detalhe.textContent = 'Histórico por recurso e timestamps não disponível';
+  const rede = historicoRedeServidor;
+  const picoRede = rede ? Math.max(...rede.uploadMbps.map((valor, indice) => valor + rede.downloadMbps[indice])) : null;
+  const redeKpi = document.getElementById('kpiRedePico');
+  const redeCard = document.getElementById('kpiRedeCard');
+  const redeBarra = document.querySelector('[data-barra="rede"]');
+  const redeMeta = document.getElementById('kpiRedeMeta');
+  redeKpi.textContent = picoRede == null ? 'Sem dados' : `${picoRede} Mbps`;
+  const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? dadosDashboard.rede.capacidadeMbps);
+  redeCard.classList.remove('metric-color--saudavel', 'metric-color--atencao', 'metric-color--critico', 'metric-color--sem-dados');
+  if (picoRede == null) {
+    redeCard.classList.add('metric-color--sem-dados');
+    redeMeta.textContent = 'Sem série histórica de rede';
+    redeBarra.style.setProperty('--kpi-progresso', '0%');
+  } else if (!Number.isFinite(capacidade) || capacidade <= 0) {
+    redeCard.classList.add('metric-color--sem-dados');
+    redeMeta.textContent = 'Pico de upload + download · capacidade não cadastrada';
+    redeBarra.style.setProperty('--kpi-progresso', '0%');
+  } else {
+    const percentual = picoRede / capacidade * 100;
+    const estado = window.InfraTechAlertas.classificar('rede', percentual, servidorSelecionado.id);
+    redeCard.classList.add(`metric-color--${estado}`);
+    redeMeta.textContent = `Pico de ${Math.round(percentual)}% da capacidade do link`;
+    redeBarra.style.setProperty('--kpi-progresso', `${Math.min(100, percentual)}%`);
+  }
 }
 
 renderizarMatrizCalor();
 renderizarKpis();
 
-function atualizarAnaliseComportamento() {
-  const lista = document.getElementById('observacoesComportamento');
-  if (!lista) return;
-  if (!historicoServidor || !historicoServidor.horas.length) {
-    lista.replaceChildren(Object.assign(document.createElement('li'), { textContent: `Não há série temporal disponível para ${servidorSelecionado.id}; padrões não podem ser calculados.` }));
+function renderizarLogs(filtro = 'geral') {
+  const corpo = document.getElementById('corpoLogs');
+  const contador = document.getElementById('contadorLogs');
+  const eventos = [];
+  const ordemRecurso = { cpu: 0, ram: 1, disco: 2, rede: 3 };
+  if (filtro === 'rede') {
+    if (historicoRedeServidor) {
+      historicoRedeServidor.horas.forEach((hora, indice) => {
+        const upload = Number(historicoRedeServidor.uploadMbps[indice]);
+        const download = Number(historicoRedeServidor.downloadMbps[indice]);
+        if (!Number.isFinite(upload) || !Number.isFinite(download)) return;
+        const total = upload + download;
+        const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? dadosDashboard.rede.capacidadeMbps);
+        const estado = Number.isFinite(capacidade) && capacidade > 0
+          ? window.InfraTechAlertas.classificar('rede', total / capacidade * 100, servidorSelecionado.id)
+          : 'sem-capacidade';
+        eventos.push({ hora, horaNum: parseInt(hora, 10) || 0, recurso: 'Rede', evento: `Upload ${upload} + download ${download}`, estado, valor: `${total} Mbps`, ordem: 3 });
+      });
+    }
+  } else if (historicoServidor) {
+    ['cpu', 'ram', 'disco'].filter((recurso) => filtro === 'geral' || filtro === recurso).forEach((recurso) => {
+      let estadoAnterior = 'saudavel';
+      historicoServidor[recurso].forEach((valor, indice) => {
+        const estado = window.InfraTechAlertas.classificar(recurso, valor, servidorSelecionado.id);
+        if (estado !== 'saudavel') {
+          eventos.push({ hora: horasRecursos[indice], horaNum: parseInt(horasRecursos[indice], 10) || 0, recurso: recursos[recurso].label, evento: estado === 'critico' ? 'Leitura acima do limite crítico' : 'Leitura acima do limite de atenção', estado, valor: `${valor}%`, ordem: ordemRecurso[recurso] });
+        } else if (estadoAnterior !== 'saudavel') {
+          eventos.push({ hora: horasRecursos[indice], horaNum: parseInt(horasRecursos[indice], 10) || 0, recurso: recursos[recurso].label, evento: 'Retorno à faixa saudável', estado: 'info', valor: `${valor}%`, ordem: ordemRecurso[recurso] });
+        }
+        estadoAnterior = estado;
+      });
+    });
+  }
+  eventos.sort((a, b) => b.horaNum - a.horaNum || a.ordem - b.ordem);
+  contador.textContent = String(eventos.length);
+  corpo.replaceChildren();
+  if (!eventos.length) {
+    const linha = document.createElement('tr');
+    const celula = document.createElement('td');
+    celula.colSpan = 5;
+    celula.className = 'logs-vazio';
+    celula.textContent = historicoServidor || historicoRedeServidor
+      ? 'Nenhum registro fora da faixa configurada neste recorte.'
+      : `Sem série histórica para ${servidorSelecionado.id}; não há eventos para comparar com os KPIs.`;
+    linha.append(celula);
+    corpo.append(linha);
     return;
   }
-  const observacoes = [];
-  for (const recurso of ['cpu', 'ram', 'disco']) {
-    const serie = recursos[recurso].data;
-    const pico = Math.max(...serie);
-    const indice = serie.indexOf(pico);
-    if (pico >= window.InfraTechAlertas.obter(servidorSelecionado.id)[recurso].atencao) {
-      observacoes.push(`${recursos[recurso].label} teve pico de ${pico}% às ${horasRecursos[indice]}; é uma leitura, não confirmação de alerta persistente.`);
-    }
-  }
-  let aumentoSimultaneo = null;
-  for (let indice = 1; indice < horasRecursos.length; indice++) {
-    const deltas = ['cpu', 'ram', 'disco'].map((recurso) => recursos[recurso].data[indice] - recursos[recurso].data[indice - 1]);
-    const pares = [['CPU', 'Disco', 0, 2], ['CPU', 'RAM', 0, 1], ['RAM', 'Disco', 1, 2]];
-    const par = pares.find(([, , a, b]) => deltas[a] >= 10 && deltas[b] >= 10);
-    if (par) { aumentoSimultaneo = `${horasRecursos[indice - 1]}–${horasRecursos[indice]}: ${par[0]} e ${par[1]} cresceram simultaneamente (+${deltas[par[2]]} e +${deltas[par[3]]} pontos percentuais).`; break; }
-  }
-  if (aumentoSimultaneo) observacoes.unshift(aumentoSimultaneo);
-  if (!observacoes.length) observacoes.push('Não foi identificado aumento simultâneo ou pico acima da faixa de atenção nesta série.');
-  lista.replaceChildren(...observacoes.slice(0, 3).map((texto) => Object.assign(document.createElement('li'), { textContent: texto })));
+  eventos.forEach((evento) => {
+    const linha = document.createElement('tr');
+    [evento.hora, evento.recurso, evento.evento].forEach((texto) => {
+      const celula = document.createElement('td');
+      celula.textContent = texto;
+      linha.append(celula);
+    });
+    const faixa = document.createElement('td');
+    const badge = document.createElement('span');
+    badge.className = `log-faixa log-faixa--${evento.estado}`;
+    badge.textContent = evento.estado === 'info' ? 'Info' : evento.estado === 'sem-capacidade' ? 'Sem limite' : evento.estado === 'critico' ? 'Crítico' : 'Atenção';
+    faixa.append(badge);
+    linha.append(faixa);
+    const valor = document.createElement('td');
+    valor.textContent = evento.valor;
+    linha.append(valor);
+    linha.title = 'Evento derivado da mesma amostra mostrada no gráfico.';
+    corpo.append(linha);
+  });
 }
 
 function configurarPeriodosDisponiveis() {
   document.querySelectorAll('.filtros-periodo button').forEach((botao) => {
-    const disponivel = botao.textContent.trim() === '24h' && Boolean(historicoServidor?.horas?.length);
+    const disponivel = botao.dataset.periodo === '24h' && Boolean(historicoServidor?.horas?.length || historicoRedeServidor?.horas?.length);
     botao.disabled = !disponivel;
     botao.title = disponivel ? 'Período disponível na série histórica compartilhada' : 'O mock ainda não possui série com timestamps para este período';
     botao.classList.toggle('ativo', disponivel);
     botao.setAttribute('aria-pressed', String(disponivel));
   });
-  if (!historicoServidor?.horas?.length) {
+  if (!historicoServidor?.horas?.length && !historicoRedeServidor?.horas?.length) {
     const subtitulo = document.getElementById('subtituloGraficoRecursos');
     if (subtitulo) subtitulo.textContent = `Sem histórico por recurso para ${servidorSelecionado.id}.`;
   }
 }
 
 configurarPeriodosDisponiveis();
-atualizarAnaliseComportamento();
 
 function atualizarClassificacoes() {
   limitesAtuais = window.InfraTechAlertas.obter(servidorSelecionado.id);
+  renderizarKpis();
   const ids = { cpu: 'kpiCpuMedia', ram: 'kpiRamMedia', disco: 'kpiDiscoMedia' };
   for (const [recurso, id] of Object.entries(ids)) {
     const valor = servidorSelecionado[recurso];
@@ -326,14 +408,12 @@ function atualizarClassificacoes() {
   document.getElementById('especifica-online').textContent = `${servidores.length - offline} online`;
   document.getElementById('especifica-atencao').textContent = `${atencao} atenção · última leitura`;
   document.getElementById('especifica-offline').textContent = `${offline} offline`;
-  atualizarAnaliseComportamento();
 }
 
 atualizarClassificacoes();
 window.addEventListener('infratech:limites-alerta-alterados', atualizarClassificacoes);
 window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(atualizarClassificacoes));
 const recursoSolicitado = parametrosDashboard.get('recurso');
-if (['cpu', 'ram', 'disco'].includes(recursoSolicitado)) document.getElementById(`aba-${recursoSolicitado}`)?.click();
 
 const gradientUpload = ctxrede.createLinearGradient(0, 0, 0, 300);
 gradientUpload.addColorStop(0, 'rgba(139, 92, 246, 0.25)'); 
@@ -459,3 +539,76 @@ function atualizarRedeEspecifica() {
 atualizarRedeEspecifica();
 window.addEventListener('infratech:limites-alerta-alterados', atualizarRedeEspecifica);
 window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(atualizarRedeEspecifica));
+
+function valoresLimitesModal() {
+  return Object.fromEntries(['cpu', 'ram', 'disco', 'rede'].map((recurso) => [recurso, {
+    atencao: Number(document.querySelector(`[data-faixa="${recurso}"][data-nivel="atencao"]`).value),
+    critico: Number(document.querySelector(`[data-faixa="${recurso}"][data-nivel="critico"]`).value)
+  }]));
+}
+function atualizarFaixaModal(recurso) {
+  const limites = valoresLimitesModal()[recurso];
+  document.getElementById(`out-${recurso}-a`).textContent = `${limites.atencao}%`;
+  document.getElementById(`out-${recurso}-c`).textContent = `${limites.critico}%`;
+  document.getElementById(`faixa-${recurso}`).textContent = `Saudável 0–${limites.atencao - 1}% · Atenção ${limites.atencao}–${limites.critico - 1}% · Crítico ${limites.critico}–100%`;
+  document.querySelectorAll(`[data-faixa="${recurso}"]`).forEach((controle) => {
+    controle.style.setProperty('--faixa-atencao', `${limites.atencao}%`);
+    controle.style.setProperty('--faixa-critica', `${limites.critico}%`);
+  });
+}
+function preencherModalLimites(limites) {
+  ['cpu', 'ram', 'disco', 'rede'].forEach((recurso) => {
+    document.querySelector(`[data-faixa="${recurso}"][data-nivel="atencao"]`).value = limites[recurso].atencao;
+    document.querySelector(`[data-faixa="${recurso}"][data-nivel="critico"]`).value = limites[recurso].critico;
+    atualizarFaixaModal(recurso);
+  });
+}
+function inicializarModalLimites() {
+  const modal = document.getElementById('modalLimites');
+  const form = document.getElementById('formLimites');
+  document.getElementById('abrir-config-alertas').addEventListener('click', () => {
+    preencherModalLimites(window.InfraTechAlertas.obter(servidorSelecionado.id));
+    document.getElementById('avisoLimites').textContent = 'As cores mudam com os limites salvos em todas as dashboards.';
+    modal.showModal();
+  });
+  document.querySelectorAll('[data-faixa]').forEach((controle) => controle.addEventListener('input', () => {
+    const { faixa, nivel } = controle.dataset;
+    const atencao = document.querySelector(`[data-faixa="${faixa}"][data-nivel="atencao"]`);
+    const critico = document.querySelector(`[data-faixa="${faixa}"][data-nivel="critico"]`);
+    if (nivel === 'atencao' && Number(controle.value) >= Number(critico.value)) controle.value = Number(critico.value) - 1;
+    if (nivel === 'critico' && Number(controle.value) <= Number(atencao.value)) controle.value = Number(atencao.value) + 1;
+    atualizarFaixaModal(faixa);
+  }));
+  document.getElementById('botaoAjudaLimites').addEventListener('click', () => {
+    const texto = document.getElementById('textoAjudaLimites');
+    texto.hidden = !texto.hidden;
+    document.getElementById('botaoAjudaLimites').setAttribute('aria-expanded', String(!texto.hidden));
+  });
+  document.getElementById('fecharLimites').addEventListener('click', () => modal.close());
+  document.getElementById('cancelarLimites').addEventListener('click', () => modal.close());
+  document.getElementById('restaurarLimites').addEventListener('click', () => preencherModalLimites(window.InfraTechAlertas.padrao));
+  form.addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+    const escopo = document.querySelector('[name="escopoLimites"]:checked').value;
+    const substituir = document.getElementById('substituirIndividuais').checked;
+    const mensagem = document.getElementById('avisoLimites');
+    const toast = document.getElementById('alertaLimitesToast');
+    try {
+      const limites = valoresLimitesModal();
+      window.InfraTechAlertas.salvar(escopo, servidorSelecionado.id, limites, substituir);
+      let sincronizado = false;
+      try { sincronizado = await window.InfraTechAlertas.salvarBackend(escopo, servidorSelecionado.id, limites, substituir); }
+      catch (erro) { mensagem.textContent = `Salvo neste navegador. Sincronização indisponível: ${erro.message}`; }
+      if (sincronizado) mensagem.textContent = 'Limites salvos e sincronizados com a empresa.';
+      atualizarClassificacoes();
+      atualizarRedeEspecifica();
+      toast.textContent = sincronizado ? 'Limites atualizados e sincronizados.' : 'Limites atualizados neste navegador.';
+      toast.dataset.status = sincronizado ? 'ok' : 'local';
+      toast.hidden = false;
+      modal.close();
+      window.setTimeout(() => { toast.hidden = true; }, 4000);
+    } catch (erro) { mensagem.textContent = erro.message || 'Não foi possível salvar os limites.'; }
+  });
+}
+inicializarModalLimites();
+if (['cpu', 'ram', 'disco', 'rede'].includes(recursoSolicitado)) document.getElementById(`aba-${recursoSolicitado}`)?.click();
