@@ -62,16 +62,33 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: radial-gradient(circle at 50% 25%, rgba(0, 207, 255, 0.08) 0%, transparent 60%);
- background-image: url('../../../assets/imgs/banner-game.jpg');
- background-size: cover;
- background-position: center center;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 72% 42%, rgba(0, 207, 255, 0.13), transparent 42%),
+        linear-gradient(145deg, #050b12 0%, #07101a 55%, #050b12 100%);
+}
+
+.secao-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.2;
+    background-image:
+        linear-gradient(rgba(0, 207, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 207, 255, 0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(90deg, transparent, #000 45%, #000);
 }
 
 .conteudo-hero {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-badge {
@@ -132,7 +149,7 @@
     color: var(--cor-texto);
     font-size: clamp(0.95rem, 1.6vw, 1.1rem);
     line-height: 1.7;
-    width: 550px;
+    width: 100%;
 }
 
 .botoes-banner {
@@ -728,6 +745,49 @@
 
 @media (max-width: 600px) {
     .frase-banner p {
-    width: 300px;
+        width: 300px;
+    }
 }
+
+/* Identidade visual InfraTech V2 */
+.pagina-institucional .logo-header-img {
+    content: url("../../../assets/branding/infratech_logo_horizontal_principal-escuro.png");
+    width: clamp(160px, 18vw, 220px);
+    height: auto;
+    object-fit: contain;
+}
+
+.pagina-institucional .logo-header-titulo,
+.pagina-institucional .titulo-banner {
+    display: none;
+}
+
+.pagina-institucional .logo-banner-img {
+    content: url("../../../assets/branding/infratech_logo_horizontal_slogan_principal-escuro.png");
+    width: min(100%, 480px);
+    height: auto;
+    filter: drop-shadow(0 12px 34px rgba(0, 0, 0, 0.28));
+}
+
+.pagina-institucional .form-logo-img,
+.pagina-institucional .rodape-logo img {
+    content: url("../../../assets/branding/infratech_simbolo_ciano.png");
+    object-fit: contain;
+}
+
+.pagina-institucional .hero-badge,
+.pagina-institucional .subtitulo-tag {
+    font-family: var(--fonte-mono);
+}
+
+.pagina-institucional .hero-badge {
+    background-color: rgba(11, 22, 34, 0.88);
+}
+
+.pagina-institucional .botoes-banner { gap: 14px; margin-top: 24px; }
+
+@media (max-width: 600px) {
+    .pagina-institucional .logo-banner-img { width: min(100%, 360px); }
+    .pagina-institucional .frase-banner { margin-top: 12px; }
+    .pagina-institucional .hero-badge { max-width: calc(100vw - 36px); font-size: 0.68rem; }
 }

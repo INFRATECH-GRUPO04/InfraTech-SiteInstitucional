@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
 
 /* ----------- Variáveis ----------- */
 :root {
@@ -38,6 +38,20 @@
     --raio-pill: 999px;
     --raio-padrao: 8px;
     --transicao: 0.2s ease;
+}
+
+body.pagina-institucional,
+body.pagina-autenticacao {
+    --cor-fundo: #050b12;
+    --cor-fundo-secundario: #07101a;
+    --cor-fundo-sidebar: #050b12;
+    --cor-card: #0b1622;
+    --cor-input: #07101a;
+    --cor-texto: #c7d8e4;
+    --cor-texto-suave: #92abbd;
+    --cor-texto-muted: #648294;
+    --cor-cyan: #00cfff;
+    --fonte-mono: "JetBrains Mono", monospace;
 }
 
 /* ----------- Base ----------- */
@@ -232,6 +246,7 @@ header.cabecalho.scrolled {
     flex-shrink: 0;
     overflow-y: auto;
     user-select: none;
+    font-family: var(--fonte-principal);
 }
 
 /* O controle do menu é injetado pelo JS, mas só aparece no breakpoint móvel. */
@@ -270,6 +285,7 @@ header.cabecalho.scrolled {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-family: var(--fonte-principal);
 }
 
 .menu-icon-title {
@@ -292,6 +308,7 @@ header.cabecalho.scrolled {
     font-weight: 500;
     border: 1px solid transparent;
     transition: all var(--transicao);
+    font-family: var(--fonte-principal);
 }
 
 .menu-icon {
@@ -626,9 +643,9 @@ input::placeholder, textarea::placeholder {
     .header-left {
         position: fixed !important;
         top: 0 !important;
-        left: -290px !important;
-        width: 270px !important;
-        min-width: 270px !important;
+        left: -260px !important;
+        width: var(--largura-sidebar) !important;
+        min-width: var(--largura-sidebar) !important;
         max-width: 85vw !important;
         height: 100vh !important;
         height: 100dvh !important;
@@ -705,10 +722,7 @@ input::placeholder, textarea::placeholder {
         width: calc(100% - 24px);
     }
 
-    .nav-item {
-        font-size: 11px;
-        padding: 5px 8px;
-    }
+    .nav-item { font-size: 13px; }
 }
 
 /* ----------- Autofill ----------- */
