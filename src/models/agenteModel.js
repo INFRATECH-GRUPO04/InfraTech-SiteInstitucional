@@ -6,17 +6,15 @@ function buscarPorChave(hash) {
         SELECT s.id_servidor AS idServidor, s.fk_empresa AS idEmpresa, s.nome AS nomeServidor
         FROM servidor s
         JOIN empresa e ON e.id_empresa = s.fk_empresa
-        WHERE s.chave_hash = '${hash}' AND s.status_sistema = 1 AND e.status_sistema = 1;
+        WHERE s.chave_hash = ? AND s.status_sistema = 1 AND e.status_sistema = 1;
     `;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [hash]);
 }
 
 // Guarda o momento do último envio (em UTC)
 function registrarEnvio(idServidor) {
-    var instrucaoSql = `UPDATE servidor SET dt_ultimo_envio = UTC_TIMESTAMP() WHERE id_servidor = ${idServidor};`;
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    var instrucaoSql = `UPDATE servidor SET dt_ultimo_envio = UTC_TIMESTAMP() WHERE id_servidor = ?;`;
+    return database.executar(instrucaoSql, [idServidor]);
 }
 
 module.exports = {

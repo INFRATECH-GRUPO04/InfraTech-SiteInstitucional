@@ -96,7 +96,7 @@ function enviar(req, res) {
         }));
     } else {
         // Sem S3_BUCKET no .env: grava numa pasta local (SÓ para testar no seu computador)
-        fs.mkdirSync("bronze", { recursive: true });
+        fs.mkdirSync("01-bronze", { recursive: true });
         fs.writeFileSync(nomeArquivo, conteudo);
         gravacao = Promise.resolve();
     }
