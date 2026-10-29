@@ -21,7 +21,10 @@
     flex: 0 1 580px;
     align-self: flex-start;
     position: relative;
-    background: linear-gradient(180deg, #0d1a29 0%, #08121c 100%);
+    background: #101820;
+    border-color: #263946;
+    border-radius: 14px;
+    box-shadow: none;
 }
 
 .texto-header-forms-token {

@@ -178,6 +178,13 @@
     gap: 24px;
 }
 
+#container_cadastro {
+    border-color: #263946;
+    border-radius: 14px;
+    background-color: #101820;
+    box-shadow: none;
+}
+
 .cabecalho {
     display: flex;
     justify-content: space-between;

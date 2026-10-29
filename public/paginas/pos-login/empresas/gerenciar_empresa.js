@@ -3,7 +3,7 @@
 
     var tipoAcesso = (sessionStorage.TIPO_ACESSO || "").toUpperCase();
     if (!InfraTechPermissoes.obter(tipoAcesso).administrar) {
-        window.location.replace("/paginas/pos-login/painel/painel.html");
+        window.location.replace(InfraTechPermissoes.destino(tipoAcesso));
         return;
     }
 
