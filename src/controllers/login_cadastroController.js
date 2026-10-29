@@ -63,7 +63,11 @@ function sessaoAtual(req, res) {
         login_cadastroModel.buscarPermissaoAlertas(req.usuario.id, req.usuario.empresa)
             .then(function (resultado) {
                 var podeEditarAlertas = resultado.length > 0 && Number(resultado[0].podeEditarAlertas) === 1;
-                res.json({ idFuncionario: req.usuario.id, idEmpresa: req.usuario.empresa, nome: req.usuario.nome, email: req.usuario.email, tipoAcesso: req.usuario.cargo, podeEditarAlertas: podeEditarAlertas, permissoes: autorizacao.permissoesDoCargo(req.usuario.cargo, podeEditarAlertas) });
+                var empresa = resultado[0] || {};
+                var nomeEmpresa = empresa.razaoSocial && empresa.nomeFantasia
+                    ? `${empresa.razaoSocial} (${empresa.nomeFantasia})`
+                    : empresa.nomeFantasia || empresa.razaoSocial || 'Empresa';
+                res.json({ idFuncionario: req.usuario.id, idEmpresa: req.usuario.empresa, nome: req.usuario.nome, email: req.usuario.email, tipoAcesso: req.usuario.cargo, nomeEmpresa: nomeEmpresa, razaoSocial: empresa.razaoSocial || '', nomeFantasia: empresa.nomeFantasia || '', podeEditarAlertas: podeEditarAlertas, permissoes: autorizacao.permissoesDoCargo(req.usuario.cargo, podeEditarAlertas) });
             })
             .catch(function (erro) {
                 console.log(erro);

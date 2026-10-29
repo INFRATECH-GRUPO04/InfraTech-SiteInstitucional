@@ -75,8 +75,7 @@
         </div>
 
         <div class="main">
-            <div class="subtitulo" id="subtitulo"></div>
-            <header class="cabecalho-funcionarios">
+            <header class="intro-pagina">
                 <h1>Gerenciar Funcionários</h1>
                 <p>Consulte os funcionários da empresa, exclua contas e confira os acessos definidos pelo cargo.</p>
             </header>
@@ -119,24 +118,6 @@
     box_modificar.style.display = "none"
     footer_crud.style.display = "none"
 
-
-    fetch(`/gerenciar_funcionario/buscarNomeEmpresa/${idEmpresa}`, { cache: 'no-store' })
-        .then(function (response) {
-            if (response.ok) {
-                response.json().then(function (resposta) {
-
-                    subtitulo.textContent = `${resposta[0].razao_social} (${resposta[0].nome_fantasia})`
-
-                })
-
-            } else {
-                console.log("Nenhum dado encontrado")
-            }
-
-        })
-        .catch(function (error) {
-            console.error("Erro na obtenção de dados")
-        })
 
     function listarUsuarios(resposta) {
         boxes_funcionario.innerHTML = "";

@@ -2,6 +2,7 @@
 function validarSessao() {
     return carregarSessaoConfiavel().then(function (usuario) {
         if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
+        padronizarCabecalhoPosLogin(usuario);
         var nome = usuario.nome;
         var bUsuario = document.getElementById("b_usuario");
         var nomeUsuario = document.getElementById("nome_usuario");
@@ -28,12 +29,61 @@ function carregarSessaoConfiavel() {
             sessionStorage.NOME_USUARIO = usuario.nome;
             sessionStorage.ID_USUARIO = usuario.idFuncionario;
             sessionStorage.ID_EMPRESA = usuario.idEmpresa;
+            sessionStorage.NOME_EMPRESA = usuario.nomeEmpresa || '';
             sessionStorage.TIPO_ACESSO = usuario.tipoAcesso;
             sessionStorage.PODE_EDITAR_ALERTAS = String(usuario.podeEditarAlertas === true);
             sessionStorage.PERMISSOES = JSON.stringify(usuario.permissoes || {});
             sessionStorage.removeItem("SENHA_USUARIO");
+            padronizarCabecalhoPosLogin(usuario);
             return usuario;
         }).catch(function () { return null; });
+}
+
+function padronizarCabecalhoPosLogin(usuario) {
+    if (!usuario || window.location.pathname.startsWith('/dashboard/')) return;
+    var cabecalho = document.querySelector('.barra-topo, .barra-superior-painel, .content > header, .container_main > .header');
+    if (!cabecalho) return;
+
+    var rotulos = {
+        '/paginas/pos-login/empresas/gerenciar_empresa.html': 'Gerenciar empresas',
+        '/paginas/pos-login/empresas/cadastro_empresa.html': 'Cadastrar empresa',
+        '/paginas/pos-login/servidores/cadastro_servidor.html': 'Cadastrar servidor',
+        '/paginas/pos-login/painel/painel.html': 'Painel',
+        '/paginas/pos-login/funcionarios/modificar_funcionario.html': 'Modificar colaborador',
+        '/paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html': 'Gerar token',
+        '/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html': 'Gerenciar funcionários',
+        '/paginas/pos-login/dashboards/dashboard_dados.html': 'Dashboard de Dados',
+        '/paginas/pos-login/dashboards/dashboard_noc.html': 'Dashboard NOC'
+    };
+    var titulo = rotulos[window.location.pathname] || document.body.dataset.funcionalidade || document.title.split('|')[0].trim();
+    var empresa = usuario.nomeEmpresa || sessionStorage.NOME_EMPRESA || 'Empresa';
+    cabecalho.className = 'cabecalho-padrao';
+    cabecalho.setAttribute('aria-label', 'Contexto da página');
+    cabecalho.innerHTML = '';
+
+    var contexto = document.createElement('div');
+    contexto.className = 'cabecalho-padrao__contexto';
+    var nomeEmpresa = document.createElement('span');
+    nomeEmpresa.className = 'cabecalho-padrao__empresa';
+    nomeEmpresa.textContent = empresa;
+    var separador = document.createElement('span');
+    separador.className = 'cabecalho-padrao__separador';
+    separador.textContent = '/';
+    var funcionalidade = document.createElement('span');
+    funcionalidade.className = 'cabecalho-padrao__funcao';
+    funcionalidade.textContent = titulo;
+    contexto.append(nomeEmpresa, separador, funcionalidade);
+
+    var sessao = document.createElement('div');
+    sessao.className = 'cabecalho-padrao__usuario';
+    var ponto = document.createElement('span');
+    ponto.className = 'cabecalho-padrao__ponto';
+    ponto.setAttribute('aria-hidden', 'true');
+    var nome = document.createElement('span');
+    nome.id = 'nome_usuario';
+    nome.textContent = usuario.nome || 'Usuário';
+    sessao.append(ponto, nome);
+    cabecalho.append(contexto, sessao);
 }
 
 function obterDestinoInicial(tipoAcesso) {
@@ -213,6 +263,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!sidebar) return;
     carregarSessaoConfiavel().then(function (usuario) {
         if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
+        padronizarCabecalhoPosLogin(usuario);
         var cargo = document.getElementById("cargo_usuario");
         if (cargo) cargo.textContent = rotuloCargo(usuario.tipoAcesso);
         var nome = document.getElementById("nome_usuario");

@@ -19,7 +19,15 @@ function autenticar(email, senha) {
 }
 
 function buscarPermissaoAlertas(idFuncionario, idEmpresa) {
-    return database.executar(`SELECT pode_editar_alertas AS podeEditarAlertas FROM funcionario WHERE id_funcionario = ? AND fk_empresa = ? AND status_sistema = 1;`, [Number(idFuncionario), Number(idEmpresa)]);
+    return database.executar(`
+        SELECT
+            IF(f.status_sistema = 1, f.pode_editar_alertas, 0) AS podeEditarAlertas,
+            e.razao_social AS razaoSocial,
+            e.nome_fantasia AS nomeFantasia
+        FROM funcionario f
+        INNER JOIN empresa e ON e.id_empresa = f.fk_empresa
+        WHERE f.id_funcionario = ? AND f.fk_empresa = ?;
+    `, [Number(idFuncionario), Number(idEmpresa)]);
 }
 
 function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso) {
