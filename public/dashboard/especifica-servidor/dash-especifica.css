@@ -179,6 +179,64 @@
     gap: 16px;
 }
 
+.seletor-servidor { position: relative; z-index: 20; }
+.seletor-servidor__botao {
+    width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    color: #132336;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+.seletor-servidor__botao:hover,
+.seletor-servidor__botao:focus-visible { outline: 2px solid #a8e6ef; outline-offset: 5px; }
+.seletor-servidor__botao .texto-superior strong { color: #152638; font-size: 14px; }
+.seletor-servidor__botao .texto-inferior { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.seletor-servidor__seta { margin-left: 2px; color: #7890a4; font-size: 12px; transition: transform .16s ease; }
+.seletor-servidor__botao[aria-expanded="true"] .seletor-servidor__seta { transform: rotate(180deg); }
+#servidorDisponibilidade { color: #8ca0b2; font-size: 10px; }
+.texto-negrito.status-offline { color: #b42323; background: #fee2e2; }
+.ponto-status.status-offline { background: #ef4444; }
+.opcoes-servidor {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 10px);
+    left: 0;
+    width: min(360px, calc(100vw - 40px));
+    max-height: min(420px, 60vh);
+    overflow-y: auto;
+    padding: 6px;
+    border: 1px solid #dbe5ef;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 14px 36px rgba(8, 20, 35, .24);
+}
+.opcoes-servidor[hidden] { display: none; }
+.opcao-servidor {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 8px;
+    color: #213449;
+    background: #fff;
+    text-align: left;
+    cursor: pointer;
+}
+.opcao-servidor:hover,.opcao-servidor:focus-visible,.opcao-servidor[aria-selected="true"] { outline: none; background: #eef8fb; }
+.opcao-servidor__topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.opcao-servidor__nome { font-size: 12px; font-weight: 800; }
+.opcao-servidor__cidade,.opcao-servidor__metricas { color: #7b8da0; font-size: 10px; }
+.opcao-servidor__status { padding: 2px 7px; border-radius: 999px; color: #087b51; background: #d8f7e7; font-size: 9px; font-weight: 700; }
+.opcao-servidor__status--offline { color: #b42323; background: #fee2e2; }
+.opcao-servidor__status--atencao { color: #985b00; background: #fff0c7; }
+
 .texto-servidor {
     display: flex;
     flex-direction: column;
@@ -404,7 +462,8 @@
 .container-grafico-e-logs .container-grafico-recursos,
 .container-grafico-e-logs .container-rede,
 .painel-logs {
-    min-height: 440px;
+    height: 460px;
+    min-height: 460px;
     border: 1px solid rgba(0, 80, 160, .08);
     border-radius: 12px;
     background: #fff;
@@ -413,8 +472,8 @@
 .container-grafico-e-logs .container-grafico-recursos,
 .container-grafico-e-logs .container-rede { width: auto; margin: 0; padding: 22px 24px; }
 .container-grafico-e-logs .container-rede[hidden] { display: none; }
-.container-canvas-recursos,.container-canvas-rede { height: 350px; }
-.painel-logs { display: flex; height: 440px; min-height: 0; max-height: 440px; box-sizing: border-box; flex-direction: column; overflow: hidden; padding: 16px 14px; color: #132336; }
+.container-canvas-recursos,.container-canvas-rede { height: 320px; }
+.painel-logs { display: flex; max-height: 460px; box-sizing: border-box; flex-direction: column; overflow: hidden; padding: 16px 14px; color: #132336; }
 .painel-logs__cabecalho { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .painel-logs__cabecalho h3 { margin: 0; color: #101c2c; font-size: 17px; }
 .painel-logs__cabecalho p { margin: 5px 0 0; color: #8194a8; font-size: 12px; line-height: 1.4; }
@@ -720,7 +779,8 @@
     .container-grafico-e-logs { grid-template-columns: minmax(0, 1fr); }
     .container-grafico-e-logs .container-grafico-recursos,
     .container-grafico-e-logs .container-rede,
-    .painel-logs { height: 380px; min-height: 0; max-height: 380px; }
+    .painel-logs { height: 400px; min-height: 400px; max-height: 400px; }
+    .container-canvas-recursos,.container-canvas-rede { height: 240px; }
 }
 @media (max-width: 700px) {
     .barra-grafico { flex-direction: column; align-items: stretch; padding: 0 12px; gap: 2px; }
@@ -730,7 +790,7 @@
     .container-grafico-e-logs { margin-right: 12px; margin-left: 12px; }
     .container-grafico-e-logs .container-grafico-recursos,
     .container-grafico-e-logs .container-rede { padding: 18px 14px; }
-    .container-canvas-recursos,.container-canvas-rede { height: 280px; }
+    .container-canvas-recursos,.container-canvas-rede { height: 240px; }
 }
 
 /* Opções de escopo em cartões com a consequência da escolha explícita. */

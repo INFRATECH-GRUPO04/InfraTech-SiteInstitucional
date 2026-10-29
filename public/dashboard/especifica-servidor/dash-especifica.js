@@ -176,17 +176,91 @@ function selecionarRecurso(aba) {
 
 function atualizarIdentidadeServidor() {
   document.getElementById('servidorSelecionadoNome').textContent = servidorSelecionado.id;
-  document.getElementById('servidorSelecionadoStatus').textContent = servidorSelecionado.status === 'offline' ? 'Offline' : 'Online';
+  const offline = servidorSelecionado.status === 'offline';
+  const status = document.getElementById('servidorSelecionadoStatus');
+  status.textContent = offline ? 'Offline' : 'Online';
+  status.classList.toggle('status-offline', offline);
+  document.querySelector('.ponto-status')?.classList.toggle('status-offline', offline);
   document.getElementById('servidorSelecionadoCidade').textContent = servidorSelecionado.cidade;
+  const disponibilidade = document.getElementById('servidorDisponibilidade');
+  if (disponibilidade) disponibilidade.textContent = servidorSelecionado.disponibilidade == null
+    ? 'Disponibilidade sem histórico'
+    : `Disponibilidade semanal ${formatarPercentual(servidorSelecionado.disponibilidade)}`;
   const dataLeitura = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(dadosDashboard.dataLeitura));
-  document.getElementById('resumoServidorLeitura').textContent = `Visão Geral · última leitura ${dataLeitura}`;
+  const resumo = document.getElementById('resumoServidorLeitura');
+  const topbarLeitura = document.querySelector('[data-topbar-leitura]');
+  if (resumo) resumo.textContent = offline
+    ? `Offline desde ${servidorSelecionado.offlineDesde || 'horário não informado'} · última leitura ${historicoServidor?.horas?.filter((hora, indice) => historicoServidor.cpu[indice] != null).at(-1) || 'não informada'}`
+    : `Visão Geral · última leitura ${dataLeitura}`;
+  if (topbarLeitura) {
+    topbarLeitura.dateTime = dadosDashboard.dataLeitura;
+    topbarLeitura.textContent = dataLeitura;
+  }
   document.querySelectorAll('[data-meta-servidor]').forEach((elemento) => {
-    elemento.textContent = `Leitura registrada · ${servidorSelecionado.id} · ${new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(dadosDashboard.dataLeitura))}`;
+    elemento.textContent = offline
+      ? `Sem leitura atual · último ponto ${historicoServidor?.horas?.filter((hora, indice) => historicoServidor.cpu[indice] != null).at(-1) || 'indisponível'}`
+      : `Leitura registrada · ${servidorSelecionado.id} · ${new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(dadosDashboard.dataLeitura))}`;
   });
   const escopo = document.querySelector('#servidorConfigNome');
   if (escopo) escopo.textContent = servidorSelecionado.id;
   const escopoNome = document.getElementById('escopoServidorLimites');
   if (escopoNome) escopoNome.textContent = servidorSelecionado.id;
+}
+
+function configurarSeletorServidor() {
+  const gatilho = document.getElementById('abrirSeletorServidor');
+  const lista = document.getElementById('opcoesServidores');
+  if (!gatilho || !lista) return;
+  const servidores = dadosDashboard.obterServidores();
+  lista.replaceChildren(...servidores.map((servidor) => {
+    const opcao = document.createElement('button');
+    opcao.type = 'button';
+    opcao.className = 'opcao-servidor';
+    opcao.setAttribute('role', 'option');
+    opcao.setAttribute('aria-selected', String(servidor.id === servidorSelecionado.id));
+    opcao.setAttribute('aria-label', `${servidor.id}, ${servidor.cidade}, ${servidor.status}`);
+    const topo = document.createElement('span');
+    topo.className = 'opcao-servidor__topo';
+    const nome = document.createElement('strong');
+    nome.className = 'opcao-servidor__nome';
+    nome.textContent = servidor.id;
+    const status = document.createElement('span');
+    status.className = `opcao-servidor__status${servidor.status === 'offline' ? ' opcao-servidor__status--offline' : ''}`;
+    status.textContent = servidor.status === 'offline' ? 'Offline' : 'Online';
+    topo.append(nome, status);
+    const cidade = document.createElement('span');
+    cidade.className = 'opcao-servidor__cidade';
+    cidade.textContent = servidor.cidade;
+    const metricas = document.createElement('span');
+    metricas.className = 'opcao-servidor__metricas';
+    metricas.textContent = servidor.status === 'offline'
+      ? `CPU — · RAM — · Disco — · uptime ${formatarPercentual(servidor.disponibilidade)}`
+      : `CPU ${formatarPercentual(servidor.cpu)} · RAM ${formatarPercentual(servidor.ram)} · Disco ${formatarPercentual(servidor.disco)} · uptime ${formatarPercentual(servidor.disponibilidade)}`;
+    opcao.append(topo, cidade, metricas);
+    opcao.addEventListener('click', () => {
+      lista.hidden = true;
+      gatilho.setAttribute('aria-expanded', 'false');
+      if (servidor.id === servidorSelecionado.id) return;
+      const destino = new URL(window.location.href);
+      destino.searchParams.set('servidor', servidor.id);
+      if (recursoSelecionado) destino.searchParams.set('recurso', recursoSelecionado);
+      window.location.assign(destino.toString());
+    });
+    return opcao;
+  }));
+  const fechar = () => { lista.hidden = true; gatilho.setAttribute('aria-expanded', 'false'); };
+  gatilho.addEventListener('click', () => {
+    lista.hidden = !lista.hidden;
+    gatilho.setAttribute('aria-expanded', String(!lista.hidden));
+    if (!lista.hidden) lista.querySelector('[aria-selected="true"]')?.focus();
+  });
+  gatilho.addEventListener('keydown', (evento) => {
+    if (evento.key === 'ArrowDown') { evento.preventDefault(); lista.hidden = false; gatilho.setAttribute('aria-expanded', 'true'); lista.querySelector('[aria-selected="true"]')?.focus(); }
+  });
+  document.addEventListener('click', (evento) => { if (!evento.target.closest('.seletor-servidor')) fechar(); });
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && !lista.hidden) { fechar(); gatilho.focus(); }
+  });
 }
 
 abasRecursos.forEach((aba, indice) => {
@@ -228,6 +302,7 @@ function formatarPercentual(valor) {
 }
 
 atualizarIdentidadeServidor();
+configurarSeletorServidor();
 
 function renderizarMatrizCalor() {
   const corpo = document.getElementById('corpoMatrizCalor');
@@ -277,7 +352,7 @@ function renderizarKpis() {
   const redeBarra = document.querySelector('[data-barra="rede"]');
   const redeMeta = document.getElementById('kpiRedeMeta');
   redeKpi.textContent = picoRede == null ? 'Sem dados' : `${picoRede} Mbps`;
-  const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? dadosDashboard.rede.capacidadeMbps);
+  const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? 250);
   redeCard.classList.remove('metric-color--saudavel', 'metric-color--atencao', 'metric-color--critico', 'metric-color--sem-dados');
   if (picoRede == null) {
     redeCard.classList.add('metric-color--sem-dados');
@@ -307,11 +382,14 @@ function renderizarLogs(filtro = 'geral') {
   if (filtro === 'rede') {
     if (historicoRedeServidor) {
       historicoRedeServidor.horas.forEach((hora, indice) => {
-        const upload = Number(historicoRedeServidor.uploadMbps[indice]);
-        const download = Number(historicoRedeServidor.downloadMbps[indice]);
+        const uploadBruto = historicoRedeServidor.uploadMbps[indice];
+        const downloadBruto = historicoRedeServidor.downloadMbps[indice];
+        if (uploadBruto == null || downloadBruto == null) return;
+        const upload = Number(uploadBruto);
+        const download = Number(downloadBruto);
         if (!Number.isFinite(upload) || !Number.isFinite(download)) return;
         const total = upload + download;
-        const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? dadosDashboard.rede.capacidadeMbps);
+        const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? 250);
         const estado = Number.isFinite(capacidade) && capacidade > 0
           ? window.InfraTechAlertas.classificar('rede', total / capacidade * 100, servidorSelecionado.id)
           : 'sem-capacidade';
@@ -322,8 +400,9 @@ function renderizarLogs(filtro = 'geral') {
     ['cpu', 'ram', 'disco'].filter((recurso) => filtro === 'geral' || filtro === recurso).forEach((recurso) => {
       let estadoAnterior = 'saudavel';
       historicoServidor[recurso].forEach((valor, indice) => {
+        if (valor == null || !Number.isFinite(Number(valor))) return;
         const estado = window.InfraTechAlertas.classificar(recurso, valor, servidorSelecionado.id);
-        if (estado !== 'saudavel') {
+        if (estado === 'critico' || estado === 'atencao') {
           eventos.push({ hora: horasRecursos[indice], horaNum: parseInt(horasRecursos[indice], 10) || 0, recurso: recursos[recurso].label, evento: estado === 'critico' ? 'Leitura acima do limite crítico' : 'Leitura acima do limite de atenção', estado, valor: `${valor}%`, ordem: ordemRecurso[recurso] });
         } else if (estadoAnterior !== 'saudavel') {
           eventos.push({ hora: horasRecursos[indice], horaNum: parseInt(horasRecursos[indice], 10) || 0, recurso: recursos[recurso].label, evento: 'Retorno à faixa saudável', estado: 'info', valor: `${valor}%`, ordem: ordemRecurso[recurso] });
@@ -331,6 +410,10 @@ function renderizarLogs(filtro = 'geral') {
         estadoAnterior = estado;
       });
     });
+    if (filtro === 'geral' && servidorSelecionado.status === 'offline') {
+      const hora = servidorSelecionado.offlineDesde || '—';
+      eventos.push({ hora, horaNum: parseInt(hora, 10) || 0, recurso: 'Sistema', evento: 'Servidor offline · sem leitura atual', estado: 'critico', valor: '—', ordem: 4 });
+    }
   }
   eventos.sort((a, b) => b.horaNum - a.horaNum || a.ordem - b.ordem);
   contador.textContent = String(eventos.length);
@@ -502,7 +585,7 @@ const graficoBanda = new Chart(ctxrede, {
 
 function atualizarRedeEspecifica() {
   if (!graficoBanda) return;
-  const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? dadosDashboard.rede.capacidadeMbps);
+  const capacidade = Number(dadosDashboard.capacidadesRedePorServidor?.[servidorSelecionado.id] ?? 250);
   const maiorPonto = Math.max(...graficoBanda.data.datasets.flatMap((serie) => serie.data.map(Number)));
   const maximoEixo = Number.isFinite(capacidade) && capacidade > 0
     ? capacidade

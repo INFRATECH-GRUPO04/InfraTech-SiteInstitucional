@@ -107,25 +107,30 @@
             <li class="resumo-status__item status-critico" id="especifica-offline">1 offline</li>
           </ul>
 
-          <time class="topbar__data" datetime="2026-10-25T11:35">25/10/2026 11:35</time>
+          <time class="topbar__data" data-topbar-leitura datetime="2026-10-25T23:35">25/10/2026 23:35</time>
         </div>
       </header>
         <div class="container-graficos">
             <div class="container-titulo">
-                <div class="dados-servidor">
-                    <div id="imagem-servidor">
-                        <img src="../../assets/imgs/servidores.png" alt="">
-                    </div>
-                    <div class="texto-servidor">
-                        <div class="texto-superior">
-                            <h4 id="servidorSelecionadoNome">SRV-BR-01</h4>
-                            <span class="ponto-status"></span>
-                            <span class="texto-negrito" id="servidorSelecionadoStatus">Online</span>
-                        </div>
-                        <div class="texto-inferior">
-                            <h5 id="servidorSelecionadoCidade">São Paulo</h5>
-                        </div>
-                    </div>
+                <div class="seletor-servidor">
+                    <button type="button" class="dados-servidor seletor-servidor__botao" id="abrirSeletorServidor"
+                        aria-haspopup="listbox" aria-expanded="false" aria-controls="opcoesServidores"
+                        aria-label="Escolher servidor monitorado">
+                        <span id="imagem-servidor"><img src="../../assets/imgs/servidores.png" alt=""></span>
+                        <span class="texto-servidor">
+                            <span class="texto-superior">
+                                <strong id="servidorSelecionadoNome">SRV-BR-01</strong>
+                                <span class="ponto-status"></span>
+                                <span class="texto-negrito" id="servidorSelecionadoStatus">Online</span>
+                            </span>
+                            <span class="texto-inferior">
+                                <span id="servidorSelecionadoCidade">São Paulo</span>
+                                <span id="servidorDisponibilidade">Disponibilidade semanal 99,8%</span>
+                            </span>
+                        </span>
+                        <span class="seletor-servidor__seta" aria-hidden="true">▾</span>
+                    </button>
+                    <div class="opcoes-servidor" id="opcoesServidores" role="listbox" aria-label="Servidores disponíveis" hidden></div>
                 </div>
                 <div class="visao-geral">
                     <div class="conteudo-visao-geral">
@@ -208,7 +213,7 @@
                             <p id="descricaoLogs">Leituras registradas no mesmo período do gráfico.</p></div>
                         <span id="contadorLogs" class="contador-logs">0</span>
                     </header>
-                    <p class="painel-logs__nota">A severidade usa os mesmos limites dos KPIs. Um registro é uma leitura; não confirma incidente persistente.</p>
+                    <p class="painel-logs__nota">A severidade usa os limites dos KPIs. Leituras não confirmam incidente persistente.</p>
                     <div class="tabela-logs-wrap">
                         <table class="tabela-logs">
                             <thead><tr><th>Hora</th><th>Recurso</th><th>Evento</th><th>Faixa</th><th>Valor</th></tr></thead>

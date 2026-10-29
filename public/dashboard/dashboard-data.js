@@ -1,14 +1,14 @@
 /* Fonte única das leituras compartilhadas pelas dashboards. */
 window.InfraTechDashboardData = {
   origem: 'mock',
-  dataLeitura: '2026-10-25T11:35:00',
+  dataLeitura: '2026-10-25T23:35:00',
   servidores: [
-    { id: 'SRV-BR-01', cidade: 'São Paulo', status: 'online', cpu: 42, ram: 67, disco: 54, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-02', cidade: 'Rio de Janeiro', status: 'online', cpu: 28, ram: 51, disco: 38, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-03', cidade: 'Curitiba', status: 'online', cpu: 78, ram: 83, disco: 71, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-04', cidade: 'Brasília', status: 'offline', cpu: null, ram: null, disco: null, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-05', cidade: 'Recife', status: 'online', cpu: 35, ram: 44, disco: 29, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 },
-    { id: 'SRV-BR-06', cidade: 'Salvador', status: 'online', cpu: 21, ram: 38, disco: 45, disponibilidade: null, memoriaTotalGb: 32, discoTotalGb: 400 }
+    { id: 'SRV-BR-01', cidade: 'São Paulo', status: 'online', cpu: 42, ram: 67, disco: 54, disponibilidade: 99.8, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-02', cidade: 'Rio de Janeiro', status: 'online', cpu: 28, ram: 51, disco: 38, disponibilidade: 99.5, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-03', cidade: 'Curitiba', status: 'online', cpu: 78, ram: 83, disco: 71, disponibilidade: 96.2, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-04', cidade: 'Brasília', status: 'offline', cpu: null, ram: null, disco: null, disponibilidade: 97.8, offlineDesde: '22h', memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-05', cidade: 'Recife', status: 'online', cpu: 35, ram: 44, disco: 29, disponibilidade: 98.7, memoriaTotalGb: 32, discoTotalGb: 400 },
+    { id: 'SRV-BR-06', cidade: 'Salvador', status: 'online', cpu: 21, ram: 38, disco: 45, disponibilidade: 99.1, memoriaTotalGb: 32, discoTotalGb: 400 }
   ],
   historicoServidor: {
     'SRV-BR-01': {
@@ -16,6 +16,36 @@ window.InfraTechDashboardData = {
       cpu: [32, 30, 30, 37, 65, 40, 38, 42, 46, 50, 94, 72, 42],
       ram: [77, 33, 49, 52, 60, 56, 55, 61, 86, 76, 70, 78, 67],
       disco: [43, 37, 40, 43, 51, 47, 46, 52, 58, 64, 97, 74, 54]
+    },
+    'SRV-BR-02': {
+      horas: ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'],
+      cpu: [20, 22, 24, 23, 27, 31, 34, 30, 29, 26, 32, 30, 28],
+      ram: [46, 47, 48, 49, 51, 54, 55, 53, 52, 50, 52, 53, 51],
+      disco: [33, 34, 34, 35, 36, 37, 38, 38, 39, 39, 38, 38, 38]
+    },
+    'SRV-BR-03': {
+      horas: ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'],
+      cpu: [65, 62, 60, 58, 70, 72, 68, 75, 82, 78, 88, 84, 78],
+      ram: [74, 75, 77, 76, 80, 82, 79, 85, 88, 86, 91, 87, 83],
+      disco: [61, 63, 65, 64, 66, 67, 68, 71, 75, 78, 82, 77, 71]
+    },
+    'SRV-BR-04': {
+      horas: ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'],
+      cpu: [22, 24, 26, 25, 29, 31, 33, 35, 38, 42, 54, null, null],
+      ram: [40, 41, 43, 45, 47, 50, 52, 55, 58, 61, 64, null, null],
+      disco: [48, 48, 49, 50, 51, 52, 54, 56, 59, 62, 64, null, null]
+    },
+    'SRV-BR-05': {
+      horas: ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'],
+      cpu: [29, 30, 32, 35, 38, 41, 43, 39, 37, 36, 40, 38, 35],
+      ram: [40, 41, 42, 44, 46, 47, 49, 48, 46, 45, 46, 45, 44],
+      disco: [24, 25, 26, 27, 28, 29, 31, 32, 33, 32, 31, 30, 29]
+    },
+    'SRV-BR-06': {
+      horas: ['00h', '02h', '04h', '06h', '08h', '10h', '12h', '14h', '16h', '18h', '20h', '22h', '24h'],
+      cpu: [18, 20, 22, 21, 24, 27, 29, 31, 28, 25, 24, 22, 21],
+      ram: [35, 36, 37, 38, 40, 42, 44, 43, 42, 40, 39, 38, 38],
+      disco: [40, 41, 41, 42, 43, 44, 46, 48, 50, 49, 47, 46, 45]
     }
   },
   historicoRedeServidor: {
@@ -23,6 +53,31 @@ window.InfraTechDashboardData = {
       horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
       uploadMbps: [12, 20, 42, 52, 48, 25, 16, 18],
       downloadMbps: [6, 15, 28, 36, 32, 17, 10, 12]
+    },
+    'SRV-BR-02': {
+      horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
+      uploadMbps: [15, 20, 26, 34, 39, 32, 24, 18],
+      downloadMbps: [10, 18, 28, 34, 38, 34, 24, 18]
+    },
+    'SRV-BR-03': {
+      horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
+      uploadMbps: [35, 42, 65, 84, 96, 82, 70, 52],
+      downloadMbps: [28, 36, 59, 78, 109, 80, 65, 48]
+    },
+    'SRV-BR-04': {
+      horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
+      uploadMbps: [6, 9, 12, 14, 16, 19, 17, null],
+      downloadMbps: [4, 8, 10, 12, 15, 18, 16, null]
+    },
+    'SRV-BR-05': {
+      horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
+      uploadMbps: [18, 25, 34, 42, 48, 39, 30, 22],
+      downloadMbps: [14, 24, 35, 46, 48, 38, 29, 21]
+    },
+    'SRV-BR-06': {
+      horas: ['00h', '04h', '08h', '09h', '12h', '16h', '20h', '24h'],
+      uploadMbps: [12, 20, 29, 35, 42, 34, 24, 17],
+      downloadMbps: [10, 18, 28, 34, 38, 32, 23, 17]
     }
   },
   picoSemanalFrota: [
@@ -44,6 +99,25 @@ window.InfraTechDashboardData = {
     downloadMbps: [6, 15, 28, 36, 32, 17, 10, 12]
   }
 };
+
+/* Rede por servidor e agregado da frota usam as mesmas amostras e capacidades. */
+window.InfraTechDashboardData.capacidadesRedePorServidor = Object.fromEntries(
+  window.InfraTechDashboardData.servidores.map((servidor) => [servidor.id, 250])
+);
+{
+  const dados = window.InfraTechDashboardData;
+  const historicos = Object.values(dados.historicoRedeServidor);
+  const horas = historicos[0].horas;
+  const uploadMbps = horas.map((_, indice) => historicos.reduce((soma, item) => soma + (Number(item.uploadMbps[indice]) || 0), 0));
+  const downloadMbps = horas.map((_, indice) => historicos.reduce((soma, item) => soma + (Number(item.downloadMbps[indice]) || 0), 0));
+  const mbps = horas.map((_, indice) => uploadMbps[indice] + downloadMbps[indice]);
+  dados.rede = {
+    horas, mbps, uploadMbps, downloadMbps,
+    picoMbps: Math.max(...mbps),
+    capacidadeMbps: dados.capacidadesRedePorServidor ? Object.values(dados.capacidadesRedePorServidor).reduce((soma, capacidade) => soma + capacidade, 0) : 1500,
+    escopo: 'frota'
+  };
+}
 
 /* Pequena API de leitura para manter páginas consumidoras desacopladas do formato do mock. */
 window.InfraTechDashboardData.obterServidores = function () {

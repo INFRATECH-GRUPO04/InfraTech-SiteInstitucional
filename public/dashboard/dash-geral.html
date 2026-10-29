@@ -149,12 +149,12 @@
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
                 </span>
-                <span class="kpi-card__alerta kpi-card__alerta--neutro">Período de uptime sem histórico</span>
+                <span class="kpi-card__alerta kpi-card__alerta--neutro" id="disponibilidade-badge">Média da frota · 7 dias</span>
               </div>
-              <p class="kpi-card__valor kpi-card__valor--ciano">Sem histórico</p>
+              <p class="kpi-card__valor kpi-card__valor--ciano" id="disponibilidade-valor">—</p>
               <p class="kpi-card__rotulo">Disponibilidade dos Serviços</p>
               <p class="kpi-card__detalhe kpi-card__detalhe--neutro">
-                <span class="ponto ponto--neutro"></span> Disponibilidade histórica não informada no mock
+                <span class="ponto ponto--neutro" id="disponibilidade-ponto"></span><span id="disponibilidade-detalhe">Média da frota · 19–25 out 2026</span>
               </p>
             </div>
 
@@ -475,7 +475,7 @@
               <div>
                 <h3 class="bloco__titulo">Uso de Rede ao Longo do Dia</h3>
                 <p class="bloco__descricao">
-                  Quanto a rede foi utilizada hora a hora — volume observado, sem classificação de severidade
+                  Soma do tráfego de upload e download da frota por horário — volume observado em Mbps
                 </p>
               </div>
               <span class="badge badge--mbps" id="rede-pico-badge">● 88 Mbps · último registro</span>
@@ -519,8 +519,20 @@
 
           <!-- Card 3: Histórico de Eventos de Hoje -->
           <div class="bloco-card bloco-eventos">
-            <h3 class="bloco__titulo">Histórico de Alertas</h3>
-            <p class="kpi-card__detalhe kpi-card__detalhe--neutro">Sem eventos no mock. As cores representam leituras classificadas, não incidentes confirmados; timestamps e transições de estado ainda não são fornecidos.</p>
+            <div class="historico-alertas__cabecalho">
+              <div>
+                <h3 class="bloco__titulo">Histórico de alertas</h3>
+                <p class="bloco__descricao">Ocorrências recentes e estado da infraestrutura</p>
+              </div>
+              <span class="historico-alertas__origem">Exemplo ilustrativo</span>
+            </div>
+            <div class="historico-alertas__filtros" role="group" aria-label="Filtrar histórico de alertas">
+              <button type="button" class="ativo" data-filtro-alerta="todos" aria-pressed="true">Todos</button>
+              <button type="button" data-filtro-alerta="critico" aria-pressed="false">Críticos</button>
+              <button type="button" data-filtro-alerta="atencao" aria-pressed="false">Atenção</button>
+            </div>
+            <ul class="historico-alertas__lista" id="historicoAlertas" aria-live="polite"></ul>
+            <p class="historico-alertas__nota">Leituras simuladas. Incidentes, impacto em serviços e responsáveis só são confirmados quando esses dados estão disponíveis.</p>
           </div>
 
         </div>

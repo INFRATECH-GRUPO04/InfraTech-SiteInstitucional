@@ -110,7 +110,34 @@ function atualizarCoresMetricas() {
     graficoSaude.update();
   }
   atualizarIndicadorRede();
+  atualizarIndicadorDisponibilidade();
   atualizarCorGraficoRede();
+}
+
+function atualizarIndicadorDisponibilidade() {
+  const servidores = window.InfraTechDashboardData.servidores;
+  const leituras = servidores.filter((servidor) => servidor.disponibilidade != null)
+    .map((servidor) => Number(servidor.disponibilidade)).filter(Number.isFinite);
+  const valor = document.getElementById('disponibilidade-valor');
+  const badge = document.getElementById('disponibilidade-badge');
+  const detalhe = document.getElementById('disponibilidade-detalhe');
+  const ponto = document.getElementById('disponibilidade-ponto');
+  if (!valor || !badge || !detalhe || !ponto) return;
+  if (!leituras.length) {
+    valor.textContent = 'Sem dados';
+    badge.textContent = 'Período indisponível';
+    detalhe.textContent = 'Não há disponibilidade registrada para a frota.';
+    return;
+  }
+  const media = leituras.reduce((soma, item) => soma + item, 0) / leituras.length;
+  const formatado = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(media);
+  const estado = media >= 99 ? 'estavel' : 'atencao';
+  valor.textContent = `${formatado}%`;
+  badge.textContent = media >= 99 ? 'Estável · média da frota' : 'Atenção · média da frota';
+  badge.className = `kpi-card__alerta ${media >= 99 ? 'kpi-card__alerta--ok' : 'kpi-card__alerta--laranja'}`;
+  ponto.className = `ponto ${media >= 99 ? 'ponto--online' : 'ponto--atencao'}`;
+  detalhe.textContent = `Média de ${leituras.length} servidores · 19–25 out 2026`;
+  valor.setAttribute('aria-label', `Disponibilidade média da frota ${formatado}%, faixa ${estado}`);
 }
 
 function atualizarIndicadorRede() {
@@ -275,9 +302,7 @@ function aplicarLeiturasFrota() {
   document.getElementById('kpi-rede-atual').textContent = dados.rede.picoMbps;
   const badgeRede = document.getElementById('rede-pico-badge');
   if (badgeRede) {
-    const data = new Date(dados.dataLeitura);
-    const dataCurta = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(data);
-    badgeRede.textContent = `● ${dados.rede.picoMbps} Mbps · registrado ${dataCurta}`;
+    badgeRede.textContent = `● pico da frota · ${dados.rede.picoMbps} Mbps`;
   }
   atualizarCoresMetricas();
 }
