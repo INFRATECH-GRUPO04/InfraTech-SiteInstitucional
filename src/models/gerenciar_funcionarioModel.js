@@ -2,53 +2,52 @@ var database = require("../database/config");
 
 function buscarNomeEmpresa(id) {
   var instrucaoSql = `
-    SELECT 
+    SELECT
         id_empresa,
         razao_social,
         nome_fantasia
     FROM empresa
-    WHERE id_empresa = ${id};`;
-  return database.executar(instrucaoSql);
+    WHERE id_empresa = ?;`;
+  return database.executar(instrucaoSql, [Number(id)]);
 }
 
 function buscarDadosUsuario(id) {
   var instrucaoSql = `
-    SELECT 
+    SELECT
         f.id_funcionario,
         f.nome,
         f.tipo_acesso,
         f.status_sistema,
-        (SELECT COUNT(*) 
-           FROM servidor_funcionario sf 
+        (SELECT COUNT(*)
+           FROM servidor_funcionario sf
           WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
     FROM funcionario f
-    WHERE f.fk_empresa = ${id};`;
-  return database.executar(instrucaoSql);
+    WHERE f.fk_empresa = ? ORDER BY f.nome;`;
+  return database.executar(instrucaoSql, [Number(id)]);
 }
 
-function buscarDadosUsuarioEspecifico(id) {
+function buscarDadosUsuarioEspecifico(id, idEmpresa) {
   var instrucaoSql = `
-    SELECT 
+    SELECT
         f.id_funcionario,
         f.tipo_acesso,
         f.nome,
         DATE_FORMAT(f.data_nascimento, '%d/%m/%Y') AS dataNascimento,
         f.email,
-        f.senha,
         f.cpf,
         f.status_sistema,
-        (SELECT COUNT(*) 
-           FROM servidor_funcionario sf 
+        (SELECT COUNT(*)
+           FROM servidor_funcionario sf
           WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
     FROM funcionario f
-    WHERE f.id_funcionario = ${id};`;
-  return database.executar(instrucaoSql);
+    WHERE f.id_funcionario = ? AND f.fk_empresa = ?;`;
+  return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
 }
 
 function deletarUsuario(id) {
   var apagarVinculos = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${id};`;
   var apagarFuncionario = `DELETE FROM funcionario WHERE id_funcionario = ${id};`;
-  
+
   return database.executar(apagarVinculos).then(function () {
     return database.executar(apagarFuncionario);
   });
@@ -70,38 +69,44 @@ function ativarUsuario(id) {
 
 function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
   var instrucaoSql = `
-    SELECT 
+    SELECT
         s.id_servidor,
         s.nome,
-        s.localizacao,
+        en.cidade AS localizacao,
         s.status_sistema,
         (sf.fk_funcionario IS NOT NULL) AS temAcesso
     FROM servidor s
-    LEFT JOIN servidor_funcionario sf 
+    JOIN empresa e ON e.id_empresa = s.fk_empresa
+    LEFT JOIN endereco en ON en.id_endereco = e.fk_endereco
+    LEFT JOIN servidor_funcionario sf
            ON sf.fk_servidor = s.id_servidor
           AND sf.fk_funcionario = ${idFuncionario}
-    WHERE s.fk_empresa = ${idEmpresa};`;
-  return database.executar(instrucaoSql);
+    WHERE s.fk_empresa = ?
+      AND EXISTS (SELECT 1 FROM funcionario f WHERE f.id_funcionario = ? AND f.fk_empresa = s.fk_empresa)
+    ORDER BY s.nome;`;
+  return database.executar(instrucaoSql, [Number(idEmpresa), Number(idFuncionario)]);
 }
 
-function alterarServidores(idFuncionario, servidores) {
-  var apagar = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${idFuncionario};`;
+function validarServidoresDaEmpresa(idEmpresa, servidores) {
+  if (!servidores.length) return Promise.resolve([]);
+  return database.executar(
+    `SELECT id_servidor FROM servidor WHERE fk_empresa = ? AND id_servidor IN (${servidores.map(() => '?').join(',')})`,
+    [Number(idEmpresa), ...servidores]
+  );
+}
 
-  return database.executar(apagar).then(function () {
-    if (servidores.length === 0) {
-      return;   // nenhum marcado: só removeu os acessos
-    }
-
-    var valores = servidores
-      .map(function (idServidor) {
-        return `(${idFuncionario}, ${idServidor})`;
-      })
-      .join(", ");
-
-    var inserir = `
-      INSERT INTO servidor_funcionario (fk_funcionario, fk_servidor)
-      VALUES ${valores};`;
-    return database.executar(inserir);
+function alterarServidores(idEmpresa, idFuncionario, servidores) {
+  return validarServidoresDaEmpresa(idEmpresa, servidores).then(function (validos) {
+    if (validos.length !== servidores.length) throw new Error('Um ou mais servidores não pertencem à empresa.');
+    return database.executar(
+      'DELETE sf FROM servidor_funcionario sf JOIN funcionario f ON f.id_funcionario = sf.fk_funcionario WHERE sf.fk_funcionario = ? AND f.fk_empresa = ?',
+      [Number(idFuncionario), Number(idEmpresa)]
+    ).then(function () {
+      if (!servidores.length) return;
+      var placeholders = servidores.map(() => '(?, ?)').join(',');
+      var valores = servidores.flatMap(idServidor => [Number(idFuncionario), idServidor]);
+      return database.executar(`INSERT INTO servidor_funcionario (fk_funcionario, fk_servidor) VALUES ${placeholders}`, valores);
+    });
   });
 }
 
@@ -115,4 +120,4 @@ module.exports = {
     buscarServidoresPorEmpresa,
     alterarServidores
   };
-  
+

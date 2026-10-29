@@ -80,17 +80,13 @@
 
         <div class="main">
             <div class="subtitulo" id="subtitulo"></div>
-            <div class="box-titulo">
-                <div class="titulo">
-                    <div class="risco"></div>FUNCIONÁRIOS
-                </div>
-                <div class="titulo">
-                    <div class="risco"></div>GERENCIAR ACESSO
-                </div>
-            </div>
+            <header class="cabecalho-funcionarios">
+                <h1>Gerenciar Funcionários</h1>
+                <p>Visualize os funcionários da sua empresa e gerencie os acessos disponíveis.</p>
+            </header>
 
             <div class="container-gerenciamento">
-                <div class="boxes-funcionario" id="boxes_funcionario">
+                <div class="boxes-funcionario" id="boxes_funcionario"><h2>Funcionários</h2><input class="busca-funcionarios" id="busca_funcionarios" type="search" placeholder="Buscar por nome, cargo ou e-mail..." aria-label="Buscar funcionários">
                 </div>
 
                 <div class="box-crud" id="box_crud">
@@ -165,12 +161,6 @@
                 acesso = "ADMIN";
             }
 
-            servidores = ""
-            if (func.qtdServidores == 1) {
-                servidores = "1 Servidor"
-            } else {
-                servidores = `${func.qtdServidores} Servidores`
-            }
 
             cor_status = "";
             if (func.status_sistema == 1) {
@@ -192,14 +182,17 @@
                         <div class="nome-funcionario">${func.nome || "Nome não informado"}<div class = "bolinha-status" style = "background-color: ${cor_status};"></div></div>
                         <div class="cargo-servidor">
                             <div class="${tipoAcesso}">${acesso}</div>
-                            <div class="servidor">${servidores} </div>
+
                         </div>
                     </div>
                 </div>
             </a>
         </div>`;
         }
-
+        document.getElementById('busca_funcionarios').addEventListener('input', function () {
+            var termo = this.value.trim().toLowerCase();
+            document.querySelectorAll('.box-funcionario').forEach(function (card) { card.hidden = !card.textContent.toLowerCase().includes(termo); });
+        });
     }
 
     idFuncionarioSelecionado = null
@@ -241,13 +234,6 @@
                             acesso = "ADMIN";
                         }
 
-                        servidores = ""
-                        if (func.qtdServidores == 1) {
-                            servidores = "1 Servidor"
-                        } else {
-                            servidores = `${func.qtdServidores} Servidores`
-                        }
-
                         cor_status = "";
                         status = "";
                         largura = "";
@@ -275,7 +261,7 @@
                                 <div class = "status-sistema-crud" style = "color: ${cor_status};">${status}</div>
                                 </div>
                         </div>
-                        <div class="servidor-crud-head">${servidores}</div>
+                        <div class="servidor-crud-head">ID: ${func.id_funcionario}</div>
                     `
                         funcionarioSelecionado = resposta
                         mostrarDadosFunc()
@@ -297,9 +283,7 @@
 
     function mostrarDadosFunc() {
         resposta = funcionarioSelecionado
-        botoes_modificar.innerHTML = `
-                    <button class="botao-modificar" onclick="mostrarDadosFunc()" style="border-bottom: solid 1px #00CFFF; color: #00CFFF;">Dados</button>
-                    <button class="botao-modificar" onclick="mostrarServidores(idEmpresa)">Servidores</button>`
+        botoes_modificar.innerHTML = `<button class="botao-modificar ativo" type="button">Dados do Funcionário</button><span class="botao-modificar">Permissões de Acesso</span>`
 
         box_modificar.innerHTML = `
                             <div class="titulo-retorno">
@@ -307,9 +291,9 @@
                                         class="img-titulo">INFORMAÇÕES DO FUNCIONÁRIO</div>
                                 <div class="retorno" id="retorno"></div>
                             </div>
-                            <div class="container-dados">
+                            <section class="container-dados">
                                 <div class="box-dados" >
-                                    <label class="texto-dado">Nome Completo</label> 
+                                    <label class="texto-dado">Nome Completo</label>
                                     <div class="dado-funcionario" id="nome">${resposta[0].nome || "Nome não informado"}</div>
                                 </div>
                                 <div class="box-dados">
@@ -326,7 +310,12 @@
                                     <label class="texto-dado">Data de nascimento</label>
                                     <div class="dado-funcionario" id="dtNascimento">${resposta[0].dataNascimento}</div>
                                 </div>
-                            </div>
+                            </section>
+                            <section class="cartao-permissoes">
+                                <div class="titulo-permissoes"><span class="icone-permissao">◇</span><div><strong>Permissões de Monitoramento</strong><small>Os acessos são definidos pelo cargo do funcionário.</small></div></div>
+                                <div class="permissao-limites"><div><strong>Editar limites de alerta</strong><small>Permite alterar limites de CPU, RAM, Disco e Rede.</small></div><span class="estado-permissao" id="estado_permissao"></span></div>
+                                <p class="ajuda-permissoes" id="ajuda_permissoes"></p>
+                            </section>
                             `
 
         footer_crud.innerHTML = `<div class="texto-revisao"> Certifique-se de revisar as alterações antes de confirmar</div>
@@ -347,6 +336,12 @@
 
             }
         }
+        var permitido = InfraTechPermissoes.obter(resposta[0].tipo_acesso).editarLimites;
+        document.getElementById('estado_permissao').textContent = permitido ? 'Autorizado pelo cargo' : 'Sem autorização';
+        document.getElementById('estado_permissao').classList.toggle('autorizado', permitido);
+        document.getElementById('ajuda_permissoes').textContent = permitido
+            ? 'Este funcionário pode editar os limites de alerta nas dashboards permitidas ao cargo.'
+            : 'O cargo atual não permite editar limites de alerta.';
     }
 
     function formatarCpf(cpf) {
@@ -363,10 +358,10 @@
                     response.json().then(function (resposta) {
 
                         retorno.innerHTML = "Status atualizado com sucesso"
-                        
+
                         setInterval(function () {
                             location.reload();
-                            
+
                         }, 1000);
 
                     })
@@ -393,7 +388,7 @@
 
                         setInterval(function () {
                             location.reload();
-                            
+
                         }, 1000);
                     })
 
@@ -476,95 +471,5 @@
     }
 
     recarregarUsuarios();
-
-    function mostrarServidores() {
-
-        botoes_modificar.innerHTML = `
-        <button class="botao-modificar" onclick="mostrarDadosFunc()">Dados</button>
-        <button class="botao-modificar" onclick="mostrarServidores()" style="border-bottom: solid 1px #00CFFF; color: #00CFFF;">Servidores</button>`;
-
-        box_modificar.innerHTML = `
-        <div class="titulo-retorno">
-            <div class="subtitulo-box-crud">
-                <img src="../../../../assets/icon/icon_server.svg" class="img-server">ACESSO AOS SERVIDORES
-            </div>
-            <div class="retorno" id="retorno"></div>
-        </div>
-        <div class="box-servidores" id="box_servidores"></div>`;
-
-        footer_crud.innerHTML = `
-        <div class="texto-revisao"> Certifique-se de revisar as alterações antes de confirmar</div>
-        <button class="botao-salvar" onclick="alterarServidores()">Salvar alterações</button>`;
-
-        fetch(`/gerenciar_funcionario/buscarServidoresPorEmpresa/${idEmpresa}/${idFuncionarioSelecionado}`, { cache: 'no-store' })
-            .then(function (response) {
-                if (response.ok) {
-                    response.json().then(function (resposta) {
-                        var html = "";
-
-                        for (var i = 0; i < resposta.length; i++) {
-                            var srv = resposta[i];
-
-                            if (srv.status_sistema == 1) {
-                                cor = "#05DF72"
-                            } else if (srv.status_sistema == 0) {
-                                cor = "#FB2C36"
-                            }
-
-                            box_servidores.innerHTML += `
-                        <div class="servidor-crud">
-                            <label class="checkbox-custom">
-                                <input type="checkbox" class= "checkbox" value="${srv.id_servidor}" ${srv.temAcesso ? "checked" : ""}>
-                                
-                            </label>
-                            <div class="infos-servidor">
-                                <div class="nome-servidor">${srv.nome}</div>
-                                <div class="localizacao-servidor">${srv.localizacao}</div>
-                            </div>
-                            <div class="bola-ativo" style= "background-color: ${cor};"></div>
-                        </div>`;
-                        }
-
-                    });
-                } else {
-                    console.log("Erro na requisição, status:", response.status);
-                }
-            })
-            .catch(function (error) {
-                console.error("Erro na obtenção de dados", error);
-            });
-    }
-
-
-    function alterarServidores() {
-        var marcados = document.querySelectorAll("#box_servidores input[type=checkbox]:checked");
-        var ids = [];
-
-        for (var i = 0; i < marcados.length; i++) {
-            ids.push(Number(marcados[i].value));
-        }
-
-        fetch(`/gerenciar_funcionario/alterarServidores/${idFuncionarioSelecionado}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ servidores: ids })
-        })
-            .then(function (response) {
-                if (response.ok) {
-                    retorno.innerHTML = "Acessos atualizados com sucesso";
-
-                    // atualiza o contador no card e no cabeçalho
-                    var texto = ids.length == 1 ? "1 Servidor" : `${ids.length} Servidores`;
-                    document.querySelector(`#func_${idFuncionarioSelecionado} .servidor`).innerHTML = texto;
-                    document.querySelector(".servidor-crud-head").innerHTML = texto;
-                } else {
-                    retorno.innerHTML = "Erro ao atualizar os acessos";
-                }
-            })
-            .catch(function (error) {
-                console.error("Erro ao atualizar os acessos", error);
-                retorno.innerHTML = "Erro ao atualizar os acessos";
-            });
-    }
 
 </script>

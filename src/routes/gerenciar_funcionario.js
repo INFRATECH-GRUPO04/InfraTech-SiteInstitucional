@@ -32,7 +32,7 @@ router.put("/ativarUsuario/:id", function (req, res) {
   gerenciar_funcionarioController.ativarUsuario(req, res);
 });
 
-router.get("/buscarServidoresPorEmpresa/:idEmpresa/:idFuncionario", function (req, res) {
+router.get("/buscarServidoresPorEmpresa/:id", function (req, res) {
   gerenciar_funcionarioController.buscarServidoresPorEmpresa(req, res);
 });
 
