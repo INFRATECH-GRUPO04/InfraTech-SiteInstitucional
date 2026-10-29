@@ -349,26 +349,7 @@
                     ? `Offline desde ${servidor.offlineDesde || 'horário não informado'} · sem leitura atual.`
                     : pior ? `${pior.recurso.toUpperCase()} em ${pior.valor}% · limite de ${pior.estado === 'critico' ? 'crítico' : 'atenção'}: ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso][pior.estado === 'critico' ? 'critico' : 'atencao']}%.`
                       : 'Sem dados de recurso para classificar.';
-                const investigar = document.createElement('a');
-                investigar.className = 'ranking-acao';
-                investigar.href = `../especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(servidor.id)}${pior ? `&recurso=${pior.recurso}` : ''}`;
-                if (!InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO).dashboards.includes('especifica')) {
-                    investigar.href = '#evolucaoServidor';
-                    investigar.addEventListener('click', (evento) => {
-                        evento.preventDefault();
-                        const seletor = document.getElementById('evolucaoServidor');
-                        seletor.value = servidor.id;
-                        if (pior) document.getElementById('evolucaoRecurso').value = pior.recurso;
-                        document.getElementById('filtroServidor').value = servidor.id;
-                        renderizarEvolucao();
-                        renderizarHistoricoAlertas();
-                        seletor.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        seletor.focus({ preventScroll: true });
-                    });
-                }
-                investigar.textContent = 'Investigar →';
-                investigar.setAttribute('aria-label', `Investigar ${servidor.id}${pior ? `, ${pior.recurso} ${pior.valor}%` : ''}`);
-                item.append(topo, descricao, investigar);
+                item.append(topo, descricao);
                 return item;
             }));
         }

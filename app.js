@@ -27,7 +27,7 @@ var gerenciarFuncionarioRouter = require("./src/routes/gerenciar_funcionario")
 var agenteRouter = require("./src/routes/agente")
 
 var cryptoRouter = require("./src/routes/crypto");
-var autorizacao = require("./src/middleware/autorizacao");
+var autorizacao = require("./src/seguranca/autorizacao");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

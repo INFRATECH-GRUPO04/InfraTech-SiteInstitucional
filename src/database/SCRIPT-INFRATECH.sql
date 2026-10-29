@@ -260,9 +260,9 @@ INSERT INTO funcionario (
 (1, 'ADMIN', 'Felipe Santos', '2007-04-12', 'felipe@infratech.com', '123456', '12345678901', 1),
 (1, 'ADMIN', 'Manuella Arantes', '2007-01-15', 'manuella@infratech.com', '123456', '34567890123', 1),
 (2, 'GESTOR', 'Alexandre Oliveira', '1997-06-03', 'alexandre@gamecloud.com', 'senha123', '28643895271', 1),
-(2, 'FUNCIONARIO', 'Bianca Souza', '1999-02-10', 'bianca@gamecloud.com', '123456', '11122233396', 1),
-(2, 'FUNCIONARIO', 'Caio Lima', '1998-05-12', 'caio@gamecloud.com', '123456', '22233344495', 0),
-(2, 'FUNCIONARIO', NULL, NULL, 'diego.temp@gamecloud.com', 'trocar123', NULL, 1),
+(2, 'ANALISTA_NOC', 'Bianca Souza', '1999-02-10', 'bianca@gamecloud.com', '123456', '11122233396', 1),
+(2, 'ANALISTA_DADOS', 'Caio Lima', '1998-05-12', 'caio@gamecloud.com', '123456', '22233344495', 0),
+(2, 'ANALISTA_NOC', NULL, NULL, 'diego.temp@gamecloud.com', 'trocar123', NULL, 1),
 (3, 'GESTOR', 'Luana Pereira', '2003-03-18', 'luana@techplay.com', 'senhaLp1', '94784210876', 1),
 (3, 'FUNCIONARIO', 'Rafael Nunes', '1995-09-01', 'rafael@techplay.com', '123456', '33344455516', 1),
 (3, 'FUNCIONARIO', 'Debora Martins', '2000-12-20', 'debora@techplay.com', '123456', '44455566627', 1),
@@ -274,7 +274,6 @@ INSERT INTO funcionario (
 (2, 'ANALISTA_DADOS', 'Cláudia Martins', '1991-04-12', 'claudia.telemetria@infratech.demo', '123456', '90100000001', 1),
 (2, 'ANALISTA_NOC', 'Júlio Almeida', '1994-08-23', 'julio.noc@infratech.demo', '123456', '90100000002', 1),
 (2, 'GESTOR', 'Alberto Costa', '1985-11-06', 'alberto.gestor@infratech.demo', '123456', '90100000003', 1);
-
 
 -- =====================================================
 -- INSERCAO DE DADOS: servidor

@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 var empresaController = require("../controllers/cadastro_empresaController");
-var admin = require("../middleware/autorizacao").autenticar;
-var somenteAdmin = require("../middleware/autorizacao").exigirPermissao('administrar');
+var admin = require("../seguranca/autorizacao").autenticar;
+var somenteAdmin = require("../seguranca/autorizacao").exigirPermissao('administrar');
 
 
 router.post("/cadastrar", function (req, res) {

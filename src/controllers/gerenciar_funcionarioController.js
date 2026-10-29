@@ -37,7 +37,8 @@ function buscarDadosUsuarioEspecifico(req, res) {
 function deletarUsuario(req, res) {
   var id = req.params.id;
   
-  gerenciar_funcionarioModel.deletarUsuario(id).then((resultado) => {
+  gerenciar_funcionarioModel.deletarUsuario(id, req.usuario.empresa, req.usuario.id).then((resultado) => {
+    if (!resultado.affectedRows) return res.status(403).json({ erro: 'Não é possível excluir este funcionário.' });
     res.status(200).json(resultado);
   }).catch((erro) => {
     console.log(erro);
@@ -47,7 +48,7 @@ function deletarUsuario(req, res) {
 function desativarUsuario(req, res) {
   var idFuncionario = req.params.id;
 
-  gerenciar_funcionarioModel.desativarUsuario(idFuncionario)
+  gerenciar_funcionarioModel.desativarUsuario(idFuncionario, req.usuario.empresa)
     .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);
@@ -58,7 +59,7 @@ function desativarUsuario(req, res) {
 function ativarUsuario(req, res) {
   var idFuncionario = req.params.id;
 
-  gerenciar_funcionarioModel.ativarUsuario(idFuncionario)
+  gerenciar_funcionarioModel.ativarUsuario(idFuncionario, req.usuario.empresa)
     .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);

@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 var servidorController = require("../controllers/servidorController");
-var permitir = require("../middleware/autorizacao").exigirPermissao;
+var permitir = require("../seguranca/autorizacao").exigirPermissao;
 
 router.post("/cadastrar", permitir('administrar'), function (req, res) {
     servidorController.cadastrar(req, res);

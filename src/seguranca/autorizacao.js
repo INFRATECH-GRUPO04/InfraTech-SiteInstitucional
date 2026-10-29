@@ -48,7 +48,8 @@ function permissoesDoCargo(cargo) { return politica.obter(cargo); }
 
 function exigirPermissao(permissao) {
   return function (req, res, next) {
-    if (!req.usuario || !politica.obter(req.usuario.cargo)[permissao]) return res.status(403).json({ erro: 'Seu cargo não permite esta ação.' });
+    const liberado = req.usuario && politica.obter(req.usuario.cargo)[permissao];
+    if (!liberado) return res.status(403).json({ erro: 'Seu cargo não permite esta ação.' });
     next();
   };
 }

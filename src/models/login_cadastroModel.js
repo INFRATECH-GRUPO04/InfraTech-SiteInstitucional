@@ -11,8 +11,8 @@ function verificar(codigo) {
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, dt_cadastro AS dtCadastro 
-        FROM funcionario 
+        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, dt_cadastro AS dtCadastro
+        FROM funcionario
         WHERE email = ? AND senha = ? AND status_sistema = 1;
     `;
     return database.executar(instrucaoSql, [email, senha]);
@@ -22,7 +22,7 @@ function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAces
     var tiposValidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
     var tipoFinal = tiposValidos.includes(tipoAcesso) ? tipoAcesso : 'ANALISTA_DADOS';
     var instrucaoSql = `
-        INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf) 
+        INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf)
         VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
     return database.executar(instrucaoSql, [fkEmpresa, tipoFinal, nome, data_nascimento, email, senha, cpf]);
@@ -35,8 +35,8 @@ function EmailsIguais(email) {
 
 function CodigoEmpresa(codigo) {
     var instrucao = `
-        SELECT id_convite, fk_empresa, tipo_acesso, quantidade_uso, quantidade_usada 
-        FROM convite 
+        SELECT id_convite, fk_empresa, tipo_acesso, quantidade_uso, quantidade_usada
+        FROM convite
         WHERE codigo = ? AND quantidade_usada < quantidade_uso;
     `;
     return database.executar(instrucao, [codigo]);

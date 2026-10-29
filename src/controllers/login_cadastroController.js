@@ -1,5 +1,5 @@
 var login_cadastroModel = require("../models/login_cadastroModel");
-var autorizacao = require("../middleware/autorizacao");
+var autorizacao = require("../seguranca/autorizacao");
 
 
 function autenticar(req, res) {

@@ -44,27 +44,29 @@ function buscarDadosUsuarioEspecifico(id, idEmpresa) {
   return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
 }
 
-function deletarUsuario(id) {
-  var apagarVinculos = `DELETE FROM servidor_funcionario WHERE fk_funcionario = ${id};`;
-  var apagarFuncionario = `DELETE FROM funcionario WHERE id_funcionario = ${id};`;
+function deletarUsuario(id, idEmpresa, idGestor) {
+  var apagarVinculos = `DELETE sf FROM servidor_funcionario sf
+    JOIN funcionario f ON f.id_funcionario = sf.fk_funcionario
+    WHERE f.id_funcionario = ? AND f.fk_empresa = ? AND f.id_funcionario <> ? AND f.tipo_acesso NOT IN ('GESTOR', 'ADMIN');`;
+  var apagarFuncionario = `DELETE FROM funcionario WHERE id_funcionario = ? AND fk_empresa = ? AND id_funcionario <> ? AND tipo_acesso NOT IN ('GESTOR', 'ADMIN');`;
 
-  return database.executar(apagarVinculos).then(function () {
-    return database.executar(apagarFuncionario);
+  return database.executar(apagarVinculos, [Number(id), Number(idEmpresa), Number(idGestor)]).then(function () {
+    return database.executar(apagarFuncionario, [Number(id), Number(idEmpresa), Number(idGestor)]);
   });
 }
 
-function desativarUsuario(id) {
+function desativarUsuario(id, idEmpresa) {
   var instrucaoSql = `
     UPDATE funcionario set status_sistema = 0
-    WHERE id_funcionario = ${id};`;
-  return database.executar(instrucaoSql);
+    WHERE id_funcionario = ? AND fk_empresa = ?;`;
+  return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
 }
 
-function ativarUsuario(id) {
+function ativarUsuario(id, idEmpresa) {
   var instrucaoSql = `
     UPDATE funcionario set status_sistema = 1
-    WHERE id_funcionario = ${id};`;
-  return database.executar(instrucaoSql);
+    WHERE id_funcionario = ? AND fk_empresa = ?;`;
+  return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
 }
 
 function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
