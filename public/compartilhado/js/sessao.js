@@ -1,77 +1,46 @@
 // ----------- Sessao -----------
 function validarSessao() {
-    var email = sessionStorage.EMAIL_USUARIO;
-    var nome = sessionStorage.NOME_USUARIO;
-    var tipoAcesso = sessionStorage.TIPO_ACESSO;
-
-    var b_usuario = document.getElementById("b_usuario");
-    var nome_usuario = document.getElementById("nome_usuario");
-
-    if (email != null && nome != null) {
-        if (b_usuario) {
-            b_usuario.textContent = nome;
-        }
-        if (nome_usuario) {
-            nome_usuario.textContent = nome;
-        }
-        configurarMenusPorPerfil(tipoAcesso);
-        protegerRotaPorPerfil(tipoAcesso);
+    return carregarSessaoConfiavel().then(function (usuario) {
+        if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
+        var nome = usuario.nome;
+        var bUsuario = document.getElementById("b_usuario");
+        var nomeUsuario = document.getElementById("nome_usuario");
+        var cargoUsuario = document.getElementById("cargo_usuario");
+        if (bUsuario) bUsuario.textContent = nome;
+        if (nomeUsuario) nomeUsuario.textContent = nome;
+        if (cargoUsuario) cargoUsuario.textContent = rotuloCargo(usuario.tipoAcesso);
+        configurarMenusPorPerfil(usuario.tipoAcesso);
+        protegerRotaPorPerfil(usuario.tipoAcesso);
         inicializarMenuLateralResponsivo();
-    } else {
-        window.location.href = "/paginas/autenticacao/login/login.html";
-    }
+    });
+}
+
+function rotuloCargo(cargo) {
+    return ({ ANALISTA_DADOS: "ENGENHEIRO DE TELEMETRIA", ANALISTA_NOC: "ANALISTA DE NOC", GESTOR: "GESTOR", FUNCIONARIO: "FUNCIONÁRIO", ADMIN: "ADMINISTRADOR", INFRATECH: "ADMINISTRADOR INFRATECH" })[String(cargo || "").toUpperCase()] || "";
+}
+
+function carregarSessaoConfiavel() {
+    return fetch("/login_cadastro/sessao", { credentials: "same-origin", cache: "no-store" })
+        .then(function (resposta) { return resposta.ok ? resposta.json() : null; })
+        .then(function (usuario) {
+            if (!usuario) return null;
+            sessionStorage.EMAIL_USUARIO = usuario.email;
+            sessionStorage.NOME_USUARIO = usuario.nome;
+            sessionStorage.ID_USUARIO = usuario.idFuncionario;
+            sessionStorage.ID_EMPRESA = usuario.idEmpresa;
+            sessionStorage.TIPO_ACESSO = usuario.tipoAcesso;
+            sessionStorage.removeItem("SENHA_USUARIO");
+            return usuario;
+        }).catch(function () { return null; });
 }
 
 function obterDestinoInicial(tipoAcesso) {
-    var tipo = (tipoAcesso || "").toUpperCase();
-    if (tipo === "INFRATECH" || tipo === "ADMIN") {
-        return "/paginas/pos-login/empresas/gerenciar_empresa.html";
-    } else if (tipo === "GESTOR") {
-        return "/dashboard/dash-geral.html";
-    } else if (tipo === "ANALISTA_DADOS" || tipo === "ANALISTA_NOC" || tipo === "FUNCIONARIO") {
-        return "/dashboard/dash-geral.html";
-    } else {
-        return "/dashboard/dash-geral.html";
-    }
+    return InfraTechPermissoes.destino(tipoAcesso);
 }
 
 function protegerRotaPorPerfil(tipoAcesso) {
-    var tipo = (tipoAcesso || "").toUpperCase();
-    var rota = window.location.pathname.toLowerCase();
-
-    var ehInfratech = (tipo === "INFRATECH" || tipo === "ADMIN");
-    var ehGestor = (tipo === "GESTOR");
-    var ehAnalista = (!ehInfratech && !ehGestor);
-
-    if (ehInfratech) {
-        // Admin InfraTech acessa as três dashboards pela navegação pós-login.
-        var dashboardsLiberadas = [
-            "/dashboard/dash-geral.html",
-            "/dashboard/especifica-servidor/dash-especifica.html",
-            "/dashboard/analista/dashboardv2.html"
-        ];
-        var ehDashboardLiberada = dashboardsLiberadas.indexOf(rota) >= 0;
-
-        if (rota.includes("/servidores/") || (rota.includes("/dashboard/") && !ehDashboardLiberada)) {
-            window.location.href = "/paginas/pos-login/empresas/gerenciar_empresa.html";
-        }
-        return;
-    }
-
-    if (ehGestor) {
-        // Gestor da empresa cliente não acessa gestão de empresas de outros clientes
-        if (rota.includes("/empresas/")) {
-            window.location.href = "/dashboard/dash-geral.html";
-        }
-        return;
-    }
-
-    if (ehAnalista) {
-        // Analista e funcionário não acessam gestão de empresas, equipe (funcionários) nem cadastro de hosts
-        if (rota.includes("/empresas/") || rota.includes("/funcionarios/") || rota.includes("/servidores/")) {
-            window.location.href = "/dashboard/dash-geral.html";
-        }
-        return;
+    if (InfraTechPermissoes.protegida(window.location.pathname) && !InfraTechPermissoes.podeAcessar(tipoAcesso, window.location.pathname)) {
+        window.location.replace(obterDestinoInicial(tipoAcesso));
     }
 }
 
@@ -91,12 +60,8 @@ function adicionarMenuDashboards(sidebar) {
         categoria.appendChild(document.createTextNode("Dashboards"));
     }
 
-    var dashboards = [
-        { href: "/dashboard/dash-geral.html", label: "Visão Geral" },
-        { href: "/dashboard/especifica-servidor/dash-especifica.html", label: "Dashboard Específica" },
-        { href: "/dashboard/analista/dashboardV2.html", label: "Saúde e Capacidade (V2)" }
-    ];
-
+    var perfil = InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO);
+    var dashboards = InfraTechPermissoes.dashboards.filter(function (item) { return perfil.dashboards.includes(item.id); });
     var fragmento = document.createDocumentFragment();
     if (!categoria.parentElement) fragmento.appendChild(categoria);
 
@@ -143,60 +108,56 @@ function adicionarMenuDashboards(sidebar) {
 }
 
 function configurarMenusPorPerfil(tipoAcesso) {
-    var tipo = (tipoAcesso || "").toUpperCase();
-    var ehInfratech = (tipo === "INFRATECH" || tipo === "ADMIN");
-    var ehGestor = (tipo === "GESTOR");
-    var ehAnalista = (!ehInfratech && !ehGestor);
-
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
-
     adicionarMenuDashboards(sidebar);
-
-    var categorias = sidebar.querySelectorAll(".nav-categoria");
-    var links = sidebar.querySelectorAll("a.nav-item");
-
-    // 1. Controle de Categorias
-    categorias.forEach(function (cat) {
-        var texto = cat.textContent.toLowerCase();
-        var classes = cat.className.toLowerCase();
-
-        if (texto.includes("empresa") || classes.includes("secao-empresas")) {
-            cat.style.display = ehInfratech ? "flex" : "none";
-        } else if (texto.includes("funcion") || classes.includes("secao-funcionarios")) {
-            cat.style.display = (ehInfratech || ehGestor) ? "flex" : "none";
-        } else if (classes.includes("secao-dashboards") || texto.includes("dash")) {
-            cat.style.display = "flex";
-        } else if (texto.includes("servidor")) {
-            cat.style.display = (ehGestor || ehAnalista) ? "flex" : "none";
-        }
+    adicionarMenuGerenciarAcesso(sidebar);
+    sidebar.querySelectorAll("a.nav-item").forEach(function (link) {
+        var rota = new URL(link.getAttribute("href") || "#", window.location.href).pathname;
+        var liberado = InfraTechPermissoes.podeAcessar(tipoAcesso, rota);
+        link.hidden = !liberado;
+        link.style.display = liberado ? "flex" : "none";
+        link.classList.toggle("ativo", liberado && rota === window.location.pathname);
+        if (liberado && rota === window.location.pathname) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
     });
-
-    // 2. Controle de Links
-    links.forEach(function (link) {
-        var href = (link.getAttribute("href") || "").toLowerCase();
-        var texto = link.textContent.toLowerCase();
-
-        // Links de Empresas (só Infratech/Admin)
-        if (href.includes("empresa") || texto.includes("empresa")) {
-            link.style.display = ehInfratech ? "flex" : "none";
+    sidebar.querySelectorAll(".nav-categoria").forEach(function (categoria) {
+        var item = categoria.nextElementSibling;
+        var visivel = false;
+        while (item && !item.classList.contains("nav-categoria") && !item.classList.contains("btn-logout")) {
+            if (item.matches("a.nav-item") && item.style.display !== "none") visivel = true;
+            item = item.nextElementSibling;
         }
-        // Links de Gestão de Funcionários (só Infratech e Gestor - ANALISTA NUNCA PODE)
-        else if (href.includes("funcionario") || href.includes("token") || texto.includes("token") || (texto.includes("gerenciar") && !href.includes("empresa"))) {
-            link.style.display = (ehInfratech || ehGestor) ? "flex" : "none";
-        }
-        // Links de Configuração de Hosts (Cadastrar Host, Modificar Servidor) -> Só Gestor!
-        else if (href.includes("cadastro_servidor") || href.includes("modificar_servidor") || texto.includes("cadastrar host") || texto.includes("modificar")) {
-            link.style.display = ehGestor ? "flex" : "none";
-        }
-        // As três dashboards liberadas também aparecem para o perfil InfraTech.
-        else if (href.includes("dash") || href.includes("painel") || texto.includes("dash") || texto.includes("em breve")) {
-            link.style.display = "flex";
-        }
+        categoria.style.display = visivel ? "flex" : "none";
+        categoria.hidden = !visivel;
     });
+    var logo = sidebar.querySelector(".logo a");
+    if (logo) logo.href = obterDestinoInicial(tipoAcesso);
+    window.dispatchEvent(new CustomEvent('infratech:sessao-validada', { detail: { tipoAcesso: tipoAcesso } }));
 }
 
-// Injeta e controla o botão hambúrguer global e overlay para drawer lateral
+function adicionarMenuGerenciarAcesso(sidebar) {
+    var caminho = "/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html";
+    var link = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+        return new URL(item.getAttribute("href"), window.location.href).pathname === caminho;
+    });
+    var categoria = sidebar.querySelector(".secao-funcionarios");
+    if (!categoria) {
+        categoria = document.createElement("h3");
+        categoria.className = "nav-categoria secao-funcionarios";
+        categoria.innerHTML = '<img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon-title">Funcionários';
+        sidebar.insertBefore(categoria, sidebar.querySelector(".btn-logout"));
+    }
+    if (!link) {
+        link = document.createElement("a");
+        link.className = "nav-item";
+    }
+    link.href = caminho;
+    link.innerHTML = '<img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon">Gerenciar acesso';
+    categoria.after(link);
+}
+
+// Injeta e controla o botão hambúrguer global e sobreposição para menu deslizante lateral
 function inicializarMenuLateralResponsivo() {
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
@@ -237,21 +198,27 @@ function inicializarMenuLateralResponsivo() {
 }
 
 function limparSessao() {
-    sessionStorage.clear();
-    window.location.href = "/paginas/autenticacao/login/login.html";
+    fetch("/login_cadastro/sair", { method: "POST", credentials: "same-origin" }).finally(function () {
+        sessionStorage.clear();
+        window.location.href = "/paginas/autenticacao/login/login.html";
+    });
 }
 
 // Algumas telas pós-login não chamam validarSessao() no body. Ainda assim,
 // quando já existe uma sessão, elas recebem a mesma navegação lateral.
 document.addEventListener("DOMContentLoaded", function () {
-    var tipoAcesso = sessionStorage.TIPO_ACESSO;
-    if (!sessionStorage.EMAIL_USUARIO || !tipoAcesso) return;
-
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
-
-    configurarMenusPorPerfil(tipoAcesso);
-    inicializarMenuLateralResponsivo();
+    carregarSessaoConfiavel().then(function (usuario) {
+        if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
+        var cargo = document.getElementById("cargo_usuario");
+        if (cargo) cargo.textContent = rotuloCargo(usuario.tipoAcesso);
+        var nome = document.getElementById("nome_usuario");
+        if (nome) nome.textContent = usuario.nome;
+        configurarMenusPorPerfil(usuario.tipoAcesso);
+        protegerRotaPorPerfil(usuario.tipoAcesso);
+        inicializarMenuLateralResponsivo();
+    });
 });
 
 function aguardar() {

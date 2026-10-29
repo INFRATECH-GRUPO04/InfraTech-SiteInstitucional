@@ -143,7 +143,7 @@ p:last-child {
     margin-right: auto;
 }
 
-/* ----------- Header Institucional ----------- */
+/* ----------- Cabeçalho Institucional ----------- */
 header.cabecalho {
     position: fixed;
     top: 0;
@@ -230,7 +230,7 @@ header.cabecalho.scrolled {
     padding: 4px;
 }
 
-/* ----------- Barra Lateral (Sidebar) ----------- */
+/* ----------- Barra Lateral (Barra lateral) ----------- */
 .header-left {
     position: sticky;
     top: 0;
@@ -247,6 +247,30 @@ header.cabecalho.scrolled {
     overflow-y: auto;
     user-select: none;
     font-family: var(--fonte-principal);
+}
+
+/* A navegação mantém a mesma largura e permanece visível durante a rolagem. */
+@media (min-width: 992px) {
+    body aside.header-left {
+        position: sticky !important;
+        top: 0 !important;
+        align-self: flex-start;
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        overflow-y: auto;
+    }
+}
+
+.header-left > * {
+    flex-shrink: 0;
+}
+
+body aside.header-left [hidden] {
+    display: none !important;
 }
 
 /* O controle do menu é injetado pelo JS, mas só aparece no breakpoint móvel. */
@@ -596,7 +620,7 @@ input::placeholder, textarea::placeholder {
         display: flex;
     }
 
-    /* Botao hamburguer global da sidebar */
+    /* Botao hamburguer global da barra lateral */
     .btn-hamburguer-global {
         display: flex;
         position: fixed;
@@ -622,7 +646,7 @@ input::placeholder, textarea::placeholder {
         transform: scale(1.05);
     }
 
-    /* Overlay escuro de fundo quando a sidebar abre */
+    /* Sobreposição escuro de fundo quando a barra lateral abre */
     .overlay-sidebar-global {
         display: none;
         position: fixed;
@@ -639,7 +663,7 @@ input::placeholder, textarea::placeholder {
         display: block;
     }
 
-    /* Sidebar vira gaveta lateral deslizante (Drawer) */
+    /* Barra lateral vira gaveta lateral deslizante (Menu deslizante) */
     .header-left {
         position: fixed !important;
         top: 0 !important;
@@ -725,7 +749,7 @@ input::placeholder, textarea::placeholder {
     .nav-item { font-size: 13px; }
 }
 
-/* ----------- Autofill ----------- */
+/* ----------- Preenchimento automático ----------- */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

@@ -21,7 +21,6 @@ function executar(instrucao, parametros = []) {
         var conexao = mysql.createConnection(mySqlConfig);
         conexao.connect(function (erroConexao) {
             if (erroConexao) {
-                conexao.end();
                 reject(erroConexao);
                 return;
             }

@@ -13,7 +13,7 @@ function autenticar(email, senha) {
     var instrucaoSql = `
         SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, dt_cadastro AS dtCadastro 
         FROM funcionario 
-        WHERE email = ? AND senha = ?;
+        WHERE email = ? AND senha = ? AND status_sistema = 1;
     `;
     return database.executar(instrucaoSql, [email, senha]);
 }
@@ -42,6 +42,10 @@ function CodigoEmpresa(codigo) {
     return database.executar(instrucao, [codigo]);
 }
 
+function buscarConviteAtivoPorId(idConvite) {
+    return database.executar(`SELECT id_convite, fk_empresa, tipo_acesso FROM convite WHERE id_convite = ? AND quantidade_usada < quantidade_uso;`, [Number(idConvite)]);
+}
+
 
 
 module.exports = {
@@ -49,5 +53,6 @@ module.exports = {
     autenticar,
     cadastrar,
     EmailsIguais,
-    CodigoEmpresa
+    CodigoEmpresa,
+    buscarConviteAtivoPorId
 };

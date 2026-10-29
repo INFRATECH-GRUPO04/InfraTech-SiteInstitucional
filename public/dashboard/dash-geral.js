@@ -414,13 +414,13 @@ function inicializarHamburguer() {
 
   if (!btnHamburguer || !sidebar || !overlay) return;
 
-  // Abre ou fecha a sidebar
+  // Abre ou fecha a barra lateral
   btnHamburguer.addEventListener('click', function () {
     sidebar.classList.toggle('aberta');
     overlay.classList.toggle('visivel');
   });
 
-  // Fecha ao clicar no overlay
+  // Fecha ao clicar no sobreposição
   overlay.addEventListener('click', function () {
     sidebar.classList.remove('aberta');
     overlay.classList.remove('visivel');

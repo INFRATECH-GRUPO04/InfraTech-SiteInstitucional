@@ -1,87 +1,38 @@
-function entrar() {
-    var emailVar = emailInput.value;
-    var senhaVar = passwordInput.value;
-
-    var cardErro = document.getElementById("cardErro");
-    var mensagemErro = document.getElementById("mensagem_erro");
-
-    if (emailVar == "" || senhaVar == "") {
-        if (cardErro && mensagemErro) {
-            cardErro.style.display = "block";
-            mensagemErro.innerHTML = "Preencha todos os campos em branco.";
-            setTimeout(() => { cardErro.style.display = "none"; }, 4000);
-        } else {
-            alert("Preencha todos os campos em branco.");
-        }
-        return false;
+async function entrar() {
+    const email = document.getElementById('emailInput').value.trim();
+    const senha = document.getElementById('passwordInput').value;
+    const botao = document.getElementById('btn_entrar');
+    const card = document.getElementById('cardErro');
+    const mensagem = document.getElementById('mensagem_erro');
+    function informar(texto, sucesso = false) {
+        if (!card || !mensagem) return alert(texto);
+        card.style.display = 'block';
+        card.style.borderColor = sucesso ? 'var(--cor-sucesso, #05df72)' : 'var(--cor-perigo, #ff3366)';
+        mensagem.textContent = texto;
     }
-
-    var btnEntrar = document.getElementById("btn_entrar");
-    if (btnEntrar) {
-        btnEntrar.disabled = true;
-        btnEntrar.innerText = "Autenticando...";
+    if (!email || !senha) { informar('Preencha o e-mail e a senha.'); return false; }
+    if (botao) { botao.disabled = true; botao.textContent = 'Autenticando...'; }
+    try {
+        const resposta = await fetch('/login_cadastro/autenticar', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailServer: email, senhaServer: senha })
+        });
+        if (!resposta.ok) throw new Error((await resposta.text()) || 'Não foi possível entrar.');
+        const usuario = await resposta.json();
+        if (!InfraTechPermissoes.obter(usuario.tipoAcesso).monitorar) throw new Error('Cargo sem acesso configurado.');
+        sessionStorage.EMAIL_USUARIO = usuario.email;
+        sessionStorage.NOME_USUARIO = usuario.nome || usuario.email;
+        sessionStorage.ID_USUARIO = usuario.idFuncionario;
+        sessionStorage.ID_EMPRESA = usuario.idEmpresa;
+        sessionStorage.TIPO_ACESSO = usuario.tipoAcesso;
+        sessionStorage.removeItem('SENHA_USUARIO');
+        informar('Login realizado! Abrindo sua página...', true);
+        window.location.assign(usuario.destino || obterDestinoInicial(usuario.tipoAcesso));
+    } catch (erro) {
+        informar(erro instanceof TypeError ? 'Não foi possível conectar ao servidor. Verifique se ele está iniciado.' : erro.message);
+    } finally {
+        if (botao) { botao.disabled = false; botao.textContent = 'Entrar no Sistema'; }
     }
-
-    fetch("/login_cadastro/autenticar", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            emailServer: emailVar,
-            senhaServer: senhaVar
-        })
-    }).then(function (resposta) {
-        console.log("ESTOU NO THEN DO entrar()!");
-
-        if (resposta.ok) {
-            resposta.json().then(json => {
-                console.log("Resposta do json de login = ok. then(json)", json);
-
-                sessionStorage.EMAIL_USUARIO = json.email;
-                sessionStorage.SENHA_USUARIO = json.senha;
-                sessionStorage.NOME_USUARIO = json.nome;
-                sessionStorage.ID_USUARIO = json.id_funcionario || json.idFuncionario;
-                sessionStorage.ID_EMPRESA = json.id_empresa || json.idEmpresa;
-                sessionStorage.TIPO_ACESSO = json.adm || json.tipoAcesso;
-
-                if (cardErro && mensagemErro) {
-                    cardErro.style.display = "block";
-                    cardErro.style.borderColor = "var(--cor-sucesso, #05df72)";
-                    mensagemErro.innerHTML = "Login realizado com sucesso! Redirecionando...";
-                }
-
-                setTimeout(() => {
-                    var destino = typeof obterDestinoInicial === 'function' ? obterDestinoInicial(sessionStorage.TIPO_ACESSO) : '../../pos-login/painel/painel.html';
-                    window.location.href = destino;
-                }, 1000);
-            });
-        } else {
-            if (btnEntrar) {
-                btnEntrar.disabled = false;
-                btnEntrar.innerText = "Entrar no Sistema";
-            }
-            resposta.text().then(texto => {
-                if (cardErro && mensagemErro) {
-                    cardErro.style.display = "block";
-                    cardErro.style.borderColor = "var(--cor-perigo, #ff3366)";
-                    mensagemErro.innerHTML = texto || "E-mail e/ou senha inválido(s)!";
-                    setTimeout(() => { cardErro.style.display = "none"; }, 4500);
-                } else {
-                    alert(texto || "E-mail e/ou senha inválido(s)!");
-                }
-            });
-        }
-    }).catch(function (erro) {
-        console.log(erro);
-        if (btnEntrar) {
-            btnEntrar.disabled = false;
-            btnEntrar.innerText = "Entrar no Sistema";
-        }
-        if (cardErro && mensagemErro) {
-            cardErro.style.display = "block";
-            mensagemErro.innerHTML = "Erro de conexão com o servidor.";
-            setTimeout(() => { cardErro.style.display = "none"; }, 4000);
-        }
-    });
+    return false;
 }

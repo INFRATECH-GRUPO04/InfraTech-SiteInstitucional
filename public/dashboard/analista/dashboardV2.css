@@ -343,7 +343,7 @@
 .ranking-acao:hover, .ranking-acao:focus-visible { background: #00b8d9; color: white; outline: 2px solid #087d95; outline-offset: 2px; }
 .ranking-vazio { color: var(--texto-mudo); font: 500 max(12px, calc(12 * var(--u)))/1.5 var(--fonte-regular); padding: calc(12 * var(--u)); }
 
-/* A dashboard ganha uma linha inferior de investigação; o documento rola sem alterar a sidebar. */
+/* A dashboard ganha uma linha inferior de investigação; o documento rola sem alterar a barra lateral. */
 .pagina { height:auto; min-height:100vh; overflow:visible; }
 .pagina > .conteudo { height:auto; min-height:100vh; overflow:visible; }
 .area-principal { flex:0 0 auto; min-height:0; }

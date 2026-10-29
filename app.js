@@ -27,24 +27,29 @@ var gerenciarFuncionarioRouter = require("./src/routes/gerenciar_funcionario")
 var agenteRouter = require("./src/routes/agente")
 
 var cryptoRouter = require("./src/routes/crypto");
+var autorizacao = require("./src/middleware/autorizacao");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+// Verifica o acesso às páginas protegidas antes de servir os arquivos públicos.
+app.use(autorizacao.bloquearPagina);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
 
 app.use("/", indexRouter);
 app.use("/login_cadastro", login_cadastroRouter);
-app.use("/crypto", cryptoRouter);
-app.use("/servidor", servidorRouter);
+app.use("/crypto", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), cryptoRouter);
+app.use("/servidor", autorizacao.autenticar, servidorRouter);
 app.use("/cadastro_empresa", cadastro_empresaRouter);
-app.use("/gerenciar_empresa", gerenciar_empresaRouter);
-app.use("/gerenciar-empresa", gerenciar_empresaRouter);
-app.use("/gerenciar_funcionario", gerenciarFuncionarioRouter);
+app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciar_empresaRouter);
+app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciar_empresaRouter);
+app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
 app.use("/agente", agenteRouter)
 
-app.listen(PORTA_APP, function () {
+module.exports = app;
+
+if (require.main === module) app.listen(PORTA_APP, function () {
     console.log(`
     ##   ##  ######   #####             ####       ##     ######     ##              ##  ##    ####    ######  
     ##   ##  ##       ##  ##            ## ##     ####      ##      ####             ##  ##     ##         ##  

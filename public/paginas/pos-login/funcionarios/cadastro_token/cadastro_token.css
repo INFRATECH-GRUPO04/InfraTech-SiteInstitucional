@@ -23,7 +23,7 @@
     background: linear-gradient(180deg, #0d1a29 0%, #08121c 100%);
 }
 
-/* ----------- Stepper ----------- */
+/* ----------- Indicador de etapas ----------- */
 .stepper {
     display: flex;
     align-items: center;

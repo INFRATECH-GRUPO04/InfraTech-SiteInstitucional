@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="dashboard-global.css" />
 
     <!-- Script de sessão do usuário -->
-    <script src="../compartilhado/js/sessao.js"></script>
+    <script src="../compartilhado/js/permissoes.js"></script>
+<script src="../compartilhado/js/sessao.js"></script>
 
     <!-- Chart.js via CDN para renderizar os gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -72,7 +73,7 @@
         Cadastrar Empresa
       </a>
 
-      <div class="btn-logout" onclick="sessionStorage.clear(); window.location.href='../paginas/autenticacao/login/login.html';" title="Sair do Sistema">
+      <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
         <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
       </div>
     </aside>

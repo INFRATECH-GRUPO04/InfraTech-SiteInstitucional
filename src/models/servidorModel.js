@@ -49,6 +49,30 @@ function listarComponentesPorServidor(idServidor) {
     return database.executar(instrucaoSql);
 }
 
+function servidorPertenceEmpresa(idServidor, idEmpresa) {
+    return database.executar('SELECT id_servidor FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [Number(idServidor), Number(idEmpresa)]);
+}
+
+function atualizarPorEmpresa(idServidor, idEmpresa, nome) {
+    return database.executar('UPDATE servidor SET nome = ? WHERE id_servidor = ? AND fk_empresa = ?', [nome, Number(idServidor), Number(idEmpresa)]);
+}
+
+function excluirPorEmpresa(idServidor, idEmpresa) {
+    return database.executar('SELECT id_servidor FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [Number(idServidor), Number(idEmpresa)])
+        .then(function (servidores) {
+            if (!servidores.length) return null;
+            return excluir(idServidor);
+        });
+}
+
+function atualizarChavePorEmpresa(idServidor, codigo, idEmpresa) {
+    return database.executar('UPDATE servidor SET chave_hash = SHA2(?, 256) WHERE id_servidor = ? AND fk_empresa = ?', [codigo, Number(idServidor), Number(idEmpresa)]);
+}
+
+function componentePertenceEmpresa(idComponente, idEmpresa) {
+    return database.executar('SELECT c.id_componente FROM componente c JOIN servidor s ON s.id_servidor = c.fk_servidor WHERE c.id_componente = ? AND s.fk_empresa = ?', [Number(idComponente), Number(idEmpresa)]);
+}
+
 function listarLimitesGlobais(idEmpresa) {
     var sql = `SELECT tipo, limite_atencao, limite_critico FROM limite_alerta_global WHERE fk_empresa = ${Number(idEmpresa)};`;
     return database.executar(sql);
@@ -92,8 +116,15 @@ function atualizarComponente(idComponente, capacidade, idMetrica, limiteAtencao,
     });
 }
 
+function atualizarLimitesComponenteEmpresa(idComponente, idEmpresa, idMetrica, limiteAtencao, limiteCritico) {
+    return database.executar(
+        `UPDATE metrica m JOIN componente c ON c.id_componente = m.fk_componente JOIN servidor s ON s.id_servidor = c.fk_servidor SET m.limite_atencao = ?, m.limite_critico = ? WHERE c.id_componente = ? AND m.id_metrica = ? AND s.fk_empresa = ?`,
+        [Number(limiteAtencao), Number(limiteCritico), Number(idComponente), Number(idMetrica), Number(idEmpresa)]
+    );
+}
+
 function excluir(idServidor) {
-    // Exclusão em cascata respeitando as Foreign Keys: metrica -> componente -> servidor_funcionario -> servidor
+    // Exclusão em cascata respeitando as chaves estrangeiras: metrica -> componente -> servidor_funcionario -> servidor
     var instDeletarMetricas = `DELETE FROM metrica WHERE fk_componente IN (SELECT id_componente FROM componente WHERE fk_servidor = ${idServidor});`;
     console.log("Executando a instrução SQL: \n" + instDeletarMetricas);
 
@@ -134,11 +165,17 @@ module.exports = {
     buscarPorNomeEEmpresa,
     listar,
     listarComponentesPorServidor,
+    servidorPertenceEmpresa,
+    atualizarPorEmpresa,
+    excluirPorEmpresa,
+    atualizarChavePorEmpresa,
+    componentePertenceEmpresa,
     listarLimitesGlobais,
     salvarLimitesGlobais,
     substituirLimitesIndividuais,
     atualizar,
     atualizarComponente,
+    atualizarLimitesComponenteEmpresa,
     excluir,
     atualizarChave
 };

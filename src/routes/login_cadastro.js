@@ -15,6 +15,14 @@ router.post("/autenticar", function (req, res) {
     login_cadastroController.autenticar(req, res);
 });
 
+router.get("/sessao", function (req, res) {
+    login_cadastroController.sessaoAtual(req, res);
+});
+
+router.post("/sair", function (req, res) {
+    login_cadastroController.sair(req, res);
+});
+
 router.get("/verificar", function (req, res) {
     login_cadastroController.verificar(req, res);
 });

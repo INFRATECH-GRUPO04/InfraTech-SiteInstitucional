@@ -1,8 +1,9 @@
 var login_cadastroModel = require("../models/login_cadastroModel");
+var autorizacao = require("../middleware/autorizacao");
 
 
 function autenticar(req, res) {
-    var email = req.body.emailServer;
+    var email = typeof req.body.emailServer === 'string' ? req.body.emailServer.trim() : undefined;
     var senha = req.body.senhaServer;
 
     if (email == undefined) {
@@ -17,12 +18,27 @@ function autenticar(req, res) {
                     if (resultadoAutenticar.length == 1) {
                         var funcionario = resultadoAutenticar[0];
 
+                        if (Number(funcionario.statusSistema) !== 1) return res.status(403).send("Este usuário está desativado.");
+                        if (!autorizacao.permissoesDoCargo(funcionario.tipoAcesso).monitorar) {
+                            return res.status(403).send("O cargo deste usuário ainda não possui permissões configuradas.");
+                        }
+                        var sessao = autorizacao.criarSessao(funcionario);
+                        res.cookie(autorizacao.COOKIE, sessao.token, {
+                            httpOnly: true,
+                            sameSite: 'lax',
+                            secure: req.secure,
+                            path: '/',
+                            maxAge: 12 * 60 * 60 * 1000
+                        });
+
                         res.json({
                             idFuncionario: funcionario.idFuncionario,
                             idEmpresa: funcionario.fkEmpresa,
                             nome: funcionario.nome,
                             email: funcionario.email,
-                            tipoAcesso: funcionario.tipoAcesso
+                            tipoAcesso: String(funcionario.tipoAcesso).trim().toUpperCase(),
+                            destino: autorizacao.destinoInicial(funcionario.tipoAcesso),
+                            permissoes: autorizacao.permissoesDoCargo(funcionario.tipoAcesso)
                         });
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
@@ -34,11 +50,23 @@ function autenticar(req, res) {
                 function (erro) {
                     console.log(erro);
                     console.log("\nHouve um erro ao realizar o login! Erro: ", erro.sqlMessage);
-                    res.status(500).json(erro.sqlMessage);
+                    res.status(503).send("Não foi possível acessar o banco de dados. Tente novamente em instantes.");
                 }
             );
     }
 
+}
+
+function sessaoAtual(req, res) {
+    res.set('Cache-Control', 'no-store');
+    autorizacao.autenticar(req, res, function () {
+        res.json({ idFuncionario: req.usuario.id, idEmpresa: req.usuario.empresa, nome: req.usuario.nome, email: req.usuario.email, tipoAcesso: req.usuario.cargo, permissoes: autorizacao.permissoesDoCargo(req.usuario.cargo) });
+    });
+}
+
+function sair(req, res) {
+    res.clearCookie(autorizacao.COOKIE, { httpOnly: true, sameSite: 'lax', path: '/' });
+    res.status(204).end();
 }
 
 function verificar(req, res) {
@@ -61,11 +89,7 @@ function cadastrar(req, res) {
     var senha = req.body.senhaServer;
     var cpf = req.body.cpfServer;
     var data_nascimento = req.body.nascimentoServer;
-    var fkEmpresa = req.body.fkEmpresaServer;
-
-
     var idConvite = req.body.idConviteServer;
-    var tipoAcesso = req.body.tipoAcessoServer;
 
     if (nome == undefined) {
         res.status(400).send("Seu nome está indefinido!");
@@ -77,25 +101,24 @@ function cadastrar(req, res) {
         res.status(400).send("Seu cpf está indefinido!");
     } else if (data_nascimento == undefined) {
         res.status(400).send("Sua data de nascimento está indefinida!");
+    } else if (!idConvite) {
+        res.status(403).send("É necessário um convite válido para criar a conta.");
     } else {
-
-        login_cadastroModel.cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso)
-            .then(
-                function (resultado) {
-                    if (idConvite) {
+        login_cadastroModel.buscarConviteAtivoPorId(idConvite)
+            .then(function (convites) {
+                if (!convites.length) return res.status(403).send("Convite inválido ou sem usos disponíveis.");
+                var convite = convites[0];
+                var cargosPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
+                if (!cargosPermitidos.includes(String(convite.tipo_acesso).toUpperCase())) return res.status(403).send("O convite possui um cargo inválido.");
+                return login_cadastroModel.cadastrar(convite.fk_empresa, nome, data_nascimento, email, senha, cpf, convite.tipo_acesso)
+                    .then(function (resultado) {
                         var cryptoModel = require("../models/cryptoModel");
-                        cryptoModel.atualizarCodigo(idConvite).catch(function (e) {
-                            console.log("Erro ao atualizar uso do convite:", e);
-                        });
-                    }
-                    res.json(resultado);
-                }
-            ).catch(
-                function (erro) {
-                    console.log(erro);
-                    res.status(500).json(erro.sqlMessage);
-                }
-            );
+                        return cryptoModel.atualizarCodigo(convite.id_convite).then(function () { res.json(resultado); });
+                    });
+            }).catch(function (erro) {
+                console.log(erro);
+                res.status(500).json(erro.sqlMessage || "Não foi possível concluir o cadastro.");
+            });
     }
 }
 
@@ -158,6 +181,8 @@ function CodigoEmpresa(req, res) {
 
 module.exports = {
     autenticar,
+    sessaoAtual,
+    sair,
     verificar,
     cadastrar,
     EmailsIguais,

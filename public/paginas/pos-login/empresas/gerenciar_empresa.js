@@ -2,7 +2,7 @@
     "use strict";
 
     var tipoAcesso = (sessionStorage.TIPO_ACESSO || "").toUpperCase();
-    if (tipoAcesso !== "ADMIN" && tipoAcesso !== "INFRATECH") {
+    if (!InfraTechPermissoes.obter(tipoAcesso).administrar) {
         window.location.replace("/paginas/pos-login/painel/painel.html");
         return;
     }

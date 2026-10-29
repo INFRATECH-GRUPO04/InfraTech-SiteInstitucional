@@ -12,7 +12,7 @@
     gap: clamp(20px, 2.5vh, 30px);
 }
 
-/* ----------- Header (migalhas + usuário) ----------- */
+/* ----------- Cabeçalho (migalhas + usuário) ----------- */
 .barra-superior-painel {
     display: flex;
     align-items: center;
@@ -78,7 +78,7 @@
     background: var(--cor-cyan, #00CFFF);
 }
 
-/* Stepper de Progresso */
+/* Indicador de etapas de Progresso */
 .fluxo {
     width: calc(100% - 2 * var(--margem-lateral));
     margin: 0 auto;
@@ -163,7 +163,7 @@
     background: var(--cor-cyan);
 }
 
-/* Container de Formulário */
+/* Área de Formulário */
 .container-cadastro {
     width: calc(100% - 2 * var(--margem-lateral));
     margin: 0 auto;

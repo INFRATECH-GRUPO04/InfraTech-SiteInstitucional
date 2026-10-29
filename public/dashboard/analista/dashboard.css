@@ -6,7 +6,7 @@
   justify-content: flex-start; 
   flex-shrink: 0; width: 100%; min-height: 100vh; position: relative; overflow: hidden; }
  
-/* ---------- Tokens ---------- */
+/* ---------- Variáveis de estilo ---------- */
 :root {
   /* Superfícies */
   --cor-fundo: #050b16;
@@ -68,7 +68,7 @@ body {
   overflow: hidden;
 }
  
-/* Garante que a sidebar ocupe a coluna da esquerda, sem sobrepor o conteúdo */
+/* Garante que a barra lateral ocupe a coluna da esquerda, sem sobrepor o conteúdo */
 .layout > .header-left {
   position: relative;
   width: 100%;
@@ -349,7 +349,7 @@ body {
   }
 }
  
-@media (max-width: 1100px) {
+@media (max-width: 991px) {
   .layout {
     grid-template-columns: 1fr;
     height: auto;

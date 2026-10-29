@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="../../../compartilhado/css/global.css">
     <link rel="stylesheet" href="./cadastro_servidor.css">
 
-    <script src="../../../compartilhado/js/sessao.js"></script>
+    <script src="../../../compartilhado/js/permissoes.js"></script>
+<script src="../../../compartilhado/js/sessao.js"></script>
 </head>
 
 <body class="pagina-servidores" onload="validarSessao(); listarServidores();">
 
-    <!-- SIDEBAR -->
+    <!-- BARRA LATERAL -->
     <aside class="header-left">
         <div class="logo">
             <a href="../painel/painel.html" title="InfraTech Painel">
@@ -119,7 +120,7 @@
                 COMPONENTES VINCULADOS
             </div>
 
-            <!-- Container preenchido dinamicamente pelo JS (Grade 2x2) -->
+            <!-- Área preenchido dinamicamente pelo JS (Grade 2x2) -->
             <div id="componentes-lista" class="grade-componentes">
                 <div class="estado-vazio" style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
                     <p style="margin: 0; font-size: 0.95rem;">Selecione um servidor acima para visualizar e gerenciar seus recursos.</p>

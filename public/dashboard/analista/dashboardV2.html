@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 
 <head>
-    <script src="../../compartilhado/js/sessao.js"></script>
+    <script src="../../compartilhado/js/permissoes.js"></script>
+<script src="../../compartilhado/js/sessao.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="dashboardV2.css">
@@ -351,6 +352,20 @@
                 const investigar = document.createElement('a');
                 investigar.className = 'ranking-acao';
                 investigar.href = `../especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(servidor.id)}${pior ? `&recurso=${pior.recurso}` : ''}`;
+                if (!InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO).dashboards.includes('especifica')) {
+                    investigar.href = '#evolucaoServidor';
+                    investigar.addEventListener('click', (evento) => {
+                        evento.preventDefault();
+                        const seletor = document.getElementById('evolucaoServidor');
+                        seletor.value = servidor.id;
+                        if (pior) document.getElementById('evolucaoRecurso').value = pior.recurso;
+                        document.getElementById('filtroServidor').value = servidor.id;
+                        renderizarEvolucao();
+                        renderizarHistoricoAlertas();
+                        seletor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        seletor.focus({ preventScroll: true });
+                    });
+                }
                 investigar.textContent = 'Investigar →';
                 investigar.setAttribute('aria-label', `Investigar ${servidor.id}${pior ? `, ${pior.recurso} ${pior.valor}%` : ''}`);
                 item.append(topo, descricao, investigar);

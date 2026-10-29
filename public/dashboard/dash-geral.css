@@ -38,7 +38,7 @@
   --raio-card:         12px;
 }
 
-/* Reset básico */
+/* Redefinição básica */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -81,7 +81,7 @@ body.pagina-dash-geral {
   box-sizing: border-box;
 }
 
-/* Anula estilos fixos herdados do header institucional */
+/* Anula estilos fixos herdados do cabeçalho institucional */
 header.cabecalho-dash,
 header.cabecalho {
   position: static !important;
@@ -825,7 +825,7 @@ header.cabecalho {
   transform: scale(1.06);
 }
 
-/* Botão hambúrguer — oculto no desktop */
+/* Botão hambúrguer — oculto no computador */
 .btn-hamburguer-dash {
   display: none;
   position: fixed;
@@ -852,7 +852,7 @@ header.cabecalho {
   transform: scale(1.06);
 }
 
-/* Overlay escuro atrás da sidebar no mobile */
+/* Sobreposição escuro atrás da barra lateral no celular */
 .overlay-sidebar {
   display: none;
   position: fixed;
@@ -878,7 +878,7 @@ header.cabecalho {
     flex-direction: column;
   }
 
-  /* Sidebar vira drawer lateral oculto */
+  /* Barra lateral vira menu deslizante lateral oculto */
   body.pagina-dash-geral .header-left {
     position: fixed;
     top: 0;
@@ -898,13 +898,13 @@ header.cabecalho {
     box-shadow: none;
   }
 
-  /* Sidebar aberta */
+  /* Barra lateral aberta */
   body.pagina-dash-geral .header-left.aberta {
     left: 0;
     box-shadow: 6px 0 24px rgba(0, 0, 0, 0.5);
   }
 
-  /* Mantém categorias e separador visíveis no drawer */
+  /* Mantém categorias e separador visíveis no menu deslizante */
   body.pagina-dash-geral .header-left hr.linha {
     display: block;
   }

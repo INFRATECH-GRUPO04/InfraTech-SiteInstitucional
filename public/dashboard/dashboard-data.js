@@ -158,7 +158,7 @@ window.InfraTechDashboardData.picoSemanalFrota = window.InfraTechDashboardData.p
 }));
 
 /* Regras compartilhadas pelas três dashboards; sincronização usa backend autenticado e
-   armazenamento local como fallback para os acessos diretos sem sessão. */
+   armazenamento local como alternativa para os acessos diretos sem sessão. */
 window.InfraTechAlertas = (() => {
   const CHAVE_GLOBAL = 'infratech.alertas.global.v2';
   const CHAVE_SERVIDORES = 'infratech.alertas.servidores.v2';
@@ -356,8 +356,8 @@ function formatarCargoDashboard(tipoAcesso) {
     ADMIN: 'ADMINISTRADOR',
     INFRATECH: 'ADMINISTRADOR',
     GESTOR: 'GESTOR',
-    ANALISTA_DADOS: 'ANALISTA DE DADOS',
-    ANALISTA_NOC: 'ANALISTA NOC',
+    ANALISTA_DADOS: 'ENGENHEIRO DE TELEMETRIA',
+    ANALISTA_NOC: 'ANALISTA DE NOC',
     ANALISTA: 'ANALISTA',
     FUNCIONARIO: 'FUNCIONÁRIO'
   };

@@ -270,7 +270,10 @@ INSERT INTO funcionario (
 (4, 'GESTOR', NULL, NULL, 'gestor@arenanordeste.com.br', 'trocarSenha1', NULL, 1),
 (4, 'FUNCIONARIO', 'Igor Ramos', '1996-11-23', 'igor@arenanordeste.com.br', '123456', '66677788849', 1),
 (4, 'FUNCIONARIO', 'Juliana Prado', '1993-04-17', 'juliana@arenanordeste.com.br', '123456', '77788899950', 0),
-(4, 'FUNCIONARIO', 'Kaique Silva', '2001-01-30', 'kaique@arenanordeste.com.br', '123456', '88899900061', 1);
+(4, 'FUNCIONARIO', 'Kaique Silva', '2001-01-30', 'kaique@arenanordeste.com.br', '123456', '88899900061', 1),
+(2, 'ANALISTA_DADOS', 'Cláudia Martins', '1991-04-12', 'claudia.telemetria@infratech.demo', '123456', '90100000001', 1),
+(2, 'ANALISTA_NOC', 'Júlio Almeida', '1994-08-23', 'julio.noc@infratech.demo', '123456', '90100000002', 1),
+(2, 'GESTOR', 'Alberto Costa', '1985-11-06', 'alberto.gestor@infratech.demo', '123456', '90100000003', 1);
 
 
 -- =====================================================

@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="../../../compartilhado/css/cadastro-base.css">
     <link rel="stylesheet" href="./cadastro_servidor.css">
 
-    <script src="../../../compartilhado/js/sessao.js"></script>
+    <script src="../../../compartilhado/js/permissoes.js"></script>
+<script src="../../../compartilhado/js/sessao.js"></script>
 </head>
 
 <body class="pagina-servidores" onload="validarSessao()">
 
-    <!-- SIDEBAR -->
+    <!-- BARRA LATERAL -->
     <aside class="header-left">
         <div class="logo">
             <a href="../painel/painel.html" title="InfraTech Painel">
@@ -119,7 +120,7 @@
                 ALOCAÇÃO DE RECURSOS (COMPONENTES)
             </div>
 
-            <!-- Container para componentes dinâmicos (Grade 2x2) -->
+            <!-- Área para componentes dinâmicos (Grade 2x2) -->
             <div id="alinhar" class="grade-componentes"></div>
 
             <button type="button" class="btn-cyan" onclick="cadastrarServidorCompleto()" style="align-self: flex-start; margin-top: 10px;">

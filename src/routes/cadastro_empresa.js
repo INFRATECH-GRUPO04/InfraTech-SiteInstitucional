@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 var empresaController = require("../controllers/cadastro_empresaController");
+var admin = require("../middleware/autorizacao").autenticar;
+var somenteAdmin = require("../middleware/autorizacao").exigirPermissao('administrar');
 
 
 router.post("/cadastrar", function (req, res) {
@@ -9,15 +11,15 @@ router.post("/cadastrar", function (req, res) {
 })
 
 router.get("/buscar", function (req, res) {
-    empresaController.buscarPorCnpj(req, res);
+    admin(req, res, function () { somenteAdmin(req, res, function () { empresaController.buscarPorCnpj(req, res); }); });
 });
 
 router.get("/buscar/:id", function (req, res) {
-  empresaController.buscarPorId(req, res);
+  admin(req, res, function () { somenteAdmin(req, res, function () { empresaController.buscarPorId(req, res); }); });
 });
 
 router.get("/listar", function (req, res) {
-  empresaController.listar(req, res);
+  admin(req, res, function () { somenteAdmin(req, res, function () { empresaController.listar(req, res); }); });
 });
 
 module.exports = router;
