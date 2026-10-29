@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const segredo = process.env.AUTH_TOKEN_SECRET || crypto.randomBytes(32).toString('hex');
 const COOKIE = 'infratech_session';
 const politica = require('../../public/compartilhado/js/permissoes');
+const database = require('../database/config');
 
 function assinar(payload) {
   const corpo = Buffer.from(JSON.stringify(payload)).toString('base64url');
@@ -44,13 +45,27 @@ function criarSessao(funcionario) {
   return { sessao, token: assinar(sessao) };
 }
 
-function permissoesDoCargo(cargo) { return politica.obter(cargo); }
+function permissoesDoCargo(cargo, podeEditarAlertas) { return politica.obter(cargo, podeEditarAlertas); }
 
 function exigirPermissao(permissao) {
   return function (req, res, next) {
-    const liberado = req.usuario && politica.obter(req.usuario.cargo)[permissao];
-    if (!liberado) return res.status(403).json({ erro: 'Seu cargo não permite esta ação.' });
-    next();
+    const cargo = req.usuario && req.usuario.cargo;
+    if (cargo && politica.obter(cargo)[permissao]) return next();
+    if (permissao !== 'editarLimites' || cargo !== 'ANALISTA_DADOS') {
+      return res.status(403).json({ erro: 'Seu cargo não permite esta ação.' });
+    }
+    database.executar(
+      'SELECT pode_editar_alertas FROM funcionario WHERE id_funcionario = ? AND fk_empresa = ? AND status_sistema = 1 AND tipo_acesso = \'ANALISTA_DADOS\';',
+      [req.usuario.id, req.usuario.empresa]
+    ).then(function (resultado) {
+      if (!resultado.length || Number(resultado[0].pode_editar_alertas) !== 1) {
+        return res.status(403).json({ erro: 'O gestor ainda não liberou a edição de métricas para esta conta.' });
+      }
+      next();
+    }).catch(function (erro) {
+      console.log(erro);
+      res.status(500).json({ erro: 'Não foi possível validar a permissão de edição.' });
+    });
   };
 }
 

@@ -878,3 +878,19 @@ body:has(.header-left) .main{background:#080d12;color:#edf7ff}
 .texto-inicial{color:#c0ced8}
 .trecho-inicial img{filter:brightness(0) saturate(100%) invert(75%) sepia(14%) saturate(1210%) hue-rotate(155deg) brightness(102%)}
 .box-funcionario[hidden]{display:none!important}
+.container-dados{height:auto;min-height:0;align-items:stretch;align-content:stretch;gap:14px;padding:20px;box-sizing:border-box}
+.box-dados{width:100%;height:auto;min-height:104px;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;padding:16px 18px;border-radius:10px}
+.box-dados .texto-dado{display:block;width:auto;height:auto;margin:0;padding:0;border:0;background:transparent;color:#a9c1d3;font-size:12px;line-height:1.4;font-weight:600}
+.box-dados .dado-funcionario{width:100%;height:auto;min-height:0;margin:0;flex-shrink:1;color:#f2f8fc;font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+.permissao-limites{min-height:72px}
+.permissao-limites>div{display:flex;flex:1;flex-direction:column;gap:5px;min-width:0}
+.controle-permissao{display:flex;align-items:center;gap:10px;margin:0;color:#edf7ff;cursor:pointer}
+.controle-permissao input{appearance:none;position:relative;width:42px;min-width:42px;height:24px;min-height:24px;margin:0;padding:0;border:1px solid #526473;border-radius:999px;background:#293640;cursor:pointer;transition:background .18s ease,border-color .18s ease}
+.controle-permissao input::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#d6e0e7;transition:transform .18s ease,background .18s ease}
+.controle-permissao input:checked{border-color:#00cfff;background:#007f9d}
+.controle-permissao input:checked::after{transform:translateX(18px);background:#fff}
+.controle-permissao input:focus-visible{outline:2px solid #82e9ff;outline-offset:3px}
+.controle-permissao input:disabled{cursor:wait;opacity:.65}
+.estado-permissao:not(.autorizado){background:#29333c;color:#d0d9df}
+.ajuda-permissoes{min-height:18px}
+@media(max-width:700px){.container-dados{grid-template-columns:1fr}.box-dados{min-height:88px}}

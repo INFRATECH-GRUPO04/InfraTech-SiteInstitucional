@@ -651,17 +651,17 @@ function inicializarModalLimites() {
   const form = document.getElementById('formLimites');
   const botaoConfig = document.getElementById('abrir-config-alertas');
   const cargo = String(sessionStorage.TIPO_ACESSO || '').toUpperCase();
-  const podeEditarLimites = InfraTechPermissoes.obter(cargo).editarLimites;
+  const podeEditarLimites = InfraTechPermissoes.obter(cargo, sessionStorage.PODE_EDITAR_ALERTAS === 'true').editarLimites;
   if (!podeEditarLimites && botaoConfig) {
     botaoConfig.hidden = true;
     botaoConfig.setAttribute('aria-hidden', 'true');
   }
   window.addEventListener('infratech:sessao-validada', () => {
-    botaoConfig.hidden = !InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO).editarLimites;
+    botaoConfig.hidden = !InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO, sessionStorage.PODE_EDITAR_ALERTAS === 'true').editarLimites;
     botaoConfig.setAttribute('aria-hidden', String(botaoConfig.hidden));
   });
   if (botaoConfig) botaoConfig.addEventListener('click', () => {
-    if (!InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO).editarLimites) return;
+    if (!InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO, sessionStorage.PODE_EDITAR_ALERTAS === 'true').editarLimites) return;
     preencherModalLimites(window.InfraTechAlertas.obter(servidorSelecionado.id));
     document.getElementById('avisoLimites').textContent = 'As cores mudam com os limites salvos em todas as dashboards.';
     modal.showModal();

@@ -32,6 +32,10 @@ router.put("/ativarUsuario/:id", function (req, res) {
   gerenciar_funcionarioController.ativarUsuario(req, res);
 });
 
+router.put("/permissao-alertas/:id", function (req, res) {
+  gerenciar_funcionarioController.alterarPermissaoAlertas(req, res);
+});
+
 router.get("/buscarServidoresPorEmpresa/:id", function (req, res) {
   gerenciar_funcionarioController.buscarServidoresPorEmpresa(req, res);
 });

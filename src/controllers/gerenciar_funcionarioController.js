@@ -67,6 +67,24 @@ function ativarUsuario(req, res) {
     });
 }
 
+function alterarPermissaoAlertas(req, res) {
+  if (!['GESTOR', 'ADMIN', 'INFRATECH'].includes(req.usuario.cargo)) {
+    return res.status(403).json({ erro: 'Somente gestão pode alterar esta permissão.' });
+  }
+  if (typeof req.body.podeEditarAlertas !== 'boolean') {
+    return res.status(400).json({ erro: 'Informe se o funcionário pode editar limites de alerta.' });
+  }
+  gerenciar_funcionarioModel.alterarPermissaoAlertas(
+    Number(req.params.id), req.usuario.empresa, req.body.podeEditarAlertas
+  ).then((resultado) => {
+    if (!resultado) return res.status(404).json({ erro: 'Analista de telemetria ativo não encontrado nesta empresa.' });
+    res.status(200).json({ podeEditarAlertas: req.body.podeEditarAlertas });
+  }).catch((erro) => {
+    console.log(erro);
+    res.status(500).json({ erro: 'Não foi possível salvar a permissão de edição.' });
+  });
+}
+
 function buscarServidoresPorEmpresa(req, res) {
   var idEmpresa = req.usuario.empresa;
   var idFuncionario = Number(req.params.id);
@@ -104,6 +122,7 @@ module.exports = {
     deletarUsuario,
     desativarUsuario,
     ativarUsuario,
+    alterarPermissaoAlertas,
     buscarServidoresPorEmpresa,
     alterarServidores
 };

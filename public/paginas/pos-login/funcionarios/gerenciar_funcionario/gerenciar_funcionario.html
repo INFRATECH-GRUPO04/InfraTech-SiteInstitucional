@@ -287,6 +287,7 @@
 
     function mostrarDadosFunc() {
         resposta = funcionarioSelecionado
+        var ehGestor = ['GESTOR', 'ADMIN', 'INFRATECH'].includes(String(sessionStorage.TIPO_ACESSO || '').toUpperCase());
         botoes_modificar.innerHTML = ''
 
         box_modificar.innerHTML = `
@@ -316,8 +317,15 @@
                                 </div>
                             </section>
                             <section class="cartao-permissoes" id="cartao_permissoes" ${resposta[0].tipo_acesso !== 'ANALISTA_DADOS' ? 'hidden' : ''}>
-                                <div class="titulo-permissoes"><span class="icone-permissao">◇</span><div><strong>Permissão para editar métricas</strong><small>Analistas de telemetria podem ajustar alertas na Dashboard Específica.</small></div></div>
-                                <div class="permissao-limites"><strong>Métricas de CPU, RAM, Disco e Rede</strong><span class="estado-permissao autorizado">Liberado pelo cargo</span></div>
+                                <div class="titulo-permissoes"><span class="icone-permissao">◇</span><div><strong>Acesso para editar métricas</strong><small>Escolha se este analista pode alterar os limites de alerta na Dashboard Específica.</small></div></div>
+                                <div class="permissao-limites">
+                                    <div><strong>CPU, RAM, Disco e Rede</strong><small>O acesso permite salvar limites individuais e globais da empresa.</small></div>
+                                    ${ehGestor ? `<label class="controle-permissao" for="toggle-permissao-alertas">
+                                        <input id="toggle-permissao-alertas" type="checkbox" ${Number(resposta[0].podeEditarAlertas) === 1 ? 'checked' : ''} onchange="salvarPermissaoAlertas(this.checked)">
+                                        <span class="estado-permissao ${Number(resposta[0].podeEditarAlertas) === 1 ? 'autorizado' : ''}" id="estado-permissao-alertas">${Number(resposta[0].podeEditarAlertas) === 1 ? 'Autorizado' : 'Sem acesso'}</span>
+                                    </label>` : `<span class="estado-permissao ${Number(resposta[0].podeEditarAlertas) === 1 ? 'autorizado' : ''}">${Number(resposta[0].podeEditarAlertas) === 1 ? 'Autorizado' : 'Sem acesso'}</span>`}
+                                </div>
+                                <p class="ajuda-permissoes" id="retorno-permissao-alertas" role="status">A permissão é aplicada pelo servidor e pode ser revogada pelo gestor.</p>
                             </section>
                             `
 
@@ -326,6 +334,43 @@
             ? `<div class="box-excluir"><button class="excluir" onclick="excluirUsuario()">Excluir funcionário <img class="img-excluir" src="../../../../assets/icon/icon_excluir.svg"></button></div>`
             : `<span class="texto-revisao">Contas de gestão não podem ser excluídas por esta tela.</span>`;
 
+    }
+
+    async function salvarPermissaoAlertas(habilitada) {
+        var controle = document.getElementById('toggle-permissao-alertas');
+        var estado = document.getElementById('estado-permissao-alertas');
+        var retorno = document.getElementById('retorno-permissao-alertas');
+        if (!controle || !funcionarioSelecionado || !funcionarioSelecionado[0]) return;
+        controle.disabled = true;
+        retorno.textContent = 'Salvando permissão…';
+        try {
+            var resposta = await fetch(`/gerenciar_funcionario/permissao-alertas/${idFuncionarioSelecionado}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store',
+                body: JSON.stringify({ podeEditarAlertas: habilitada })
+            });
+            var tipoResposta = resposta.headers.get('content-type') || '';
+            if (!tipoResposta.includes('application/json')) {
+                throw new Error(resposta.status === 404
+                    ? 'O servidor ainda não carregou a rota de permissões. Reinicie o backend com npm run dev e tente novamente.'
+                    : `O servidor respondeu em um formato inesperado (HTTP ${resposta.status}). Reinicie o backend e tente novamente.`);
+            }
+            var dados = await resposta.json();
+            if (!resposta.ok) throw new Error(dados.erro || 'Não foi possível salvar a permissão.');
+            funcionarioSelecionado[0].podeEditarAlertas = habilitada ? 1 : 0;
+            estado.textContent = habilitada ? 'Autorizado' : 'Sem acesso';
+            estado.classList.toggle('autorizado', habilitada);
+            retorno.textContent = habilitada
+                ? 'Acesso liberado. A API já permite que este analista salve limites de alerta.'
+                : 'Acesso removido. A API já bloqueia alterações de limites para este analista.';
+        } catch (erro) {
+            controle.checked = !habilitada;
+            retorno.textContent = erro.message;
+        } finally {
+            controle.disabled = false;
+        }
     }
 
     function formatarCpf(cpf) {

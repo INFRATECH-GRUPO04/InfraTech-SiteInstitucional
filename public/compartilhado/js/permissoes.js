@@ -9,11 +9,11 @@
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
-    function obter(cargo) {
+    function obter(cargo, podeEditarAlertas) {
         const tipo = normalizar(cargo);
         const completo = completos.includes(tipo);
         const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
-        return { dashboards: ids, administrar: completo, editarLimites: completo || tipo === 'ANALISTA_DADOS', monitorar: ids.length > 0 };
+        return { dashboards: ids, administrar: completo, editarLimites: completo || (tipo === 'ANALISTA_DADOS' && podeEditarAlertas === true), monitorar: ids.length > 0 };
     }
     function destino(cargo) {
         const id = obter(cargo).dashboards[0];

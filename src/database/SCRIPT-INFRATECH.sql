@@ -65,6 +65,7 @@ CREATE TABLE funcionario (
     senha VARCHAR(45) NOT NULL,
     cpf CHAR(11) NULL,
     status_sistema TINYINT NOT NULL DEFAULT 1,
+    pode_editar_alertas TINYINT(1) NOT NULL DEFAULT 0,
     dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_funcionario_empresa

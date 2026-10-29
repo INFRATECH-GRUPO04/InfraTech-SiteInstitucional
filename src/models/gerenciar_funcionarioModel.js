@@ -18,6 +18,7 @@ function buscarDadosUsuario(id) {
         f.nome,
         f.tipo_acesso,
         f.status_sistema,
+        f.pode_editar_alertas AS podeEditarAlertas,
         (SELECT COUNT(*)
            FROM servidor_funcionario sf
           WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
@@ -36,12 +37,29 @@ function buscarDadosUsuarioEspecifico(id, idEmpresa) {
         f.email,
         f.cpf,
         f.status_sistema,
+        f.pode_editar_alertas AS podeEditarAlertas,
         (SELECT COUNT(*)
            FROM servidor_funcionario sf
           WHERE sf.fk_funcionario = f.id_funcionario) AS qtdServidores
     FROM funcionario f
     WHERE f.id_funcionario = ? AND f.fk_empresa = ?;`;
   return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
+}
+
+function alterarPermissaoAlertas(idFuncionario, idEmpresa, habilitada) {
+  return database.executar(
+    `SELECT id_funcionario FROM funcionario
+      WHERE id_funcionario = ? AND fk_empresa = ?
+        AND tipo_acesso = 'ANALISTA_DADOS' AND status_sistema = 1;`,
+    [Number(idFuncionario), Number(idEmpresa)]
+  ).then(function (funcionarios) {
+    if (!funcionarios.length) return null;
+    return database.executar(
+      `UPDATE funcionario SET pode_editar_alertas = ?
+        WHERE id_funcionario = ? AND fk_empresa = ? AND tipo_acesso = 'ANALISTA_DADOS';`,
+      [habilitada ? 1 : 0, Number(idFuncionario), Number(idEmpresa)]
+    );
+  });
 }
 
 function deletarUsuario(id, idEmpresa, idGestor) {
@@ -119,6 +137,7 @@ module.exports = {
     deletarUsuario,
     desativarUsuario,
     ativarUsuario,
+    alterarPermissaoAlertas,
     buscarServidoresPorEmpresa,
     alterarServidores
   };

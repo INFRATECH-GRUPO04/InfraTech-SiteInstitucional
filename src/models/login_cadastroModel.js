@@ -11,11 +11,15 @@ function verificar(codigo) {
 
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, dt_cadastro AS dtCadastro
+        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, pode_editar_alertas AS podeEditarAlertas, dt_cadastro AS dtCadastro
         FROM funcionario
         WHERE email = ? AND senha = ? AND status_sistema = 1;
     `;
     return database.executar(instrucaoSql, [email, senha]);
+}
+
+function buscarPermissaoAlertas(idFuncionario, idEmpresa) {
+    return database.executar(`SELECT pode_editar_alertas AS podeEditarAlertas FROM funcionario WHERE id_funcionario = ? AND fk_empresa = ? AND status_sistema = 1;`, [Number(idFuncionario), Number(idEmpresa)]);
 }
 
 function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso) {
@@ -51,6 +55,7 @@ function buscarConviteAtivoPorId(idConvite) {
 module.exports = {
     verificar,
     autenticar,
+    buscarPermissaoAlertas,
     cadastrar,
     EmailsIguais,
     CodigoEmpresa,

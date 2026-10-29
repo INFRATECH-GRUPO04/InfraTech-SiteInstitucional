@@ -38,7 +38,7 @@ function autenticar(req, res) {
                             email: funcionario.email,
                             tipoAcesso: String(funcionario.tipoAcesso).trim().toUpperCase(),
                             destino: autorizacao.destinoInicial(funcionario.tipoAcesso),
-                            permissoes: autorizacao.permissoesDoCargo(funcionario.tipoAcesso)
+                            permissoes: autorizacao.permissoesDoCargo(funcionario.tipoAcesso, Number(funcionario.podeEditarAlertas) === 1)
                         });
                     } else if (resultadoAutenticar.length == 0) {
                         res.status(403).send("Email e/ou senha inválido(s)");
@@ -60,7 +60,15 @@ function autenticar(req, res) {
 function sessaoAtual(req, res) {
     res.set('Cache-Control', 'no-store');
     autorizacao.autenticar(req, res, function () {
-        res.json({ idFuncionario: req.usuario.id, idEmpresa: req.usuario.empresa, nome: req.usuario.nome, email: req.usuario.email, tipoAcesso: req.usuario.cargo, permissoes: autorizacao.permissoesDoCargo(req.usuario.cargo) });
+        login_cadastroModel.buscarPermissaoAlertas(req.usuario.id, req.usuario.empresa)
+            .then(function (resultado) {
+                var podeEditarAlertas = resultado.length > 0 && Number(resultado[0].podeEditarAlertas) === 1;
+                res.json({ idFuncionario: req.usuario.id, idEmpresa: req.usuario.empresa, nome: req.usuario.nome, email: req.usuario.email, tipoAcesso: req.usuario.cargo, podeEditarAlertas: podeEditarAlertas, permissoes: autorizacao.permissoesDoCargo(req.usuario.cargo, podeEditarAlertas) });
+            })
+            .catch(function (erro) {
+                console.log(erro);
+                res.status(500).json({ erro: 'Não foi possível carregar as permissões da sessão.' });
+            });
     });
 }
 

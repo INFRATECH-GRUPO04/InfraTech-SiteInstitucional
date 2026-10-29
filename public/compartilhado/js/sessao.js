@@ -29,6 +29,8 @@ function carregarSessaoConfiavel() {
             sessionStorage.ID_USUARIO = usuario.idFuncionario;
             sessionStorage.ID_EMPRESA = usuario.idEmpresa;
             sessionStorage.TIPO_ACESSO = usuario.tipoAcesso;
+            sessionStorage.PODE_EDITAR_ALERTAS = String(usuario.podeEditarAlertas === true);
+            sessionStorage.PERMISSOES = JSON.stringify(usuario.permissoes || {});
             sessionStorage.removeItem("SENHA_USUARIO");
             return usuario;
         }).catch(function () { return null; });
