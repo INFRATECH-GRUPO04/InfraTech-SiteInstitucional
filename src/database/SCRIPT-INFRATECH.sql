@@ -187,6 +187,18 @@ CREATE TABLE metrica (
         REFERENCES componente(id_componente)
 );
 
+-- Limites padrão compartilhados por empresa; limites definidos em metrica
+-- continuam sendo sobrescritas individuais de cada servidor.
+CREATE TABLE IF NOT EXISTS limite_alerta_global (
+    id_limite_global INT PRIMARY KEY AUTO_INCREMENT,
+    fk_empresa INT NOT NULL,
+    tipo ENUM('cpu', 'ram', 'disco', 'rede') NOT NULL,
+    limite_atencao DECIMAL(5,2) NOT NULL,
+    limite_critico DECIMAL(5,2) NOT NULL,
+    UNIQUE KEY uq_limite_global_empresa_tipo (fk_empresa, tipo),
+    CONSTRAINT fk_limite_global_empresa FOREIGN KEY (fk_empresa) REFERENCES empresa(id_empresa)
+);
+
 
 -- =====================================================
 -- INSERCAO DE DADOS: endereco

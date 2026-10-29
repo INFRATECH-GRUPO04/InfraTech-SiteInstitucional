@@ -104,7 +104,7 @@
                                 <div class="kpi-icone">
                                     <img class="kpi-icone-img" src="../../assets/icon/relogioIcon.svg" alt="">
                                 </div>
-                                <div class="kpi-badge" id="kpiCpuBadge">SRV-BR-03 · leitura atual</div>
+                                <div class="kpi-badge" id="kpiCpuBadge">SRV-BR-03 · última leitura</div>
                             </div>
                             <div class="kpi-valor" id="kpiCpuValor">78%</div>
                             <div class="kpi-titulo">CPU mais pressionada</div>
@@ -197,6 +197,29 @@
                 .sort((a, b) => b.valor - a.valor)[0];
         }
 
+        function severidade(servidor, recurso) {
+            if (servidor.status === 'offline') return 'offline';
+            const metricas = recurso ? [recurso] : chavesRecursos;
+            const estados = metricas.filter((chave) => Number.isFinite(servidor[chave]))
+                .map((chave) => window.InfraTechAlertas.classificar(chave, servidor[chave], servidor.id));
+            if (!estados.length) return 'sem-dados';
+            if (estados.includes('critico')) return 'critico';
+            if (estados.includes('atencao')) return 'atencao';
+            return 'saudavel';
+        }
+        function classeSeveridade(estado) {
+            return estado === 'offline' || estado === 'critico' ? 'estado--critico'
+                : estado === 'atencao' ? 'estado--atencao' : estado === 'saudavel' ? 'estado--ok' : 'estado--sem-dados';
+        }
+        function pressaoRelativa(servidor) {
+            return chavesRecursos.reduce((maior, recurso) => {
+                if (!Number.isFinite(servidor[recurso])) return maior;
+                const limite = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                const pressao = (servidor[recurso] - limite.atencao) / (limite.critico - limite.atencao);
+                return Math.max(maior, pressao);
+            }, -1);
+        }
+
         function renderizarDestaques() {
             const maiorCpu = servidoresOnline.reduce((maior, servidor) => servidor.cpu > maior.cpu ? servidor : maior);
             const menorMemoriaLivre = servidoresOnline.reduce((menor, servidor) => {
@@ -208,39 +231,51 @@
                 return livre < menor.livre ? { servidor, livre } : menor;
             }, { servidor: null, livre: Infinity });
 
-            document.getElementById('kpiCpuBadge').textContent = `${maiorCpu.id} · leitura atual`;
+            document.getElementById('kpiCpuBadge').textContent = `${maiorCpu.id} · última leitura`;
             document.getElementById('kpiCpuValor').textContent = `${maiorCpu.cpu}%`;
             document.getElementById('kpiRamBadge').textContent = `${menorMemoriaLivre.servidor.id} · ${menorMemoriaLivre.servidor.ram}% em uso`;
             document.getElementById('kpiRamValor').textContent = `${Math.round(menorMemoriaLivre.livre)} GB`;
             document.getElementById('kpiDiscoBadge').textContent = `${menorDiscoLivre.servidor.id} · ${menorDiscoLivre.servidor.disco}% ocupado`;
             document.getElementById('kpiDiscoValor').textContent = `${Math.round(menorDiscoLivre.livre)} GB`;
 
+            const offlineTotal = dadosDashboard.servidores.filter((servidor) => servidor.status === 'offline').length;
+            const atencaoTotal = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline' && severidade(servidor) === 'atencao').length;
+            const resumo = document.querySelectorAll('.resumo-status__item');
+            if (resumo[0]) resumo[0].textContent = `${dadosDashboard.servidores.length - offlineTotal} online`;
+            if (resumo[1]) resumo[1].textContent = `${atencaoTotal} atenção · última leitura`;
+            if (resumo[2]) resumo[2].textContent = `${offlineTotal} offline`;
+
             [
-                ['cpu', maiorCpu.cpu],
-                ['ram', menorMemoriaLivre.servidor.ram],
-                ['disco', menorDiscoLivre.servidor.disco]
-            ].forEach(([recurso, percentual]) => {
+                ['cpu', maiorCpu, maiorCpu.cpu],
+                ['ram', menorMemoriaLivre.servidor, menorMemoriaLivre.servidor.ram],
+                ['disco', menorDiscoLivre.servidor, menorDiscoLivre.servidor.disco]
+            ].forEach(([recurso, servidor, percentual]) => {
                 const card = document.querySelector(`.kpi--${recurso}`);
-                const positivo = percentual > 60;
-                card.classList.toggle('kpi-positivo', positivo);
+                card.classList.remove('estado--ok', 'estado--atencao', 'estado--critico', 'estado--sem-dados');
+                card.classList.add(classeSeveridade(window.InfraTechAlertas.classificar(recurso, percentual, servidor.id)));
                 const badge = card.querySelector('.kpi-badge');
-                if (recurso !== 'cpu') badge.classList.toggle('kpi-badge--positivo', positivo);
+                badge.classList.remove('kpi-badge--positivo');
             });
 
             const ranking = document.getElementById('rankingServidores');
-            ranking.replaceChildren(...dadosDashboard.prioridade.map((id, indice) => {
-                const servidor = dadosDashboard.servidores.find((item) => item.id === id);
+            const ordenar = [...dadosDashboard.servidores].sort((a, b) => {
+                const ordem = { offline: 4, critico: 3, atencao: 2, saudavel: 1, 'sem-dados': 0 };
+                const estadoA = severidade(a), estadoB = severidade(b);
+                return ordem[estadoB] - ordem[estadoA] || pressaoRelativa(b) - pressaoRelativa(a);
+            });
+            ranking.replaceChildren(...ordenar.map((servidor, indice) => {
                 const pior = maiorRecurso(servidor);
                 const item = document.createElement('div');
-                const estadoClasse = servidor.status === 'offline' ? 'estado--critico'
-                    : servidor.status === 'atencao' ? 'estado--atencao' : 'estado--ok';
-                item.className = `ranking-item ${estadoClasse}${servidor.status === 'atencao' ? ' ranking-item--destaque' : ''}`;
+                const estado = severidade(servidor);
+                const estadoClasse = classeSeveridade(estado);
+                item.className = `ranking-item ${estadoClasse}`;
+                item.title = servidor.status === 'offline' ? `${servidor.id}: offline` : `${servidor.id}: ${pior ? `${pior.recurso.toUpperCase()} ${pior.valor}% · ${severidade(servidor, pior.recurso)}` : 'Sem leitura válida'}`;
 
                 [
                     ['ranking-posicao', `#${indice + 1}`],
                     ['ranking-servidor', servidor.id],
                     ['ranking-recurso', pior ? pior.recurso.toUpperCase() : 'Sem leitura'],
-                    ['ranking-valor', pior ? `${pior.valor}%` : '—']
+                    ['ranking-valor', servidor.status === 'offline' ? 'OFFLINE' : pior ? `${pior.valor}% · ${estado}` : 'SEM DADOS']
                 ].forEach(([classe, texto]) => {
                     const span = document.createElement('span');
                     span.className = classe;
@@ -255,7 +290,7 @@
 
         const serie = (label, chave) => ({
             label,
-            data: leituras[chave],
+                data: leituras[chave],
             backgroundColor: CORES[chave],
             borderRadius: 3,
             barPercentage: 0.95,
@@ -318,12 +353,14 @@
                     },
                     tooltip: {
                         callbacks: {
-                            label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`,
+                            label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y}% · ${window.InfraTechAlertas.classificar(ctx.dataset.label.toLowerCase(), ctx.parsed.y, servidoresOnline[ctx.dataIndex].id)}`,
                         },
                     },
                 },
             },
         });
+        window.addEventListener('infratech:limites-alerta-alterados', renderizarDestaques);
+        window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(renderizarDestaques));
     </script>
 </body>
 

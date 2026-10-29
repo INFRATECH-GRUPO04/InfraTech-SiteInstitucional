@@ -111,7 +111,7 @@
           <div>
             <h2 class="panorama__titulo">Panorama da Operação</h2>
             <p class="panorama__descricao">
-              Resumo executivo da frota: o que está funcionando, o que exige atenção e onde existe impacto para o negócio agora.
+              Resumo executivo da frota com base na última leitura registrada.
             </p>
           </div>
           <span class="panorama__leitura" data-leitura-dashboard>ÚLTIMA LEITURA · 25/10/2026 11:35</span>
@@ -168,12 +168,12 @@
                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                   </svg>
                 </span>
-                <span class="kpi-card__alerta kpi-card__alerta--laranja">1 offline · 1 sobrecarregado</span>
+                <span class="kpi-card__alerta kpi-card__alerta--laranja" id="alerta-problemas-badge">1 offline · 1 sobrecarregado</span>
               </div>
               <p class="kpi-card__valor kpi-card__valor--perigo" id="kpi-problemas">2</p>
               <p class="kpi-card__rotulo">Problemas que Precisam de Atenção</p>
               <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
-                <span class="ponto ponto--offline"></span> SRV-BR-04 parado — <span class="kpi-card__link">Verificar com a equipe de TI</span>
+                <span class="ponto ponto--offline"></span><span id="problemas-detalhe">1 offline · 1 servidor com recursos em atenção</span> — <span class="kpi-card__link">Verificar com a equipe de TI</span>
               </p>
             </div>
 
@@ -185,12 +185,12 @@
                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                   </svg>
                 </span>
-                <span class="kpi-card__alerta kpi-card__alerta--roxo">pico observado às 09h</span>
+                <span class="kpi-card__alerta kpi-card__alerta--roxo" id="alerta-rede-badge">Capacidade do link não cadastrada</span>
               </div>
-              <p class="kpi-card__valor kpi-card__valor--roxo"><span id="kpi-rede-atual">88</span> <span class="kpi-card__valor--unidade">Mbps</span></p>
+              <p class="kpi-card__valor kpi-card__valor--roxo" id="kpi-rede-valor"><span id="kpi-rede-atual">88</span> <span class="kpi-card__valor--unidade">Mbps</span></p>
               <p class="kpi-card__rotulo">Tráfego de Rede</p>
-              <p class="kpi-card__detalhe kpi-card__detalhe--neutro">
-                <span class="ponto ponto--neutro"></span> Sem classificação: limite ainda não definido pelo cliente
+              <p class="kpi-card__detalhe kpi-card__detalhe--neutro" id="alerta-rede-detalhe">
+                <span class="ponto ponto--neutro" id="alerta-rede-ponto"></span><span id="alerta-rede-faixas">Tráfego observado em Mbps; saturação não classificada sem capacidade configurada</span>
               </p>
             </div>
 
@@ -478,7 +478,7 @@
                   Quanto a rede foi utilizada hora a hora — volume observado, sem classificação de severidade
                 </p>
               </div>
-              <span class="badge badge--mbps">● 88 Mbps agora</span>
+              <span class="badge badge--mbps" id="rede-pico-badge">● 88 Mbps · último registro</span>
             </div>
 
             <div class="bloco-rede__grafico">
@@ -489,7 +489,7 @@
           <!-- Card 2: Gráfico de Rosca de Resumo de Saúde -->
           <div class="bloco-card bloco-saude">
             <h3 class="bloco__titulo">Resumo de Saúde</h3>
-            <p class="bloco__descricao">Quantos servidores estão OK agora</p>
+            <p class="bloco__descricao">Estado dos servidores na última leitura registrada</p>
 
             <div class="bloco-saude__grafico">
               <canvas id="grafico-saude"></canvas>
@@ -519,69 +519,8 @@
 
           <!-- Card 3: Histórico de Eventos de Hoje -->
           <div class="bloco-card bloco-eventos">
-            <h3 class="bloco__titulo">O que Aconteceu Hoje</h3>
-
-            <ul class="lista-eventos">
-              <!-- Evento 1 -->
-              <li class="evento">
-                <div class="evento__cabecalho">
-                  <span class="ponto ponto--atencao"></span>
-                  <strong class="evento__servidor">SRV-BR-03</strong>
-                </div>
-                <p class="evento__descricao">CPU acima de 75% — possível gargalo de aplicação</p>
-                <span class="evento__hora">09:47</span>
-              </li>
-
-              <!-- Evento 2 -->
-              <li class="evento">
-                <div class="evento__cabecalho">
-                  <span class="ponto ponto--offline"></span>
-                  <strong class="evento__servidor">SRV-BR-04</strong>
-                </div>
-                <p class="evento__descricao">Ficou offline — sem resposta ao health-check</p>
-                <span class="evento__hora">08:14</span>
-              </li>
-
-              <!-- Evento 3 -->
-              <li class="evento">
-                <div class="evento__cabecalho">
-                  <span class="ponto ponto--atencao"></span>
-                  <strong class="evento__servidor">SRV-BR-03</strong>
-                </div>
-                <p class="evento__descricao">RAM acima de 80% — risco de lentidão detectado</p>
-                <span class="evento__hora">07:30</span>
-              </li>
-
-              <!-- Evento 4 -->
-              <li class="evento">
-                <div class="evento__cabecalho">
-                  <span class="ponto ponto--online"></span>
-                  <strong class="evento__servidor">SRV-BR-01</strong>
-                </div>
-                <p class="evento__descricao">Uptime atingiu 99.8% — SLA cumprido</p>
-                <span class="evento__hora">06:12</span>
-              </li>
-
-              <!-- Evento 5 -->
-              <li class="evento">
-                <div class="evento__cabecalho">
-                  <span class="ponto ponto--online"></span>
-                  <strong class="evento__servidor">TODOS</strong>
-                </div>
-                <p class="evento__descricao">Backup automático concluído sem erros</p>
-                <span class="evento__hora">04:00</span>
-              </li>
-
-              <!-- Evento 6 -->
-              <li class="evento">
-                <div class="evento__cabecalho">
-                  <span class="ponto ponto--online"></span>
-                  <strong class="evento__servidor">SRV-BR-02</strong>
-                </div>
-                <p class="evento__descricao">Reiniciado com sucesso após atualização</p>
-                <span class="evento__hora">01:22</span>
-              </li>
-            </ul>
+            <h3 class="bloco__titulo">Histórico de Alertas</h3>
+            <p class="kpi-card__detalhe kpi-card__detalhe--neutro">Sem histórico de eventos disponível. As cores e contagens acima representam apenas as leituras atuais; eventos serão exibidos quando houver registros com horário e servidor de origem.</p>
           </div>
 
         </div>

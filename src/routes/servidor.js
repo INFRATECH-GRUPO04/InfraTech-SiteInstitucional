@@ -19,6 +19,9 @@ router.get("/listarComponentes/:idServidor", function (req, res) {
     servidorController.listarComponentesPorServidor(req, res);
 });
 
+router.get("/alertas/globais/:idEmpresa", servidorController.listarLimitesGlobais);
+router.put("/alertas/globais/:idEmpresa", servidorController.salvarLimitesGlobais);
+
 router.put("/editar/:idServidor", function (req, res) {
     servidorController.atualizar(req, res);
 });

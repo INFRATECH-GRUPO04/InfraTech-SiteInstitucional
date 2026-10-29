@@ -1146,3 +1146,16 @@ header.cabecalho {
   }
 }
 
+/* Cores efetivas para métricas de utilização, derivadas dos limites compartilhados. */
+.metric-color--saudavel { color: #15803d !important; }
+.metric-color--atencao { color: #b45309 !important; }
+.metric-color--critico { color: #b91c1c !important; }
+.metric-color--sem-dados { color: #64748b !important; }
+.barra-progresso__fill.metric-color--saudavel { background-color: #22c55e !important; }
+.barra-progresso__fill.metric-color--atencao { background-color: #f59e0b !important; }
+.barra-progresso__fill.metric-color--critico { background-color: #ef4444 !important; }
+.tabela-servidores__linha.metric-row--atencao { background-color: #fffbeb; }
+.tabela-servidores__linha.metric-row--critico,
+.tabela-servidores__linha.metric-row--offline { background-color: #fff1f2; }
+.kpi-card__valor--roxo { color: #64748b !important; }
+.kpi-card__alerta--roxo { color: #475569; background: #f1f5f9; }
