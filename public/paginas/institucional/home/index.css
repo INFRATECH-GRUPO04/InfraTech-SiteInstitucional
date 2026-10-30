@@ -12,7 +12,7 @@
 .divisor-ondas {
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.08), transparent);
 }
 
 .caixa-titulo-secao {
@@ -65,7 +65,7 @@
     isolation: isolate;
     overflow: hidden;
     background:
-        radial-gradient(ellipse at 72% 42%, rgba(0, 207, 255, 0.13), transparent 42%),
+        radial-gradient(ellipse at 72% 42%, rgb(0 207 255 / 0.13), transparent 42%),
         linear-gradient(145deg, #050b12 0%, #07101a 55%, #050b12 100%);
 }
 
@@ -77,8 +77,8 @@
     pointer-events: none;
     opacity: 0.2;
     background-image:
-        linear-gradient(rgba(0, 207, 255, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 207, 255, 0.08) 1px, transparent 1px);
+        linear-gradient(rgb(0 207 255 / 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(0 207 255 / 0.08) 1px, transparent 1px);
     background-size: 48px 48px;
     mask-image: linear-gradient(90deg, transparent, #000 45%, #000);
 }
@@ -96,7 +96,7 @@
     align-items: center;
     gap: 8px;
     background: #172a45;
-    border: 1px solid rgba(0, 207, 255, 0.18);
+    border: 1px solid rgb(0 207 255 / 0.18);
     border-radius: var(--raio-pill);
     padding: 6px 16px;
     margin-bottom: 20px;
@@ -166,7 +166,7 @@
     align-items: center;
     justify-content: center;
     padding: 9px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgb(255 255 255 / 0.12);
     border-radius: var(--raio);
     color: var(--cor-branco);
     font-family: var(--fonte-display);
@@ -219,7 +219,7 @@
 }
 
 .metrica-pill {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgb(255 255 255 / 0.02);
     border: 1px solid var(--cor-borda);
     border-radius: 10px;
     padding: 10px 16px;
@@ -272,7 +272,7 @@
     position: absolute;
     bottom: 14px;
     left: 14px;
-    background: rgba(5, 11, 18, 0.9);
+    background: rgb(5 11 18 / 0.9);
     border: 1px solid var(--cor-borda);
     padding: 6px 12px;
     border-radius: 6px;
@@ -308,7 +308,7 @@
 }
 
 .caixa-funcionalidade:hover {
-    border-color: rgba(0, 207, 255, 0.35);
+    border-color: rgb(0 207 255 / 0.35);
     transform: translateY(-3px);
 }
 
@@ -373,7 +373,7 @@
 }
 
 .etapa:hover {
-    border-color: rgba(0, 207, 255, 0.35);
+    border-color: rgb(0 207 255 / 0.35);
 }
 
 .numero {
@@ -383,10 +383,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid rgba(0, 207, 255, 0.4);
+    border: 1.5px solid rgb(0 207 255 / 0.4);
     border-radius: 50%;
     color: var(--cor-branco);
-    background: rgba(0, 207, 255, 0.08);
+    background: rgb(0 207 255 / 0.08);
     font-family: var(--fonte-display);
     font-size: 1rem;
     font-weight: 800;
@@ -483,7 +483,7 @@
 }
 
 .membro-card:hover {
-    border-color: rgba(0, 207, 255, 0.35);
+    border-color: rgb(0 207 255 / 0.35);
     transform: translateY(-3px);
 }
 
@@ -492,7 +492,7 @@
     height: 60px;
     border-radius: 50%;
     background: #091724;
-    border: 2px solid rgba(0, 207, 255, 0.4);
+    border: 2px solid rgb(0 207 255 / 0.4);
     color: var(--cor-branco);
     font-family: var(--fonte-display);
     font-size: 1.2rem;
@@ -539,7 +539,7 @@
 
 .membro-redes a:hover {
     color: var(--cor-branco);
-    border-color: rgba(0, 207, 255, 0.35);
+    border-color: rgb(0 207 255 / 0.35);
     background-color: var(--cor-cyan-suave);
 }
 
@@ -606,8 +606,8 @@
 .icone-contato {
     width: 34px;
     height: 34px;
-    background: rgba(0, 207, 255, 0.08);
-    border: 1px solid rgba(0, 207, 255, 0.2);
+    background: rgb(0 207 255 / 0.08);
+    border: 1px solid rgb(0 207 255 / 0.2);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -679,7 +679,7 @@
     margin-top: 14px;
     padding: 10px 14px;
     border-radius: var(--raio);
-    background: rgba(5, 223, 114, 0.1);
+    background: rgb(5 223 114 / 0.1);
     border: 1px solid var(--cor-sucesso);
     font-size: 0.85rem;
 }
@@ -766,7 +766,7 @@
     content: url("../../../assets/branding/infratech_logo_horizontal_slogan_principal-escuro.png");
     width: min(100%, 480px);
     height: auto;
-    filter: drop-shadow(0 12px 34px rgba(0, 0, 0, 0.28));
+    filter: drop-shadow(0 12px 34px rgb(0 0 0 / 0.28));
 }
 
 .pagina-institucional .form-logo-img,
@@ -781,7 +781,7 @@
 }
 
 .pagina-institucional .hero-badge {
-    background-color: rgba(11, 22, 34, 0.88);
+    background-color: rgb(11 22 34 / 0.88);
 }
 
 .pagina-institucional .botoes-banner { gap: 14px; margin-top: 24px; }

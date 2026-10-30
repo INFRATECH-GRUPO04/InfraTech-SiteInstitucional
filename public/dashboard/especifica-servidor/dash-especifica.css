@@ -3,7 +3,7 @@
   --cor-fundo: #050b16;
   --cor-topbar: #0a1628;
   --cor-card: #ffffff;
-  --cor-borda-card: rgba(0, 80, 160, 0.08);
+  --cor-borda-card: rgb(0 80 160 / 0.08);
   --cor-linha-tabela: #eef2f7;
  
   /* Texto */
@@ -29,8 +29,8 @@
   --altura-topbar: 56px;
   --espaco-pagina: 24px;
   --raio-card: 12px;
-  --sombra-card: 0 4px 16px rgba(0, 30, 80, 0.04),
-    0 1px 4px rgba(0, 30, 80, 0.06);
+  --sombra-card: 0 4px 16px rgb(0 30 80 / 0.04),
+    0 1px 4px rgb(0 30 80 / 0.06);
 }
 
 
@@ -46,7 +46,7 @@
   flex: 0 0 var(--altura-topbar);
   padding: 0 var(--espaco-pagina);
   background: var(--cor-topbar);
-  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid rgb(0 212 255 / 0.1);
 }
  
 .topbar__titulo {
@@ -70,8 +70,8 @@
   align-items: center;
   gap: 8px;
   padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(0 212 255 / 0.15);
   border-radius: 6px;
   color: #8aaabf;
   font: 600 12px/1.4 var(--fonte-texto);
@@ -157,7 +157,7 @@
 }
 
 #imagem-servidor {
-    background-color: rgba(148, 229, 244, 0.15);
+    background-color: rgb(148 229 244 / 0.15);
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -213,7 +213,7 @@
     border: 1px solid #dbe5ef;
     border-radius: 12px;
     background: #fff;
-    box-shadow: 0 14px 36px rgba(8, 20, 35, .24);
+    box-shadow: 0 14px 36px rgb(8 20 35 / .24);
 }
 .opcoes-servidor[hidden] { display: none; }
 .opcao-servidor {
@@ -288,7 +288,7 @@
     background-color: #FFFFFF;
     border-radius: 10px;
     padding: 14px 16px;
-    box-shadow: 0 3px 12px rgba(0, 30, 80, 0.06);
+    box-shadow: 0 3px 12px rgb(0 30 80 / 0.06);
 }
 
 .cabecalho-kpi {
@@ -414,7 +414,7 @@
     min-width: 0;
     width: auto;
     max-width: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.15);
 }
 
 .barra-grafico {
@@ -464,10 +464,10 @@
 .painel-logs {
     height: 460px;
     min-height: 460px;
-    border: 1px solid rgba(0, 80, 160, .08);
+    border: 1px solid rgb(0 80 160 / .08);
     border-radius: 12px;
     background: #fff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, .12);
+    box-shadow: 0 4px 20px rgb(0 0 0 / .12);
 }
 .container-grafico-e-logs .container-grafico-recursos,
 .container-grafico-e-logs .container-rede { width: auto; margin: 0; padding: 22px 24px; }
@@ -507,9 +507,9 @@
     min-width: 0;
     padding: 20px 22px;
     background: #FFFFFF;
-    border: 1px solid rgba(0, 80, 160, 0.08);
+    border: 1px solid rgb(0 80 160 / 0.08);
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.15);
     color: #0F1F2E;
 }
 
@@ -654,7 +654,7 @@
 .aba-recurso.ativa {
     color: #0F172A;
     background-color: #FFFFFF;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.10);
+    box-shadow: 0 2px 8px rgb(15 23 42 / 0.10);
 }
 
 .aba-recurso:focus-visible {

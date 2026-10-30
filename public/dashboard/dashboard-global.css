@@ -80,7 +80,7 @@ body.dashboard-compartilhada .header-left * {
   box-sizing: border-box;
   padding: 12px 20px;
   margin: 0 0 var(--dashboard-card-gap);
-  border-bottom: 1px solid rgba(0, 207, 255, 0.16);
+  border-bottom: 1px solid rgb(0 207 255 / 0.16);
 }
 
 .dashboard-welcome__titulo,
@@ -187,9 +187,9 @@ body.dashboard-compartilhada :is(.kpi-card, .container-kpis > .kpi, .kpis > .kpi
   min-height: 120px;
   height: auto;
   padding: 16px 18px;
-  border: 1px solid rgba(0, 80, 160, 0.08);
+  border: 1px solid rgb(0 80 160 / 0.08);
   border-radius: var(--dashboard-raio-card);
-  box-shadow: 0 4px 16px rgba(0, 30, 80, 0.04), 0 1px 4px rgba(0, 30, 80, 0.06);
+  box-shadow: 0 4px 16px rgb(0 30 80 / 0.04), 0 1px 4px rgb(0 30 80 / 0.06);
 }
 
 body.dashboard-compartilhada :is(.kpi-grid, .container-kpis, .kpis) {
@@ -232,9 +232,9 @@ body.pagina-dash-geral .kpi-card__detalhe {
 }
 
 body.dashboard-compartilhada :is(.status-servidores, .bloco-card, .cartao--frota, .cartao--prioridade) {
-  border: 1px solid rgba(0, 80, 160, 0.08);
+  border: 1px solid rgb(0 80 160 / 0.08);
   border-radius: var(--dashboard-raio-card);
-  box-shadow: 0 4px 16px rgba(0, 30, 80, 0.04), 0 1px 4px rgba(0, 30, 80, 0.06);
+  box-shadow: 0 4px 16px rgb(0 30 80 / 0.04), 0 1px 4px rgb(0 30 80 / 0.06);
 }
 
 body.dashboard-compartilhada .paineis {

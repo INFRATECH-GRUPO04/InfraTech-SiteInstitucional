@@ -142,9 +142,9 @@
 .cartao {
   padding: calc(20 * var(--u));
   background: #fff;
-  border: 1.33px solid rgba(0, 80, 160, 0.08);
+  border: 1.33px solid rgb(0 80 160 / 0.08);
   border-radius: calc(10 * var(--u));
-  box-shadow: 0 4px 16px rgba(0, 30, 80, 0.04), 0 1px 4px rgba(0, 30, 80, 0.06);
+  box-shadow: 0 4px 16px rgb(0 30 80 / 0.04), 0 1px 4px rgb(0 30 80 / 0.06);
   height: 30vw;
 }
 

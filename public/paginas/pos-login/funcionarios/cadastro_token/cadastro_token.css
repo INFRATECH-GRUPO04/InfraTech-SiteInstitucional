@@ -4,7 +4,7 @@ body:has(.intro-token-layout) {
     --cor-card: #151e29;
     --cor-input: #101923;
     --cor-borda: #293746;
-    --cor-borda-cyan: rgba(0, 200, 232, 0.28);
+    --cor-borda-cyan: rgb(0 200 232 / 0.28);
     --cor-cyan: #00c8e8;
     --cor-texto: #f5f7fa;
     --cor-branco: #f5f7fa;
@@ -92,7 +92,7 @@ body .intro-pagina .titulo-com-ajuda h1 {
     width: 32px;
     height: 32px;
     padding: 0;
-    border: 1px solid rgba(0, 200, 232, 0.55);
+    border: 1px solid rgb(0 200 232 / 0.55);
     border-radius: 50%;
     color: #00c8e8;
     background: #101923;
@@ -106,7 +106,7 @@ body .intro-pagina .titulo-com-ajuda h1 {
 .botao-ajuda-token:hover,
 .botao-ajuda-token[aria-expanded="true"] {
     border-color: #00c8e8;
-    background: rgba(0, 200, 232, 0.12);
+    background: rgb(0 200 232 / 0.12);
 }
 
 .botao-ajuda-token:focus-visible {
@@ -126,7 +126,7 @@ body .intro-pagina .titulo-com-ajuda h1 {
     border-radius: 12px;
     color: #f5f7fa;
     background: #151e29;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 28px rgb(0 0 0 / 0.3);
 }
 
 .ajuda-token::before {
@@ -288,10 +288,10 @@ body .content .intro-token-layout .ajuda-token p {
     flex: 0 0 48px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(0, 200, 232, 0.38);
+    border: 1px solid rgb(0 200 232 / 0.38);
     border-radius: 12px;
     color: #00c8e8;
-    background: rgba(0, 200, 232, 0.07);
+    background: rgb(0 200 232 / 0.07);
 }
 
 .icone-token svg {
@@ -371,7 +371,7 @@ body .content .intro-token-layout .ajuda-token p {
 
 .ipt_token:focus {
     border-color: #00c8e8;
-    box-shadow: 0 0 0 2px rgba(0, 200, 232, 0.14);
+    box-shadow: 0 0 0 2px rgb(0 200 232 / 0.14);
 }
 
 .campo-quantidade-token small {
@@ -463,8 +463,8 @@ body .content .intro-token-layout .ajuda-token p {
 }
 
 .radios input:checked + label {
-    border-color: rgba(0, 200, 232, 0.72);
-    background: rgba(0, 200, 232, 0.07);
+    border-color: rgb(0 200 232 / 0.72);
+    background: rgb(0 200 232 / 0.07);
 }
 
 .resumo_token,
@@ -498,7 +498,7 @@ body .content .intro-token-layout .ajuda-token p {
     justify-content: space-between;
     gap: 14px;
     padding: 14px 16px;
-    border: 1px solid rgba(0, 200, 232, 0.38);
+    border: 1px solid rgb(0 200 232 / 0.38);
     border-radius: 9px;
     background: #101923;
 }

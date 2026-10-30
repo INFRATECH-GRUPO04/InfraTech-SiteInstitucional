@@ -499,12 +499,12 @@ window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBack
 const recursoSolicitado = parametrosDashboard.get('recurso');
 
 const gradientUpload = ctxrede.createLinearGradient(0, 0, 0, 300);
-gradientUpload.addColorStop(0, 'rgba(139, 92, 246, 0.25)'); 
-gradientUpload.addColorStop(1, 'rgba(139, 92, 246, 0.0)'); 
+gradientUpload.addColorStop(0, 'rgb(139 92 246 / 0.25)');
+gradientUpload.addColorStop(1, 'rgb(139 92 246 / 0.0)');
 
 const gradientDownload = ctxrede.createLinearGradient(0, 0, 0, 300);
-gradientDownload.addColorStop(0, 'rgba(6, 182, 212, 0.20)'); 
-gradientDownload.addColorStop(1, 'rgba(6, 182, 212, 0.0)');
+gradientDownload.addColorStop(0, 'rgb(6 182 212 / 0.20)');
+gradientDownload.addColorStop(1, 'rgb(6 182 212 / 0.0)');
 
 const graficoBanda = new Chart(ctxrede, {
   type: 'line',

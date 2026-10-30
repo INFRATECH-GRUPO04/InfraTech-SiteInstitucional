@@ -40,7 +40,7 @@ body.pagina-empresas {
   align-items: center;
   gap: 16px;
   padding: 20px 0;
-  border-bottom: 1px solid rgba(0, 207, 255, 0.15);
+  border-bottom: 1px solid rgb(0 207 255 / 0.15);
 }
 
 .barra-topo p {
@@ -91,7 +91,7 @@ body.pagina-empresas {
 /* ---------- Painel, abas e busca ---------- */
 
 .painel {
-  background: rgba(0, 207, 255, 0.02);
+  background: rgb(0 207 255 / 0.02);
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio-card);
   overflow: hidden;
@@ -141,7 +141,7 @@ body.pagina-empresas {
   min-width: 22px;
   padding: 1px 7px;
   border-radius: 999px;
-  background: rgba(50, 185, 205, 0.14);
+  background: rgb(50 185 205 / 0.14);
   color: #90E5F9;
   font-size: 12px;
   text-align: center;
@@ -204,7 +204,7 @@ body.pagina-empresas {
 }
 
 .tabela-empresas tbody tr:hover {
-  background: rgba(94, 214, 234, 0.04);
+  background: rgb(94 214 234 / 0.04);
 }
 
 .empresa-nome {
@@ -258,13 +258,13 @@ body.pagina-empresas {
 
 .selo-ativa {
   color: #05DF72;
-  background: rgba(5, 223, 114, 0.08);
-  border-color: rgba(5, 223, 114, 0.3);
+  background: rgb(5 223 114 / 0.08);
+  border-color: rgb(5 223 114 / 0.3);
 }
 
 .selo-desativada {
   color: #ff8ea1;
-  background: rgba(230, 0, 90, 0.08);
+  background: rgb(230 0 90 / 0.08);
   border-color: #4a1924;
 }
 
@@ -327,12 +327,12 @@ body.pagina-empresas {
 }
 
 .btn-ciano {
-  border-color: rgba(0, 207, 255, 0.4);
+  border-color: rgb(0 207 255 / 0.4);
   color: #00CFFF;
 }
 
 .btn-ciano:hover:not(:disabled) {
-  background: rgba(0, 207, 255, 0.1);
+  background: rgb(0 207 255 / 0.1);
   border-color: #00CFFF;
 }
 
@@ -348,12 +348,12 @@ body.pagina-empresas {
 }
 
 .btn-sucesso {
-  border-color: rgba(5, 223, 114, 0.35);
+  border-color: rgb(5 223 114 / 0.35);
   color: #05DF72;
 }
 
 .btn-sucesso:hover:not(:disabled) {
-  background: rgba(5, 223, 114, 0.1);
+  background: rgb(5 223 114 / 0.1);
   border-color: #05DF72;
 }
 
@@ -423,7 +423,7 @@ dialog.modal {
   width: min(92vw, 760px);
   max-height: 90vh;
   padding: 0;
-  border: 1px solid rgba(0, 207, 255, 0.25);
+  border: 1px solid rgb(0 207 255 / 0.25);
   border-radius: 8px;
   background: #0A0D14;
   color: white;
@@ -611,7 +611,7 @@ dialog.modal::backdrop {
   padding: 14px 16px;
   border: 1px solid #142a35;
   border-radius: 6px;
-  background: rgba(0, 207, 255, 0.03);
+  background: rgb(0 207 255 / 0.03);
 }
 
 .resumo-valor {
@@ -763,7 +763,7 @@ dialog.modal::backdrop {
 }
 
 .toast.toast-sucesso {
-  border-color: rgba(5, 223, 114, 0.4);
+  border-color: rgb(5 223 114 / 0.4);
   color: #05DF72;
 }
 

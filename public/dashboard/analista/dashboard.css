@@ -12,7 +12,7 @@
   --cor-fundo: #050b16;
   --cor-topbar: #0a1628;
   --cor-card: #ffffff;
-  --cor-borda-card: rgba(0, 80, 160, 0.08);
+  --cor-borda-card: rgb(0 80 160 / 0.08);
   --cor-linha-tabela: #eef2f7;
  
   /* Texto */
@@ -38,8 +38,8 @@
   --altura-topbar: 56px;
   --espaco-pagina: 24px;
   --raio-card: 12px;
-  --sombra-card: 0 4px 16px rgba(0, 30, 80, 0.04),
-    0 1px 4px rgba(0, 30, 80, 0.06);
+  --sombra-card: 0 4px 16px rgb(0 30 80 / 0.04),
+    0 1px 4px rgb(0 30 80 / 0.06);
 }
  
 /* ---------- Estrutura da página ---------- */

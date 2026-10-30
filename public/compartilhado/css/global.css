@@ -15,13 +15,13 @@
     --cor-texto-muted: #648294;
     --cor-cyan: #00cfff;
     --cor-cyan-hover: #00e5ff;
-    --cor-cyan-suave: rgba(0, 207, 255, 0.1);
+    --cor-cyan-suave: rgb(0 207 255 / 0.1);
 
-    --cor-borda: rgba(255, 255, 255, 0.08);
-    --cor-borda-suave: rgba(255, 255, 255, 0.05);
-    --cor-borda-cyan: rgba(0, 207, 255, 0.2);
-    --cor-borda-cyan-glow: rgba(0, 207, 255, 0.4);
-    --cor-before: rgba(255, 255, 255, 0.08);
+    --cor-borda: rgb(255 255 255 / 0.08);
+    --cor-borda-suave: rgb(255 255 255 / 0.05);
+    --cor-borda-cyan: rgb(0 207 255 / 0.2);
+    --cor-borda-cyan-glow: rgb(0 207 255 / 0.4);
+    --cor-before: rgb(255 255 255 / 0.08);
 
     --cor-sucesso: #05df72;
     --cor-perigo: #dc2626;
@@ -79,7 +79,7 @@ html {
 ::-webkit-scrollbar-thumb {
     background: #0b1622; 
     border-radius: 4px; 
-    border: 1px solid rgba(0, 207, 255, 0.2); 
+    border: 1px solid rgb(0 207 255 / 0.2);
 }
 
 body {
@@ -152,7 +152,7 @@ header.cabecalho {
     height: 72px;
     display: flex;
     align-items: center;
-    background-color: rgba(5, 11, 18, 0.88);
+    background-color: rgb(5 11 18 / 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--cor-borda);
@@ -161,9 +161,9 @@ header.cabecalho {
 }
 
 header.cabecalho.scrolled {
-    background-color: rgba(3, 8, 14, 0.96);
+    background-color: rgb(3 8 14 / 0.96);
     border-bottom-color: #00cfff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.4);
 }
 
 .container-header {
@@ -344,8 +344,8 @@ body aside.header-left [hidden] {
 
 .nav-item:hover {
     color: var(--cor-branco);
-    background-color: rgba(0, 207, 255, 0.06);
-    border-color: rgba(0, 207, 255, 0.15);
+    background-color: rgb(0 207 255 / 0.06);
+    border-color: rgb(0 207 255 / 0.15);
 }
 
 .nav-item:hover .menu-icon {
@@ -354,8 +354,8 @@ body aside.header-left [hidden] {
 
 .nav-item.ativo {
     color: var(--cor-branco);
-    background-color: rgba(0, 207, 255, 0.12);
-    border-color: rgba(0, 207, 255, 0.25);
+    background-color: rgb(0 207 255 / 0.12);
+    border-color: rgb(0 207 255 / 0.25);
     font-weight: 600;
 }
 
@@ -374,7 +374,7 @@ body aside.header-left [hidden] {
     margin-top: auto;
     margin-bottom: 4px;
     padding: 0 16px;
-    border: 1px solid rgba(239, 68, 68, 0.35);
+    border: 1px solid rgb(239 68 68 / 0.35);
     border-radius: var(--raio);
     background-color: #dc2626;
     color: #ffffff;
@@ -382,7 +382,7 @@ body aside.header-left [hidden] {
     font-weight: 700;
     font-size: 13px;
     transition: all var(--transicao);
-    box-shadow: 0 2px 10px rgba(220, 38, 38, 0.25);
+    box-shadow: 0 2px 10px rgb(220 38 38 / 0.25);
 }
 
 .btn-logout::after {
@@ -395,8 +395,8 @@ body aside.header-left [hidden] {
 
 .btn-logout:hover {
     background-color: #b91c1c;
-    border-color: rgba(248, 113, 113, 0.6);
-    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+    border-color: rgb(248 113 113 / 0.6);
+    box-shadow: 0 4px 14px rgb(220 38 38 / 0.4);
     transform: translateY(-1px);
 }
 
@@ -434,13 +434,13 @@ body aside.header-left [hidden] {
     background-color: var(--cor-cyan);
     border-color: var(--cor-cyan);
     color: #050b12 !important;
-    box-shadow: 0 0 12px rgba(0, 207, 255, 0.25);
+    box-shadow: 0 0 12px rgb(0 207 255 / 0.25);
 }
 
 .btn-cyan:hover {
     background-color: var(--cor-cyan-hover);
     border-color: var(--cor-cyan-hover);
-    box-shadow: 0 0 18px rgba(0, 207, 255, 0.45);
+    box-shadow: 0 0 18px rgb(0 207 255 / 0.45);
     transform: translateY(-1px);
 }
 
@@ -464,14 +464,14 @@ body aside.header-left [hidden] {
 
 .btn-white:hover {
     background-color: transparent;
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgb(255 255 255 / 0.4);
     color: var(--cor-branco) !important;
 }
 
 .btn-danger {
     background-color: #dc2626;
     color: #ffffff !important;
-    border-color: rgba(239, 68, 68, 0.5);
+    border-color: rgb(239 68 68 / 0.5);
 }
 
 .btn-danger:hover {
@@ -507,13 +507,13 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-    border-color: rgba(0, 207, 255, 0.5);
+    border-color: rgb(0 207 255 / 0.5);
     background-color: #081420;
-    box-shadow: 0 0 0 3px rgba(0, 207, 255, 0.12);
+    box-shadow: 0 0 0 3px rgb(0 207 255 / 0.12);
 }
 
 input::placeholder, textarea::placeholder {
-    color: rgba(146, 171, 189, 0.55);
+    color: rgb(146 171 189 / 0.55);
 }
 
 .card {
@@ -611,7 +611,7 @@ input::placeholder, textarea::placeholder {
         flex-direction: column;
         gap: 16px;
         padding: 20px;
-        background-color: rgba(4, 9, 14, 0.98);
+        background-color: rgb(4 9 14 / 0.98);
         border-bottom: 1px solid var(--cor-borda);
         text-align: center;
     }
@@ -638,7 +638,7 @@ input::placeholder, textarea::placeholder {
         align-items: center;
         justify-content: center;
         transition: background-color 0.2s, transform 0.2s;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 4px 14px rgb(0 0 0 / 0.45);
     }
 
     .btn-hamburguer-global:hover {
@@ -654,7 +654,7 @@ input::placeholder, textarea::placeholder {
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.65);
+        background-color: rgb(0 0 0 / 0.65);
         backdrop-filter: blur(2px);
         z-index: 1000;
     }
@@ -688,7 +688,7 @@ input::placeholder, textarea::placeholder {
 
     .header-left.aberta {
         left: 0 !important;
-        box-shadow: 8px 0 28px rgba(0, 0, 0, 0.75) !important;
+        box-shadow: 8px 0 28px rgb(0 0 0 / 0.75) !important;
     }
 
     .header-left .logo {
@@ -777,7 +777,7 @@ body .container_main > .header {
     box-sizing: border-box;
     padding: 12px clamp(18px, 2.5vw, 36px);
     color: var(--cor-texto);
-    background: rgba(13, 16, 23, 0.72);
+    background: rgb(13 16 23 / 0.72);
     border-bottom: 1px solid var(--cor-borda-cyan);
 }
 
@@ -821,7 +821,7 @@ body .container_main > .header {
     padding: 7px 12px;
     overflow: hidden;
     color: var(--cor-branco);
-    background: rgba(0, 207, 255, 0.055);
+    background: rgb(0 207 255 / 0.055);
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio-pill);
     font-size: 13px;
@@ -840,7 +840,7 @@ body .container_main > .header {
     flex: 0 0 8px;
     border-radius: 50%;
     background: var(--cor-sucesso);
-    box-shadow: 0 0 10px rgba(5, 223, 114, 0.45);
+    box-shadow: 0 0 10px rgb(5 223 114 / 0.45);
 }
 
 body .intro-pagina {

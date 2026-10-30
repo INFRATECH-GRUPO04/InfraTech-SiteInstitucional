@@ -52,7 +52,7 @@
     background-color: var(--cor-card); 
     border-radius: var(--raio-card); 
     border: 1px solid var(--cor-borda); 
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45); 
+    box-shadow: 0 8px 32px rgb(0 0 0 / 0.45);
     overflow: hidden; 
     width: 100%; 
     max-width: 600px; 
@@ -78,7 +78,7 @@
     justify-content: center;
     width: 46px;
     height: 46px;
-    background: rgba(0, 207, 255, 0.1);
+    background: rgb(0 207 255 / 0.1);
     border: 1px solid var(--cor-cyan);
     border-radius: 50%;
     color: var(--cor-cyan);
@@ -139,7 +139,7 @@
 .buttons button#servidor {
     border-color: var(--cor-cyan, #00cfff);
     color: var(--cor-branco-logo, #ffffff);
-    background-color: rgba(0, 207, 255, 0.1);
+    background-color: rgb(0 207 255 / 0.1);
 }
 
 .adicionar-instancia,

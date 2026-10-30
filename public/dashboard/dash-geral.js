@@ -312,8 +312,8 @@ function inicializarGraficoRede() {
   if (!ctxRede) return;
 
   const gradiente = ctxRede.getContext('2d').createLinearGradient(0, 0, 0, 180);
-  gradiente.addColorStop(0, 'rgba(168, 85, 247, 0.22)');
-  gradiente.addColorStop(1, 'rgba(168, 85, 247, 0.00)');
+  gradiente.addColorStop(0, 'rgb(168 85 247 / 0.22)');
+  gradiente.addColorStop(1, 'rgb(168 85 247 / 0.00)');
 
   graficoRede = new Chart(ctxRede, {
     type: 'line',

@@ -35,7 +35,7 @@ body.pagina-servidores {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0, 207, 255, 0.04);
+    background: rgb(0 207 255 / 0.04);
     border: 1px solid var(--cor-borda);
     padding: 5px 12px;
     border-radius: var(--raio-pill);
@@ -92,7 +92,7 @@ body.pagina-servidores {
 }
 
 .botao-aba:hover {
-    border-color: rgba(0, 207, 255, 0.35);
+    border-color: rgb(0 207 255 / 0.35);
     color: var(--cor-branco);
 }
 
@@ -110,7 +110,7 @@ body.pagina-servidores {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.35);
 }
 
 .cabecalho-painel {
@@ -168,9 +168,9 @@ body.pagina-servidores {
 }
 
 .controle-formulario:focus {
-    border-color: rgba(0, 207, 255, 0.5);
+    border-color: rgb(0 207 255 / 0.5);
     background-color: #081420;
-    box-shadow: 0 0 0 3px rgba(0, 207, 255, 0.12);
+    box-shadow: 0 0 0 3px rgb(0 207 255 / 0.12);
 }
 
 .titulo-secao {
@@ -207,7 +207,7 @@ body.pagina-servidores {
 
 /* Caixa de Alocação de Componente */
 .caixa-alocacao {
-    background-color: rgba(7, 16, 26, 0.5);
+    background-color: rgb(7 16 26 / 0.5);
     border: 1px solid var(--cor-borda);
     border-radius: var(--raio);
     padding: 18px 20px;
@@ -218,7 +218,7 @@ body.pagina-servidores {
 }
 
 .caixa-alocacao:hover {
-    border-color: rgba(0, 207, 255, 0.25);
+    border-color: rgb(0 207 255 / 0.25);
 }
 
 .linha-alocacao {
@@ -295,7 +295,7 @@ body.pagina-servidores {
     display: flex;
     align-items: center;
     gap: 16px;
-    background-color: rgba(7, 16, 26, 0.5);
+    background-color: rgb(7 16 26 / 0.5);
     padding: 16px;
     border-radius: var(--raio);
     border: 1px solid var(--cor-borda);
@@ -323,7 +323,7 @@ body.pagina-servidores {
 
 .botao-excluir {
     background: transparent;
-    border: 1px solid rgba(220, 38, 38, 0.35);
+    border: 1px solid rgb(220 38 38 / 0.35);
     color: #ef4444;
     cursor: pointer;
     padding: 8px 12px;
@@ -336,7 +336,7 @@ body.pagina-servidores {
 }
 
 .botao-excluir:hover {
-    background: rgba(220, 38, 38, 0.12);
+    background: rgb(220 38 38 / 0.12);
     border-color: #ef4444;
 }
 
@@ -369,13 +369,13 @@ body.pagina-servidores {
     background-color: var(--cor-cyan);
     border: 1px solid var(--cor-cyan);
     color: #050b12 !important;
-    box-shadow: 0 0 12px rgba(0, 207, 255, 0.25);
+    box-shadow: 0 0 12px rgb(0 207 255 / 0.25);
 }
 
 .botao-primario:hover {
     background-color: var(--cor-cyan-hover);
     border-color: var(--cor-cyan-hover);
-    box-shadow: 0 0 18px rgba(0, 207, 255, 0.45);
+    box-shadow: 0 0 18px rgb(0 207 255 / 0.45);
     transform: translateY(-1px);
 }
 
@@ -395,7 +395,7 @@ body.pagina-servidores {
     transition: all var(--transicao);
     background-color: #dc2626;
     color: #ffffff !important;
-    border: 1px solid rgba(239, 68, 68, 0.5);
+    border: 1px solid rgb(239 68 68 / 0.5);
 }
 
 .botao-perigo:hover {
