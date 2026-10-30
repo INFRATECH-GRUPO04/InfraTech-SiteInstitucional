@@ -67,21 +67,23 @@ function atualizarCoresMetricas() {
   if (offlineBadge) offlineBadge.textContent = offline ? `↗ ${offline} offline` : 'Todos online';
   const offlineDetalhe = document.getElementById('servidores-offline-detalhe');
   const linkOffline = document.getElementById('investigar-offline');
-  if (offlineDetalhe) offlineDetalhe.textContent = offline ? `${dados.servidores.find((servidor) => servidor.status === 'offline')?.id} offline` : 'Nenhum servidor offline';
+  if (offlineDetalhe) offlineDetalhe.textContent = offline ? `${dados.servidores.find((servidor) => servidor.status === 'offline')?.id} offline` : 'Todos online';
   if (linkOffline) {
     linkOffline.hidden = !offline;
     if (offline) linkOffline.href = `./especifica-servidor/dash-especifica.html?servidor=${encodeURIComponent(dados.servidores.find((servidor) => servidor.status === 'offline').id)}`;
   }
   const problemasBadge = document.getElementById('alerta-problemas-badge');
-  if (problemasBadge) problemasBadge.textContent = `${offline} offline · ${totalAtencao} ${totalAtencao === 1 ? 'servidor com leitura em atenção/crítica' : 'servidores com leitura em atenção/crítica'}`;
+  if (problemasBadge) problemasBadge.textContent = `${offline} offline · ${totalAtencao} em alerta`;
   const problemasDetalhe = document.getElementById('problemas-detalhe');
   if (problemasDetalhe) {
     const atencaoPrincipal = dados.servidores.find((servidor) => servidor.status === 'online'
       && ['cpu', 'ram', 'disco'].some((recurso) => ['atencao', 'critico'].includes(classificarMetrica(recurso, servidor[recurso], servidor.id))));
     const recursoPrincipal = atencaoPrincipal && ['cpu', 'ram', 'disco'].map((recurso) => ({ recurso, valor: atencaoPrincipal[recurso], estado: classificarMetrica(recurso, atencaoPrincipal[recurso], atencaoPrincipal.id) }))
       .filter((item) => ['atencao', 'critico'].includes(item.estado)).sort((a, b) => (a.estado === 'critico' ? 1 : 0) - (b.estado === 'critico' ? 1 : 0)).pop();
-    const detalhePrincipal = atencaoPrincipal && recursoPrincipal ? `${atencaoPrincipal.id}: ${recursoPrincipal.recurso.toUpperCase()} ${recursoPrincipal.valor}% (${recursoPrincipal.estado})` : '';
-    problemasDetalhe.textContent = [offline ? `${offline} indisponível` : '', totalAtencao ? `${totalAtencao} com leitura de recurso em atenção` : '', 'incidente persistente sem confirmação temporal', detalhePrincipal].filter(Boolean).join(' · ');
+    problemasDetalhe.textContent = atencaoPrincipal && recursoPrincipal
+      ? `${atencaoPrincipal.id} · ${recursoPrincipal.recurso.toUpperCase()} ${recursoPrincipal.valor}% · ${recursoPrincipal.estado}`
+      : offline ? 'Servidor indisponível' : 'Nenhum alerta ativo';
+    problemasDetalhe.title = 'A classificação mostra a leitura atual; a confirmação de incidente depende de persistência temporal.';
   }
   const saudaveisNaLeitura = online - totalAtencao;
   const contagemSaudavel = document.getElementById('saude-online');
@@ -118,10 +120,10 @@ function atualizarIndicadorDisponibilidade() {
   const formatado = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(media);
   const estado = media >= 99 ? 'estavel' : 'atencao';
   valor.textContent = `${formatado}%`;
-  badge.textContent = media >= 99 ? 'Estável · média da frota' : 'Atenção · média da frota';
+  badge.textContent = media >= 99 ? 'Estável · frota' : 'Atenção · frota';
   badge.className = `kpi-card__alerta ${media >= 99 ? 'kpi-card__alerta--ok' : 'kpi-card__alerta--laranja'}`;
   ponto.className = `ponto ${media >= 99 ? 'ponto--online' : 'ponto--atencao'}`;
-  detalhe.textContent = `Média de ${leituras.length} servidores · 19–25 out 2026`;
+  detalhe.textContent = `Média · ${leituras.length} servidores`;
   valor.setAttribute('aria-label', `Disponibilidade média da frota ${formatado}%, faixa ${estado}`);
 }
 
@@ -136,15 +138,16 @@ function atualizarIndicadorRede() {
   badge.classList.remove('metric-color--saudavel', 'metric-color--atencao', 'metric-color--critico');
   if (indicador.percentual == null) {
     valor.title = 'Tráfego em Mbps; sem capacidade cadastrada não é possível classificar saturação.';
-    badge.textContent = 'Sem capacidade cadastrada';
-    detalhe.textContent = 'Tráfego em Mbps; sem capacidade do link não há classificação de saturação.';
+    badge.textContent = 'Sem limite';
+    detalhe.textContent = 'Capacidade não cadastrada';
     return;
   }
   const estado = indicador.estado;
   valor.classList.add(`metric-color--${estado}`);
   badge.classList.add(`metric-color--${estado}`);
-  badge.textContent = `${estado.toUpperCase()} · ${Math.round(indicador.percentual)}% da capacidade`;
-  detalhe.textContent = `Tráfego ${rede.picoMbps} Mbps de ${rede.capacidadeMbps} Mbps`;
+  badge.textContent = `${estado.toUpperCase()} · ${Math.round(indicador.percentual)}%`;
+  const formatoMbps = new Intl.NumberFormat('pt-BR');
+  detalhe.textContent = `${formatoMbps.format(rede.picoMbps)} / ${formatoMbps.format(rede.capacidadeMbps)} Mbps`;
   valor.title = detalhe.textContent;
 }
 

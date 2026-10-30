@@ -290,9 +290,9 @@ header.cabecalho {
 }
 
 .kpi-card__alerta {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 20px;
   display: inline-flex;
   align-items: center;
@@ -366,19 +366,28 @@ header.cabecalho {
 }
 
 .kpi-card__rotulo {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--texto-card-titulo);
   margin-bottom: 12px;
 }
 
 .kpi-card__detalhe {
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 500;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
-  line-height: 1.35;
+  line-height: 1.4;
+}
+
+.kpi-card__detalhe > .ponto {
+  flex: 0 0 auto;
+  margin-top: 0.38em;
+}
+
+.kpi-card__detalhe > span:not(.ponto) {
+  min-width: 0;
 }
 
 .kpi-card__detalhe--perigo {
@@ -1038,7 +1047,7 @@ header.cabecalho {
   }
 
   .kpi-card__rotulo {
-    font-size: 12.5px;
+    font-size: 13px;
   }
 
   .status-servidores {
