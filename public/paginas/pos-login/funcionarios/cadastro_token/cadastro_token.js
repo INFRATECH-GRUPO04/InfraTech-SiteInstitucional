@@ -9,8 +9,11 @@ const erroQtd = document.getElementById("erro_qtd");
 const qtdUserSpan = document.getElementById("qtd_user");
 
 const erroPerm = document.getElementById("erro_perm");
+const erroGeracao = document.getElementById("erro_geracao");
 const qtdUsersSpan = document.getElementById("qtd_users");
 const tipoUserSpan = document.getElementById("tipo_user");
+const revisaoToken = document.getElementById("revisao_token");
+const resultadoToken = document.getElementById("resultado_token");
 
 const tokenSpan = document.getElementById("token");
 const btnCopiar = document.getElementById("btn_copiar");
@@ -22,13 +25,14 @@ const ajudaToken = document.getElementById("ajuda_token");
 
 const ROTULOS_BOTAO = {
     1: "Continuar →",
-    2: "Gerar token",
-    3: "+ Gerar novo token"
+    2: "Revisar token",
+    3: "Gerar token"
 };
 
 let etapaAtual = 1;
 let quantidade = 0;
 let carregando = false;
+let tokenGerado = false;
 let temporizadorCopia = null;
 
 function atualizarBotoes() {
@@ -36,14 +40,18 @@ function atualizarBotoes() {
     btnAvancar.disabled = carregando;
     btnAvancar.setAttribute("aria-busy", String(carregando));
     btnVoltar.disabled = carregando;
-    btnVoltar.hidden = etapaAtual === 1 || etapaAtual === 3;
+    btnVoltar.hidden = tokenGerado;
+    btnVoltar.textContent = etapaAtual === 1 ? "Cancelar" : "Voltar";
+    if (etapaAtual === 3 && tokenGerado) {
+        btnAvancar.textContent = carregando ? "Gerando token..." : "+ Gerar novo token";
+    }
 }
 
 function focarEtapa(numero) {
     const alvo = {
         1: qtdInput,
         2: permissaoSelecionada() || document.getElementById("perm_analista_dados") || document.getElementById("perm_gestor") || document.getElementById("perm_infratech"),
-        3: btnCopiar
+        3: tokenGerado ? btnCopiar : btnAvancar
     }[numero];
 
     if (alvo) {
@@ -89,8 +97,8 @@ function validarEtapa1() {
     const valor = qtdInput.value.trim();
     const numero = Number(valor);
 
-    if (!/^\d+$/.test(valor) || numero < 1) {
-        erroQtd.textContent = "Informe um número inteiro de funcionários, maior que zero.";
+    if (!/^\d+$/.test(valor) || numero < 1 || numero > 1000) {
+        erroQtd.textContent = "Informe uma quantidade inteira entre 1 e 1.000 cadastros.";
         marcarInvalido(qtdInput, true);
         qtdInput.focus();
         return false;
@@ -108,25 +116,26 @@ function permissaoSelecionada() {
 }
 
 function rotuloDaPermissao(radio) {
-    return document.querySelector('label[for="' + radio.id + '"]').textContent.trim();
+    const rotulo = document.querySelector('label[for="' + radio.id + '"] strong');
+    return rotulo ? rotulo.textContent.trim() : document.querySelector('label[for="' + radio.id + '"]').textContent.trim();
 }
 
 function gerarToken() {
     const permissao = permissaoSelecionada();
 
     if (!permissao) {
-        erroPerm.textContent = "Escolha uma permissão para continuar.";
+        erroGeracao.textContent = "Escolha uma permissão para continuar.";
         return;
     }
 
     const idEmpresa = sessionStorage.ID_EMPRESA;
 
     if (!idEmpresa) {
-        erroPerm.textContent = "Sessão inválida. Faça login novamente.";
+        erroGeracao.textContent = "Sessão inválida. Faça login novamente.";
         return;
     }
 
-    erroPerm.textContent = "";
+    erroGeracao.textContent = "";
     carregando = true;
     atualizarBotoes();
 
@@ -153,12 +162,17 @@ function gerarToken() {
             qtdUsersSpan.textContent = quantidade;
             tipoUserSpan.textContent = rotuloDaPermissao(permissao);
             carregando = false;
-            mostrarEtapa(3);
+            tokenGerado = true;
+            revisaoToken.hidden = true;
+            resultadoToken.hidden = false;
+            atualizarBotoes();
+            focarEtapa(3);
         })
         .catch(function () {
             carregando = false;
             atualizarBotoes();
-            erroPerm.textContent = "Não foi possível gerar o token. Tente novamente.";
+            erroGeracao.textContent = "Não foi possível gerar o token. Tente novamente.";
+            btnAvancar.focus();
         });
 }
 
@@ -170,31 +184,56 @@ function avancarEtapa() {
     if (etapaAtual === 1 && validarEtapa1()) {
         mostrarEtapa(2);
     } else if (etapaAtual === 2) {
-        gerarToken();
+        const permissao = permissaoSelecionada();
+        if (!permissao) {
+            erroPerm.textContent = "Escolha uma permissão para continuar.";
+            return;
+        }
+        erroPerm.textContent = "";
+        qtdUsersSpan.textContent = quantidade;
+        tipoUserSpan.textContent = rotuloDaPermissao(permissao);
+        revisaoToken.hidden = false;
+        resultadoToken.hidden = true;
+        mostrarEtapa(3);
     } else if (etapaAtual === 3) {
-        reiniciarWizard();
+        if (tokenGerado) {
+            reiniciarWizard();
+        } else {
+            gerarToken();
+        }
     }
 }
 
 function voltarEtapa() {
-    if (!carregando && etapaAtual > 1) {
+    if (carregando) {
+        return;
+    }
+
+    if (etapaAtual === 1) {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "../../../../dashboard/dash-geral.html";
+        }
+    } else if (etapaAtual > 1) {
         mostrarEtapa(etapaAtual - 1);
     }
 }
 
 function reiniciarWizard() {
-    qtdInput.value = "";
-    quantidade = 0;
+    qtdInput.value = "1";
+    quantidade = 1;
     marcarInvalido(qtdInput, false);
     erroQtd.textContent = "";
     erroPerm.textContent = "";
+    erroGeracao.textContent = "";
     tokenSpan.textContent = "";
     avisoCopia.textContent = "";
+    tokenGerado = false;
+    revisaoToken.hidden = false;
+    resultadoToken.hidden = true;
 
-    const radioPadrao = document.getElementById("perm_funcionario") || document.getElementById("qtd5");
-    if (radioPadrao) {
-        radioPadrao.checked = true;
-    }
+    document.getElementById("perm_analista_dados").checked = true;
 
     mostrarEtapa(1);
 }
@@ -275,6 +314,12 @@ btnAjudaToken.addEventListener("click", function () {
     btnAjudaToken.setAttribute("aria-expanded", String(!aberto));
     ajudaToken.hidden = aberto;
 });
+document.addEventListener("click", function (evento) {
+    if (!evento.target.closest(".ajuda-token-ancora") && !ajudaToken.hidden) {
+        ajudaToken.hidden = true;
+        btnAjudaToken.setAttribute("aria-expanded", "false");
+    }
+});
 document.addEventListener("keydown", function (evento) {
     if (evento.key === "Escape" && !ajudaToken.hidden) {
         ajudaToken.hidden = true;
@@ -282,5 +327,4 @@ document.addEventListener("keydown", function (evento) {
         btnAjudaToken.focus();
     }
 });
-
 mostrarEtapa(1);

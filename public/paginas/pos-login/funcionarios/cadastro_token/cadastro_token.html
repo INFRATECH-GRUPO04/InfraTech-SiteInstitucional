@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="./cadastro_token.css">
 
     <script src="../../../../compartilhado/js/permissoes.js"></script>
-<script src="../../../../compartilhado/js/sessao.js"></script>
+    <script src="../../../../compartilhado/js/sessao.js"></script>
     <script src="./cadastro_token.js" defer></script>
 </head>
 
@@ -72,57 +72,80 @@
     </aside>
 
     <div class="content">
-        <header>
-            <p>FUNCIONÁRIOS — GERAR TOKEN</p>
-            <div class="div_admin">
-                <span class="img_online"></span>
-                <span id="b_usuario" class="nome-usuario">Administrador</span>
+        <div class="barra-topo">
+            <p class="caminho">Funcionários / Gerar token</p>
+            <div class="usuario-topo">
+                <span class="ponto-online" aria-hidden="true"></span>
+                <span id="nome_usuario">Usuário</span>
             </div>
-        </header>
+        </div>
 
-        <section class="intro-pagina">
-            <h1>Gerar token</h1>
-            <p>Crie tokens de acesso para convidar colaboradores e definir o perfil inicial da conta.</p>
-        </section>
+        <div class="corpo-pagina">
+            <div class="intro-token-layout">
+                <header class="intro-pagina">
+                    <div class="titulo-com-ajuda">
+                        <h1>Gerar token</h1>
+                        <div class="ajuda-token-ancora">
+                            <button type="button" class="botao-ajuda-token" id="btn_ajuda_token"
+                                aria-label="Como funciona o token?" aria-expanded="false"
+                                aria-haspopup="dialog" aria-controls="ajuda_token"
+                                aria-describedby="texto_ajuda_token">?</button>
+                            <aside class="ajuda-token" id="ajuda_token" role="dialog"
+                                aria-labelledby="titulo_ajuda_token" hidden>
+                                <h2 id="titulo_ajuda_token">Como funciona o token?</h2>
+                                <p id="texto_ajuda_token">O token permite que um colaborador crie sua conta e seja vinculado automaticamente à empresa. O perfil de acesso será definido durante a configuração.</p>
+                            </aside>
+                        </div>
+                    </div>
+                    <p>Crie tokens de acesso para convidar colaboradores e definir o perfil inicial da conta.</p>
+                </header>
+            </div>
 
         <div class="layout block_token">
             <div class="forms bg_token">
-                <div class="header-forms">
-                    <div class="circulo" aria-hidden="true">T</div>
-                    <div class="texto-header-forms-token">
-                        <h1 class="titulo-token">Cadastrar Token de Acesso</h1>
-                        <p>Gere tokens seguros para onboarding de novos colaboradores</p>
-                    </div>
-                    <button type="button" class="botao-ajuda-token" id="btn_ajuda_token"
-                        aria-label="Como funciona o token" aria-expanded="false" aria-controls="ajuda_token" title="Como funciona o token">?</button>
-                </div>
-
-                <aside class="ajuda-token" id="ajuda_token" aria-label="Como funciona o token" hidden>
-                    <h2>Como o token funciona</h2>
-                    <p>O token fica vinculado à empresa conectada e ao perfil escolhido na próxima etapa.</p>
-                    <p>A quantidade informada define quantos cadastros podem usar esse código. Cada cadastro concluído consome uma utilização; ao atingir o limite, o token não aceita novos cadastros.</p>
-                    <p>Compartilhe o código apenas com as pessoas que devem entrar na empresa.</p>
-                </aside>
-
                 <ol class="stepper" aria-label="Etapas">
-                    <li class="step-dot" data-step="1"><span class="sr-only">Etapa </span>1</li>
+                    <li class="step-item">
+                        <span class="step-dot" data-step="1"><span class="sr-only">Etapa </span>1</span>
+                        <span class="step-copy"><strong>Configuração</strong><span>Defina os detalhes do token</span></span>
+                    </li>
                     <li class="step-line" aria-hidden="true"></li>
-                    <li class="step-dot" data-step="2"><span class="sr-only">Etapa </span>2</li>
+                    <li class="step-item">
+                        <span class="step-dot" data-step="2"><span class="sr-only">Etapa </span>2</span>
+                        <span class="step-copy"><strong>Permissões</strong><span>Selecione o perfil de acesso</span></span>
+                    </li>
                     <li class="step-line" aria-hidden="true"></li>
-                    <li class="step-dot" data-step="3"><span class="sr-only">Etapa </span>3</li>
+                    <li class="step-item">
+                        <span class="step-dot" data-step="3"><span class="sr-only">Etapa </span>3</span>
+                        <span class="step-copy"><strong>Revisão</strong><span>Confirme e gere o token</span></span>
+                    </li>
                 </ol>
 
                 <div class="insert-forms">
+                    <div class="header-forms">
+                        <span class="icone-token" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="m10.2 13.8 3.6-3.6M8.1 15.9l-1.4 1.4a3 3 0 0 1-4.2-4.2l4.2-4.2a3 3 0 0 1 4.2 0M15.9 8.1l1.4-1.4a3 3 0 0 1 4.2 4.2l-4.2 4.2a3 3 0 0 1-4.2 0" />
+                            </svg>
+                        </span>
+                        <div class="texto-header-forms-token">
+                            <h2 class="titulo-token">Configuração do token</h2>
+                            <p>Defina quantos colaboradores poderão utilizar os tokens gerados.</p>
+                        </div>
+                    </div>
+
                     <!-- ETAPA 1 -->
                     <div class="step-panel" data-panel="1">
-                        <label class="span_token" for="ipt_qtd_token">
-                            Quantos funcionários deverão ser cadastrados com esse token?
-                        </label>
-
-                        <input type="text" id="ipt_qtd_token" class="ipt_token" placeholder="Ex: 30" inputmode="numeric"
-                            autocomplete="off" maxlength="9" aria-describedby="erro_qtd">
-
-                        <p class="erro_campo" id="erro_qtd" role="alert"></p>
+                        <div class="campo-quantidade-token">
+                            <label class="span_token" for="ipt_qtd_token">
+                                Quantidade de funcionários
+                                <span class="dica-campo" aria-label="Cada cadastro concluído consome uma utilização">?</span>
+                            </label>
+                            <p class="pergunta-quantidade">Quantos funcionários deverão ser cadastrados com este token?</p>
+                            <input type="number" id="ipt_qtd_token" class="ipt_token" value="1" min="1" max="1000"
+                                inputmode="numeric" aria-describedby="ajuda_quantidade erro_qtd">
+                            <small id="ajuda_quantidade">Informe a quantidade de colaboradores que poderão utilizar este acesso.</small>
+                            <p class="erro_campo" id="erro_qtd" role="alert"></p>
+                        </div>
                     </div>
 
                     <!-- ETAPA 2 -->
@@ -137,16 +160,16 @@
 
                             <div class="radios">
                                 <input type="radio" id="perm_infratech" name="permissao" value="INFRATECH">
-                                <label for="perm_infratech">Funcionário InfraTech</label>
+                                <label for="perm_infratech"><strong>Funcionário InfraTech</strong><span>Acesso administrativo à plataforma.</span></label>
 
                                 <input type="radio" id="perm_gestor" name="permissao" value="GESTOR">
-                                <label for="perm_gestor">Gestor da Empresa</label>
+                                <label for="perm_gestor"><strong>Gestor da Empresa</strong><span>Gerencia a empresa e acompanha suas dashboards.</span></label>
 
                                 <input type="radio" id="perm_analista_dados" name="permissao" value="ANALISTA_DADOS" checked>
-                                <label for="perm_analista_dados">Engenheiro(a) de Telemetria</label>
+                                <label for="perm_analista_dados"><strong>Engenheiro(a) de Telemetria</strong><span>Acompanha telemetria e recursos dos servidores.</span></label>
 
                                 <input type="radio" id="perm_analista_noc" name="permissao" value="ANALISTA_NOC">
-                                <label for="perm_analista_noc">Analista NOC</label>
+                                <label for="perm_analista_noc"><strong>Analista NOC</strong><span>Acompanha saúde e capacidade da infraestrutura.</span></label>
                             </div>
                         </fieldset>
 
@@ -155,19 +178,20 @@
 
                     <!-- ETAPA 3 -->
                     <div class="step-panel" data-panel="3">
-                        <div class="resumo_final">
+                        <div class="resumo_final" id="revisao_token">
                             <p>Funcionários permitidos: <span id="qtd_users"></span></p>
                             <p>Perfil de acesso: <span id="tipo_user"></span></p>
                         </div>
+                        <p class="erro_campo" id="erro_geracao" role="alert"></p>
 
-                        <p class="span_token">Token gerado com sucesso:</p>
-
-                        <div class="token_box">
-                            <span id="token"></span>
-                            <button type="button" id="btn_copiar">Copiar Token</button>
+                        <div id="resultado_token" hidden>
+                            <p class="span_token">Token gerado com sucesso:</p>
+                            <div class="token_box">
+                                <span id="token"></span>
+                                <button type="button" id="btn_copiar">Copiar Token</button>
+                            </div>
+                            <p class="aviso_copia" id="aviso_copia" role="status"></p>
                         </div>
-
-                        <p class="aviso_copia" id="aviso_copia" role="status"></p>
                     </div>
                 </div>
 
@@ -176,6 +200,7 @@
                     <button type="button" id="btn_avancar" class="btn-cyan">Continuar →</button>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 

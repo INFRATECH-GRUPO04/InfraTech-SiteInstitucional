@@ -880,19 +880,75 @@ body:has(.intro-pagina) :is(button, input, select, textarea) {
     font-family: "Inter", sans-serif;
 }
 
-body .conteudo-principal.main > .intro-pagina {
+body .conteudo-principal.main > .corpo-pagina > .intro-pagina {
     padding-right: var(--margem-lateral, 32px);
     padding-left: var(--margem-lateral, 32px);
 }
 
-body .content > .intro-pagina {
+body .content > .corpo-pagina > .intro-pagina {
     padding-right: clamp(18px, 2.5vw, 36px);
     padding-left: clamp(18px, 2.5vw, 36px);
 }
 
-body .conteudo-empresas > .intro-pagina {
+body .content > .corpo-pagina > .intro-token-layout {
+    padding-right: clamp(18px, 1.7vw, 24px);
+    padding-left: clamp(18px, 1.7vw, 24px);
+}
+
+body .conteudo-empresas > .corpo-pagina > .intro-pagina {
     padding-top: 26px;
     padding-bottom: 22px;
+}
+
+body:has(.intro-pagina) .painel,
+body:has(.intro-pagina) .painel-formulario,
+body:has(.intro-pagina) .container-cadastro {
+    border: 1px solid #263946;
+    border-radius: 14px;
+    background: #101820;
+    box-shadow: none;
+}
+
+body:has(.intro-pagina) .corpo-pagina {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+body:has(.intro-pagina) .area-operacional {
+    min-width: 0;
+}
+
+body:has(.intro-pagina) .corpo-pagina > .area-operacional {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+body .conteudo-principal.main > .corpo-pagina {
+    padding-right: var(--margem-lateral, 32px);
+    padding-left: var(--margem-lateral, 32px);
+}
+
+body .conteudo-principal.main .corpo-pagina .fluxo {
+    width: 100%;
+}
+
+body .content > .corpo-pagina > .intro-pagina {
+    padding-right: clamp(18px, 3vw, 46px);
+    padding-left: clamp(18px, 3vw, 46px);
+}
+
+body .conteudo-empresas {
+    padding-right: clamp(18px, 3vw, 46px);
+    padding-left: clamp(18px, 3vw, 46px);
+}
+
+body .conteudo-principal.pagina-cadastro-host {
+    gap: 16px;
+    padding: 0 clamp(18px, 3vw, 46px) 60px;
 }
 
 body.pagina-modificar-funcionario .conteudo-painel {
