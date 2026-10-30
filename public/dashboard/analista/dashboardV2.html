@@ -91,7 +91,6 @@
                                 real até o problema.
                             </div>
                         </div>
-                        <div class="ultima-leitura" data-leitura-dashboard>ÚLTIMA LEITURA · 25/10/2026 11:35</div>
                     </div>
 
                     <!-- KPIs -->
@@ -240,7 +239,7 @@
             ram: '#7c3aed',
             disco: '#10b981',
         };
-        const COR_TEXTO = '#7a8fa4';
+        const COR_TEXTO = '#a6b7c7';
         const chavesRecursos = ['cpu', 'ram', 'disco'];
 
         function recursoPrioritario(servidor) {
@@ -299,7 +298,7 @@
             const atencaoTotal = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline' && ['atencao', 'critico'].includes(severidade(servidor))).length;
             const resumo = document.querySelectorAll('.resumo-status__item');
             if (resumo[0]) resumo[0].textContent = `${dadosDashboard.servidores.length - offlineTotal} online`;
-            if (resumo[1]) resumo[1].textContent = `${atencaoTotal} atenção · última leitura`;
+            if (resumo[1]) resumo[1].textContent = `${atencaoTotal} atenção`;
             if (resumo[2]) resumo[2].textContent = `${offlineTotal} offline`;
 
             [
@@ -386,7 +385,7 @@
                             color: COR_TEXTO,
                             callback: (valor) => valor + '%',
                         },
-                        grid: { color: '#eef2f6', borderDash: [4, 4] },
+                        grid: { color: 'rgb(145 165 183 / 0.16)', borderDash: [4, 4] },
                         border: { color: '#4a5568', dash: [] },
                     },
                     x: {
@@ -582,7 +581,7 @@
                         interaction: { mode: 'index', intersect: false },
                         plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 14, color: COR_TEXTO } } },
                         scales: {
-                            y: { min: 0, max: 100, ticks: { stepSize: 20, color: COR_TEXTO, callback: (valor) => `${valor}%` }, grid: { color: '#eef2f6' } },
+                            y: { min: 0, max: 100, ticks: { stepSize: 20, color: COR_TEXTO, callback: (valor) => `${valor}%` }, grid: { color: 'rgb(145 165 183 / 0.16)' } },
                             x: { ticks: { color: COR_TEXTO, maxRotation: 0, autoSkip: true }, grid: { display: false } }
                         }
                     }

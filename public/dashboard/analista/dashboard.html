@@ -13,9 +13,10 @@
 
   <link rel="stylesheet" href="../../compartilhado/css/global.css">
   <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="../dashboard-global.css">
   
 </head>
-<body>
+<body class="dashboard-compartilhada">
   <div class="layout">
 
     <!-- ===== Barra lateral (classes mantidas: estilos vêm do global.css/dashboard.css) ===== -->
@@ -81,11 +82,9 @@
           <div>
             <h2 class="cabecalho-pagina__titulo">Disponibilidade e SLA</h2>
             <p class="cabecalho-pagina__descricao">
-              Transforma a última leitura em estado online/offline e traduz
-              cada nível de SLA em tempo de parada permitido.
+              Acompanhe a disponibilidade dos servidores e o tempo de parada permitido pelo SLA.
             </p>
           </div>
-          <p class="cabecalho-pagina__atualizacao">ÚLTIMA LEITURA · HÁ 38 SEG</p>
         </section>
 
         <!-- Indicadores -->
@@ -136,7 +135,6 @@
               <thead>
                 <tr>
                   <th scope="col" >Servidor</th>
-                  <th scope="col">Última leitura</th>
                   <th scope="col">Disponibilidade</th>
                   <th scope="col">Meta</th>
                   <th scope="col">Parada permitida/mês</th>
@@ -146,7 +144,6 @@
               <tbody>
                 <tr>
                   <td class="celula-servidor">SRV-BR-01</td>
-                  <td class="celula-leitura status-ok" >há 38 seg</td>
                   <td class="celula-disponibilidade celula-numero status-ok">99,8%</td>
                   <td class="celula-numero">99,0%</td>
                   <td class="celula-numero">7h 12min</td>
@@ -154,7 +151,6 @@
                 </tr>
                 <tr>
                   <td class="celula-servidor">SRV-BR-02</td>
-                  <td class="celula-leitura status-ok">há 38 seg</td>
                   <td class="celula-disponibilidade celula-numero status-ok">99,5%</td>
                   <td class="celula-numero">99,0%</td>
                   <td class="celula-numero">7h 12min</td>
@@ -162,7 +158,6 @@
                 </tr>
                 <tr>
                   <td class="celula-servidor">SRV-BR-03</td>
-                  <td class="celula-leitura status-ok">há 38 seg</td>
                   <td class="celula-disponibilidade celula-numero status-atencao">96,2%</td>
                   <td class="celula-numero">99,0%</td>
                   <td class="celula-numero">7h 12min</td>
@@ -170,7 +165,6 @@
                 </tr>
                 <tr>
                   <td class="celula-servidor">SRV-BR-04</td>
-                  <td class="celula-leitura status-critico">há 18 min</td>
                   <td class="celula-disponibilidade celula-numero status-critico">0%</td>
                   <td class="celula-numero">99,0%</td>
                   <td class="celula-numero">7h 12min</td>
@@ -178,7 +172,6 @@
                 </tr>
                 <tr>
                   <td class="celula-servidor">SRV-BR-05</td>
-                  <td class="celula-leitura status-ok">há 38 seg</td>
                   <td class="celula-disponibilidade celula-numero status-atencao">98,7%</td>
                   <td class="celula-numero">99,0%</td>
                   <td class="celula-numero">7h 12min</td>
@@ -186,7 +179,6 @@
                 </tr>
                 <tr>
                   <td class="celula-servidor">SRV-BR-06</td>
-                  <td class="celula-leitura status-ok">há 38 seg</td>
                   <td class="celula-disponibilidade celula-numero status-ok">99,1%</td>
                   <td class="celula-numero">99,0%</td>
                   <td class="celula-numero">7h 12min</td>

@@ -750,7 +750,6 @@
 .escopo-limites { display:grid;gap:7px;margin:14px 0 0;padding:11px;border:1px solid #2a3d50;border-radius:10px;color:#c4d3de;font-size:11px; }
 .escopo-limites legend { padding:0 5px;color:#eef7fc;font-weight:700; }
 .escopo-limites input { accent-color:#00b8d9; }
-.substituir-limites { padding-left:20px;color:#96aabd; }
 .modal-limites__aviso { margin:11px 0;color:#91a6b7;font-size:10px;line-height:1.45; }
 .modal-limites footer { padding-top:12px;border-top:1px solid #2a3b4c; }
 .modal-limites footer button { min-height:34px;padding:0 12px;border:1px solid #34495c;border-radius:8px;color:#d5e2ec;background:#172535;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer; }
@@ -814,14 +813,10 @@ body.dashboard-compartilhada .topbar__descricao { margin:0; color:#668099; font-
 .escopo-opcao strong { color: #f4f8fc; font-size: 12px; }
 .escopo-opcao small { margin-top: 4px; color: #91a8ba; font-size: 10px; line-height: 1.4; }
 .escopo-opcao small b { color: #c7d8e5; }
-.substituir-limites { grid-column: 1 / -1; padding: 4px 2px 0; color: #9eb2c2; font-size: 11px; }
-.substituir-limites { display: flex; align-items: center; gap: 8px; }
-.substituir-limites input[type="checkbox"] { flex: 0 0 16px; width: 16px; height: 16px; min-height: 16px; margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; accent-color: #00c4df; }
 .modal-limites__aviso { min-height: 16px; }
 .modal-limites footer button { min-height: 40px; padding: 0 16px; border-radius: 9px; font: 600 12px/1.2 var(--fonte-texto); }
 .modal-limites footer .salvar-limites { font-weight: 800; box-shadow: 0 5px 15px #00b8d933; }
 .modal-limites footer button:hover { filter: brightness(1.12); }
 @media (max-width: 620px) {
     .escopo-limites { grid-template-columns: minmax(0,1fr); }
-    .substituir-limites { grid-column: auto; }
 }

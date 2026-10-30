@@ -237,7 +237,7 @@ window.InfraTechAlertas = (() => {
       return true;
     } catch (_) { return false; }
   }
-  function salvar(escopo, serverId, limites, substituirIndividuais = false) {
+  function salvar(escopo, serverId, limites) {
     const validos = validar(limites);
     if (!validos) throw new Error('Os limites devem ser inteiros de 0 a 100, com atenção abaixo de crítico.');
     if (escopo === 'servidor') {
@@ -250,30 +250,20 @@ window.InfraTechAlertas = (() => {
       limitesGlobaisLocais = validos;
       limitesGlobaisBackend = null;
       try { localStorage.setItem(CHAVE_GLOBAL, JSON.stringify(validos)); } catch (_) { /* memória da aba mantém o ajuste atual */ }
-      if (substituirIndividuais) {
-        const idsServidores = new Set([
-          ...window.InfraTechDashboardData.servidores.map((servidor) => servidor.id),
-          ...servidoresBackend.map((servidor) => servidor.nome || servidor.nomeServidor)
-        ]);
-        limitesIndividuaisLocais = Object.fromEntries([...idsServidores].map((id) => [id, validos]));
-        try { localStorage.setItem(CHAVE_SERVIDORES, JSON.stringify(limitesIndividuaisLocais)); } catch (_) { /* sem persistência local */ }
-        limitesIndividuaisBackend = {};
-      }
     }
     window.dispatchEvent(new CustomEvent('infratech:limites-alerta-alterados', { detail: { escopo, serverId } }));
     return validos;
   }
-  async function salvarBackend(escopo, serverId, limites, substituirIndividuais = false) {
+  async function salvarBackend(escopo, serverId, limites) {
     const empresa = Number(sessionStorage.ID_EMPRESA);
     if (!Number.isInteger(empresa) || empresa <= 0) return false;
     if (escopo === 'global') {
       const resposta = await fetch(`/servidor/alertas/globais/${empresa}`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ limites: validar(limites), substituirIndividuais })
+        body: JSON.stringify({ limites: validar(limites) })
       });
       if (!resposta.ok) throw new Error((await resposta.json()).erro || 'Falha ao salvar padrão global no servidor.');
       limitesGlobaisBackend = validar(limites);
-      if (substituirIndividuais) limitesIndividuaisBackend = {};
       return true;
     }
     if (!servidoresBackend.length) await sincronizarBackend();
@@ -372,14 +362,6 @@ function carregarIdentidadeDashboards() {
   var cargoEl = document.getElementById('cargo_usuario');
   if (nomeEl) nomeEl.textContent = nome.toUpperCase();
   if (cargoEl) cargoEl.textContent = cargo;
-
-  var leitura = new Date(window.InfraTechDashboardData.dataLeitura);
-  var textoLeitura = new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-  }).format(leitura);
-  document.querySelectorAll('[data-leitura-dashboard]').forEach(function (elemento) {
-    elemento.textContent = `ÚLTIMA LEITURA · ${textoLeitura}`;
-  });
 
   var relogio = document.getElementById('relogio');
   if (!relogio) return;

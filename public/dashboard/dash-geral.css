@@ -219,15 +219,6 @@ header.cabecalho {
   line-height: 1.5;
 }
 
-.panorama__leitura {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--texto-escuro-apagado);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 /* Grade de cartões KPI */
 .kpi-grid {
   display: grid;

@@ -906,3 +906,53 @@ body:has(.header-left) .main{background:#080d12;color:#edf7ff}
 .estado-permissao:not(.autorizado){background:#29333c;color:#d0d9df}
 .ajuda-permissoes{min-height:18px}
 @media(max-width:700px){.container-dados{grid-template-columns:1fr}.box-dados{min-height:88px}}
+
+.box-funcionario.selecionado{border-color:transparent;border-radius:0;background:#102732;box-shadow:inset 3px 0 #00cfff}
+.lista-funcionarios{display:flex;width:100%;flex-direction:column;gap:8px}
+.box-funcionario.selecionado .container-funcionario{border:0;border-radius:0;background:transparent}
+.container-funcionario{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 4px;border:0;border-radius:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+.container-funcionario:focus-visible{outline:2px solid #00cfff;outline-offset:3px}
+.hover-funcionario{flex:1;min-width:0}
+.botao-acessar-funcionario{flex:0 0 auto;padding:8px 11px;border:1px solid #23647b;border-radius:7px;background:#123341;color:#7ce6ff;font-size:12px;font-weight:700;white-space:nowrap;transition:background .16s ease,border-color .16s ease}
+.container-funcionario:hover .botao-acessar-funcionario{border-color:#00cfff;background:#174254}
+@media(max-width:520px){.container-funcionario{gap:8px;padding:6px 2px}.botao-acessar-funcionario{padding:7px 8px;font-size:11px}}
+
+.footer-crud .box-excluir{display:flex;align-items:center;justify-content:flex-start;width:auto;height:auto;padding:0}
+.footer-crud .excluir,
+.footer-crud .excluir:hover{
+  display:inline-flex;
+  flex:0 0 auto;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:auto;
+  min-width:148px;
+  height:40px;
+  padding:0 14px;
+  flex-wrap:nowrap;
+  border:1px solid #ef6b76;
+  border-radius:8px;
+  background:transparent;
+  box-shadow:none;
+  color:#ff7b85;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  line-height:1.2;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease;
+}
+.footer-crud .excluir:hover{border-color:#ff7b85;background:#352027;color:#ff9aa1}
+.footer-crud .excluir:focus-visible{outline:2px solid #ff9aa1;outline-offset:3px}
+.footer-crud .excluir:disabled{cursor:wait;opacity:.65}
+.footer-crud .img-excluir{display:block;flex:0 0 16px;width:16px;height:16px;object-fit:contain;filter:brightness(0) saturate(100%) invert(66%) sepia(40%) saturate(1807%) hue-rotate(304deg) brightness(101%) contrast(101%)}
+.modal-excluir{width:min(420px,calc(100vw - 32px));padding:24px;border-radius:14px;background:#151e29;border-color:#354758;box-sizing:border-box}
+.modal-titulo{font-size:20px}
+.modal-texto{font-size:14px;line-height:1.55;color:#c2d0db}
+.modal-botoes{gap:10px}
+.btn-cancelar,.btn-confirmar{padding:10px 16px;border-radius:8px;font-size:14px;cursor:pointer}
+.btn-cancelar:hover{background:#263542;color:#f2f7fb;border-color:#526879}
+.btn-confirmar:hover{background:#d93643}
+.btn-cancelar:focus-visible,.btn-confirmar:focus-visible{outline:2px solid #f2f7fb;outline-offset:3px}
+.modal-erro{margin:0;color:#ff9aa1;font-size:13px;line-height:1.45}

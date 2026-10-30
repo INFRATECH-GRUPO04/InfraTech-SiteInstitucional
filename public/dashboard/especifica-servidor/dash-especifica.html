@@ -102,7 +102,6 @@
             <li class="resumo-status__item status-critico" id="especifica-offline">1 offline</li>
           </ul>
 
-          <time class="topbar__data" data-topbar-leitura datetime="2026-10-25T23:35">25/10/2026 23:35</time>
         </div>
       </header>
         <div class="container-graficos">
@@ -129,7 +128,7 @@
                 </div>
                 <div class="visao-geral">
                     <div class="conteudo-visao-geral">
-                        <h5 id="resumoServidorLeitura">Visão Geral - Última Atualização: 11:35h</h5>
+                        <h5 id="resumoServidorLeitura">Visão Geral</h5>
                     </div>
                     <button type="button" class="botao-configurar-alertas" id="abrir-config-alertas" aria-label="Configurar limites de alerta" title="Configurar limites de alerta" aria-haspopup="dialog">⚙</button>
                 </div>
@@ -141,19 +140,16 @@
                         <div class="cabecalho-kpi"><h3>CPU — Uso atual</h3><span aria-hidden="true">▦</span></div>
                         <div class="porcentagem"><h2 id="kpiCpuMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="cpu"></div>
-                        <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-ram">
                         <div class="cabecalho-kpi"><h3>RAM — Uso atual</h3><span aria-hidden="true">▰</span></div>
                         <div class="porcentagem"><h2 id="kpiRamMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="ram"></div>
-                        <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-disco">
                         <div class="cabecalho-kpi"><h3>Disco — Uso atual</h3><span aria-hidden="true">▱</span></div>
                         <div class="porcentagem"><h2 id="kpiDiscoMedia">—</h2></div>
                         <div class="barra-carregamento" data-barra="disco"></div>
-                        <p class="meta-kpi" data-meta-servidor>Leitura registrada · SRV-BR-01 · 25 out</p>
                     </article>
                     <article class="kpi kpi-rede metric-color--sem-dados" id="kpiRedeCard">
                         <div class="cabecalho-kpi"><h3>Rede — pico em 24h</h3><span aria-hidden="true">⌁</span></div>
@@ -268,7 +264,6 @@
         <fieldset class="escopo-limites"><legend>Aplicar estes limites</legend>
           <label class="escopo-opcao"><input type="radio" name="escopoLimites" value="servidor" checked><span class="escopo-opcao__icone" aria-hidden="true">▤</span><span><strong>Somente neste servidor</strong><small>Aplica os limites apenas ao <b id="escopoServidorLimites">SRV-BR-01</b>.</small></span></label>
           <label class="escopo-opcao"><input type="radio" name="escopoLimites" value="global"><span class="escopo-opcao__icone" aria-hidden="true">▤</span><span><strong>Padrão global para toda a frota</strong><small>Aplica os mesmos limites a servidores sem configuração individual.</small></span></label>
-          <label class="substituir-limites"><input type="checkbox" id="substituirIndividuais"> Sobrescrever também os limites personalizados dos outros servidores</label>
         </fieldset>
         <p class="modal-limites__aviso" id="avisoLimites" role="status">As cores mudam com os limites salvos em todas as dashboards.</p>
         <footer><button type="button" id="restaurarLimites">Restaurar padrão</button><span><button type="button" id="cancelarLimites">Cancelar</button><button class="salvar-limites" type="submit">Salvar limites</button></span></footer>

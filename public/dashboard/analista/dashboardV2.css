@@ -131,11 +131,6 @@
   font-size: clamp(0.875rem, 0.95vw, 1rem);
 }
 
-.ultima-leitura {
-  font: 400 calc(10 * var(--u))/1.5 var(--fonte-mono);
-  color: var(--texto-mudo);
-}
-
 /* ==========================================================
    Cartão base (KPIs e painéis)
    ========================================================== */

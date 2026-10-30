@@ -104,7 +104,6 @@
             <h2 class="panorama__titulo">Monitoramento da Frota</h2>
             <p class="panorama__descricao">Acompanhe disponibilidade, uso de recursos e alertas dos servidores.</p>
           </div>
-          <span class="panorama__leitura" data-leitura-dashboard>ÚLTIMA LEITURA · 25/10/2026 11:35</span>
         </div>
 
           <!-- Grade com os 4 cartões de métricas (KPIs) -->
@@ -149,7 +148,7 @@
             </div>
 
             <!-- KPI 3: Problemas que Precisam de Atenção -->
-            <div class="kpi-card">
+            <div class="kpi-card kpi-card--problemas" id="kpi-problemas-card">
               <div class="kpi-card__cabecalho">
                 <span class="kpi-card__icone kpi-card__icone--laranja">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,7 +167,7 @@
             </div>
 
             <!-- KPI 4: Tráfego de Rede -->
-            <div class="kpi-card">
+            <div class="kpi-card kpi-card--rede">
               <div class="kpi-card__cabecalho">
                 <span class="kpi-card__icone kpi-card__icone--roxo">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -194,7 +193,7 @@
           <div class="status-servidores__info">
             <h2 class="status-servidores__titulo">Status dos Servidores</h2>
             <p class="status-servidores__descricao">
-              Métricas classificadas na última leitura registrada; a cor não confirma um incidente persistente.
+              A cor indica a situação das métricas; não confirma um incidente persistente.
             </p>
           </div>
 
@@ -468,7 +467,7 @@
                   Soma do tráfego de upload e download da frota por horário — volume observado em Mbps
                 </p>
               </div>
-              <span class="badge badge--mbps" id="rede-pico-badge">● 88 Mbps · último registro</span>
+              <span class="badge badge--mbps" id="rede-pico-badge">● 88 Mbps</span>
             </div>
 
             <div class="bloco-rede__grafico">
@@ -479,7 +478,7 @@
           <!-- Card 2: Gráfico de Rosca de Resumo de Saúde -->
           <div class="bloco-card bloco-saude">
             <h3 class="bloco__titulo">Resumo de Saúde</h3>
-            <p class="bloco__descricao">Estado dos servidores na última leitura registrada</p>
+            <p class="bloco__descricao">Estado atual dos servidores</p>
 
             <div class="bloco-saude__grafico">
               <canvas id="grafico-saude"></canvas>

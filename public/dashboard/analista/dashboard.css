@@ -129,15 +129,6 @@ body {
 
 }
  
-.cabecalho-pagina__atualizacao {
-  margin: 0;
-  font: 400 11px/1.4 var(--fonte-mono);
-  letter-spacing: 0.04em;
-  color: var(--cor-texto-suave);
-  white-space: nowrap;
-  font-size: 0.7vw;
-}
- 
 /* ---------- Cards de indicadores (KPI) ---------- */
 .indicadores {
   display: grid;
@@ -304,13 +295,6 @@ body {
 .tabela-sla .celula-servidor {
   font: 700 12px/1.4 var(--fonte-mono);
   color: var(--cor-texto-card);
-  font-size: 1vw;
-}
-
-.tabela-sla .celula-leitura {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--cor-status);
   font-size: 1vw;
 }
 

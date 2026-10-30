@@ -145,11 +145,6 @@ function salvarLimitesGlobais(req, res) {
     });
     if (!valido) return res.status(400).json({ erro: 'Cada limite de atenção deve ser menor que o crítico, entre 0% e 100%.' });
     servidorModel.salvarLimitesGlobais(idEmpresa, limites)
-        .then(function () {
-            return req.body.substituirIndividuais
-                ? servidorModel.substituirLimitesIndividuais(idEmpresa, limites)
-                : Promise.resolve();
-        })
         .then(function () { res.status(200).json({ ok: true }); })
         .catch(function (erro) {
             console.log(erro);

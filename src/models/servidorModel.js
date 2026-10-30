@@ -75,16 +75,6 @@ function salvarLimitesGlobais(idEmpresa, limites) {
     return database.executar(`INSERT INTO limite_alerta_global (fk_empresa, tipo, limite_atencao, limite_critico) VALUES ${valores} ON DUPLICATE KEY UPDATE limite_atencao = VALUES(limite_atencao), limite_critico = VALUES(limite_critico);`);
 }
 
-function substituirLimitesIndividuais(idEmpresa, limites) {
-    var empresa = Number(idEmpresa);
-    var valores = {};
-    ['cpu', 'ram', 'disco', 'rede'].forEach(function (tipo) {
-        valores[tipo] = { atencao: Number(limites[tipo].atencao), critico: Number(limites[tipo].critico) };
-    });
-    var sql = `UPDATE metrica m JOIN componente c ON c.id_componente = m.fk_componente JOIN servidor s ON s.id_servidor = c.fk_servidor SET m.limite_atencao = CASE LOWER(c.tipo) WHEN 'cpu' THEN ${valores.cpu.atencao} WHEN 'ram' THEN ${valores.ram.atencao} WHEN 'disco' THEN ${valores.disco.atencao} WHEN 'rede' THEN ${valores.rede.atencao} END, m.limite_critico = CASE LOWER(c.tipo) WHEN 'cpu' THEN ${valores.cpu.critico} WHEN 'ram' THEN ${valores.ram.critico} WHEN 'disco' THEN ${valores.disco.critico} WHEN 'rede' THEN ${valores.rede.critico} END WHERE s.fk_empresa = ${empresa} AND LOWER(c.tipo) IN ('cpu','ram','disco','rede') AND m.nome = 'uso_percentual';`;
-    return database.executar(sql);
-}
-
 function atualizarLimitesComponenteEmpresa(idComponente, idEmpresa, idMetrica, limiteAtencao, limiteCritico) {
     return database.executar(
         `UPDATE metrica m JOIN componente c ON c.id_componente = m.fk_componente JOIN servidor s ON s.id_servidor = c.fk_servidor SET m.limite_atencao = ?, m.limite_critico = ? WHERE c.id_componente = ? AND m.id_metrica = ? AND s.fk_empresa = ?`,
@@ -117,7 +107,6 @@ module.exports = {
     componentePertenceEmpresa,
     listarLimitesGlobais,
     salvarLimitesGlobais,
-    substituirLimitesIndividuais,
     atualizarLimitesComponenteEmpresa,
     atualizarChave
 };

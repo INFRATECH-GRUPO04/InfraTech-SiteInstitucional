@@ -12,6 +12,7 @@ function atualizarCoresMetricas() {
   if (!dados) return;
 
   let totalAtencao = 0;
+  let totalCritico = 0;
   dados.servidores.forEach((servidor) => {
     const linha = document.querySelector(`[data-servidor="${servidor.id}"]`);
     if (!linha) return;
@@ -52,14 +53,17 @@ function atualizarCoresMetricas() {
     if (servidor.status === 'offline') linha.classList.add('metric-row--offline');
     else if (estados.includes('critico')) linha.classList.add('metric-row--critico');
     else if (estados.includes('atencao')) linha.classList.add('metric-row--atencao');
-    if (servidor.status !== 'offline' && (piorEstado === 'atencao' || piorEstado === 'critico')) totalAtencao++;
+    if (servidor.status !== 'offline') {
+      if (piorEstado === 'critico') totalCritico++;
+      if (piorEstado === 'atencao' || piorEstado === 'critico') totalAtencao++;
+    }
   });
   const online = dados.servidores.filter((servidor) => servidor.status !== 'offline').length;
   const offline = dados.servidores.length - online;
   const servidoresOffline = dados.servidores.filter((servidor) => servidor.status === 'offline');
   const resumoAtencao = document.getElementById('resumo-atencao');
   const resumoOffline = document.getElementById('resumo-offline');
-  if (resumoAtencao) resumoAtencao.textContent = `• ${totalAtencao} atenção · última leitura`;
+  if (resumoAtencao) resumoAtencao.textContent = `• ${totalAtencao} atenção`;
   if (resumoOffline) resumoOffline.textContent = `• ${offline} offline`;
   const problema = document.getElementById('kpi-problemas');
   if (problema) problema.textContent = totalAtencao + offline;
@@ -74,6 +78,12 @@ function atualizarCoresMetricas() {
   }
   const problemasBadge = document.getElementById('alerta-problemas-badge');
   if (problemasBadge) problemasBadge.textContent = `${offline} offline · ${totalAtencao} em alerta`;
+  const cardProblemas = document.getElementById('kpi-problemas-card');
+  if (cardProblemas) {
+    cardProblemas.dataset.severidade = offline > 0 || totalCritico > 0
+      ? 'critico'
+      : totalAtencao > 0 ? 'atencao' : 'saudavel';
+  }
   const problemasDetalhe = document.getElementById('problemas-detalhe');
   if (problemasDetalhe) {
     const atencaoPrincipal = dados.servidores.find((servidor) => servidor.status === 'online'
@@ -290,7 +300,7 @@ function aplicarLeiturasFrota() {
   document.getElementById('kpi-rede-atual').textContent = dados.rede.picoMbps;
   const badgeRede = document.getElementById('rede-pico-badge');
   if (badgeRede) {
-    badgeRede.textContent = `● pico da frota · ${dados.rede.picoMbps} Mbps`;
+    badgeRede.textContent = `● ${dados.rede.picoMbps} Mbps`;
   }
   atualizarCoresMetricas();
 }
@@ -352,7 +362,7 @@ function inicializarGraficoRede() {
         x: {
           grid: { display: false },
           ticks: {
-            color: '#94a3b8',
+            color: '#a6b7c7',
             font: { family: 'Inter', size: 11 }
           }
         },
@@ -361,11 +371,11 @@ function inicializarGraficoRede() {
           max: 100,
           ticks: {
             stepSize: 25,
-            color: '#94a3b8',
+            color: '#a6b7c7',
             font: { family: 'Inter', size: 11 }
           },
           grid: {
-            color: '#f1f5f9'
+            color: 'rgb(145 165 183 / 0.16)'
           }
         }
       }
@@ -446,7 +456,7 @@ function inicializarTabelaLinhas() {
 }
 
 const DEFINICOES_HISTORICO_ALERTAS = [
-  { servidorId: 'SRV-BR-04', recurso: 'status', indice: 11, titulo: 'Servidor indisponível', status: 'Em andamento', duracao: 'Indisponibilidade registrada desde 22h; duração calculada até a última leitura mock.' },
+  { servidorId: 'SRV-BR-04', recurso: 'status', indice: 11, titulo: 'Servidor indisponível', status: 'Em andamento', duracao: 'Indisponibilidade registrada desde 22h; duração calculada com os dados disponíveis.' },
   { servidorId: 'SRV-BR-03', recurso: 'cpu', indice: 10, titulo: 'CPU acima do limite', status: 'Pendente de confirmação', duracao: 'Amostras espaçadas em 2h; duração contínua não confirmada.' },
   { servidorId: 'SRV-BR-03', recurso: 'ram', indice: 10, titulo: 'Memória RAM elevada', status: 'Pendente de confirmação', duracao: 'Amostras espaçadas em 2h; duração contínua não confirmada.' },
   { servidorId: 'SRV-BR-03', recurso: 'disco', indice: 10, titulo: 'Armazenamento próximo do limite', status: 'Normalizado na leitura', duracao: 'A faixa voltou ao normal na amostra das 22h; não equivale à resolução confirmada de incidente.' },
@@ -469,7 +479,7 @@ function obterOcorrenciasMock() {
       const desde = servidor.offlineDesde || '—';
       const partesHora = desde.match(/^(\d{1,2})h$/);
       const minutosDuracao = partesHora && !Number.isNaN(dataLeitura.getTime()) ? Math.max(0, dataLeitura.getHours() * 60 + dataLeitura.getMinutes() - Number(partesHora[1]) * 60) : null;
-      const duracao = minutosDuracao == null ? 'Não disponível no mock.' : `${Math.floor(minutosDuracao / 60)}h ${minutosDuracao % 60}min desde ${desde} até a última leitura.`;
+      const duracao = minutosDuracao == null ? 'Não disponível nos dados.' : `${Math.floor(minutosDuracao / 60)}h ${minutosDuracao % 60}min desde ${desde}.`;
       return { ...definicao, hora: desde, data: dataTexto, valor: 'Sem leitura', severidade: 'critico', servidor, duracao, impacto: 'Serviços vinculados a este servidor não estão cadastrados; o impacto operacional não pode ser determinado.' };
     }
     const historico = dados.obterHistoricoServidor(servidor.id);

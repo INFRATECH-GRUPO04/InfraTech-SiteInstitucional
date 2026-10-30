@@ -72,7 +72,7 @@
             </header>
 
             <div class="container-gerenciamento" id="container_gerenciamento">
-                <div class="boxes-funcionario" id="boxes_funcionario"><h2>Funcionários</h2><input class="busca-funcionarios" id="busca_funcionarios" type="search" placeholder="Buscar por nome, cargo ou e-mail..." aria-label="Buscar funcionários">
+                <div class="boxes-funcionario" id="boxes_funcionario"><h2>Funcionários</h2><input class="busca-funcionarios" id="busca_funcionarios" type="search" placeholder="Buscar por nome, cargo ou e-mail..." aria-label="Buscar funcionários"><div class="lista-funcionarios" id="lista_funcionarios"></div>
                 </div>
 
                 <div class="box-crud" id="box_crud">
@@ -102,6 +102,7 @@
 
     var idEmpresa = sessionStorage.ID_EMPRESA;
     var idUsuario = sessionStorage.ID_USUARIO;
+    var lista_funcionarios = document.getElementById('lista_funcionarios');
 
     head_crud.style.display = "none"
     box_crud.style.display = "none"
@@ -111,7 +112,7 @@
 
 
     function listarUsuarios(resposta) {
-        boxes_funcionario.innerHTML = "";
+        lista_funcionarios.innerHTML = "";
 
         for (var i = 0; i < resposta.length; i++) {
             func = resposta[i];
@@ -140,27 +141,27 @@
             iniciais = (func.nome || "Nome não informado").trim().split(/\s+/)
                 .map(n => n[0]).slice(0, 2).join("").toUpperCase();
 
-            boxes_funcionario.innerHTML += `
-        <div class="box-funcionario" id="func_${func.id_funcionario}"
-             onclick="selecionarFuncionario(${func.id_funcionario})">
-            <a class="container-funcionario">
-                <div class="hover-funcionario">
-                    <div class="circulo-iniciais">${iniciais}</div>
-                    <div class="infos-escritas">
-                        <div class="nome-funcionario">${func.nome || "Nome não informado"}<div class = "bolinha-status" style = "background-color: ${cor_status};"></div></div>
-                        <div class="cargo-servidor">
-                            <div class="${tipoAcesso}">${acesso}</div>
-
-                        </div>
-                    </div>
-                </div>
-            </a>
+            lista_funcionarios.innerHTML += `
+        <div class="box-funcionario" id="func_${func.id_funcionario}">
+            <button type="button" class="container-funcionario"
+                onclick="selecionarFuncionario(${func.id_funcionario})">
+                <span class="hover-funcionario">
+                    <span class="circulo-iniciais">${iniciais}</span>
+                    <span class="infos-escritas">
+                        <span class="nome-funcionario">${func.nome || "Nome não informado"}<span class="bolinha-status" style="background-color: ${cor_status};"></span></span>
+                        <span class="cargo-servidor">
+                            <span class="${tipoAcesso}">${acesso}</span>
+                        </span>
+                    </span>
+                </span>
+                <span class="botao-acessar-funcionario">Acessar funcionário</span>
+            </button>
         </div>`;
         }
-        document.getElementById('busca_funcionarios').addEventListener('input', function () {
+        document.getElementById('busca_funcionarios').oninput = function () {
             var termo = this.value.trim().toLowerCase();
             document.querySelectorAll('.box-funcionario').forEach(function (card) { card.hidden = !card.textContent.toLowerCase().includes(termo); });
-        });
+        };
     }
 
     idFuncionarioSelecionado = null
@@ -299,7 +300,7 @@
 
         footer_crud.innerHTML = Number(resposta[0].id_funcionario) !== Number(idUsuario)
             && !['GESTOR', 'ADMIN', 'INFRATECH'].includes(resposta[0].tipo_acesso)
-            ? `<div class="box-excluir"><button class="excluir" onclick="excluirUsuario()">Excluir funcionário <img class="img-excluir" src="../../../../assets/icon/icon_excluir.svg"></button></div>`
+            ? `<div class="box-excluir"><button type="button" class="excluir" onclick="excluirUsuario()" aria-label="Excluir funcionário ${func.nome || ''}"><span>Excluir funcionário</span><img class="img-excluir" src="../../../../assets/icon/icon_excluir.svg" alt=""></button></div>`
             : `<span class="texto-revisao">Contas de gestão não podem ser excluídas por esta tela.</span>`;
 
     }
@@ -346,19 +347,21 @@
     }
 
     function excluirUsuario() {
+        if (!idFuncionarioSelecionado || !funcionarioSelecionado || !funcionarioSelecionado[0]) return;
         modal_excluir.innerHTML = `
-        <div class="modal-excluir">
-            <h3 class="modal-titulo">Excluir usuário</h3>
-            <p class="modal-texto">
-                Tem certeza que deseja excluir este usuário? Essa ação não pode ser desfeita.
-                </p>
-                <div class="modal-botoes">
-                <button class="btn-cancelar" onclick="fecharModalExcluir()">Cancelar</button>
-                <button class="btn-confirmar" onclick="confirmarExclusao()">Excluir</button>
-                </div>
-                </div>`;
+        <div class="modal-excluir" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-excluir">
+            <h3 class="modal-titulo" id="titulo-modal-excluir">Excluir funcionário</h3>
+            <p class="modal-texto">Tem certeza que deseja excluir <strong id="nome-funcionario-excluir"></strong>? Essa ação não pode ser desfeita.</p>
+            <p class="modal-erro" id="erro-modal-excluir" role="alert" hidden></p>
+            <div class="modal-botoes">
+                <button type="button" class="btn-cancelar" onclick="fecharModalExcluir()">Cancelar</button>
+                <button type="button" class="btn-confirmar" id="confirmar-exclusao" onclick="confirmarExclusao()">Excluir funcionário</button>
+            </div>
+        </div>`;
 
         modal_excluir.style.display = "flex";
+        document.getElementById('nome-funcionario-excluir').textContent = funcionarioSelecionado[0].nome || 'este funcionário';
+        modal_excluir.querySelector('.btn-cancelar').focus();
     }
 
     function fecharModalExcluir() {
@@ -366,55 +369,77 @@
         modal_excluir.innerHTML = "";
     }
 
-    function confirmarExclusao() {
+    async function confirmarExclusao() {
+        if (!idFuncionarioSelecionado) return;
 
-        fetch(`/gerenciar_funcionario/deletarUsuario/${idFuncionarioSelecionado}`, {
-            method: "DELETE",
-            cache: "no-store"
-        })
-            .then(function (response) {
-                if (response.ok) {
-                    response.json().then(function (resposta) {
+        var botaoConfirmar = document.getElementById('confirmar-exclusao');
+        var mensagemErro = document.getElementById('erro-modal-excluir');
+        var idParaExcluir = idFuncionarioSelecionado;
+        if (!botaoConfirmar || !mensagemErro) return;
 
-                        retorno.innerHTML = "Usuário deletado com sucesso"
-                        head_crud.style.display = "none";
-                        box_crud.style.display = "none";
-                        botoes_modificar.style.display = "none";
-                        box_modificar.style.display = "none";
-                        footer_crud.style.display = "none";
-                        trecho_inicial.style.display = "flex";
-                        container_gerenciamento.classList.remove("tem-selecao");
+        botaoConfirmar.disabled = true;
+        botaoConfirmar.textContent = 'Excluindo…';
+        mensagemErro.hidden = true;
 
-                        idFuncionarioSelecionado = null;
-                        funcionarioSelecionado = null;
+        try {
+            var resposta = await fetch(`/gerenciar_funcionario/deletarUsuario/${idParaExcluir}`, {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+            var tipoResposta = resposta.headers.get('content-type') || '';
+            var dados = tipoResposta.includes('application/json') ? await resposta.json() : null;
 
-                        boxes_funcionario.innerHTML = "";
-                        recarregarUsuarios();
-                    })
+            if (!resposta.ok) {
+                throw new Error((dados && dados.erro) || `Não foi possível excluir o funcionário (HTTP ${resposta.status}).`);
+            }
 
-                } else {
-                    console.log("Nenhum dado encontrado")
-                }
-            })
-            .catch(function (error) {
-                console.error("Erro na obtenção de dados")
-            })
-
-        fecharModalExcluir();
+            fecharModalExcluir();
+            head_crud.style.display = 'none';
+            box_crud.style.display = 'none';
+            botoes_modificar.style.display = 'none';
+            box_modificar.style.display = 'none';
+            footer_crud.style.display = 'none';
+            trecho_inicial.style.display = 'flex';
+            container_gerenciamento.classList.remove('tem-selecao');
+            idFuncionarioSelecionado = null;
+            funcionarioSelecionado = null;
+            await recarregarUsuarios();
+        } catch (erro) {
+            if (!document.getElementById('confirmar-exclusao')) return;
+            mensagemErro.textContent = erro.message || 'Ocorreu um erro ao excluir o funcionário. Tente novamente.';
+            mensagemErro.hidden = false;
+            botaoConfirmar.disabled = false;
+            botaoConfirmar.textContent = 'Tentar novamente';
+        }
     }
 
-    function recarregarUsuarios() {
-        fetch(`/gerenciar_funcionario/buscarDadosUsuario/${idEmpresa}`, { cache: 'no-store' })
-            .then(function (response) {
-                if (response.ok) {
-                    response.json().then(listarUsuarios);
-                }
-            })
-            .catch(function (error) {
-                console.error("Erro na obtenção de dados", error);
+    async function recarregarUsuarios() {
+        try {
+            var resposta = await fetch(`/gerenciar_funcionario/buscarDadosUsuario/${idEmpresa}`, {
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store'
             });
+            if (!resposta.ok) throw new Error(`Não foi possível atualizar a lista (HTTP ${resposta.status}).`);
+            listarUsuarios(await resposta.json());
+            return true;
+        } catch (erro) {
+            console.error('Erro ao carregar funcionários', erro);
+            var listaVazia = document.getElementById('lista_funcionarios');
+            if (listaVazia) listaVazia.innerHTML = '<p class="mensagem-lista-funcionarios">Não foi possível carregar os funcionários. Atualize a página e tente novamente.</p>';
+            return false;
+        }
     }
 
     recarregarUsuarios();
+
+    modal_excluir.addEventListener('click', function (evento) {
+        if (evento.target === modal_excluir) fecharModalExcluir();
+    });
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' && modal_excluir.style.display === 'flex') fecharModalExcluir();
+    });
 
 </script>

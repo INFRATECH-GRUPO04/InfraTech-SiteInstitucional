@@ -98,7 +98,7 @@ const graficoRecursos = new Chart(ctxrecursos, {
           display: false // esconde linhas verticais
         },
         ticks: {
-          color: '#94a3b8',
+          color: '#a6b7c7',
           font: { size: 11 }
         }
       },
@@ -107,13 +107,13 @@ const graficoRecursos = new Chart(ctxrecursos, {
         max: 100,
         ticks: {
           stepSize: 25,
-          color: '#94a3b8',
+          color: '#a6b7c7',
           callback: function(val) {
             return val + '%'; // adiciona o '%' no eixo Y
           }
         },
         grid: {
-          color: '#f1f5f9'
+          color: 'rgb(145 165 183 / 0.16)'
         }
       }
     }
@@ -186,21 +186,8 @@ function atualizarIdentidadeServidor() {
   if (disponibilidade) disponibilidade.textContent = servidorSelecionado.disponibilidade == null
     ? 'Disponibilidade sem histórico'
     : `Disponibilidade semanal ${formatarPercentual(servidorSelecionado.disponibilidade)}`;
-  const dataLeitura = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(dadosDashboard.dataLeitura));
   const resumo = document.getElementById('resumoServidorLeitura');
-  const topbarLeitura = document.querySelector('[data-topbar-leitura]');
-  if (resumo) resumo.textContent = offline
-    ? `Offline desde ${servidorSelecionado.offlineDesde || 'horário não informado'} · última leitura ${historicoServidor?.horas?.filter((hora, indice) => historicoServidor.cpu[indice] != null).at(-1) || 'não informada'}`
-    : `Visão Geral · última leitura ${dataLeitura}`;
-  if (topbarLeitura) {
-    topbarLeitura.dateTime = dadosDashboard.dataLeitura;
-    topbarLeitura.textContent = dataLeitura;
-  }
-  document.querySelectorAll('[data-meta-servidor]').forEach((elemento) => {
-    elemento.textContent = offline
-      ? `Sem leitura atual · último ponto ${historicoServidor?.horas?.filter((hora, indice) => historicoServidor.cpu[indice] != null).at(-1) || 'indisponível'}`
-      : `Leitura registrada · ${servidorSelecionado.id} · ${new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(dadosDashboard.dataLeitura))}`;
-  });
+  if (resumo) resumo.textContent = offline ? 'Servidor indisponível' : 'Visão Geral';
   const escopo = document.querySelector('#servidorConfigNome');
   if (escopo) escopo.textContent = servidorSelecionado.id;
   const escopoNome = document.getElementById('escopoServidorLimites');
@@ -489,7 +476,7 @@ function atualizarClassificacoes() {
   const offline = servidores.filter((servidor) => servidor.status === 'offline').length;
   const atencao = servidores.filter((servidor) => servidor.status !== 'offline' && ['cpu','ram','disco'].some((recurso) => ['atencao', 'critico'].includes(window.InfraTechAlertas.classificar(recurso, servidor[recurso], servidor.id)))).length;
   document.getElementById('especifica-online').textContent = `${servidores.length - offline} online`;
-  document.getElementById('especifica-atencao').textContent = `${atencao} atenção · última leitura`;
+  document.getElementById('especifica-atencao').textContent = `${atencao} atenção`;
   document.getElementById('especifica-offline').textContent = `${offline} offline`;
 }
 
@@ -563,7 +550,7 @@ const graficoBanda = new Chart(ctxrede, {
       x: {
         grid: { display: false },
         ticks: {
-          color: '#94a3b8',
+          color: '#a6b7c7',
           font: { size: 11 }
         }
       },
@@ -572,11 +559,11 @@ const graficoBanda = new Chart(ctxrede, {
         max: 1100,
         ticks: {
           stepSize: 250,
-          color: '#94a3b8',
+          color: '#a6b7c7',
           font: { size: 11 }
         },
         grid: {
-          color: '#f1f5f9'
+          color: 'rgb(145 165 183 / 0.16)'
         }
       }
     }
@@ -685,14 +672,13 @@ function inicializarModalLimites() {
   form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
     const escopo = document.querySelector('[name="escopoLimites"]:checked').value;
-    const substituir = document.getElementById('substituirIndividuais').checked;
     const mensagem = document.getElementById('avisoLimites');
     const toast = document.getElementById('alertaLimitesToast');
     try {
       const limites = valoresLimitesModal();
-      window.InfraTechAlertas.salvar(escopo, servidorSelecionado.id, limites, substituir);
+      window.InfraTechAlertas.salvar(escopo, servidorSelecionado.id, limites);
       let sincronizado = false;
-      try { sincronizado = await window.InfraTechAlertas.salvarBackend(escopo, servidorSelecionado.id, limites, substituir); }
+      try { sincronizado = await window.InfraTechAlertas.salvarBackend(escopo, servidorSelecionado.id, limites); }
       catch (erro) { mensagem.textContent = `Salvo neste navegador. Sincronização indisponível: ${erro.message}`; }
       if (sincronizado) mensagem.textContent = 'Limites salvos e sincronizados com a empresa.';
       atualizarClassificacoes();
