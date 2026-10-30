@@ -48,7 +48,6 @@ function padronizarCabecalhoPosLogin(usuario) {
         '/paginas/pos-login/empresas/gerenciar_empresa.html': 'Gerenciar empresas',
         '/paginas/pos-login/empresas/cadastro_empresa.html': 'Cadastrar empresa',
         '/paginas/pos-login/servidores/cadastro_servidor.html': 'Cadastrar servidor',
-        '/paginas/pos-login/funcionarios/modificar_funcionario.html': 'Modificar colaborador',
         '/paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html': 'Gerar token',
         '/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html': 'Gerenciar funcionários',
         '/paginas/pos-login/dashboards/dashboard_dados.html': 'Dashboard de Dados',
