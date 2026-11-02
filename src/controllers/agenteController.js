@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Recebe os pedidos do agente de coleta. Confere sua chave, identifica o servidor e encaminha os CSVs para armazenamento e registro.
+ */
 var crypto = require("crypto");
 var fs = require("fs");
 var clientS3 = require("@aws-sdk/client-s3");

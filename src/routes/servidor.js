@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Define os endereços de servidores e limites. Cada operação exige a permissão correspondente antes de chamar o controller.
+ */
 var express = require("express");
 var router = express.Router();
 

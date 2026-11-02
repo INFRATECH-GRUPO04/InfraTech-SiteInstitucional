@@ -1,4 +1,6 @@
 
+    /* Mantém os campos formatados enquanto a pessoa digita, sem substituir
+       as validações feitas antes do envio ao backend. */
     function aplicarMascara(id, mascara) {
         const campo = document.querySelector(`#${id}`);
 
@@ -27,6 +29,7 @@
     var varSenha;
 
 
+    /* Valida e guarda os dados de identificação antes de abrir a etapa de endereço. */
     function avancarP1() {
         varRazaoSocial = razaoSocial.value;
         varNomeFantasia = nomeFantasia.value;
@@ -153,6 +156,8 @@
         });
     }
 
+    /* Confere os campos do endereço antes de permitir que o cadastro avance
+       para os dados do responsável. */
     function avancarP2() {
         varLogradouro = logradouro.value;
         varNumero = numero.value;
@@ -310,6 +315,7 @@
 
     }
 
+    /* Valida os dados do responsável e prepara a revisão final da empresa. */
     function avancarP3() {
         varNome = nome.value;
         varDtNascimento = dtNascimento.value;
@@ -630,6 +636,7 @@
         return telefoneLimpo.length === 11;
     }
 
+    /* Envia à API os dados validados das etapas e apresenta o resultado do cadastro. */
     function cadastrar() {
 
         fetch("/cadastro_empresa/cadastrar", {

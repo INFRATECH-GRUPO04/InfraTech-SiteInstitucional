@@ -1,3 +1,6 @@
+/* Controla o formulário de servidor e componentes. A página reúne os dados do
+ * host e de seus recursos antes de enviá-los às rotas correspondentes.
+ */
 let contador = 0;
 let inputsLista = [];
 
@@ -9,6 +12,9 @@ window.onload = function () {
     adicionarComponente("rede");
 };
 
+/* Acrescenta campos para um componente de hardware, com capacidade e limites
+ * de alerta configuráveis no próprio formulário.
+ */
 function adicionarComponente(tipoInit = "cpu") {
     const divPai = document.getElementById("alinhar");
     const div = document.createElement("div");
@@ -92,6 +98,9 @@ function trocarComplemento(selectElement, spanId) {
     }
 }
 
+/* Valida os dados e cria primeiro o servidor. Com o identificador devolvido,
+ * cadastra em sequência os componentes associados a ele.
+ */
 function cadastrarServidorCompleto() {
     var nomeServidor = document.getElementById("nome_servidor_id").value.trim();
 

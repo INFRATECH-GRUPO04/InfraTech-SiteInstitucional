@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Concentra as consultas SQL para localizar e cadastrar empresas, endereços e representantes.
+ */
 var database = require("../database/config");
 
 function buscarPorId(id) {

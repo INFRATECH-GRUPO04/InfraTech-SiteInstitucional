@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Concentra as consultas de banco usadas pelo agente: localizar o servidor pela chave protegida e registrar o último envio.
+ */
 var database = require("../database/config");
 
 // Procura o servidor dono da chave (o hash é calculado no controller, em hexadecimal)

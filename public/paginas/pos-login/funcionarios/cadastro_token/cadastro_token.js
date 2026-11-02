@@ -1,5 +1,9 @@
+/* Exige uma sessão ativa antes de permitir o uso do formulário de convites. */
 validarSessao();
 
+/* Guarda referências aos elementos do assistente de três etapas. Centralizar essas
+ * referências evita procurar os mesmos campos novamente em cada interação.
+ */
 const paineis = document.querySelectorAll(".step-panel");
 const pontos = document.querySelectorAll(".step-dot");
 const linhas = document.querySelectorAll(".step-line");
@@ -29,12 +33,19 @@ const ROTULOS_BOTAO = {
     3: "Gerar token"
 };
 
+/* Estado temporário do formulário: etapa visível, quantidade escolhida, envio em
+ * andamento e situação de cópia do código. Esses valores permanecem enquanto a
+ * pessoa avança ou volta entre etapas.
+ */
 let etapaAtual = 1;
 let quantidade = 0;
 let carregando = false;
 let tokenGerado = false;
 let temporizadorCopia = null;
 
+/* Atualiza rótulos e estados dos botões conforme a etapa e o envio ao backend,
+ * evitando cliques repetidos durante a criação do convite.
+ */
 function atualizarBotoes() {
     btnAvancar.textContent = carregando ? "Gerando token..." : ROTULOS_BOTAO[etapaAtual];
     btnAvancar.disabled = carregando;
@@ -59,6 +70,9 @@ function focarEtapa(numero) {
     }
 }
 
+/* Alterna o painel visível e sincroniza os indicadores e botões com a nova etapa.
+ * Também move o foco para o primeiro controle útil, facilitando teclado e acessibilidade.
+ */
 function mostrarEtapa(numero) {
     paineis.forEach(function (painel) {
         painel.classList.toggle("active", Number(painel.dataset.panel) === numero);
@@ -93,6 +107,9 @@ function marcarInvalido(campo, invalido) {
     }
 }
 
+/* Verifica se a quantidade é um inteiro permitido antes de liberar a próxima etapa.
+ * Se estiver válida, guarda o número escolhido para a revisão e geração do convite.
+ */
 function validarEtapa1() {
     const valor = qtdInput.value.trim();
     const numero = Number(valor);
@@ -120,6 +137,9 @@ function rotuloDaPermissao(radio) {
     return rotulo ? rotulo.textContent.trim() : document.querySelector('label[for="' + radio.id + '"]').textContent.trim();
 }
 
+/* Envia quantidade, perfil e empresa da sessão para a API. O servidor cria os
+ * convites; a página apenas apresenta o resultado devolvido e trata erros HTTP.
+ */
 function gerarToken() {
     const permissao = permissaoSelecionada();
 
@@ -176,6 +196,9 @@ function gerarToken() {
         });
 }
 
+/* Valida a etapa atual e avança pelo assistente. A solicitação ao backend só ocorre
+ * depois da revisão e da confirmação final, preservando o fluxo existente.
+ */
 function avancarEtapa() {
     if (carregando) {
         return;
@@ -204,6 +227,7 @@ function avancarEtapa() {
     }
 }
 
+/* Volta ao passo anterior sem descartar a quantidade nem o perfil já escolhido. */
 function voltarEtapa() {
     if (carregando) {
         return;
@@ -220,6 +244,7 @@ function voltarEtapa() {
     }
 }
 
+/* Limpa o resultado já gerado e reinicia o assistente para preparar outro convite. */
 function reiniciarWizard() {
     qtdInput.value = "1";
     quantidade = 1;
@@ -273,6 +298,9 @@ function copiarPorSelecao() {
     }
 }
 
+/* Tenta copiar o convite pela API do navegador e usa a seleção manual como
+ * alternativa quando o recurso de área de transferência não está disponível.
+ */
 function copiarCodigo() {
     const token = tokenSpan.textContent;
 

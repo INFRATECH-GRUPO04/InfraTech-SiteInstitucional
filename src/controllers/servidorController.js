@@ -1,6 +1,12 @@
+/*
+ * Este arquivo: Valida operações de servidores e seus componentes, aplica os limites recebidos e prepara respostas para as rotas de monitoramento.
+ */
 var servidorModel = require("../models/servidorModel");
 
 
+/* Valida o nome e a empresa da sessão antes de solicitar ao model a criação
+ * de um servidor pertencente àquela empresa.
+ */
 function cadastrar(req, res) {
     var nomeServidor = req.body.nomeServer;
     var idEmpresa = req.usuario.empresa;
@@ -35,6 +41,9 @@ function cadastrar(req, res) {
 }
 
 
+/* Confere dados e pertencimento do servidor, depois cria o componente e sua
+ * configuração de métrica inicial.
+ */
 function cadastrarComponente(req, res) {
     var fkServidor = req.body.fkServidorServer;
     var fkComponente = req.body.fkComponenteServer; // Recebido como 1, 2, 3
@@ -82,6 +91,7 @@ function cadastrarComponente(req, res) {
     }
 }
 
+/* Lista somente os servidores que pertencem à empresa da identidade autenticada. */
 function listar(req, res) {
     var idEmpresa = Number(req.params.idEmpresa);
     if (idEmpresa !== req.usuario.empresa) return res.status(403).json({ erro: 'Acesso restrito à empresa da sua conta.' });
@@ -119,6 +129,7 @@ function listarComponentesPorServidor(req, res) {
         });
 }
 
+/* Lê os limites padrão da empresa e os devolve às dashboards autenticadas. */
 function listarLimitesGlobais(req, res) {
     var idEmpresa = Number(req.params.idEmpresa);
     if (!Number.isInteger(idEmpresa) || idEmpresa <= 0) return res.status(400).json({ erro: 'Empresa inválida.' });
@@ -131,6 +142,9 @@ function listarLimitesGlobais(req, res) {
         });
 }
 
+/* Valida todos os limites globais e salva as faixas de CPU, RAM, disco e rede
+ * para a empresa vinculada à sessão.
+ */
 function salvarLimitesGlobais(req, res) {
     var idEmpresa = Number(req.params.idEmpresa);
     if (idEmpresa !== req.usuario.empresa) return res.status(403).json({ erro: 'Acesso restrito à empresa da sua conta.' });
@@ -152,6 +166,9 @@ function salvarLimitesGlobais(req, res) {
         });
 }
 
+/* Atualiza os limites particulares de um componente depois de conferir que ele
+ * pertence à empresa do usuário.
+ */
 function atualizarLimitesComponente(req, res) {
     var idComponente = req.params.idComponente;
     var idMetrica = req.body.idMetricaServer;

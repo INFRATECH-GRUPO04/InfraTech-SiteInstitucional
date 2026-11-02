@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Define os endereços administrativos para listar empresas, consultar detalhes, editar dados e alterar o status de uma empresa.
+ */
 var express = require("express");
 var router = express.Router();
 

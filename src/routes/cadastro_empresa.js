@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Expõe os endereços para consulta e cadastro de empresas. As rotas encaminham os dados recebidos ao controller, que valida e coordena o cadastro.
+ */
 var express = require("express");
 var router = express.Router();
 

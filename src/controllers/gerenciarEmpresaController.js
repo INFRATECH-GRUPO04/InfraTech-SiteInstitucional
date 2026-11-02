@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Aplica validações de formulário e regras administrativas antes de consultar, editar ou alterar o status das empresas.
+ */
 var gerenciarEmpresaModel = require("../models/gerenciarEmpresaModel");
 
 var ID_EMPRESA_INTERNA = gerenciarEmpresaModel.ID_EMPRESA_INTERNA;

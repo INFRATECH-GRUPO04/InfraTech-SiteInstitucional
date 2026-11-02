@@ -1,3 +1,7 @@
+/*
+ * Controla a Dashboard Específica. Escolhe um servidor, apresenta suas métricas,
+ * históricos, logs e matriz de calor, sempre consultando os dados e limites comuns.
+ */
 const dadosDashboard = window.InfraTechDashboardData;
 const parametrosDashboard = new URLSearchParams(window.location.search);
 const servidorIdSolicitado = parametrosDashboard.get('servidor') || sessionStorage.SERVIDOR_DASHBOARD_SELECIONADO || 'SRV-BR-01';
@@ -120,6 +124,9 @@ const graficoRecursos = new Chart(ctxrecursos, {
   }
 });
 
+/* Troca a série de CPU, RAM ou Disco apresentada no gráfico principal e mantém
+ * sincronizados o título, subtítulo, estado da aba e valores de investigação.
+ */
 function selecionarRecurso(aba) {
   const chave = aba.dataset.recurso;
   const visaoGeral = chave === 'geral';
@@ -194,6 +201,9 @@ function atualizarIdentidadeServidor() {
   if (escopoNome) escopoNome.textContent = servidorSelecionado.id;
 }
 
+/* Monta o seletor com os servidores conhecidos e suas leituras atuais. Ao escolher
+ * outro servidor, atualiza a URL e recarrega a mesma dashboard para esse contexto.
+ */
 function configurarSeletorServidor() {
   const gatilho = document.getElementById('abrirSeletorServidor');
   const lista = document.getElementById('opcoesServidores');
@@ -291,6 +301,9 @@ function formatarPercentual(valor) {
 atualizarIdentidadeServidor();
 configurarSeletorServidor();
 
+/* Calcula e desenha os picos por faixa de horário. A cor de cada célula segue a
+ * classificação da métrica que mais pressiona os limites configurados naquela faixa.
+ */
 function renderizarMatrizCalor() {
   const corpo = document.getElementById('corpoMatrizCalor');
   const ordem = { saudavel: 0, atencao: 1, critico: 2 };
@@ -321,6 +334,9 @@ function renderizarMatrizCalor() {
   }));
 }
 
+/* Atualiza os cartões com as leituras e capacidade do servidor selecionado.
+ * Os valores vêm da mesma fonte usada no gráfico, e as cores vêm das regras comuns.
+ */
 function renderizarKpis() {
   const idsKpis = { cpu: 'kpiCpuMedia', ram: 'kpiRamMedia', disco: 'kpiDiscoMedia' };
   Object.entries(idsKpis).forEach(([chave, id]) => {
@@ -361,6 +377,9 @@ function renderizarKpis() {
 renderizarMatrizCalor();
 renderizarKpis();
 
+/* Constrói os eventos a partir das mesmas amostras exibidas no gráfico, aplicando
+ * o filtro atual e ordenando os registros por horário para apoiar a investigação.
+ */
 function renderizarLogs(filtro = 'geral') {
   const corpo = document.getElementById('corpoLogs');
   const contador = document.getElementById('contadorLogs');
@@ -454,6 +473,9 @@ function configurarPeriodosDisponiveis() {
 
 configurarPeriodosDisponiveis();
 
+/* Reaplica os limites depois de uma alteração ou sincronização. Atualiza KPIs,
+ * matriz e contadores para que todas as visualizações reflitam a regra vigente.
+ */
 function atualizarClassificacoes() {
   limitesAtuais = window.InfraTechAlertas.obter(servidorSelecionado.id);
   renderizarKpis();

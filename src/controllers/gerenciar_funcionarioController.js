@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Controla as consultas e ações da tela de funcionários, restringindo dados à empresa da sessão e validando alterações antes de chamar o model.
+ */
 var gerenciar_funcionarioModel = require("../models/gerenciar_funcionarioModel");
 
 function buscarNomeEmpresa(req, res) {
@@ -11,6 +14,9 @@ function buscarNomeEmpresa(req, res) {
   });
 }
 
+/* Lista os funcionários da empresa presente na sessão autenticada. O navegador
+ * não escolhe livremente a empresa que será consultada.
+ */
 function buscarDadosUsuario(req, res) {
   var id = req.usuario.empresa;
 
@@ -22,6 +28,7 @@ function buscarDadosUsuario(req, res) {
   });
 }
 
+/* Busca um funcionário específico somente dentro da empresa do gestor conectado. */
 function buscarDadosUsuarioEspecifico(req, res) {
   var id = req.params.id;
 
@@ -34,6 +41,9 @@ function buscarDadosUsuarioEspecifico(req, res) {
   });
 }
 
+/* Confere se o alvo pode ser excluído e pede ao model que remova a conta e seus
+ * vínculos dependentes, respeitando as proteções para contas de gestão.
+ */
 function deletarUsuario(req, res) {
   var id = req.params.id;
   
@@ -67,6 +77,9 @@ function ativarUsuario(req, res) {
     });
 }
 
+/* Valida a autorização solicitada e grava ou revoga a permissão individual para
+ * o analista de dados poder editar limites na Dashboard Específica.
+ */
 function alterarPermissaoAlertas(req, res) {
   if (!['GESTOR', 'ADMIN', 'INFRATECH'].includes(req.usuario.cargo)) {
     return res.status(403).json({ erro: 'Somente gestão pode alterar esta permissão.' });
@@ -85,6 +98,7 @@ function alterarPermissaoAlertas(req, res) {
   });
 }
 
+/* Encaminha a consulta dos vínculos entre funcionário e servidores da empresa. */
 function buscarServidoresPorEmpresa(req, res) {
   var idEmpresa = req.usuario.empresa;
   var idFuncionario = Number(req.params.id);
@@ -97,6 +111,7 @@ function buscarServidoresPorEmpresa(req, res) {
     });
 }
 
+/* Valida a lista de servidores enviada e atualiza os vínculos permitidos do funcionário. */
 function alterarServidores(req, res) {
   var idFuncionario = Number(req.params.id);
   var idEmpresa = req.usuario.empresa;

@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Define as rotas usadas pelo agente de coleta. Cada endereço verifica a chave do agente e encaminha autenticação ou recebimento de CSV ao controller.
+ */
 var express = require("express");
 var router = express.Router();
 

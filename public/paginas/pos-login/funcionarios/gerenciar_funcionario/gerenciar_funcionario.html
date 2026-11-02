@@ -99,6 +99,8 @@
 </html>
 
 <script>
+    /* Controla a gestão de funcionários: carrega as contas da empresa da sessão,
+       mostra os dados selecionados, salva a permissão de métricas e trata exclusões. */
 
     var idEmpresa = sessionStorage.ID_EMPRESA;
     var idUsuario = sessionStorage.ID_USUARIO;
@@ -111,6 +113,8 @@
     footer_crud.style.display = "none"
 
 
+    /* Desenha a lista devolvida pelo backend e prepara cada funcionário para
+       abrir seu painel de informações. */
     function listarUsuarios(resposta) {
         lista_funcionarios.innerHTML = "";
 
@@ -167,6 +171,8 @@
     idFuncionarioSelecionado = null
     funcionarioSelecionado = null
 
+    /* Consulta os dados completos do funcionário selecionado e atualiza o painel,
+       inclusive o estado atual da permissão de editar métricas. */
     function selecionarFuncionario(id) {
         idFuncionarioSelecionado = id
 
@@ -305,6 +311,8 @@
 
     }
 
+    /* Envia ao servidor a nova autorização individual. A interface só confirma
+       a mudança depois que a API informa que ela foi gravada. */
     async function salvarPermissaoAlertas(habilitada) {
         var controle = document.getElementById('toggle-permissao-alertas');
         var estado = document.getElementById('estado-permissao-alertas');
@@ -346,6 +354,8 @@
         return String(cpf || "Não informado").replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
     }
 
+    /* Guarda o funcionário escolhido e abre a confirmação para evitar exclusão
+       acidental pelo botão da tela. */
     function excluirUsuario() {
         if (!idFuncionarioSelecionado || !funcionarioSelecionado || !funcionarioSelecionado[0]) return;
         modal_excluir.innerHTML = `
@@ -369,6 +379,8 @@
         modal_excluir.innerHTML = "";
     }
 
+    /* Confirma a exclusão na API e, se ela for concluída, recarrega a lista para
+       remover da tela a conta apagada. */
     async function confirmarExclusao() {
         if (!idFuncionarioSelecionado) return;
 
@@ -415,6 +427,8 @@
         }
     }
 
+    /* Atualiza os funcionários da empresa da sessão e apresenta os dados mais
+       recentes ou a mensagem de falha retornada pela API. */
     async function recarregarUsuarios() {
         try {
             var resposta = await fetch(`/gerenciar_funcionario/buscarDadosUsuario/${idEmpresa}`, {

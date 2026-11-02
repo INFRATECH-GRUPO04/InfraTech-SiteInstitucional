@@ -1,4 +1,12 @@
+/*
+ * Compartilha entre as telas pós-login o carregamento da sessão, o cabeçalho,
+ * a sidebar e os redirecionamentos por cargo. A identidade vem do endpoint do
+ * backend; o armazenamento do navegador é usado para preencher a interface.
+ */
 // ----------- Sessao -----------
+/* Confere a sessão atual e, se ela existir, preenche os dados visíveis do usuário,
+ * aplica os menus permitidos e impede a permanência em páginas sem autorização.
+ */
 function validarSessao() {
     return carregarSessaoConfiavel().then(function (usuario) {
         if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
@@ -20,6 +28,9 @@ function rotuloCargo(cargo) {
     return ({ ANALISTA_DADOS: "ENGENHEIRO DE TELEMETRIA", ANALISTA_NOC: "ANALISTA DE NOC", GESTOR: "GESTOR", FUNCIONARIO: "FUNCIONÁRIO", ADMIN: "ADMINISTRADOR", INFRATECH: "ADMINISTRADOR INFRATECH" })[String(cargo || "").toUpperCase()] || "";
 }
 
+/* Consulta o backend, que valida o cookie e devolve os dados atuais do usuário.
+ * Em seguida atualiza o sessionStorage para uso visual e remove qualquer senha antiga.
+ */
 function carregarSessaoConfiavel() {
     return fetch("/login_cadastro/sessao", { credentials: "same-origin", cache: "no-store" })
         .then(function (resposta) { return resposta.ok ? resposta.json() : null; })
@@ -39,6 +50,9 @@ function carregarSessaoConfiavel() {
         }).catch(function () { return null; });
 }
 
+/* Reaproveita a barra de topo de cada página para mostrar empresa, funcionalidade
+ * atual e funcionário conectado, sem depender do texto fixo no HTML de cada tela.
+ */
 function padronizarCabecalhoPosLogin(usuario) {
     if (!usuario || window.location.pathname.startsWith('/dashboard/')) return;
     var cabecalho = document.querySelector('.barra-topo, .barra-superior-painel, .content > header, .container_main > .header');
@@ -88,12 +102,18 @@ function obterDestinoInicial(tipoAcesso) {
     return InfraTechPermissoes.destino(tipoAcesso);
 }
 
+/* Redireciona o usuário caso tente abrir diretamente uma dashboard que seu cargo
+ * não pode acessar, mesmo que ele não tenha usado os links da sidebar.
+ */
 function protegerRotaPorPerfil(tipoAcesso) {
     if (InfraTechPermissoes.protegida(window.location.pathname) && !InfraTechPermissoes.podeAcessar(tipoAcesso, window.location.pathname)) {
         window.location.replace(obterDestinoInicial(tipoAcesso));
     }
 }
 
+/* Monta os links de dashboard a partir das permissões do cargo e os insere na
+ * sidebar compartilhada, mantendo o destaque da tela atualmente aberta.
+ */
 function adicionarMenuDashboards(sidebar) {
     if (!sidebar) return;
 
@@ -157,6 +177,9 @@ function adicionarMenuDashboards(sidebar) {
     }
 }
 
+/* Filtra os itens administrativos e as dashboards da sidebar. A interface mostra
+ * somente opções permitidas, enquanto o backend continua protegendo as APIs.
+ */
 function configurarMenusPorPerfil(tipoAcesso) {
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
@@ -208,6 +231,9 @@ function adicionarMenuGerenciarAcesso(sidebar) {
 }
 
 // Injeta e controla o botão hambúrguer global e sobreposição para menu deslizante lateral
+/* Adiciona os controles necessários para abrir e fechar a sidebar em telas
+ * estreitas, incluindo o fechamento ao tocar fora ou escolher um link.
+ */
 function inicializarMenuLateralResponsivo() {
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
@@ -247,6 +273,7 @@ function inicializarMenuLateralResponsivo() {
     });
 }
 
+/* Pede ao backend para apagar o cookie e só então envia o navegador ao login. */
 function limparSessao() {
     fetch("/login_cadastro/sair", { method: "POST", credentials: "same-origin" }).finally(function () {
         sessionStorage.clear();

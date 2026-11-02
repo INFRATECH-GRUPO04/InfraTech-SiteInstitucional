@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Concentra a persistência dos convites: criação do código, consulta de validade e atualização da quantidade de usos.
+ */
 var database = require("../database/config");
 
 function gerarCodigo(codigo, permissao, quantidade, fkEmpresa) {

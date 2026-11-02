@@ -1,6 +1,12 @@
+/*
+ * Este arquivo: Gera convites de cadastro, valida as permissões e a quantidade solicitada e coordena a consulta e o consumo dos códigos.
+ */
 var crypto = require('crypto');
 var cryptoModel = require("../models/cryptoModel");
 
+/* Cria um código aleatório para convite. Ele é identificador de uso único e não
+ * substitui a sessão do funcionário depois que a conta é criada.
+ */
 function gerarCodigoToken() {
     let token_prot;
     const hex_verificacao = /^(?=.*[0-9])(?=.*[A-F])[0-9A-F]+$/;
@@ -14,6 +20,9 @@ function gerarCodigoToken() {
 
 
 
+/* Valida quantidade, perfil e empresa solicitados, gera os códigos e pede ao
+ * model que grave os convites com seus limites de uso.
+ */
 function gerarCodigo(req, res) {
     var qtd_funcionario = Number(req.body.qtdServer);
     var perm_funcionario = req.body.permServer;
@@ -53,6 +62,9 @@ function gerarCodigo(req, res) {
         );
 }
 
+/* Registra o uso de um convite após o cadastro, para que ele não seja reutilizado
+ * além da quantidade configurada pelo gestor.
+ */
 function atualizarCodigo(req, res) {
     var id = req.body.idConviteServer;
 
@@ -81,6 +93,7 @@ function atualizarCodigo(req, res) {
         });
 }
 
+/* Busca o convite informado e devolve os dados necessários à validação do cadastro. */
 function buscarCodigo(req, res) {
     let codigo = req.params.codigo;
 

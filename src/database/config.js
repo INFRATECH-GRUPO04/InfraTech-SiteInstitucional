@@ -1,3 +1,7 @@
+/*
+ * Centraliza o acesso do backend ao MySQL. As credenciais vêm das variáveis de
+ * ambiente, e os models chamam executar() para enviar consultas ao banco.
+ */
 var mysql = require("mysql2");
 
 // CONEXÃO DO BANCO MYSQL SERVER
@@ -10,6 +14,9 @@ var mySqlConfig = {
     port: process.env.DB_PORT 
 };
 
+/* Abre uma conexão, executa o SQL com seus valores em parâmetros separados e
+ * fecha a conexão. O resultado chega aos models por meio de uma Promise.
+ */
 function executar(instrucao, parametros = []) {
 
     if (process.env.AMBIENTE_PROCESSO !== "producao" && process.env.AMBIENTE_PROCESSO !== "desenvolvimento") {

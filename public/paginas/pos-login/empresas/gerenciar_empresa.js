@@ -1,3 +1,7 @@
+/*
+ * Controla a administração de empresas: carrega e filtra os registros, mostra
+ * detalhes e coordena edição ou alteração de status por meio da API.
+ */
 (function () {
     "use strict";
 
@@ -167,6 +171,8 @@
 
     // ---------- API ----------
 
+    /* Centraliza as chamadas à API, incluindo a sessão do navegador e o tratamento
+       das respostas HTTP antes de devolvê-las às ações da página. */
     async function chamarApi(metodo, caminho, corpo) {
         var resposta;
 
@@ -193,6 +199,8 @@
         return dados;
     }
 
+    /* Busca a lista atual no backend e atualiza a interface com os registros
+       recebidos, exibindo um estado de erro quando a consulta não funciona. */
     async function carregarEmpresas() {
         // Só troca a tabela por "Carregando" na primeira vez; depois das ações ela é atualizada no lugar
         if (empresas.length === 0) {
@@ -236,6 +244,8 @@
         return digitos.length > 0 && apenasDigitos(empresa.cnpj).indexOf(digitos) !== -1;
     }
 
+    /* Aplica busca e filtros de status e recria as linhas visíveis a partir da
+       lista carregada do servidor. */
     function renderizar() {
         var ativas = empresas.filter(estaAtiva);
         var desativadas = empresas.filter(function (e) { return !estaAtiva(e); });
@@ -275,6 +285,7 @@
         return botao;
     }
 
+    /* Monta uma linha e associa seus botões às ações da empresa correspondente. */
     function criarLinha(empresa) {
         var tr = criar("tr");
 
@@ -736,6 +747,7 @@
         return mudancas;
     }
 
+    /* Preenche o formulário com os dados atuais da empresa selecionada. */
     function abrirEdicao(idEmpresa) {
         empresaEmEdicao = empresas.find(function (e) { return e.idEmpresa === idEmpresa; });
         if (!empresaEmEdicao) {

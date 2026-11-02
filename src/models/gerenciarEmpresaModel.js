@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Concentra as consultas de empresas usadas pela administração, incluindo endereço, gestor, vínculos, edição e status.
+ */
 var mysql = require("mysql2");
 var database = require("../database/config");
 

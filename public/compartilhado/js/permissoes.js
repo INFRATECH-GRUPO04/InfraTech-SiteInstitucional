@@ -1,7 +1,13 @@
+/*
+ * Mantém em um só lugar a regra que diz quais dashboards e funções cada cargo
+ * pode usar. O mesmo módulo funciona no navegador e também pode ser carregado
+ * pelo backend, evitando duas listas de cargos com regras diferentes.
+ */
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) module.exports = factory();
     else root.InfraTechPermissoes = factory();
 })(typeof window !== 'undefined' ? window : globalThis, function () {
+    /* Endereços e nomes usados para montar os menus e reconhecer páginas. */
     const dashboards = [
         { id: 'geral', href: '/dashboard/dash-geral.html', label: 'Visão Geral' },
         { id: 'especifica', href: '/dashboard/especifica-servidor/dash-especifica.html', label: 'Dashboard Específica' },
@@ -9,6 +15,9 @@
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
+    /* Converte o cargo em permissões claras, incluindo a liberação individual
+     * que o gestor pode conceder a um analista de dados para editar alertas.
+     */
     function obter(cargo, podeEditarAlertas) {
         const tipo = normalizar(cargo);
         const completo = completos.includes(tipo);
@@ -23,6 +32,9 @@
         const rota = String(caminho).toLowerCase();
         return (rota.startsWith('/dashboard/') || rota.startsWith('/paginas/pos-login/')) && (rota.endsWith('.html') || rota.endsWith('/'));
     }
+    /* Decide se o cargo pode abrir um endereço específico. Os aliases mantêm
+     * compatibilidade com páginas antigas que ainda apontem para dashboards.
+     */
     function podeAcessar(cargo, caminho) {
         const rota = String(caminho).toLowerCase();
         const perfil = obter(cargo);

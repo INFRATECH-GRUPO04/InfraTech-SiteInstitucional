@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Mapeia os endereços de login, sessão, saída, cadastro e validações auxiliares para as funções do controller de autenticação.
+ */
 var express = require("express");
 var router = express.Router();
 

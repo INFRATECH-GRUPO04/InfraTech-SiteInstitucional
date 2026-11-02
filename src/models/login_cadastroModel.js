@@ -1,5 +1,11 @@
+/*
+ * Este arquivo: Concentra as consultas de autenticação e cadastro: localizar convites, verificar credenciais e gravar funcionários.
+ */
 var database = require("../database/config")
 
+/* Procura um convite ativo e retorna os dados que a tela usa para orientar
+ * o cadastro antes do envio do formulário.
+ */
 function verificar(codigo) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function verificar(): ", codigo);
     var instrucaoSql = `
@@ -9,6 +15,9 @@ function verificar(codigo) {
     return database.executar(instrucaoSql, [codigo]);
 }
 
+/* Localiza a conta pelo e-mail e senha recebidos pelo controller e inclui os
+ * dados da empresa e da autorização individual necessários para criar a sessão.
+ */
 function autenticar(email, senha) {
     var instrucaoSql = `
         SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, pode_editar_alertas AS podeEditarAlertas, dt_cadastro AS dtCadastro
@@ -18,6 +27,9 @@ function autenticar(email, senha) {
     return database.executar(instrucaoSql, [email, senha]);
 }
 
+/* Busca, na empresa da sessão, os dados atuais do funcionário e a liberação
+ * individual que controla a edição dos limites.
+ */
 function buscarPermissaoAlertas(idFuncionario, idEmpresa) {
     return database.executar(`
         SELECT
@@ -30,6 +42,7 @@ function buscarPermissaoAlertas(idFuncionario, idEmpresa) {
     `, [Number(idFuncionario), Number(idEmpresa)]);
 }
 
+/* Insere a conta com a empresa e o cargo concedidos pelo convite já validado. */
 function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso) {
     var tiposValidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
     var tipoFinal = tiposValidos.includes(tipoAcesso) ? tipoAcesso : 'ANALISTA_DADOS';
@@ -54,6 +67,7 @@ function CodigoEmpresa(codigo) {
     return database.executar(instrucao, [codigo]);
 }
 
+/* Confirma no banco que o convite existe e ainda tem utilizações disponíveis. */
 function buscarConviteAtivoPorId(idConvite) {
     return database.executar(`SELECT id_convite, fk_empresa, tipo_acesso FROM convite WHERE id_convite = ? AND quantidade_usada < quantidade_uso;`, [Number(idConvite)]);
 }

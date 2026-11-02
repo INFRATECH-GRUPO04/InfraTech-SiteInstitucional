@@ -1,3 +1,7 @@
+/*
+ * Controla a Dashboard Geral: lê o conjunto compartilhado, atualiza os cartões,
+ * os estados de saúde, os gráficos e o histórico exibido ao gestor.
+ */
 let graficoRede = null;
 let graficoSaude = null;
 
@@ -7,6 +11,9 @@ function classificarMetrica(recurso, valor, servidorId) { return window.InfraTec
 function obterCorAlerta(recurso, valor) { return CORES_ALERTA[classificarMetrica(recurso, valor)] || CORES_ALERTA['sem-dados']; }
 function faixaTexto(limites, recurso) { return `Atenção ≥${limites[recurso].atencao}% · Crítico ≥${limites[recurso].critico}%`; }
 
+/* Reclassifica as leituras atuais usando os limites compartilhados e atualiza
+ * cores, rótulos, totais de atenção e o resumo de saúde da frota.
+ */
 function atualizarCoresMetricas() {
   const dados = window.InfraTechDashboardData;
   if (!dados) return;
@@ -223,6 +230,9 @@ function carregarUsuario() {
   }
 }
 
+/* Copia os valores da fonte comum para as linhas da tabela e para os indicadores
+ * de frota, evitando que a dashboard apresente números diferentes do histórico.
+ */
 function aplicarLeiturasFrota() {
   const dados = window.InfraTechDashboardData;
   if (!dados) return;
@@ -320,6 +330,9 @@ function atualizarRelogio() {
 }
 
 // Gráfico de linha e área do tráfego de rede
+/* Cria o gráfico de rede da frota com as séries compartilhadas. A capacidade e
+ * a classificação visual são atualizadas conforme os limites configurados.
+ */
 function inicializarGraficoRede() {
   const ctxRede = document.getElementById('grafico-rede');
   if (!ctxRede) return;
@@ -547,6 +560,9 @@ function renderizarHistoricoAlertas(filtro = 'todos') {
   });
 }
 
+/* Prepara os filtros e a lista compacta de ocorrências mostrada nesta tela.
+ * As linhas são geradas a partir das leituras demonstrativas e dos limites atuais.
+ */
 function inicializarHistoricoAlertas() {
   const filtros = document.querySelectorAll('[data-filtro-alerta]');
   filtros.forEach((botao) => botao.addEventListener('click', () => {

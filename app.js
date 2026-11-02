@@ -1,3 +1,7 @@
+/*
+ * Este arquivo inicia o backend: carrega as configurações, prepara o Express,
+ * instala proteções comuns e conecta cada endereço da API ao módulo responsável.
+ */
 // var ambiente_processo = 'producao';
 var ambiente_processo = 'desenvolvimento';
 
@@ -16,6 +20,9 @@ var path = require("path");
 var PORTA_APP = process.env.APP_PORT;
 var HOST_APP = process.env.APP_HOST;
 
+/* Cria a aplicação principal e carrega os módulos que dividem as funcionalidades
+ * em rotas, regras de acesso e operações específicas do sistema.
+ */
 var app = express();
 
 var indexRouter = require("./src/routes/index");
@@ -29,6 +36,9 @@ var agenteRouter = require("./src/routes/agente")
 var cryptoRouter = require("./src/routes/crypto");
 var autorizacao = require("./src/seguranca/autorizacao");
 
+/* Converte JSON e formulários recebidos para req.body. Em seguida, protege as
+ * páginas antes de servi-las e disponibiliza os arquivos estáticos da pasta public.
+ */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Verifica o acesso às páginas protegidas antes de servir os arquivos públicos.
@@ -37,6 +47,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
 
+/* Liga cada prefixo de URL ao seu módulo de rotas. Nas áreas restritas, a sessão
+ * e a permissão são verificadas antes que a chamada alcance a funcionalidade.
+ */
 app.use("/", indexRouter);
 app.use("/login_cadastro", login_cadastroRouter);
 app.use("/crypto", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), cryptoRouter);

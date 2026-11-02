@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Agrupa os endereços de consulta e administração de funcionários, incluindo a autorização individual para editar limites de alerta.
+ */
 var express = require("express");
 var router = express.Router();
 

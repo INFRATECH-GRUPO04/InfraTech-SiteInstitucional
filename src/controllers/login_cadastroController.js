@@ -1,7 +1,13 @@
+/*
+ * Este arquivo: Coordena autenticação, sessão, cadastro por convite e validações auxiliares. Converte os resultados dos models em respostas HTTP.
+ */
 var login_cadastroModel = require("../models/login_cadastroModel");
 var autorizacao = require("../seguranca/autorizacao");
 
 
+/* Confere os campos enviados, consulta as credenciais e só cria a sessão para
+ * uma conta ativa com cargo reconhecido. A resposta inclui o destino e as permissões.
+ */
 function autenticar(req, res) {
     var email = typeof req.body.emailServer === 'string' ? req.body.emailServer.trim() : undefined;
     var senha = req.body.senhaServer;
@@ -57,6 +63,9 @@ function autenticar(req, res) {
 
 }
 
+/* Revalida o cookie e reúne os dados atuais da pessoa, da empresa e da permissão
+ * individual para que a interface monte a navegação correta.
+ */
 function sessaoAtual(req, res) {
     res.set('Cache-Control', 'no-store');
     autorizacao.autenticar(req, res, function () {
@@ -76,11 +85,13 @@ function sessaoAtual(req, res) {
     });
 }
 
+/* Encerra a sessão removendo do navegador o cookie que identifica o usuário. */
 function sair(req, res) {
     res.clearCookie(autorizacao.COOKIE, { httpOnly: true, sameSite: 'lax', path: '/' });
     res.status(204).end();
 }
 
+/* Consulta se um convite ainda existe e devolve seus dados para a tela de cadastro. */
 function verificar(req, res) {
     var codigo = req.query.codigo;
     if (!codigo) return res.status(400).send("Seu código está indefinido!");
@@ -95,6 +106,9 @@ function verificar(req, res) {
         });
 }
 
+/* Valida os dados do novo colaborador, confirma o convite e coordena o cadastro
+ * e o consumo de uma utilização do convite.
+ */
 function cadastrar(req, res) {
     var nome = req.body.nomeServer;
     var email = req.body.emailServer;

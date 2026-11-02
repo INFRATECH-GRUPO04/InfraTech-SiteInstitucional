@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Define a rota inicial do site institucional e entrega ao navegador o arquivo HTML de entrada.
+ */
 var express = require("express");
 var router = express.Router();
 

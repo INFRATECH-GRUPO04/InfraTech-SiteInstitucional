@@ -1,5 +1,9 @@
+/*
+ * Este arquivo: Concentra as consultas de servidores, componentes e limites de alerta, incluindo verificações de pertencimento à empresa.
+ */
 var database = require("../database/config")
 
+/* Grava um servidor associado à empresa recebida do controller. */
 function cadastrar(nome, idEmpresa) {
     console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome);
     
@@ -10,6 +14,9 @@ function cadastrar(nome, idEmpresa) {
     return database.executar(instrucaoSql);
 }
 
+/* Cria o componente e, em seguida, sua métrica inicial com limites de atenção
+ * e criticidade definidos no formulário de cadastro.
+ */
 function cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtencao, limiteCritico) {
     console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrarComponente():", fkServidor, tipoComponente, capacidade);
 
@@ -61,11 +68,15 @@ function componentePertenceEmpresa(idComponente, idEmpresa) {
     return database.executar('SELECT c.id_componente FROM componente c JOIN servidor s ON s.id_servidor = c.fk_servidor WHERE c.id_componente = ? AND s.fk_empresa = ?', [Number(idComponente), Number(idEmpresa)]);
 }
 
+/* Retorna os limites padrão de cada recurso configurados para a empresa. */
 function listarLimitesGlobais(idEmpresa) {
     var sql = `SELECT tipo, limite_atencao, limite_critico FROM limite_alerta_global WHERE fk_empresa = ${Number(idEmpresa)};`;
     return database.executar(sql);
 }
 
+/* Grava ou atualiza as quatro faixas da empresa. A chave única por empresa e
+ * recurso permite que a mesma operação crie ou substitua o valor existente.
+ */
 function salvarLimitesGlobais(idEmpresa, limites) {
     var empresa = Number(idEmpresa);
     var recursos = ['cpu', 'ram', 'disco', 'rede'];
@@ -75,6 +86,9 @@ function salvarLimitesGlobais(idEmpresa, limites) {
     return database.executar(`INSERT INTO limite_alerta_global (fk_empresa, tipo, limite_atencao, limite_critico) VALUES ${valores} ON DUPLICATE KEY UPDATE limite_atencao = VALUES(limite_atencao), limite_critico = VALUES(limite_critico);`);
 }
 
+/* Atualiza uma métrica individual somente quando o componente pertence a um
+ * servidor da empresa autorizada.
+ */
 function atualizarLimitesComponenteEmpresa(idComponente, idEmpresa, idMetrica, limiteAtencao, limiteCritico) {
     return database.executar(
         `UPDATE metrica m JOIN componente c ON c.id_componente = m.fk_componente JOIN servidor s ON s.id_servidor = c.fk_servidor SET m.limite_atencao = ?, m.limite_critico = ? WHERE c.id_componente = ? AND m.id_metrica = ? AND s.fk_empresa = ?`,

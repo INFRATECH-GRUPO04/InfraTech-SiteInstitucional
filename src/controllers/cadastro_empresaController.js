@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Valida os dados da empresa, endereço e responsável antes de solicitar ao model a gravação das informações relacionadas.
+ */
 var empresaModel = require("../models/cadastro_empresaModel");
 
 function buscarPorCnpj(req, res) {

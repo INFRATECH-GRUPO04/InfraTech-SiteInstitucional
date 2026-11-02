@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Concentra as consultas de funcionários e seus vínculos. As operações administrativas recebem a empresa da sessão para limitar o escopo dos dados.
+ */
 var database = require("../database/config");
 
 function buscarNomeEmpresa(id) {
@@ -11,6 +14,9 @@ function buscarNomeEmpresa(id) {
   return database.executar(instrucaoSql, [Number(id)]);
 }
 
+/* Lista as contas da empresa informada pelo controller, incluindo dados básicos
+ * e status necessários à tela de gerenciamento.
+ */
 function buscarDadosUsuario(id) {
   var instrucaoSql = `
     SELECT
@@ -27,6 +33,9 @@ function buscarDadosUsuario(id) {
   return database.executar(instrucaoSql, [Number(id)]);
 }
 
+/* Consulta um único funcionário e exige também o ID da empresa, evitando que
+ * a tela leia dados de outra organização.
+ */
 function buscarDadosUsuarioEspecifico(id, idEmpresa) {
   var instrucaoSql = `
     SELECT
@@ -46,6 +55,9 @@ function buscarDadosUsuarioEspecifico(id, idEmpresa) {
   return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
 }
 
+/* Persiste a autorização de editar métricas apenas se o funcionário for ativo,
+ * analista de dados e pertencer à empresa solicitante.
+ */
 function alterarPermissaoAlertas(idFuncionario, idEmpresa, habilitada) {
   return database.executar(
     `SELECT id_funcionario FROM funcionario
@@ -62,6 +74,9 @@ function alterarPermissaoAlertas(idFuncionario, idEmpresa, habilitada) {
   });
 }
 
+/* Exclui a conta elegível dentro da empresa e remove primeiro seus vínculos com
+ * servidores, para não deixar relações órfãs no banco.
+ */
 function deletarUsuario(id, idEmpresa, idGestor) {
   var apagarVinculos = `DELETE sf FROM servidor_funcionario sf
     JOIN funcionario f ON f.id_funcionario = sf.fk_funcionario
@@ -73,6 +88,7 @@ function deletarUsuario(id, idEmpresa, idGestor) {
   });
 }
 
+/* Desativa uma conta da empresa sem apagar seu cadastro nem seu histórico. */
 function desativarUsuario(id, idEmpresa) {
   var instrucaoSql = `
     UPDATE funcionario set status_sistema = 0
@@ -80,6 +96,7 @@ function desativarUsuario(id, idEmpresa) {
   return database.executar(instrucaoSql, [Number(id), Number(idEmpresa)]);
 }
 
+/* Reativa uma conta pertencente à empresa do gestor. */
 function ativarUsuario(id, idEmpresa) {
   var instrucaoSql = `
     UPDATE funcionario set status_sistema = 1
@@ -115,6 +132,9 @@ function validarServidoresDaEmpresa(idEmpresa, servidores) {
   );
 }
 
+/* Substitui os vínculos do funcionário por uma lista validada de servidores
+ * que pertençam à mesma empresa.
+ */
 function alterarServidores(idEmpresa, idFuncionario, servidores) {
   return validarServidoresDaEmpresa(idEmpresa, servidores).then(function (validos) {
     if (validos.length !== servidores.length) throw new Error('Um ou mais servidores não pertencem à empresa.');

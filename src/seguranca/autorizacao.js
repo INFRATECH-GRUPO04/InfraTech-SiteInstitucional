@@ -1,3 +1,7 @@
+/*
+ * Centraliza as verificações de identidade e acesso no servidor. As funções
+ * deste módulo criam e validam sessões e protegem páginas e operações da API.
+ */
 const crypto = require('crypto');
 
 // O segredo vale apenas neste processo, salvo quando AUTH_TOKEN_SECRET é configurado.
@@ -7,17 +11,26 @@ const COOKIE = 'infratech_session';
 const politica = require('../../public/compartilhado/js/permissoes');
 const database = require('../database/config');
 
+/* Codifica os dados da sessão e calcula uma assinatura para detectar qualquer
+ * alteração feita no token depois que ele foi criado pelo servidor.
+ */
 function assinar(payload) {
   const corpo = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const assinatura = crypto.createHmac('sha256', segredo).update(corpo).digest('base64url');
   return `${corpo}.${assinatura}`;
 }
 
+/* Procura o cookie solicitado no cabeçalho HTTP e devolve seu valor decodificado.
+ * Se o navegador não o enviou ou o conteúdo estiver malformado, devolve texto vazio.
+ */
 function lerCookie(req, nome) {
   const item = (req.headers.cookie || '').split(';').map(v => v.trim()).find(v => v.startsWith(`${nome}=`));
   try { return item ? decodeURIComponent(item.slice(nome.length + 1)) : ''; } catch (_) { return ''; }
 }
 
+/* Confere formato, assinatura e prazo da sessão. Só devolve a identidade quando
+ * o token é válido e ainda não expirou; caso contrário, retorna null.
+ */
 function verificarToken(token) {
   if (!token) return null;
   const [corpo, assinatura] = token.split('.');
@@ -33,6 +46,9 @@ function verificarToken(token) {
   } catch (_) { return null; }
 }
 
+/* Monta os dados de identidade que serão mantidos durante a sessão e define
+ * sua expiração. O token resultante será enviado ao navegador em um cookie.
+ */
 function criarSessao(funcionario) {
   const sessao = {
     id: Number(funcionario.idFuncionario),
@@ -47,6 +63,9 @@ function criarSessao(funcionario) {
 
 function permissoesDoCargo(cargo, podeEditarAlertas) { return politica.obter(cargo, podeEditarAlertas); }
 
+/* Cria uma proteção reutilizável para rotas. Verifica primeiro a regra do cargo;
+ * para edição de alertas por analista, também consulta a liberação individual no banco.
+ */
 function exigirPermissao(permissao) {
   return function (req, res, next) {
     const cargo = req.usuario && req.usuario.cargo;
@@ -69,6 +88,9 @@ function exigirPermissao(permissao) {
   };
 }
 
+/* Valida a sessão enviada pelo navegador e guarda a identidade conferida em
+ * req.usuario, para uso pelos próximos middlewares e controllers da requisição.
+ */
 function autenticar(req, res, next) {
   const sessao = verificarToken(lerCookie(req, COOKIE));
   if (!sessao) return res.status(401).json({ erro: 'Sessão inválida ou expirada.' });
@@ -76,6 +98,9 @@ function autenticar(req, res, next) {
   next();
 }
 
+/* Restringe o acesso a uma lista explícita de cargos. Deve ser usado depois da
+ * autenticação, para decidir com base na identidade já conferida pelo servidor.
+ */
 function permitirCargos(...cargos) {
   return function (req, res, next) {
     if (!req.usuario || !cargos.includes(req.usuario.cargo)) return res.status(403).json({ erro: 'Seu cargo não permite esta ação.' });
@@ -83,6 +108,9 @@ function permitirCargos(...cargos) {
   };
 }
 
+/* Protege páginas abertas pelo navegador. Sem sessão, redireciona ao login; com
+ * sessão sem acesso, encaminha a pessoa para uma página permitida ao seu cargo.
+ */
 function bloquearPagina(req, res, next) {
   if (!politica.protegida(req.path)) return next();
   res.set('Cache-Control', 'no-store');

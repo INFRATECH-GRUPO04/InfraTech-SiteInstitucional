@@ -1,16 +1,16 @@
--- =====================================================
--- CRIACAO E SELECAO DO BANCO DE DADOS
--- =====================================================
+/*
+ * CRIACAO E SELECAO DO BANCO DE DADOS
+ */
 
 CREATE DATABASE infratech;
 
 USE infratech;
 
 
--- =====================================================
--- TABELA: endereco
--- FINALIDADE: Armazena os enderecos das empresas.
--- =====================================================
+/*
+ * TABELA: endereco
+ * FINALIDADE: Armazena os enderecos das empresas.
+ */
 
 CREATE TABLE endereco (
     id_endereco INT PRIMARY KEY AUTO_INCREMENT,
@@ -24,11 +24,11 @@ CREATE TABLE endereco (
 );
 
 
--- =====================================================
--- TABELA: empresa
--- FINALIDADE: Armazena os dados cadastrais das empresas.
--- RELACIONAMENTO: fk_endereco referencia a tabela endereco.
--- =====================================================
+/*
+ * TABELA: empresa
+ * FINALIDADE: Armazena os dados cadastrais das empresas.
+ * RELACIONAMENTO: fk_endereco referencia a tabela endereco.
+ */
 
 CREATE TABLE empresa (
     id_empresa INT PRIMARY KEY AUTO_INCREMENT,
@@ -47,12 +47,12 @@ CREATE TABLE empresa (
 );
 
 
--- =====================================================
--- TABELA: funcionario
--- FINALIDADE: Armazena os funcionarios e seus dados
--- de acesso ao sistema.
--- RELACIONAMENTO: Cada funcionario pertence a uma empresa.
--- =====================================================
+/*
+ * TABELA: funcionario
+ * FINALIDADE: Armazena os funcionarios e seus dados
+ * de acesso ao sistema.
+ * RELACIONAMENTO: Cada funcionario pertence a uma empresa.
+ */
 
 CREATE TABLE funcionario (
     id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
@@ -74,11 +74,11 @@ CREATE TABLE funcionario (
 );
 
 
--- =====================================================
--- TABELA: servidor
--- FINALIDADE: Registra os servidores monitorados.
--- RELACIONAMENTO: Cada servidor pertence a uma empresa.
--- =====================================================
+/*
+ * TABELA: servidor
+ * FINALIDADE: Registra os servidores monitorados.
+ * RELACIONAMENTO: Cada servidor pertence a uma empresa.
+ */
 
 CREATE TABLE servidor (
     id_servidor INT PRIMARY KEY AUTO_INCREMENT,
@@ -86,7 +86,7 @@ CREATE TABLE servidor (
     nome VARCHAR(45) NULL,
     status_sistema TINYINT NOT NULL DEFAULT 1,
     dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    -- VERIFICAÇÕES PARA O SCRIPT DE CAPTURA:
+    /* Campos usados pelo agente para validar o servidor e registrar a coleta. */
     chave_hash CHAR(64) NULL UNIQUE,
     dt_ultimo_envio DATETIME NULL,
 
@@ -96,14 +96,14 @@ CREATE TABLE servidor (
 );
 
 
--- =====================================================
--- TABELA: servidor_funcionario
--- FINALIDADE: Relaciona funcionarios aos servidores
--- aos quais possuem acesso.
--- RELACIONAMENTO: Muitos-para-muitos entre funcionario
--- e servidor.
--- CHAVE PRIMARIA: Composta pelas duas chaves estrangeiras.
--- =====================================================
+/*
+ * TABELA: servidor_funcionario
+ * FINALIDADE: Relaciona funcionarios aos servidores
+ * aos quais possuem acesso.
+ * RELACIONAMENTO: Muitos-para-muitos entre funcionario
+ * e servidor.
+ * CHAVE PRIMARIA: Composta pelas duas chaves estrangeiras.
+ */
 
 CREATE TABLE servidor_funcionario (
     fk_funcionario INT NOT NULL,
@@ -121,12 +121,12 @@ CREATE TABLE servidor_funcionario (
 );
 
 
--- =====================================================
--- TABELA: convite
--- FINALIDADE: Armazena codigos de convite utilizados
--- para permitir o cadastro de usuarios.
--- RELACIONAMENTO: Cada convite pertence a uma empresa.
--- =====================================================
+/*
+ * TABELA: convite
+ * FINALIDADE: Armazena codigos de convite utilizados
+ * para permitir o cadastro de usuarios.
+ * RELACIONAMENTO: Cada convite pertence a uma empresa.
+ */
 
 CREATE TABLE convite (
     id_convite INT PRIMARY KEY AUTO_INCREMENT,
@@ -143,12 +143,12 @@ CREATE TABLE convite (
 );
 
 
--- =====================================================
--- TABELA: componente
--- FINALIDADE: Registra os componentes de hardware
--- dos servidores, como CPU, RAM, disco e rede.
--- RELACIONAMENTO: Cada componente pertence a um servidor.
--- =====================================================
+/*
+ * TABELA: componente
+ * FINALIDADE: Registra os componentes de hardware
+ * dos servidores, como CPU, RAM, disco e rede.
+ * RELACIONAMENTO: Cada componente pertence a um servidor.
+ */
 
 CREATE TABLE componente (
     id_componente INT PRIMARY KEY AUTO_INCREMENT,
@@ -166,14 +166,14 @@ CREATE TABLE componente (
 );
 
 
--- =====================================================
--- TABELA: metrica
--- FINALIDADE: Define quais metricas serao monitoradas
--- em cada componente e seus limites de alerta.
--- OBSERVACAO: Armazena a configuracao da metrica,
--- nao o historico dos valores coletados.
--- RELACIONAMENTO: Cada metrica pertence a um componente.
--- =====================================================
+/*
+ * TABELA: metrica
+ * FINALIDADE: Define quais metricas serao monitoradas
+ * em cada componente e seus limites de alerta.
+ * OBSERVACAO: Armazena a configuracao da metrica,
+ * nao o historico dos valores coletados.
+ * RELACIONAMENTO: Cada metrica pertence a um componente.
+ */
 
 CREATE TABLE metrica (
     id_metrica INT PRIMARY KEY AUTO_INCREMENT,
@@ -188,8 +188,9 @@ CREATE TABLE metrica (
         REFERENCES componente(id_componente)
 );
 
--- Limites padrão compartilhados por empresa; limites definidos em metrica
--- continuam sendo sobrescritas individuais de cada servidor.
+/* Limites padrão da empresa. A configuração individual de cada servidor continua
+ * armazenada separadamente na tabela de métricas.
+ */
 CREATE TABLE IF NOT EXISTS limite_alerta_global (
     id_limite_global INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
@@ -201,10 +202,10 @@ CREATE TABLE IF NOT EXISTS limite_alerta_global (
 );
 
 
--- =====================================================
--- INSERCAO DE DADOS: endereco
--- FINALIDADE: Cadastra os enderecos das empresas.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: endereco
+ * FINALIDADE: Cadastra os enderecos das empresas.
+ */
 
 INSERT INTO endereco (
     cep,
@@ -221,10 +222,10 @@ INSERT INTO endereco (
 ('50030230', 'Avenida Conde da Boa Vista', 'Boa Vista', '921', NULL, 'PE', 'Recife');
 
 
--- =====================================================
--- INSERCAO DE DADOS: empresa
--- FINALIDADE: Cadastra as empresas clientes da InfraTech.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: empresa
+ * FINALIDADE: Cadastra as empresas clientes da InfraTech.
+ */
 
 INSERT INTO empresa (
     razao_social,
@@ -242,11 +243,11 @@ INSERT INTO empresa (
 ('Arena Nordeste Servicos de Internet Ltda', 'Arena Nordeste', '60746948000112', 'Hospedagem e Cloud', 'contato@arenanordeste.com.br', '8140042020', 0, 4);
 
 
--- =====================================================
--- INSERCAO DE DADOS: funcionario
--- FINALIDADE: Cadastra os funcionarios e seus niveis
--- de acesso ao sistema.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: funcionario
+ * FINALIDADE: Cadastra os funcionarios e seus niveis
+ * de acesso ao sistema.
+ */
 
 INSERT INTO funcionario (
     fk_empresa,
@@ -276,11 +277,11 @@ INSERT INTO funcionario (
 (2, 'ANALISTA_NOC', 'Júlio Almeida', '1994-08-23', 'julio.noc@infratech.demo', '123456', '90100000002', 1),
 (2, 'GESTOR', 'Alberto Costa', '1985-11-06', 'alberto.gestor@infratech.demo', '123456', '90100000003', 1);
 
--- =====================================================
--- INSERCAO DE DADOS: servidor
--- FINALIDADE: Cadastra os servidores e seus vinculos
--- com as empresas.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: servidor
+ * FINALIDADE: Cadastra os servidores e seus vinculos
+ * com as empresas.
+ */
 
 INSERT INTO servidor (
     nome,
@@ -297,11 +298,11 @@ INSERT INTO servidor (
 ('SRV-ARENA-01', 4, 1);
 
 
--- =====================================================
--- INSERCAO DE DADOS: servidor_funcionario
--- FINALIDADE: Define os vinculos de acesso entre
--- funcionarios e servidores.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: servidor_funcionario
+ * FINALIDADE: Define os vinculos de acesso entre
+ * funcionarios e servidores.
+ */
 
 INSERT INTO servidor_funcionario (
     fk_funcionario,
@@ -311,11 +312,11 @@ INSERT INTO servidor_funcionario (
 (9, 6);
 
 
--- =====================================================
--- INSERCAO DE DADOS: convite
--- FINALIDADE: Cadastra os codigos de convite e define
--- os limites de utilizacao de cada codigo.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: convite
+ * FINALIDADE: Cadastra os codigos de convite e define
+ * os limites de utilizacao de cada codigo.
+ */
 
 INSERT INTO convite (
     codigo,
@@ -329,11 +330,11 @@ INSERT INTO convite (
 ('F0913B', 'FUNCIONARIO', 3, 0, 4);
 
 
--- =====================================================
--- INSERCAO DE DADOS: componente
--- FINALIDADE: Cadastra os componentes de hardware
--- existentes nos servidores monitorados.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: componente
+ * FINALIDADE: Cadastra os componentes de hardware
+ * existentes nos servidores monitorados.
+ */
 
 INSERT INTO componente (
     tipo,
@@ -353,11 +354,11 @@ INSERT INTO componente (
 ('rede', 'Intel X550 10GbE', 'SN-NET-001', 10000.00, 'Mbps', 1, 3);
 
 
--- =====================================================
--- INSERCAO DE DADOS: metrica
--- FINALIDADE: Configura as metricas monitoradas,
--- suas unidades e os limites de atencao e criticidade.
--- =====================================================
+/*
+ * INSERCAO DE DADOS: metrica
+ * FINALIDADE: Configura as metricas monitoradas,
+ * suas unidades e os limites de atencao e criticidade.
+ */
 
 INSERT INTO metrica (
     fk_componente,

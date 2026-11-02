@@ -1,4 +1,8 @@
-/* Fonte única das leituras compartilhadas pelas dashboards. */
+/*
+ * Fonte única dos dados demonstrativos e das regras de alerta das dashboards.
+ * Os valores por servidor são mantidos aqui para que KPIs, gráficos, matriz e
+ * logs leiam a mesma informação em vez de duplicar números em cada página.
+ */
 window.InfraTechDashboardData = {
   origem: 'mock',
   dataLeitura: '2026-10-25T23:35:00',
@@ -100,7 +104,9 @@ window.InfraTechDashboardData = {
   }
 };
 
-/* Rede por servidor e agregado da frota usam as mesmas amostras e capacidades. */
+/* Soma as amostras de rede por servidor para formar o agregado da frota. Assim,
+ * o gráfico geral corresponde às séries individuais e à capacidade cadastrada.
+ */
 window.InfraTechDashboardData.capacidadesRedePorServidor = Object.fromEntries(
   window.InfraTechDashboardData.servidores.map((servidor) => [servidor.id, 250])
 );
@@ -119,7 +125,9 @@ window.InfraTechDashboardData.capacidadesRedePorServidor = Object.fromEntries(
   };
 }
 
-/* Pequena API de leitura para manter páginas consumidoras desacopladas do formato do mock. */
+/* Estas funções dão às páginas uma forma estável de pedir servidores, históricos
+ * e resumos, sem precisar conhecer a organização interna dos dados demonstrativos.
+ */
 window.InfraTechDashboardData.obterServidores = function () {
   return this.servidores;
 };
@@ -157,8 +165,10 @@ window.InfraTechDashboardData.picoSemanalFrota = window.InfraTechDashboardData.p
   })
 }));
 
-/* Regras compartilhadas pelas três dashboards; sincronização usa backend autenticado e
-   armazenamento local como alternativa para os acessos diretos sem sessão. */
+/* Reúne os limites e as regras de classificação usados pelas três dashboards.
+ * Os ajustes são sincronizados com a API quando há sessão e ficam no navegador
+ * como alternativa para acessos que não tenham autenticação.
+ */
 window.InfraTechAlertas = (() => {
   const CHAVE_GLOBAL = 'infratech.alertas.global.v2';
   const CHAVE_SERVIDORES = 'infratech.alertas.servidores.v2';
@@ -176,6 +186,9 @@ window.InfraTechAlertas = (() => {
   let limitesGlobaisLocais = PADRAO;
   let limitesIndividuaisLocais = {};
 
+  /* Aceita somente limites numéricos entre 0 e 100, com atenção abaixo do crítico.
+   * Um conjunto inválido é rejeitado para não colorir KPIs e gráficos com regras quebradas.
+   */
   function validar(limites) {
     const resultado = {};
     for (const recurso of RECURSOS) {
@@ -198,6 +211,9 @@ window.InfraTechAlertas = (() => {
       || validar(serverId && limitesIndividuaisBackend[serverId])
       || limitesGlobaisBackend || globalLocal;
   }
+  /* Busca no backend os limites globais e individuais disponíveis para a sessão.
+   * Se a API não responder, mantém os valores locais para não interromper a tela.
+   */
   async function sincronizarBackend() {
     const empresa = Number(sessionStorage.ID_EMPRESA);
     if (!Number.isInteger(empresa) || empresa <= 0) return false;
@@ -237,6 +253,9 @@ window.InfraTechAlertas = (() => {
       return true;
     } catch (_) { return false; }
   }
+  /* Valida e guarda os limites no escopo escolhido, atualizando também o estado
+   * local para que as dashboards reajam imediatamente à mudança.
+   */
   function salvar(escopo, serverId, limites) {
     const validos = validar(limites);
     if (!validos) throw new Error('Os limites devem ser inteiros de 0 a 100, com atenção abaixo de crítico.');
@@ -254,6 +273,9 @@ window.InfraTechAlertas = (() => {
     window.dispatchEvent(new CustomEvent('infratech:limites-alerta-alterados', { detail: { escopo, serverId } }));
     return validos;
   }
+  /* Envia os limites já validados à rota correspondente e sincroniza a cópia
+   * local quando o servidor confirma a gravação.
+   */
   async function salvarBackend(escopo, serverId, limites) {
     const empresa = Number(sessionStorage.ID_EMPRESA);
     if (!Number.isInteger(empresa) || empresa <= 0) return false;
@@ -285,6 +307,9 @@ window.InfraTechAlertas = (() => {
     limitesIndividuaisBackend[serverId] = validar(limites);
     return true;
   }
+  /* Compara uma leitura com os limites vigentes e devolve uma faixa única:
+   * saudável, atenção, crítica ou sem dados.
+   */
   function classificar(recurso, valor, serverId) {
     if (valor == null || valor === '' || !Number.isFinite(Number(valor))) return 'sem-dados';
     const faixa = obter(serverId)[recurso];
@@ -294,6 +319,9 @@ window.InfraTechAlertas = (() => {
     if (numero >= faixa.atencao) return 'atencao';
     return 'saudavel';
   }
+  /* Converte tráfego em Mbps para percentual de capacidade antes de classificá-lo,
+   * pois rede precisa considerar o tamanho do link para medir saturação.
+   */
   function classificarRede(mbps, capacidadeMbps) {
     if (mbps == null || mbps === '') return { estado: 'sem-dados', percentual: null };
     const trafego = Number(mbps), capacidade = Number(capacidadeMbps);
@@ -302,6 +330,9 @@ window.InfraTechAlertas = (() => {
     const percentual = trafego / capacidade * 100;
     return { estado: classificar('rede', percentual), percentual };
   }
+  /* Examina uma sequência de amostras para distinguir uma leitura isolada de uma
+   * condição que permaneceu acima do limite pelo tempo necessário para confirmar alerta.
+   */
   function avaliarPersistencia(recurso, amostras, estadoAtivo = 'saudavel', agora = Date.now(), serverId) {
     const validas = (Array.isArray(amostras) ? amostras : []).map((amostra) => ({
       valor: Number(amostra.valor), instante: new Date(amostra.timestamp).getTime()
