@@ -666,7 +666,7 @@
     display: none;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 600px) {
     .container-abas {
         gap: 2px;
         padding: 5px;
@@ -694,7 +694,7 @@
     }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 600px) {
     .container-kpis {
         grid-template-columns: minmax(0, 1fr);
         gap: 8px;
@@ -777,20 +777,20 @@
 body.dashboard-compartilhada .topbar__introducao { display:flex; min-width:0; flex-direction:column; justify-content:center; gap:2px; }
 body.dashboard-compartilhada .topbar__titulo { margin:0; color:#f5f9ff; font-size:clamp(1.25rem,1.9vw,1.75rem); font-weight:700; line-height:1.2; letter-spacing:-.02em; text-transform:none; }
 body.dashboard-compartilhada .topbar__descricao { margin:0; color:#668099; font-size:clamp(.875rem,.95vw,1rem); font-weight:400; line-height:1.35; }
-@media (max-width:900px) {
+@media (max-width:991px) {
   .topbar { height:auto; min-height:var(--altura-topbar); flex:0 0 auto; align-items:flex-start; gap:10px; flex-direction:column; padding:12px var(--espaco-pagina); }
   .topbar__info { width:100%; gap:12px; flex-wrap:wrap; }
 }
 @media (max-width:600px) { .modal-limites form{padding:16px}.modal-limites__grade{grid-template-columns:1fr}.modal-limites footer{align-items:stretch;flex-direction:column-reverse}.modal-limites footer span{justify-content:flex-end} }
 
-@media (max-width: 900px) {
+@media (max-width: 991px) {
     .container-grafico-e-logs { grid-template-columns: minmax(0, 1fr); }
     .container-grafico-e-logs .container-grafico-recursos,
     .container-grafico-e-logs .container-rede,
     .painel-logs { height: 400px; min-height: 400px; max-height: 400px; }
     .container-canvas-recursos,.container-canvas-rede { height: 240px; }
 }
-@media (max-width: 700px) {
+@media (max-width: 760px) {
     .barra-grafico { flex-direction: column; align-items: stretch; padding: 0 12px; gap: 2px; }
     .barra-grafico .container-abas { width: 100%; overflow-x: auto; }
     .controles-grafico,.filtros-periodo { width: 100%; justify-content: center; }
@@ -817,6 +817,6 @@ body.dashboard-compartilhada .topbar__descricao { margin:0; color:#668099; font-
 .modal-limites footer button { min-height: 40px; padding: 0 16px; border-radius: 9px; font: 600 12px/1.2 var(--fonte-texto); }
 .modal-limites footer .salvar-limites { font-weight: 800; box-shadow: 0 5px 15px #00b8d933; }
 .modal-limites footer button:hover { filter: brightness(1.12); }
-@media (max-width: 620px) {
+@media (max-width: 600px) {
     .escopo-limites { grid-template-columns: minmax(0,1fr); }
 }

@@ -987,7 +987,7 @@ header.cabecalho {
 }
 
 /* Responsividade — celular (até 768px) */
-@media (max-width: 768px) {
+@media (max-width: 760px) {
   .conteudo-principal {
     padding: 64px 16px 32px 16px;
   }
@@ -1071,7 +1071,7 @@ header.cabecalho {
 }
 
 /* Responsividade — celular pequeno (até 480px) */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .btn-hamburguer-dash {
     top: 10px;
     left: 10px;
@@ -1206,6 +1206,6 @@ body.pagina-dash-geral .bloco-eventos { justify-content: flex-start; gap: 10px; 
 .historico-alertas__nota { margin:0; color:#8194a8; font-size:9px; line-height:1.4; }
 .historico-alertas__vazio { padding:14px 8px; color:#8194a8; font-size:11px; text-align:center; }
 
-@media (max-width: 768px) {
+@media (max-width: 760px) {
   .historico-alertas__lista { max-height:320px; }
 }

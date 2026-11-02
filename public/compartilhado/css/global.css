@@ -988,3 +988,130 @@ body.pagina-modificar-funcionario .conteudo-painel {
         padding-top: 20px;
     }
 }
+
+/* Regras comuns para manter o mesmo comportamento de navegação em tablets e celulares. */
+@media (max-width: 991px) {
+    body:has(.header-left) {
+        padding-top: 56px;
+        overflow-x: hidden;
+    }
+
+    body.menu-lateral-aberto {
+        overflow: hidden;
+    }
+
+    .header-left {
+        left: 0 !important;
+        width: min(240px, 86vw) !important;
+        min-width: min(240px, 86vw) !important;
+        max-width: min(240px, 86vw) !important;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease !important;
+        overscroll-behavior: contain;
+    }
+
+    .header-left.aberta {
+        left: 0 !important;
+        transform: translateX(0);
+    }
+
+    .btn-hamburguer-global {
+        width: 44px;
+        height: 44px;
+        touch-action: manipulation;
+    }
+
+    .header-left .nav-item {
+        min-height: 44px;
+    }
+
+    .header-left .btn-logout {
+        min-height: 44px;
+    }
+
+    body.menu-lateral-aberto .btn-hamburguer-global {
+        left: calc(min(240px, 86vw) - 54px);
+    }
+
+    .conteudo-principal,
+    .conteudo-empresas,
+    .container_main,
+    .content,
+    .conteudo-painel,
+    .principal {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .cabecalho-padrao,
+    .barra-topo,
+    .barra-superior-painel,
+    .content > header,
+    .container_main > .header {
+        min-width: 0;
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+    }
+}
+
+/* Reduz paddings e impede campos, tabelas e controles de criarem rolagem lateral. */
+@media (max-width: 600px) {
+    .conteudo-principal,
+    .conteudo-principal.pagina-cadastro-host {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .conteudo-empresas {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .cabecalho-padrao,
+    .barra-topo,
+    .barra-superior-painel,
+    .content > header,
+    .container_main > .header {
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px 12px;
+    }
+
+    .cabecalho-padrao__contexto {
+        flex: 1 1 180px;
+        white-space: normal;
+    }
+
+    .cabecalho-padrao__empresa,
+    .cabecalho-padrao__funcao {
+        max-width: 42vw;
+    }
+
+    .cabecalho-padrao__usuario {
+        flex: 0 1 auto;
+        max-width: 100%;
+    }
+
+    .barra-superior-painel .migalhas,
+    .barra-topo .caminho {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .grupo-formulario,
+    .campo-formulario,
+    .controle-formulario,
+    .campo-busca,
+    .tabela-rolagem {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .tabela-rolagem,
+    .tabela-responsive,
+    .tabela-historico-wrap {
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+    }
+}

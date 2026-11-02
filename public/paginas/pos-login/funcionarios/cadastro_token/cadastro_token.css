@@ -594,7 +594,7 @@ body .content .intro-token-layout .ajuda-token p {
     border: 0;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 760px) {
     body:has(.intro-token-layout) .content {
         padding-inline: 16px;
     }
@@ -661,7 +661,7 @@ body .content .intro-token-layout .ajuda-token p {
     }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 600px) {
     .titulo-com-ajuda h1 {
         font-size: 25px;
     }

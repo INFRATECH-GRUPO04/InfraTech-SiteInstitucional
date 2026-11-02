@@ -286,6 +286,100 @@ body.dashboard-compartilhada :is(.panorama, .kpi-grid, .status-servidores, .bloc
   }
 }
 
+/* O mesmo ponto de quebra transforma as três dashboards em páginas roláveis
+ * enquanto a navegação lateral passa a usar a gaveta compartilhada.
+ */
+@media (max-width: 991px) {
+  body.dashboard-compartilhada {
+    min-height: 100dvh;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  body.dashboard-compartilhada :is(.pagina, .layout) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    min-height: calc(100dvh - 56px);
+    overflow: visible;
+  }
+
+  body.dashboard-compartilhada :is(.conteudo, .principal, .conteudo-principal, .container-dash) {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  body.pagina-dash-geral .conteudo-principal {
+    padding-top: 12px;
+  }
+
+  body.dashboard-compartilhada .dashboard-welcome {
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  body.dashboard-compartilhada :is(.paineis, .investigacao-paineis, .container-grafico-e-logs) {
+    min-width: 0;
+  }
+
+  body.dashboard-compartilhada :is(.tabela-historico-wrap, .tabela-servidores-wrap, .tabela-rolagem) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+}
+
+@media (max-width: 760px) {
+  body.dashboard-compartilhada :is(.kpis, .kpi-grid, .container-kpis) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.dashboard-compartilhada :is(.paineis, .investigacao-paineis, .container-grafico-e-logs) {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  body.dashboard-compartilhada :is(.cartao, .kpi, .kpi-card) {
+    min-width: 0;
+  }
+
+  body.dashboard-compartilhada .dashboard-welcome__meta {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 600px) {
+  body.dashboard-compartilhada :is(.kpis, .kpi-grid, .container-kpis) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.dashboard-compartilhada .dashboard-welcome {
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  body.dashboard-compartilhada .dashboard-welcome__titulo {
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+
+  body.dashboard-compartilhada :is(.grafico-canvas, .container-canvas-recursos, .container-canvas-rede, .evolucao-grafico) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body.dashboard-compartilhada :is(.investigacao-paineis > .cartao, .paineis > .cartao) {
+    min-height: 340px;
+    height: auto;
+  }
+}
+
 /* Paleta escura compartilhada pelas dashboards. */
 body.dashboard-compartilhada {
   --dashboard-fundo: #0b1119;

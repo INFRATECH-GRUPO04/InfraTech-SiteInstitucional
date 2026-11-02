@@ -692,7 +692,7 @@
 /* =========================================================
    7. RESPONSIVIDADE
    ========================================================= */
-@media (max-width: 1024px) {
+@media (max-width: 991px) {
     .sobre-grid,
     .equipe-home-destaque,
     .contato-grid-home {
@@ -707,7 +707,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 760px) {
     .secao-fullscreen {
         padding: 60px 0;
     }

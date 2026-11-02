@@ -286,7 +286,7 @@ dialog.modal-infratech::backdrop {
     text-decoration: underline;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 600px) {
     .div_popup {
         padding: 20px 16px;
     }

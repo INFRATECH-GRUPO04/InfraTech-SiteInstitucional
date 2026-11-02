@@ -318,7 +318,7 @@ body.pagina-autenticacao {
 }
 
 /* ----------- Responsivo ----------- */
-@media (max-width: 768px) {
+@media (max-width: 760px) {
     .funcionario-formulario {
         grid-template-columns: 1fr;
         gap: 14px;

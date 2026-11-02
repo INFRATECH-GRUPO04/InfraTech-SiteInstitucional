@@ -273,15 +273,15 @@ function adicionarMenuModificarServidor(sidebar) {
     else categoria.after(link);
 }
 
-// Injeta e controla o botão hambúrguer global e sobreposição para menu deslizante lateral
 /* Adiciona os controles necessários para abrir e fechar a sidebar em telas
- * estreitas, incluindo o fechamento ao tocar fora ou escolher um link.
+ * estreitas. Mantém o estado acessível para leitores de tela, permite fechar
+ * com Escape, ao tocar fora, ao escolher um link ou ao voltar para desktop.
  */
 function inicializarMenuLateralResponsivo() {
     var sidebar = document.querySelector("aside.header-left");
     if (!sidebar) return;
 
-    // Evita duplicar se já existir
+    /* A validação de sessão pode inicializar o menu em mais de um fluxo. */
     if (document.getElementById("btn_hamburguer_global")) return;
 
     var btnHamburguer = document.createElement("button");
@@ -289,6 +289,9 @@ function inicializarMenuLateralResponsivo() {
     btnHamburguer.className = "btn-hamburguer-global";
     btnHamburguer.type = "button";
     btnHamburguer.setAttribute("aria-label", "Abrir menu de navegação");
+    sidebar.id = sidebar.id || "navegacao-principal";
+    btnHamburguer.setAttribute("aria-controls", sidebar.id);
+    btnHamburguer.setAttribute("aria-expanded", "false");
     btnHamburguer.innerHTML = "&#9776;";
 
     var overlay = document.createElement("div");
@@ -299,17 +302,39 @@ function inicializarMenuLateralResponsivo() {
     document.body.prepend(btnHamburguer);
 
     function alternar() {
-        sidebar.classList.toggle("aberta");
-        overlay.classList.toggle("visivel");
+        var abrir = !sidebar.classList.contains("aberta");
+        sidebar.classList.toggle("aberta", abrir);
+        overlay.classList.toggle("visivel", abrir);
+        document.body.classList.toggle("menu-lateral-aberto", abrir);
+        btnHamburguer.setAttribute("aria-expanded", String(abrir));
+        btnHamburguer.setAttribute("aria-label", abrir ? "Fechar menu de navegação" : "Abrir menu de navegação");
+        btnHamburguer.innerHTML = abrir ? "&times;" : "&#9776;";
+        if (abrir) {
+            var primeiroLink = sidebar.querySelector("a.nav-item:not([hidden])");
+            if (primeiroLink) primeiroLink.focus();
+        }
     }
 
     function fechar() {
         sidebar.classList.remove("aberta");
         overlay.classList.remove("visivel");
+        document.body.classList.remove("menu-lateral-aberto");
+        btnHamburguer.setAttribute("aria-expanded", "false");
+        btnHamburguer.setAttribute("aria-label", "Abrir menu de navegação");
+        btnHamburguer.innerHTML = "&#9776;";
     }
 
     btnHamburguer.addEventListener("click", alternar);
     overlay.addEventListener("click", fechar);
+    document.addEventListener("keydown", function (evento) {
+        if (evento.key === "Escape" && sidebar.classList.contains("aberta")) {
+            fechar();
+            btnHamburguer.focus();
+        }
+    });
+    window.addEventListener("resize", function () {
+        if (window.matchMedia("(min-width: 992px)").matches) fechar();
+    });
 
     sidebar.querySelectorAll(".nav-item, .btn-logout").forEach(function (item) {
         item.addEventListener("click", fechar);
