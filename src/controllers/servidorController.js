@@ -1,6 +1,7 @@
 /*
  * Este arquivo: Valida operações de servidores e seus componentes, aplica os limites recebidos e prepara respostas para as rotas de monitoramento.
  */
+var crypto = require("crypto");
 var servidorModel = require("../models/servidorModel");
 
 
@@ -263,21 +264,34 @@ function excluir(req, res) {
 }
 
 function atualizarChave(req, res) {
-    var idServidor = req.params.idServidor;
-    var codigo = req.body.codigoServer;
-
-    if (codigo == undefined) {
-        res.status(400).send("O codigo está undefined!");
-    } else {
-        servidorModel.atualizarChavePorEmpresa(idServidor, codigo, req.usuario.empresa)
-            .then(function (resultado) {
-                res.status(200).json(resultado);
-            }).catch(function (erro) {
-                console.log(erro);
-                console.log("Houve um erro ao atualizar: ", erro.sqlMessage);
-                res.status(500).json(erro.sqlMessage);
-            });
+    var idServidor = Number(req.params.idServidor);
+    if (!Number.isInteger(idServidor) || idServidor <= 0) {
+        return res.status(400).json({ erro: "Servidor inválido." });
     }
+
+    var codigo = (req.body && req.body.codigoServer && String(req.body.codigoServer).trim()) 
+        ? String(req.body.codigoServer).trim() 
+        : ("inf_" + crypto.randomBytes(16).toString("hex"));
+
+    servidorModel.servidorPertenceEmpresa(idServidor, req.usuario.empresa)
+        .then(function (servidores) {
+            if (!servidores.length) {
+                return res.status(404).json({ erro: "Servidor não encontrado nesta empresa." });
+            }
+            return servidorModel.atualizarChavePorEmpresa(idServidor, codigo, req.usuario.empresa);
+        })
+        .then(function (resultado) {
+            res.status(200).json({
+                ok: true,
+                mensagem: "Chave do servidor gerada com sucesso!",
+                chave: codigo
+            });
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao atualizar a chave: ", erro.sqlMessage);
+            res.status(500).json({ erro: "Houve um erro ao atualizar a chave do servidor." });
+        });
 }
 
 module.exports = {

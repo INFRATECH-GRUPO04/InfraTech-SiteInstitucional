@@ -141,6 +141,16 @@ async function buscarComponentes() {
     const nomeInput = document.getElementById("mod_nome_servidor");
     listaComponentesServidor = [];
 
+    const campoChave = document.getElementById("chave_servidor_input");
+    const btnCopiar = document.getElementById("btn_copiar_chave");
+    if (campoChave) {
+        campoChave.value = "";
+        campoChave.placeholder = idServidor 
+            ? "Clique em 'Gerar Nova Chave' para gerar a credencial" 
+            : "Selecione um servidor e clique em 'Gerar Nova Chave'";
+    }
+    if (btnCopiar) btnCopiar.disabled = true;
+
     if (!idServidor) {
         nomeInput.value = "";
         mostrarEstadoComponentes("Selecione um servidor acima para visualizar e gerenciar seus recursos.");
@@ -252,6 +262,55 @@ async function excluirServidor() {
         await listarServidores();
     } catch (erro) {
         alert(erro.message || "Não foi possível excluir o servidor.");
+    }
+}
+
+/* Solicita a geração de uma nova chave/token para o servidor selecionado */
+async function gerarChaveServidor() {
+    const idServidor = document.getElementById("servidor_selecionado_id").value;
+    if (!idServidor) {
+        return alert("Selecione um servidor primeiro para gerar a chave de acesso.");
+    }
+
+    if (!confirm("Gerar uma nova chave invalidará a chave anterior do script de coleta deste servidor. Deseja continuar?")) {
+        return;
+    }
+
+    try {
+        const dados = await chamarApiServidor(`/servidor/atualizar-chave/${encodeURIComponent(idServidor)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const campoChave = document.getElementById("chave_servidor_input");
+        campoChave.value = dados.chave;
+        const btnCopiar = document.getElementById("btn_copiar_chave");
+        if (btnCopiar) btnCopiar.disabled = false;
+
+        alert("Chave gerada com sucesso! Copie agora e insira na configuração do script de coleta local.");
+    } catch (erro) {
+        alert(erro.message || "Erro ao gerar a chave do servidor.");
+    }
+}
+
+/* Copia o token gerado para a área de transferência */
+function copiarChaveServidor() {
+    const campoChave = document.getElementById("chave_servidor_input");
+    const chave = campoChave ? campoChave.value : "";
+    if (!chave) return;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(chave).then(() => {
+            alert("Chave copiada para a área de transferência!");
+        }).catch(() => {
+            campoChave.select();
+            document.execCommand("copy");
+            alert("Chave copiada para a área de transferência!");
+        });
+    } else {
+        campoChave.select();
+        document.execCommand("copy");
+        alert("Chave copiada para a área de transferência!");
     }
 }
 
