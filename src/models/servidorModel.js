@@ -4,14 +4,14 @@
 var database = require("../database/config")
 
 /* Grava um servidor associado à empresa recebida do controller. */
-function cadastrar(nome, idEmpresa) {
-    console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome);
+function cadastrar(nome, localizacao, idEmpresa) {
+    console.log("ACESSEI O SERVIDOR MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, localizacao);
     
     var instrucaoSql = `
-        INSERT INTO servidor (nome, fk_empresa, status_sistema) VALUES ('${nome}', ${idEmpresa}, 1);
+        INSERT INTO servidor (nome, localizacao, fk_empresa, status_sistema) VALUES (?, ?, ?, 1);
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [nome, localizacao || null, Number(idEmpresa)]);
 }
 
 /* Cria o componente e, em seguida, sua métrica inicial com limites de atenção
@@ -33,9 +33,9 @@ function cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtenc
 }
 
 function listar(idEmpresa) {
-    var instrucaoSql = `SELECT id_servidor, nome, status_sistema FROM servidor WHERE fk_empresa = ${idEmpresa};`;
+    var instrucaoSql = `SELECT id_servidor, nome, localizacao, status_sistema FROM servidor WHERE fk_empresa = ?;`;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    return database.executar(instrucaoSql, [Number(idEmpresa)]);
 }
 
 function listarComponentesPorServidor(idServidor) {
@@ -60,13 +60,13 @@ function servidorPertenceEmpresa(idServidor, idEmpresa) {
     return database.executar('SELECT id_servidor FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [Number(idServidor), Number(idEmpresa)]);
 }
 
-/* Altera o nome com os dois identificadores no filtro para garantir que a
+/* Altera o nome e a localização com os dois identificadores no filtro para garantir que a
  * atualização nunca atravesse o limite da empresa autenticada.
  */
-function atualizarPorEmpresa(idServidor, idEmpresa, nome) {
+function atualizarPorEmpresa(idServidor, idEmpresa, nome, localizacao) {
     return database.executar(
-        'UPDATE servidor SET nome = ? WHERE id_servidor = ? AND fk_empresa = ?',
-        [nome, Number(idServidor), Number(idEmpresa)]
+        'UPDATE servidor SET nome = ?, localizacao = ? WHERE id_servidor = ? AND fk_empresa = ?',
+        [nome, localizacao || null, Number(idServidor), Number(idEmpresa)]
     );
 }
 

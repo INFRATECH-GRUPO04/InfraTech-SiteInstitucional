@@ -103,6 +103,7 @@ function trocarComplemento(selectElement, spanId) {
  */
 function cadastrarServidorCompleto() {
     var nomeServidor = document.getElementById("nome_servidor_id").value.trim();
+    var localizacaoServidor = document.getElementById("localizacao_servidor_id") ? document.getElementById("localizacao_servidor_id").value.trim() : "";
 
     if (nomeServidor.length == 0 || nomeServidor.length > 45) {
         alert("O nome do servidor deve ter entre 1 e 45 caracteres!");
@@ -169,6 +170,7 @@ function cadastrarServidorCompleto() {
         },
         body: JSON.stringify({
             nomeServer: nomeServidor,
+            localizacaoServer: localizacaoServidor,
             idEmpresaServer: idEmpresa
         })
     })
@@ -217,6 +219,9 @@ function cadastrarServidorCompleto() {
             Promise.all(promises).then(() => {
                 alert("Servidor e componentes cadastrados com sucesso!");
                 document.getElementById("nome_servidor_id").value = "";
+                if (document.getElementById("localizacao_servidor_id")) {
+                    document.getElementById("localizacao_servidor_id").value = "";
+                }
             }).catch(erro => {
                 console.log("#ERRO Componentes:", erro);
                 alert("Servidor cadastrado, mas houve um erro ao salvar um ou mais componentes.");

@@ -10,6 +10,7 @@ var servidorModel = require("../models/servidorModel");
  */
 function cadastrar(req, res) {
     var nomeServidor = req.body.nomeServer;
+    var localizacaoServidor = req.body.localizacaoServer;
     var idEmpresa = req.usuario.empresa;
 
     if (nomeServidor == undefined || String(nomeServidor).trim().length == 0) {
@@ -22,7 +23,7 @@ function cadastrar(req, res) {
                 if (resultadoBusca.length > 0) {
                     res.status(409).send("Já existe um servidor cadastrado com este nome nesta empresa!");
                 } else {
-                    servidorModel.cadastrar(nomeServidor, idEmpresa)
+                    servidorModel.cadastrar(nomeServidor, localizacaoServidor, idEmpresa)
                         .then(function (resultado) {
                             var idServidor = resultado.insertId;
                             res.status(201).json({
@@ -198,17 +199,18 @@ function atualizarLimitesComponente(req, res) {
 function atualizar(req, res) {
     var idServidor = Number(req.params.idServidor);
     var nome = typeof req.body.nomeServer === 'string' ? req.body.nomeServer.trim() : '';
+    var localizacao = typeof req.body.localizacaoServer === 'string' ? req.body.localizacaoServer.trim() : null;
     if (!Number.isInteger(idServidor) || idServidor <= 0) return res.status(400).json({ erro: 'Servidor inválido.' });
     if (!nome) return res.status(400).json({ erro: 'O nome do servidor é obrigatório.' });
 
     servidorModel.servidorPertenceEmpresa(idServidor, req.usuario.empresa)
         .then(function (servidores) {
             if (!servidores.length) return res.status(404).json({ erro: 'Servidor não encontrado nesta empresa.' });
-            return servidorModel.atualizarPorEmpresa(idServidor, req.usuario.empresa, nome);
+            return servidorModel.atualizarPorEmpresa(idServidor, req.usuario.empresa, nome, localizacao);
         })
         .then(function (resultado) {
             if (res.headersSent) return;
-            return res.status(200).json({ ok: true, nome: nome });
+            return res.status(200).json({ ok: true, nome: nome, localizacao: localizacao });
         })
         .catch(function (erro) {
             console.log(erro);

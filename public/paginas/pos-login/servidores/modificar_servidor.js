@@ -4,6 +4,7 @@
  * além de excluir um servidor com seus registros dependentes.
  */
 let listaComponentesServidor = [];
+let listaServidoresCadastrados = [];
 
 /* Mostra uma mensagem simples dentro da área de componentes quando não há dados
  * para apresentar ou quando uma consulta à API falha.
@@ -59,6 +60,7 @@ async function listarServidores() {
 
     try {
         const servidores = await chamarApiServidor(`/servidor/listar/${encodeURIComponent(usuario.idEmpresa)}`);
+        listaServidoresCadastrados = servidores || [];
         seletor.replaceChildren(new Option("Selecione um servidor...", ""));
         if (!servidores || !servidores.length) {
             mostrarEstadoComponentes("Nenhum servidor está cadastrado nesta empresa.");
@@ -139,6 +141,7 @@ async function buscarComponentes() {
     const idServidor = document.getElementById("servidor_selecionado_id").value;
     const seletor = document.getElementById("servidor_selecionado_id");
     const nomeInput = document.getElementById("mod_nome_servidor");
+    const locInput = document.getElementById("mod_localizacao_servidor");
     listaComponentesServidor = [];
 
     const campoChave = document.getElementById("chave_servidor_input");
@@ -153,11 +156,16 @@ async function buscarComponentes() {
 
     if (!idServidor) {
         nomeInput.value = "";
+        if (locInput) locInput.value = "";
         mostrarEstadoComponentes("Selecione um servidor acima para visualizar e gerenciar seus recursos.");
         return;
     }
 
+    const servidorAtual = listaServidoresCadastrados.find(s => String(s.id_servidor || s.idServidor) === String(idServidor));
     nomeInput.value = seletor.options[seletor.selectedIndex].text;
+    if (locInput) {
+        locInput.value = (servidorAtual && servidorAtual.localizacao) || "";
+    }
     mostrarEstadoComponentes("Carregando componentes do servidor...");
     try {
         const componentes = await chamarApiServidor(`/servidor/listarComponentes/${encodeURIComponent(idServidor)}`);
@@ -208,6 +216,9 @@ function coletarAlteracoesComponentes() {
 async function atualizarServidor() {
     const idServidor = document.getElementById("servidor_selecionado_id").value;
     const nome = document.getElementById("mod_nome_servidor").value.trim();
+    const localizacao = document.getElementById("mod_localizacao_servidor") 
+        ? document.getElementById("mod_localizacao_servidor").value.trim() 
+        : "";
     if (!idServidor) return alert("Selecione um servidor.");
     if (!nome) return alert("Preencha o nome do servidor.");
 
@@ -222,7 +233,7 @@ async function atualizarServidor() {
         await chamarApiServidor(`/servidor/editar/${encodeURIComponent(idServidor)}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nomeServer: nome })
+            body: JSON.stringify({ nomeServer: nome, localizacaoServer: localizacao })
         });
         await Promise.all(alteracoes.map(function (componente) {
             return chamarApiServidor(`/servidor/editar/componente/${encodeURIComponent(componente.idComponente)}`, {
@@ -259,6 +270,9 @@ async function excluirServidor() {
         await chamarApiServidor(`/servidor/deletar/${encodeURIComponent(idServidor)}`, { method: "DELETE" });
         alert("Servidor excluído com sucesso.");
         document.getElementById("mod_nome_servidor").value = "";
+        if (document.getElementById("mod_localizacao_servidor")) {
+            document.getElementById("mod_localizacao_servidor").value = "";
+        }
         await listarServidores();
     } catch (erro) {
         alert(erro.message || "Não foi possível excluir o servidor.");
