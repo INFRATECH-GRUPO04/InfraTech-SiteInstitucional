@@ -17,8 +17,8 @@
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
     /* Converte o cargo em permissões claras. As áreas de empresas ficam
      * reservadas a ADMIN e INFRATECH, enquanto a manutenção de servidores fica
-     * restrita ao GESTOR. A edição de alertas também considera a liberação
-     * individual que o gestor pode conceder a um analista de dados.
+     * disponível para GESTOR e administradores. A edição de alertas também
+     * considera a liberação individual que o gestor pode conceder a um analista.
      */
     function obter(cargo, podeEditarAlertas) {
         const tipo = normalizar(cargo);
@@ -28,7 +28,7 @@
             dashboards: ids,
             administrar: completo,
             gerenciarEmpresas: ['ADMIN', 'INFRATECH'].includes(tipo),
-            modificarServidores: tipo === 'GESTOR',
+            modificarServidores: ['GESTOR', 'ADMIN', 'INFRATECH'].includes(tipo),
             editarLimites: completo || (tipo === 'ANALISTA_DADOS' && podeEditarAlertas === true),
             monitorar: ids.length > 0
         };
