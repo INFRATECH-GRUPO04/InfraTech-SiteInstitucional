@@ -60,6 +60,79 @@ function servidorPertenceEmpresa(idServidor, idEmpresa) {
     return database.executar('SELECT id_servidor FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [Number(idServidor), Number(idEmpresa)]);
 }
 
+/* Altera o nome com os dois identificadores no filtro para garantir que a
+ * atualização nunca atravesse o limite da empresa autenticada.
+ */
+function atualizarPorEmpresa(idServidor, idEmpresa, nome) {
+    return database.executar(
+        'UPDATE servidor SET nome = ? WHERE id_servidor = ? AND fk_empresa = ?',
+        [nome, Number(idServidor), Number(idEmpresa)]
+    );
+}
+
+/* Atualiza a capacidade do componente e os limites da métrica associada. Cada
+ * instrução confirma a empresa por meio do vínculo componente-servidor.
+ */
+function atualizarComponenteEmpresa(idComponente, idEmpresa, capacidade, idMetrica, limiteAtencao, limiteCritico) {
+    return componentePertenceEmpresa(idComponente, idEmpresa).then(function (componentes) {
+        if (!componentes.length) return null;
+        return database.executar(
+            `SELECT m.id_metrica FROM metrica m
+             JOIN componente c ON c.id_componente = m.fk_componente
+             JOIN servidor s ON s.id_servidor = c.fk_servidor
+             WHERE m.id_metrica = ? AND c.id_componente = ? AND s.fk_empresa = ?`,
+            [Number(idMetrica), Number(idComponente), Number(idEmpresa)]
+        ).then(function (metricas) {
+            if (!metricas.length) return null;
+            return database.executar(
+                `UPDATE componente c JOIN servidor s ON s.id_servidor = c.fk_servidor
+                 SET c.capacidade_total = ?
+                 WHERE c.id_componente = ? AND s.fk_empresa = ?`,
+                [Number(capacidade), Number(idComponente), Number(idEmpresa)]
+            ).then(function () {
+                return database.executar(
+                    `UPDATE metrica m JOIN componente c ON c.id_componente = m.fk_componente
+                     JOIN servidor s ON s.id_servidor = c.fk_servidor
+                     SET m.limite_atencao = ?, m.limite_critico = ?
+                     WHERE c.id_componente = ? AND m.id_metrica = ? AND s.fk_empresa = ?`,
+                    [Number(limiteAtencao), Number(limiteCritico), Number(idComponente), Number(idMetrica), Number(idEmpresa)]
+                ).then(function () {
+                    return true;
+                });
+            });
+        });
+    });
+}
+
+/* Remove dependências na ordem exigida pelas chaves estrangeiras. Antes de
+ * qualquer remoção, confirma que o servidor pertence à empresa solicitante.
+ */
+function excluirPorEmpresa(idServidor, idEmpresa) {
+    var servidor = Number(idServidor);
+    var empresa = Number(idEmpresa);
+    return servidorPertenceEmpresa(servidor, empresa).then(function (servidores) {
+        if (!servidores.length) return null;
+        return database.executar(
+            `DELETE m FROM metrica m
+             JOIN componente c ON c.id_componente = m.fk_componente
+             JOIN servidor s ON s.id_servidor = c.fk_servidor
+             WHERE s.id_servidor = ? AND s.fk_empresa = ?`, [servidor, empresa]
+        ).then(function () {
+            return database.executar(
+                `DELETE c FROM componente c JOIN servidor s ON s.id_servidor = c.fk_servidor
+                 WHERE s.id_servidor = ? AND s.fk_empresa = ?`, [servidor, empresa]
+            );
+        }).then(function () {
+            return database.executar(
+                `DELETE sf FROM servidor_funcionario sf JOIN servidor s ON s.id_servidor = sf.fk_servidor
+                 WHERE s.id_servidor = ? AND s.fk_empresa = ?`, [servidor, empresa]
+            );
+        }).then(function () {
+            return database.executar('DELETE FROM servidor WHERE id_servidor = ? AND fk_empresa = ?', [servidor, empresa]);
+        });
+    });
+}
+
 function atualizarChavePorEmpresa(idServidor, codigo, idEmpresa) {
     return database.executar('UPDATE servidor SET chave_hash = SHA2(?, 256) WHERE id_servidor = ? AND fk_empresa = ?', [codigo, Number(idServidor), Number(idEmpresa)]);
 }
@@ -117,6 +190,9 @@ module.exports = {
     listar,
     listarComponentesPorServidor,
     servidorPertenceEmpresa,
+    atualizarPorEmpresa,
+    atualizarComponenteEmpresa,
+    excluirPorEmpresa,
     atualizarChavePorEmpresa,
     componentePertenceEmpresa,
     listarLimitesGlobais,

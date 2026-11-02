@@ -62,6 +62,7 @@ function padronizarCabecalhoPosLogin(usuario) {
         '/paginas/pos-login/empresas/gerenciar_empresa.html': 'Gerenciar empresas',
         '/paginas/pos-login/empresas/cadastro_empresa.html': 'Cadastrar empresa',
         '/paginas/pos-login/servidores/cadastro_servidor.html': 'Cadastrar servidor',
+        '/paginas/pos-login/servidores/modificar_servidor.html': 'Modificar servidor',
         '/paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html': 'Gerar token',
         '/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html': 'Gerenciar funcionários',
         '/paginas/pos-login/dashboards/dashboard_dados.html': 'Dashboard de Dados',
@@ -185,6 +186,7 @@ function configurarMenusPorPerfil(tipoAcesso) {
     if (!sidebar) return;
     adicionarMenuDashboards(sidebar);
     adicionarMenuGerenciarAcesso(sidebar);
+    adicionarMenuModificarServidor(sidebar);
     sidebar.querySelectorAll("a.nav-item").forEach(function (link) {
         var rota = new URL(link.getAttribute("href") || "#", window.location.href).pathname;
         var liberado = InfraTechPermissoes.podeAcessar(tipoAcesso, rota);
@@ -228,6 +230,47 @@ function adicionarMenuGerenciarAcesso(sidebar) {
     link.href = caminho;
     link.innerHTML = '<img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon">Gerenciar acesso';
     categoria.after(link);
+}
+
+/* Recoloca a entrada de manutenção de servidores na sidebar compartilhada.
+ * Como a função roda nas páginas pós-login, o link também aparece nas dashboards;
+ * a regra de cargo o mantém visível somente para contas autorizadas.
+ */
+function adicionarMenuModificarServidor(sidebar) {
+    var caminho = "/paginas/pos-login/servidores/modificar_servidor.html";
+    var link = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+        return new URL(item.getAttribute("href"), window.location.href).pathname === caminho;
+    });
+    var cadastro = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+        return new URL(item.getAttribute("href"), window.location.href).pathname === "/paginas/pos-login/servidores/cadastro_servidor.html";
+    });
+    var categoria = sidebar.querySelector(".secao-servidores");
+
+    if (!categoria && cadastro) {
+        var anterior = cadastro.previousElementSibling;
+        while (anterior && !anterior.matches("h3.nav-categoria")) anterior = anterior.previousElementSibling;
+        categoria = anterior;
+        if (categoria) categoria.classList.add("secao-servidores");
+    }
+    if (!categoria) {
+        categoria = document.createElement("h3");
+        categoria.className = "nav-categoria secao-servidores";
+        categoria.innerHTML = '<img src="/assets/imgs/servidores.png" alt="" class="menu-icon-title">Servidores';
+        sidebar.insertBefore(categoria, sidebar.querySelector(".btn-logout"));
+    }
+
+    if (!link) link = document.createElement("a");
+    link.href = caminho;
+    link.className = "nav-item";
+    link.innerHTML = '<img src="/assets/imgs/modificar.png" alt="" class="menu-icon">Modificar servidor';
+    if (window.location.pathname === caminho) {
+        link.classList.add("ativo");
+        link.setAttribute("aria-current", "page");
+    } else {
+        link.removeAttribute("aria-current");
+    }
+    if (cadastro) cadastro.after(link);
+    else categoria.after(link);
 }
 
 // Injeta e controla o botão hambúrguer global e sobreposição para menu deslizante lateral

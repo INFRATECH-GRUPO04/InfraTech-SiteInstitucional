@@ -191,6 +191,77 @@ function atualizarLimitesComponente(req, res) {
     }
 }
 
+/* Atualiza o nome apenas quando o servidor pertence à empresa da sessão.
+ * O identificador recebido na URL nunca substitui essa verificação de vínculo.
+ */
+function atualizar(req, res) {
+    var idServidor = Number(req.params.idServidor);
+    var nome = typeof req.body.nomeServer === 'string' ? req.body.nomeServer.trim() : '';
+    if (!Number.isInteger(idServidor) || idServidor <= 0) return res.status(400).json({ erro: 'Servidor inválido.' });
+    if (!nome) return res.status(400).json({ erro: 'O nome do servidor é obrigatório.' });
+
+    servidorModel.servidorPertenceEmpresa(idServidor, req.usuario.empresa)
+        .then(function (servidores) {
+            if (!servidores.length) return res.status(404).json({ erro: 'Servidor não encontrado nesta empresa.' });
+            return servidorModel.atualizarPorEmpresa(idServidor, req.usuario.empresa, nome);
+        })
+        .then(function (resultado) {
+            if (res.headersSent) return;
+            return res.status(200).json({ ok: true, nome: nome });
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            return res.status(500).json({ erro: 'Não foi possível atualizar o servidor.' });
+        });
+}
+
+/* Confere a capacidade, os limites e a empresa dona do componente antes de
+ * atualizar os dados físicos e a métrica associada no banco.
+ */
+function atualizarComponente(req, res) {
+    var idComponente = Number(req.params.idComponente);
+    var capacidade = Number(req.body.capacidadeServer);
+    var idMetrica = Number(req.body.idMetricaServer);
+    var limiteAtencao = Number(req.body.limiteAtencaoServer);
+    var limiteCritico = Number(req.body.limiteCriticoServer);
+
+    if (!Number.isInteger(idComponente) || idComponente <= 0) return res.status(400).json({ erro: 'Componente inválido.' });
+    if (!Number.isFinite(capacidade) || capacidade <= 0) return res.status(400).json({ erro: 'A capacidade deve ser maior que zero.' });
+    if (!Number.isInteger(idMetrica) || idMetrica <= 0) return res.status(400).json({ erro: 'Métrica inválida.' });
+    if (!Number.isInteger(limiteAtencao) || !Number.isInteger(limiteCritico)
+        || limiteAtencao < 0 || limiteCritico > 100 || limiteAtencao >= limiteCritico) {
+        return res.status(400).json({ erro: 'O limite de atenção deve ser menor que o crítico e ambos devem estar entre 0% e 100%.' });
+    }
+
+    servidorModel.atualizarComponenteEmpresa(
+        idComponente, req.usuario.empresa, capacidade, idMetrica, limiteAtencao, limiteCritico
+    ).then(function (resultado) {
+        if (!resultado) return res.status(404).json({ erro: 'Componente não encontrado nesta empresa.' });
+        return res.status(200).json({ ok: true });
+    }).catch(function (erro) {
+        console.log(erro);
+        return res.status(500).json({ erro: 'Não foi possível atualizar o componente.' });
+    });
+}
+
+/* Solicita ao model a exclusão do servidor e das métricas, componentes e vínculos
+ * dependentes. A empresa da sessão é usada para impedir remoções entre empresas.
+ */
+function excluir(req, res) {
+    var idServidor = Number(req.params.idServidor);
+    if (!Number.isInteger(idServidor) || idServidor <= 0) return res.status(400).json({ erro: 'Servidor inválido.' });
+
+    servidorModel.excluirPorEmpresa(idServidor, req.usuario.empresa)
+        .then(function (resultado) {
+            if (!resultado) return res.status(404).json({ erro: 'Servidor não encontrado nesta empresa.' });
+            return res.status(200).json({ ok: true });
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            return res.status(500).json({ erro: 'Não foi possível excluir o servidor.' });
+        });
+}
+
 function atualizarChave(req, res) {
     var idServidor = req.params.idServidor;
     var codigo = req.body.codigoServer;
@@ -217,5 +288,8 @@ module.exports = {
     listarLimitesGlobais,
     salvarLimitesGlobais,
     atualizarLimitesComponente,
+    atualizar,
+    atualizarComponente,
+    excluir,
     atualizarChave
 };

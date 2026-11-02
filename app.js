@@ -54,9 +54,9 @@ app.use("/", indexRouter);
 app.use("/login_cadastro", login_cadastroRouter);
 app.use("/crypto", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), cryptoRouter);
 app.use("/servidor", autorizacao.autenticar, servidorRouter);
-app.use("/cadastro_empresa", cadastro_empresaRouter);
-app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciar_empresaRouter);
-app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciar_empresaRouter);
+app.use("/cadastro_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), cadastro_empresaRouter);
+app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciar_empresaRouter);
+app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciar_empresaRouter);
 app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
 app.use("/agente", agenteRouter)
 

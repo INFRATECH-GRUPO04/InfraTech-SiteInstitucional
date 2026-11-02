@@ -23,6 +23,13 @@ router.get("/listarComponentes/:idServidor", permitir('monitorar'), function (re
     servidorController.listarComponentesPorServidor(req, res);
 });
 
+/* Estas rotas retomam a manutenção de servidores: edição do nome, edição de
+ * capacidade e limites dos componentes e remoção do servidor selecionado.
+ */
+router.put("/editar/:idServidor", permitir('modificarServidores'), servidorController.atualizar);
+router.put("/editar/componente/:idComponente", permitir('modificarServidores'), servidorController.atualizarComponente);
+router.delete("/deletar/:idServidor", permitir('modificarServidores'), servidorController.excluir);
+
 router.get("/alertas/globais/:idEmpresa", permitir('monitorar'), servidorController.listarLimitesGlobais);
 router.put("/alertas/globais/:idEmpresa", permitir('editarLimites'), servidorController.salvarLimitesGlobais);
 

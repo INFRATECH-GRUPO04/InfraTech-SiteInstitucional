@@ -15,14 +15,23 @@
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
-    /* Converte o cargo em permissões claras, incluindo a liberação individual
-     * que o gestor pode conceder a um analista de dados para editar alertas.
+    /* Converte o cargo em permissões claras. As áreas de empresas ficam
+     * reservadas a ADMIN e INFRATECH, enquanto a manutenção de servidores fica
+     * restrita ao GESTOR. A edição de alertas também considera a liberação
+     * individual que o gestor pode conceder a um analista de dados.
      */
     function obter(cargo, podeEditarAlertas) {
         const tipo = normalizar(cargo);
         const completo = completos.includes(tipo);
         const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
-        return { dashboards: ids, administrar: completo, editarLimites: completo || (tipo === 'ANALISTA_DADOS' && podeEditarAlertas === true), monitorar: ids.length > 0 };
+        return {
+            dashboards: ids,
+            administrar: completo,
+            gerenciarEmpresas: ['ADMIN', 'INFRATECH'].includes(tipo),
+            modificarServidores: tipo === 'GESTOR',
+            editarLimites: completo || (tipo === 'ANALISTA_DADOS' && podeEditarAlertas === true),
+            monitorar: ids.length > 0
+        };
     }
     function destino(cargo) {
         const id = obter(cargo).dashboards[0];
@@ -38,6 +47,8 @@
     function podeAcessar(cargo, caminho) {
         const rota = String(caminho).toLowerCase();
         const perfil = obter(cargo);
+        if (rota.startsWith('/paginas/pos-login/empresas/')) return perfil.gerenciarEmpresas;
+        if (rota === '/paginas/pos-login/servidores/modificar_servidor.html') return perfil.modificarServidores;
         const aliases = {
             '/dashboard/analista/dashboard.html': 'saude',
             '/paginas/pos-login/dashboards/dashboard_noc.html': 'saude',
