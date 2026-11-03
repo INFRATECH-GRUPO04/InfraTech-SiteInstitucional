@@ -100,14 +100,14 @@ function alterarPermissaoAlertas(req, res) {
 
 /* Encaminha a consulta dos vínculos entre funcionário e servidores da empresa. */
 function buscarServidoresPorEmpresa(req, res) {
-  var idEmpresa = req.usuario.empresa;
-  var idFuncionario = Number(req.params.id);
+  var idEmpresa = req.usuario ? req.usuario.empresa : Number(req.params.idEmpresa);
+  var idFuncionario = Number(req.params.id || req.params.idFuncionario);
 
   gerenciar_funcionarioModel.buscarServidoresPorEmpresa(idEmpresa, idFuncionario)
     .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);
-      res.status(500).json(erro.sqlMessage);
+      res.status(500).json(erro.sqlMessage || erro.message);
     });
 }
 

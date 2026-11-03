@@ -109,7 +109,7 @@ function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
     SELECT
         s.id_servidor,
         s.nome,
-        en.cidade AS localizacao,
+        COALESCE(s.localizacao, en.cidade, 'Não informada') AS localizacao,
         s.status_sistema,
         (sf.fk_funcionario IS NOT NULL) AS temAcesso
     FROM servidor s
@@ -117,11 +117,11 @@ function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
     LEFT JOIN endereco en ON en.id_endereco = e.fk_endereco
     LEFT JOIN servidor_funcionario sf
            ON sf.fk_servidor = s.id_servidor
-          AND sf.fk_funcionario = ${idFuncionario}
+          AND sf.fk_funcionario = ?
     WHERE s.fk_empresa = ?
       AND EXISTS (SELECT 1 FROM funcionario f WHERE f.id_funcionario = ? AND f.fk_empresa = s.fk_empresa)
     ORDER BY s.nome;`;
-  return database.executar(instrucaoSql, [Number(idEmpresa), Number(idFuncionario)]);
+  return database.executar(instrucaoSql, [Number(idFuncionario), Number(idEmpresa), Number(idFuncionario)]);
 }
 
 function validarServidoresDaEmpresa(idEmpresa, servidores) {

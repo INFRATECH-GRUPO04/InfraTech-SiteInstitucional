@@ -38,6 +38,18 @@ function listar(idEmpresa) {
     return database.executar(instrucaoSql, [Number(idEmpresa)]);
 }
 
+function listarPorFuncionario(idEmpresa, idFuncionario) {
+    var instrucaoSql = `
+        SELECT s.id_servidor, s.nome, s.localizacao, s.status_sistema 
+        FROM servidor s
+        JOIN servidor_funcionario sf ON sf.fk_servidor = s.id_servidor
+        WHERE s.fk_empresa = ? AND sf.fk_funcionario = ?
+        ORDER BY s.nome;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql, [Number(idEmpresa), Number(idFuncionario)]);
+}
+
 function listarComponentesPorServidor(idServidor) {
     var instrucaoSql = `
         SELECT 
@@ -188,6 +200,7 @@ module.exports = {
     cadastrarComponente,
     buscarPorNomeEEmpresa,
     listar,
+    listarPorFuncionario,
     listarComponentesPorServidor,
     servidorPertenceEmpresa,
     atualizarPorEmpresa,

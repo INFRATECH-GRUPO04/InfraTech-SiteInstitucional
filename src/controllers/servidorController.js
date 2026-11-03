@@ -98,9 +98,17 @@ function listar(req, res) {
     var idEmpresa = Number(req.params.idEmpresa);
     if (idEmpresa !== req.usuario.empresa) return res.status(403).json({ erro: 'Acesso restrito à empresa da sua conta.' });
 
-    servidorModel.listar(idEmpresa)
+    var idUsuario = req.usuario.id;
+    var cargo = String(req.usuario.cargo || '').toUpperCase();
+    var ehGestao = ['GESTOR', 'ADMIN', 'INFRATECH'].includes(cargo);
+
+    var busca = ehGestao
+        ? servidorModel.listar(idEmpresa)
+        : servidorModel.listarPorFuncionario(idEmpresa, idUsuario);
+
+    busca
         .then(function (resultado) {
-            if (resultado.length > 0) {
+            if (resultado && resultado.length > 0) {
                 res.status(200).json(resultado);
             } else {
                 res.status(204).send("Nenhum resultado encontrado!");
