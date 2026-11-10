@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InfraTech – Visão Geral</title>
+    <link rel="icon" href="../assets/icon/logo.png" type="image/png" />
+
+    <!-- Estilos globais compartilhados e estilos visuais da dashboard -->
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/dash-geral.css" />
+    <link rel="stylesheet" href="/css/dashboard-global.css" />
+
+    <!-- Script de sessão do usuário -->
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+
+    <!-- Chart.js via CDN para renderizar os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body class="pagina-dash-geral dashboard-compartilhada">
+
+    <!-- Barra lateral padrão -->
+    <aside class="header-left" id="sidebar_dash">
+      <div class="logo">
+        <a href="./dash-geral.html" title="InfraTech Painel">
+          <img src="../assets/icon/logo.png" alt="InfraTech">
+        </a>
+      </div>
+
+      <hr class="linha">
+
+      <h3 class="nav-categoria">
+        <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Servidores
+      </h3>
+
+      <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar Host
+      </a>
+
+      <h3 class="nav-categoria secao-funcionarios">
+        <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+        Funcionários
+      </h3>
+
+      <a href="../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+        <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+        Cadastrar Token
+      </a>
+      <h3 class="nav-categoria secao-empresas">
+        <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+        Empresas
+      </h3>
+
+      <a href="../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Gerenciar
+      </a>
+      <a href="../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+        <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+        Cadastrar Empresa
+      </a>
+
+      <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+        <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+      </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="conteudo-principal">
+
+      <!-- Cabeçalho da dashboard -->
+      <header class="cabecalho-dash dashboard-welcome">
+        <div class="cabecalho-dash__esquerda">
+          <h1 class="cabecalho-dash__titulo">
+            BEM-VINDO, <span id="nome_usuario">USUÁRIO</span> <span class="cabecalho-dash__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
+          </h1>
+        </div>
+
+        <div class="cabecalho-dash__direita">
+          <!-- Seletor de ambiente -->
+          <button class="badge badge--ambiente" type="button">
+            <span class="ponto-ambiente">•</span> Produção ▼
+          </button>
+
+          <!-- Alertas de servidores -->
+          <span class="status-frota status-frota--online" id="resumo-online">• — online</span>
+          <span class="status-frota status-frota--atencao" id="resumo-atencao">• — atenção</span>
+          <span class="status-frota status-frota--offline" id="resumo-offline">• — offline</span>
+
+          <!-- Relógio com data e hora -->
+          <span class="cabecalho-dash__hora" id="relogio">24/10/2026 20:48</span>
+        </div>
+      </header>
+
+      <!-- Leitura atual da frota e KPIs -->
+      <section class="panorama">
+
+        <div class="panorama__info">
+          <div>
+            <h2 class="panorama__titulo">Monitoramento da Frota</h2>
+            <p class="panorama__descricao">Acompanhe disponibilidade, uso de recursos e alertas dos servidores.</p>
+          </div>
+        </div>
+
+          <!-- Grade com os 4 cartões de métricas (KPIs) -->
+          <div class="kpi-grid">
+
+            <!-- KPI 1: Servidores Online -->
+            <div class="kpi-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--verde">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                  </svg>
+                </span>
+                <span class="kpi-card__alerta kpi-card__alerta--perigo" id="servidores-offline-badge">—</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--verde"><span id="servidores-online">—</span><span class="kpi-card__valor--total" id="servidores-total"></span></p>
+              <p class="kpi-card__rotulo">Servidores Online</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
+                <span class="ponto ponto--offline"></span><span id="servidores-offline-detalhe">Status indisponível</span> — <a class="kpi-card__link" id="investigar-offline" href="./especifica-servidor/dash-especifica.html" hidden>Investigar</a>
+              </p>
+            </div>
+
+            <!-- KPI 2: Disponibilidade dos Serviços -->
+            <div class="kpi-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--ciano">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </span>
+                <span class="kpi-card__alerta kpi-card__alerta--neutro" id="disponibilidade-badge">Média da frota · 7 dias</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--ciano" id="disponibilidade-valor">—</p>
+              <p class="kpi-card__rotulo">Disponibilidade dos Serviços</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--neutro">
+                <span class="ponto ponto--neutro" id="disponibilidade-ponto"></span><span id="disponibilidade-detalhe">Média da frota</span>
+              </p>
+            </div>
+
+            <!-- KPI 3: Problemas que Precisam de Atenção -->
+            <div class="kpi-card kpi-card--problemas" id="kpi-problemas-card">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--laranja">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </span>
+                <span class="kpi-card__alerta kpi-card__alerta--laranja" id="alerta-problemas-badge">0 offline · 0 em alerta</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--perigo" id="kpi-problemas">—</p>
+              <p class="kpi-card__rotulo">Servidores para investigar</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--perigo">
+                <span class="ponto ponto--neutro"></span><span id="problemas-detalhe">Nenhum alerta ativo</span>
+              </p>
+            </div>
+
+            <!-- KPI 4: Tráfego de Rede -->
+            <div class="kpi-card kpi-card--rede">
+              <div class="kpi-card__cabecalho">
+                <span class="kpi-card__icone kpi-card__icone--roxo">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                  </svg>
+                </span>
+                <span class="kpi-card__alerta kpi-card__alerta--roxo" id="alerta-rede-badge">Sem limite</span>
+              </div>
+              <p class="kpi-card__valor kpi-card__valor--roxo" id="kpi-rede-valor"><span id="kpi-rede-atual">—</span> <span class="kpi-card__valor--unidade">Mbps</span></p>
+              <p class="kpi-card__rotulo">Tráfego de Rede</p>
+              <p class="kpi-card__detalhe kpi-card__detalhe--neutro" id="alerta-rede-detalhe">
+                <span class="ponto ponto--neutro" id="alerta-rede-ponto"></span><span id="alerta-rede-faixas">Capacidade não cadastrada</span>
+              </p>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Seção: Tabela Status dos Servidores -->
+        <section class="status-servidores">
+
+          <div class="status-servidores__info">
+            <h2 class="status-servidores__titulo">Status dos Servidores</h2>
+            <p class="status-servidores__descricao">
+              A cor indica a situação das métricas; não confirma um incidente persistente.
+            </p>
+          </div>
+
+          <div class="tabela-container">
+            <table class="tabela-servidores">
+              <thead>
+                <tr>
+                  <th>SERVIDOR</th>
+                  <th>LOCALIDADE</th>
+                  <th>SITUAÇÃO</th>
+                  <th>PROCESSADOR</th>
+                  <th>MEMÓRIA RAM</th>
+                  <th>ARMAZENAMENTO</th>
+                  <th>DISPONIBILIDADE</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <!-- Servidor 01: Online -->
+                <tr class="tabela-servidores__linha" data-servidor="SRV-BR-01">
+                  <td>
+                    <div class="celula-servidor">
+                      <span class="ponto ponto--online"></span>
+                      <strong class="celula-servidor__nome">SRV-BR-01</strong>
+                    </div>
+                  </td>
+                  <td>São Paulo</td>
+                  <td><span class="status">—</span></td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-disponibilidade">
+                      <span class="disponibilidade">—</span>
+                      <small class="disponibilidade__detalhe">—</small>
+                    </div>
+                  </td>
+                  <td>—</td>
+                </tr>
+
+                <!-- Servidor 02: Online -->
+                <tr class="tabela-servidores__linha" data-servidor="SRV-BR-02">
+                  <td>
+                    <div class="celula-servidor">
+                      <span class="ponto ponto--online"></span>
+                      <strong class="celula-servidor__nome">SRV-BR-02</strong>
+                    </div>
+                  </td>
+                  <td>Rio de Janeiro</td>
+                  <td><span class="status">—</span></td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-disponibilidade">
+                      <span class="disponibilidade">—</span>
+                      <small class="disponibilidade__detalhe">—</small>
+                    </div>
+                  </td>
+                  <td>—</td>
+                </tr>
+
+                <!-- Servidor 03: Atenção (linha destacada em amarelo suave) -->
+                <tr class="tabela-servidores__linha tabela-servidores__linha--atencao" data-servidor="SRV-BR-03">
+                  <td>
+                    <div class="celula-servidor">
+                      <span class="ponto ponto--atencao"></span>
+                      <strong class="celula-servidor__nome">SRV-BR-03</strong>
+                    </div>
+                  </td>
+                  <td>Curitiba</td>
+                  <td><span class="status">—</span></td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--atencao" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--atencao" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--atencao" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-disponibilidade">
+                      <span class="disponibilidade">—</span>
+                      <small class="disponibilidade__detalhe">—</small>
+                    </div>
+                  </td>
+                  <td>—</td>
+                </tr>
+
+                <!-- Servidor 04: Offline -->
+                <tr class="tabela-servidores__linha tabela-servidores__linha--offline" data-servidor="SRV-BR-04">
+                  <td>
+                    <div class="celula-servidor">
+                      <span class="ponto ponto--offline"></span>
+                      <strong class="celula-servidor__nome">SRV-BR-04</strong>
+                    </div>
+                  </td>
+                  <td>Brasília</td>
+                  <td><span class="status">—</span></td>
+                  <td><span class="celula-metrica__vazio">—</span></td>
+                  <td><span class="celula-metrica__vazio">—</span></td>
+                  <td><span class="celula-metrica__vazio">—</span></td>
+                  <td>
+                    <div class="celula-disponibilidade">
+                      <span class="disponibilidade">—</span>
+                    </div>
+                  </td>
+                  <td>—</td>
+                </tr>
+
+                <!-- Servidor 05: Online -->
+                <tr class="tabela-servidores__linha" data-servidor="SRV-BR-05">
+                  <td>
+                    <div class="celula-servidor">
+                      <span class="ponto ponto--online"></span>
+                      <strong class="celula-servidor__nome">SRV-BR-05</strong>
+                    </div>
+                  </td>
+                  <td>Recife</td>
+                  <td><span class="status">—</span></td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-disponibilidade">
+                      <span class="disponibilidade">—</span>
+                      <small class="disponibilidade__detalhe">—</small>
+                    </div>
+                  </td>
+                  <td>—</td>
+                </tr>
+
+                <!-- Servidor 06: Online -->
+                <tr class="tabela-servidores__linha" data-servidor="SRV-BR-06">
+                  <td>
+                    <div class="celula-servidor">
+                      <span class="ponto ponto--online"></span>
+                      <strong class="celula-servidor__nome">SRV-BR-06</strong>
+                    </div>
+                  </td>
+                  <td>Salvador</td>
+                  <td><span class="status">—</span></td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-metrica">
+                      <span class="celula-metrica__valor">—</span>
+                      <div class="barra-progresso">
+                        <div class="barra-progresso__fill barra-progresso__fill--ok" style="width: 0%"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="celula-disponibilidade">
+                      <span class="disponibilidade">—</span>
+                      <small class="disponibilidade__detalhe">—</small>
+                    </div>
+                  </td>
+                  <td>—</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+
+        <!-- Seção Inferior: Gráficos e Histórico de Eventos -->
+        <div class="secao-inferior">
+
+          <!-- Card 1: Gráfico de Rede -->
+          <div class="bloco-card bloco-rede">
+            <div class="bloco__cabecalho">
+              <div>
+                <h3 class="bloco__titulo">Uso de Rede ao Longo do Dia</h3>
+                <p class="bloco__descricao">
+                  Soma do tráfego de upload e download da frota por horário — volume observado em Mbps
+                </p>
+              </div>
+              <span class="badge badge--mbps" id="rede-pico-badge">● 88 Mbps</span>
+            </div>
+
+            <div class="bloco-rede__grafico">
+              <canvas id="grafico-rede"></canvas>
+            </div>
+          </div>
+
+          <!-- Card 2: Gráfico de Rosca de Resumo de Saúde -->
+          <div class="bloco-card bloco-saude">
+            <h3 class="bloco__titulo">Resumo de Saúde</h3>
+            <p class="bloco__descricao">Estado atual dos servidores</p>
+
+            <div class="bloco-saude__grafico">
+              <canvas id="grafico-saude"></canvas>
+            </div>
+
+            <ul class="legenda-saude">
+              <li>
+                <span class="legenda__item">
+                  <span class="ponto ponto--online"></span> Online
+                </span>
+                <strong id="saude-online">—</strong>
+              </li>
+              <li>
+                <span class="legenda__item">
+                  <span class="ponto ponto--atencao"></span> Atenção
+                </span>
+                <strong id="saude-atencao">—</strong>
+              </li>
+              <li>
+                <span class="legenda__item">
+                  <span class="ponto ponto--offline"></span> Offline
+                </span>
+                <strong id="saude-offline">—</strong>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card 3: Histórico de Eventos de Hoje -->
+          <div class="bloco-card bloco-eventos">
+            <div class="historico-alertas__cabecalho">
+              <div>
+                <h3 class="bloco__titulo">Histórico de alertas</h3>
+                <p class="bloco__descricao">Ocorrências recentes e estado da infraestrutura</p>
+              </div>
+              <span class="historico-alertas__origem">Exemplo ilustrativo</span>
+            </div>
+            <div class="historico-alertas__filtros" role="group" aria-label="Filtrar histórico de alertas">
+              <button type="button" class="ativo" data-filtro-alerta="todos" aria-pressed="true">Todos</button>
+              <button type="button" data-filtro-alerta="critico" aria-pressed="false">Críticos</button>
+              <button type="button" data-filtro-alerta="atencao" aria-pressed="false">Atenção</button>
+            </div>
+            <ul class="historico-alertas__lista" id="historicoAlertas" aria-live="polite"></ul>
+            <p class="historico-alertas__nota">Leituras simuladas. Incidentes, impacto em serviços e responsáveis só são confirmados quando esses dados estão disponíveis.</p>
+          </div>
+
+        </div>
+
+      </main>
+
+    <!-- Botão flutuante de ajuda no canto inferior direito -->
+    <button class="btn-ajuda" title="Ajuda">?</button>
+
+    <!-- Script principal da dashboard -->
+    <script src="/js/dashboard-data.js"></script>
+    <script src="/js/dash-geral.js"></script>
+
+  </body>
+</html>

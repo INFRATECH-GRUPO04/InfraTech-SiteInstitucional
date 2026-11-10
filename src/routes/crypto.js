@@ -1,3 +1,6 @@
+/*
+ * Este arquivo: Define as operações HTTP para criar, consultar e consumir convites de cadastro. As regras de negócio ficam no controller e a persistência no model.
+ */
 var crypto = require("crypto");
 var express = require("express");
 var router = express.Router();

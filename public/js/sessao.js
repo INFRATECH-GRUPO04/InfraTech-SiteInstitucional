@@ -1,36 +1,388 @@
-// sessão
+/*
+ * Compartilha entre as telas pós-login o carregamento da sessão, o cabeçalho,
+ * a sidebar e os redirecionamentos por cargo. A identidade vem do endpoint do
+ * backend; o armazenamento do navegador é usado para preencher a interface.
+ */
+// ----------- Sessao -----------
+/* Confere a sessão atual e, se ela existir, preenche os dados visíveis do usuário,
+ * aplica os menus permitidos e impede a permanência em páginas sem autorização.
+ */
 function validarSessao() {
-    var email = sessionStorage.EMAIL_USUARIO;
-    var nome = sessionStorage.NOME_USUARIO;
+    return carregarSessaoConfiavel().then(function (usuario) {
+        if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
+        padronizarCabecalhoPosLogin(usuario);
+        var nome = usuario.nome;
+        var bUsuario = document.getElementById("b_usuario");
+        var nomeUsuario = document.getElementById("nome_usuario");
+        var cargoUsuario = document.getElementById("cargo_usuario");
+        if (bUsuario) bUsuario.textContent = nome;
+        if (nomeUsuario) nomeUsuario.textContent = nome;
+        if (cargoUsuario) cargoUsuario.textContent = rotuloCargo(usuario.tipoAcesso);
+        configurarMenusPorPerfil(usuario.tipoAcesso);
+        protegerRotaPorPerfil(usuario.tipoAcesso);
+        inicializarMenuLateralResponsivo();
+    });
+}
 
-    var b_usuario = document.getElementById("b_usuario");
+function rotuloCargo(cargo) {
+    return ({ ANALISTA_DADOS: "ENGENHEIRO DE TELEMETRIA", ANALISTA_NOC: "ANALISTA DE NOC", GESTOR: "GESTOR", FUNCIONARIO: "FUNCIONÁRIO", ADMIN: "ADMINISTRADOR", INFRATECH: "ADMINISTRADOR INFRATECH" })[String(cargo || "").toUpperCase()] || "";
+}
 
-    if (email != null && nome != null) {
-        b_usuario.innerHTML = nome;
-    } else {
-        window.location = "../login.html";
+/* Consulta o backend, que valida o cookie e devolve os dados atuais do usuário.
+ * Em seguida atualiza o sessionStorage para uso visual e remove qualquer senha antiga.
+ */
+function carregarSessaoConfiavel() {
+    return fetch("/login_cadastro/sessao", { credentials: "same-origin", cache: "no-store" })
+        .then(function (resposta) { return resposta.ok ? resposta.json() : null; })
+        .then(function (usuario) {
+            if (!usuario) return null;
+            sessionStorage.EMAIL_USUARIO = usuario.email;
+            sessionStorage.NOME_USUARIO = usuario.nome;
+            sessionStorage.ID_USUARIO = usuario.idFuncionario;
+            sessionStorage.ID_EMPRESA = usuario.idEmpresa;
+            sessionStorage.NOME_EMPRESA = usuario.nomeEmpresa || '';
+            sessionStorage.TIPO_ACESSO = usuario.tipoAcesso;
+            sessionStorage.PODE_EDITAR_ALERTAS = String(usuario.podeEditarAlertas === true);
+            sessionStorage.PERMISSOES = JSON.stringify(usuario.permissoes || {});
+            sessionStorage.removeItem("SENHA_USUARIO");
+            padronizarCabecalhoPosLogin(usuario);
+            return usuario;
+        }).catch(function () { return null; });
+}
+
+/* Reaproveita a barra de topo de cada página para mostrar empresa, funcionalidade
+ * atual e funcionário conectado, sem depender do texto fixo no HTML de cada tela.
+ */
+function padronizarCabecalhoPosLogin(usuario) {
+    if (!usuario || window.location.pathname.startsWith('/dashboard/')) return;
+    var cabecalho = document.querySelector('.barra-topo, .barra-superior-painel, .content > header, .container_main > .header');
+    if (!cabecalho) return;
+
+    var rotulos = {
+        '/paginas/pos-login/empresas/gerenciar_empresa.html': 'Gerenciar empresas',
+        '/paginas/pos-login/empresas/cadastro_empresa.html': 'Cadastrar empresa',
+        '/paginas/pos-login/servidores/cadastro_servidor.html': 'Cadastrar servidor',
+        '/paginas/pos-login/servidores/modificar_servidor.html': 'Modificar servidor',
+        '/paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html': 'Gerar token',
+        '/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html': 'Gerenciar funcionários',
+        '/paginas/pos-login/dashboards/dashboard_dados.html': 'Dashboard de Dados',
+        '/paginas/pos-login/dashboards/dashboard_noc.html': 'Dashboard NOC'
+    };
+    var titulo = rotulos[window.location.pathname] || document.body.dataset.funcionalidade || document.title.split('|')[0].trim();
+    var empresa = usuario.nomeEmpresa || sessionStorage.NOME_EMPRESA || 'Empresa';
+    cabecalho.className = 'cabecalho-padrao';
+    cabecalho.setAttribute('aria-label', 'Contexto da página');
+    cabecalho.innerHTML = '';
+
+    var contexto = document.createElement('div');
+    contexto.className = 'cabecalho-padrao__contexto';
+    var nomeEmpresa = document.createElement('span');
+    nomeEmpresa.className = 'cabecalho-padrao__empresa';
+    nomeEmpresa.textContent = empresa;
+    var separador = document.createElement('span');
+    separador.className = 'cabecalho-padrao__separador';
+    separador.textContent = '/';
+    var funcionalidade = document.createElement('span');
+    funcionalidade.className = 'cabecalho-padrao__funcao';
+    funcionalidade.textContent = titulo;
+    contexto.append(nomeEmpresa, separador, funcionalidade);
+
+    var sessao = document.createElement('div');
+    sessao.className = 'cabecalho-padrao__usuario';
+    var ponto = document.createElement('span');
+    ponto.className = 'cabecalho-padrao__ponto';
+    ponto.setAttribute('aria-hidden', 'true');
+    var nome = document.createElement('span');
+    nome.id = 'nome_usuario';
+    nome.textContent = usuario.nome || 'Usuário';
+    sessao.append(ponto, nome);
+    cabecalho.append(contexto, sessao);
+}
+
+function obterDestinoInicial(tipoAcesso) {
+    return InfraTechPermissoes.destino(tipoAcesso);
+}
+
+/* Redireciona o usuário caso tente abrir diretamente uma dashboard que seu cargo
+ * não pode acessar, mesmo que ele não tenha usado os links da sidebar.
+ */
+function protegerRotaPorPerfil(tipoAcesso) {
+    if (InfraTechPermissoes.protegida(window.location.pathname) && !InfraTechPermissoes.podeAcessar(tipoAcesso, window.location.pathname)) {
+        window.location.replace(obterDestinoInicial(tipoAcesso));
     }
 }
 
-function limparSessao() {
-    sessionStorage.clear();
-    window.location = "../index.html";
+/* Monta os links de dashboard a partir das permissões do cargo e os insere na
+ * sidebar compartilhada, mantendo o destaque da tela atualmente aberta.
+ */
+function adicionarMenuDashboards(sidebar) {
+    if (!sidebar) return;
+
+    var categoria = sidebar.querySelector(".secao-dashboards");
+    if (!categoria) {
+        categoria = document.createElement("h3");
+        categoria.className = "nav-categoria secao-dashboards";
+
+        var iconeCategoria = document.createElement("img");
+        iconeCategoria.src = "/assets/imgs/dashboards.png";
+        iconeCategoria.alt = "";
+        iconeCategoria.className = "menu-icon-title";
+        categoria.appendChild(iconeCategoria);
+        categoria.appendChild(document.createTextNode("Dashboards"));
+    }
+
+    var perfil = InfraTechPermissoes.obter(sessionStorage.TIPO_ACESSO);
+    var dashboards = InfraTechPermissoes.dashboards.filter(function (item) { return perfil.dashboards.includes(item.id); });
+    var fragmento = document.createDocumentFragment();
+    if (!categoria.parentElement) fragmento.appendChild(categoria);
+
+    dashboards.forEach(function (dashboard) {
+        var linkExistente = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+            try {
+                return new URL(item.getAttribute("href"), window.location.href).pathname === dashboard.href;
+            } catch (erro) {
+                return false;
+            }
+        });
+        var link = linkExistente || document.createElement("a");
+        var icone = link.querySelector("img") || document.createElement("img");
+
+        link.href = dashboard.href;
+        link.classList.add("nav-item");
+        icone.src = "/assets/imgs/dashboards.png";
+        icone.alt = "";
+        icone.className = "menu-icon";
+        link.textContent = "";
+        link.appendChild(icone);
+        link.appendChild(document.createTextNode(dashboard.label));
+
+        if (linkExistente) linkExistente.remove();
+
+        if (window.location.pathname === dashboard.href) {
+            link.classList.add("ativo");
+            link.setAttribute("aria-current", "page");
+        } else {
+            link.classList.remove("ativo");
+            link.removeAttribute("aria-current");
+        }
+
+        fragmento.appendChild(link);
+    });
+
+    var logout = sidebar.querySelector(".btn-logout");
+    if (!categoria.parentElement) {
+        var divisor = sidebar.querySelector("hr.linha");
+        sidebar.insertBefore(fragmento, divisor ? divisor.nextElementSibling : logout || null);
+    } else {
+        sidebar.insertBefore(fragmento, categoria.nextElementSibling || logout || null);
+    }
 }
 
-// carregamento (loading)
+/* Filtra os itens administrativos e as dashboards da sidebar. A interface mostra
+ * somente opções permitidas, enquanto o backend continua protegendo as APIs.
+ */
+function configurarMenusPorPerfil(tipoAcesso) {
+    var sidebar = document.querySelector("aside.header-left");
+    if (!sidebar) return;
+    adicionarMenuDashboards(sidebar);
+    adicionarMenuGerenciarAcesso(sidebar);
+    adicionarMenuModificarServidor(sidebar);
+    sidebar.querySelectorAll("a.nav-item").forEach(function (link) {
+        var rota = new URL(link.getAttribute("href") || "#", window.location.href).pathname;
+        var liberado = InfraTechPermissoes.podeAcessar(tipoAcesso, rota);
+        link.hidden = !liberado;
+        link.style.display = liberado ? "flex" : "none";
+        link.classList.toggle("ativo", liberado && rota === window.location.pathname);
+        if (liberado && rota === window.location.pathname) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+    });
+    sidebar.querySelectorAll(".nav-categoria").forEach(function (categoria) {
+        var item = categoria.nextElementSibling;
+        var visivel = false;
+        while (item && !item.classList.contains("nav-categoria") && !item.classList.contains("btn-logout")) {
+            if (item.matches("a.nav-item") && item.style.display !== "none") visivel = true;
+            item = item.nextElementSibling;
+        }
+        categoria.style.display = visivel ? "flex" : "none";
+        categoria.hidden = !visivel;
+    });
+    var logo = sidebar.querySelector(".logo a");
+    if (logo) logo.href = obterDestinoInicial(tipoAcesso);
+    window.dispatchEvent(new CustomEvent('infratech:sessao-validada', { detail: { tipoAcesso: tipoAcesso } }));
+}
+
+function adicionarMenuGerenciarAcesso(sidebar) {
+    var caminho = "/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html";
+    var link = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+        return new URL(item.getAttribute("href"), window.location.href).pathname === caminho;
+    });
+    var categoria = sidebar.querySelector(".secao-funcionarios");
+    if (!categoria) {
+        categoria = document.createElement("h3");
+        categoria.className = "nav-categoria secao-funcionarios";
+        categoria.innerHTML = '<img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon-title">Funcionários';
+        sidebar.insertBefore(categoria, sidebar.querySelector(".btn-logout"));
+    }
+    if (!link) {
+        link = document.createElement("a");
+        link.className = "nav-item";
+    }
+    link.href = caminho;
+    link.innerHTML = '<img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon">Gerenciar acesso';
+    categoria.after(link);
+}
+
+/* Recoloca a entrada de manutenção de servidores na sidebar compartilhada.
+ * Como a função roda nas páginas pós-login, o link também aparece nas dashboards;
+ * a regra de cargo o mantém visível somente para contas autorizadas.
+ */
+function adicionarMenuModificarServidor(sidebar) {
+    var caminho = "/paginas/pos-login/servidores/modificar_servidor.html";
+    var link = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+        return new URL(item.getAttribute("href"), window.location.href).pathname === caminho;
+    });
+    var cadastro = Array.from(sidebar.querySelectorAll("a.nav-item")).find(function (item) {
+        return new URL(item.getAttribute("href"), window.location.href).pathname === "/paginas/pos-login/servidores/cadastro_servidor.html";
+    });
+    var categoria = sidebar.querySelector(".secao-servidores");
+
+    if (!categoria && cadastro) {
+        var anterior = cadastro.previousElementSibling;
+        while (anterior && !anterior.matches("h3.nav-categoria")) anterior = anterior.previousElementSibling;
+        categoria = anterior;
+        if (categoria) categoria.classList.add("secao-servidores");
+    }
+    if (!categoria) {
+        categoria = document.createElement("h3");
+        categoria.className = "nav-categoria secao-servidores";
+        categoria.innerHTML = '<img src="/assets/imgs/servidores.png" alt="" class="menu-icon-title">Servidores';
+        sidebar.insertBefore(categoria, sidebar.querySelector(".btn-logout"));
+    }
+
+    if (!link) link = document.createElement("a");
+    link.href = caminho;
+    link.className = "nav-item";
+    link.innerHTML = '<img src="/assets/imgs/modificar.png" alt="" class="menu-icon">Modificar servidor';
+    if (window.location.pathname === caminho) {
+        link.classList.add("ativo");
+        link.setAttribute("aria-current", "page");
+    } else {
+        link.removeAttribute("aria-current");
+    }
+    if (cadastro) cadastro.after(link);
+    else categoria.after(link);
+}
+
+/* Adiciona os controles necessários para abrir e fechar a sidebar em telas
+ * estreitas. Mantém o estado acessível para leitores de tela, permite fechar
+ * com Escape, ao tocar fora, ao escolher um link ou ao voltar para desktop.
+ */
+function inicializarMenuLateralResponsivo() {
+    var sidebar = document.querySelector("aside.header-left");
+    if (!sidebar) return;
+
+    /* A validação de sessão pode inicializar o menu em mais de um fluxo. */
+    if (document.getElementById("btn_hamburguer_global")) return;
+
+    var btnHamburguer = document.createElement("button");
+    btnHamburguer.id = "btn_hamburguer_global";
+    btnHamburguer.className = "btn-hamburguer-global";
+    btnHamburguer.type = "button";
+    btnHamburguer.setAttribute("aria-label", "Abrir menu de navegação");
+    sidebar.id = sidebar.id || "navegacao-principal";
+    btnHamburguer.setAttribute("aria-controls", sidebar.id);
+    btnHamburguer.setAttribute("aria-expanded", "false");
+    btnHamburguer.innerHTML = "&#9776;";
+
+    var overlay = document.createElement("div");
+    overlay.id = "overlay_sidebar_global";
+    overlay.className = "overlay-sidebar-global";
+
+    document.body.prepend(overlay);
+    document.body.prepend(btnHamburguer);
+
+    function alternar() {
+        var abrir = !sidebar.classList.contains("aberta");
+        sidebar.classList.toggle("aberta", abrir);
+        overlay.classList.toggle("visivel", abrir);
+        document.body.classList.toggle("menu-lateral-aberto", abrir);
+        btnHamburguer.setAttribute("aria-expanded", String(abrir));
+        btnHamburguer.setAttribute("aria-label", abrir ? "Fechar menu de navegação" : "Abrir menu de navegação");
+        btnHamburguer.innerHTML = abrir ? "&times;" : "&#9776;";
+        if (abrir) {
+            var primeiroLink = sidebar.querySelector("a.nav-item:not([hidden])");
+            if (primeiroLink) primeiroLink.focus();
+        }
+    }
+
+    function fechar() {
+        sidebar.classList.remove("aberta");
+        overlay.classList.remove("visivel");
+        document.body.classList.remove("menu-lateral-aberto");
+        btnHamburguer.setAttribute("aria-expanded", "false");
+        btnHamburguer.setAttribute("aria-label", "Abrir menu de navegação");
+        btnHamburguer.innerHTML = "&#9776;";
+    }
+
+    btnHamburguer.addEventListener("click", alternar);
+    overlay.addEventListener("click", fechar);
+    document.addEventListener("keydown", function (evento) {
+        if (evento.key === "Escape" && sidebar.classList.contains("aberta")) {
+            fechar();
+            btnHamburguer.focus();
+        }
+    });
+    window.addEventListener("resize", function () {
+        if (window.matchMedia("(min-width: 992px)").matches) fechar();
+    });
+
+    sidebar.querySelectorAll(".nav-item, .btn-logout").forEach(function (item) {
+        item.addEventListener("click", fechar);
+    });
+}
+
+/* Pede ao backend para apagar o cookie e só então envia o navegador ao login. */
+function limparSessao() {
+    fetch("/login_cadastro/sair", { method: "POST", credentials: "same-origin" }).finally(function () {
+        sessionStorage.clear();
+        window.location.href = "/paginas/autenticacao/login/login.html";
+    });
+}
+
+// Algumas telas pós-login não chamam validarSessao() no body. Ainda assim,
+// quando já existe uma sessão, elas recebem a mesma navegação lateral.
+document.addEventListener("DOMContentLoaded", function () {
+    var sidebar = document.querySelector("aside.header-left");
+    if (!sidebar) return;
+    carregarSessaoConfiavel().then(function (usuario) {
+        if (!usuario) return window.location.replace("/paginas/autenticacao/login/login.html");
+        padronizarCabecalhoPosLogin(usuario);
+        var cargo = document.getElementById("cargo_usuario");
+        if (cargo) cargo.textContent = rotuloCargo(usuario.tipoAcesso);
+        var nome = document.getElementById("nome_usuario");
+        if (nome) nome.textContent = usuario.nome;
+        configurarMenusPorPerfil(usuario.tipoAcesso);
+        protegerRotaPorPerfil(usuario.tipoAcesso);
+        inicializarMenuLateralResponsivo();
+    });
+});
+
 function aguardar() {
     var divAguardar = document.getElementById("div_aguardar");
-    divAguardar.style.display = "flex";
+    if (divAguardar) {
+        divAguardar.style.display = "flex";
+    }
 }
 
 function finalizarAguardar(texto) {
     var divAguardar = document.getElementById("div_aguardar");
-    divAguardar.style.display = "none";
+    if (divAguardar) {
+        divAguardar.style.display = "none";
+    }
 
     var divErrosLogin = document.getElementById("div_erros_login");
-    if (texto) {
+    if (divErrosLogin && texto) {
         divErrosLogin.style.display = "flex";
         divErrosLogin.innerHTML = texto;
     }
 }
-

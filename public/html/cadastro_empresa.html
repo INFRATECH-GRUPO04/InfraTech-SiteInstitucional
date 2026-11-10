@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Empresa | InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/cadastro_empresa.css">
+
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+</head>
+
+<body class="pagina-servidores" onload="validarSessao()">
+
+    <!-- BARRA LATERAL -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="/dashboard/dash-geral.html" title="InfraTech">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="./gerenciar_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="./cadastro_empresa.html" class="nav-item ativo">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo-principal main">
+        <div class="barra-superior-painel">
+            <div class="migalhas">
+                <span class="text-muted">Empresas</span> / <span>Cadastrar Nova Organização</span>
+            </div>
+            <div class="usuario-sessao">
+                <span class="ponto-status"></span>
+                <span id="nome_usuario" class="nome-usuario"></span>
+            </div>
+        </div>
+
+        <div class="corpo-pagina">
+            <header class="intro-pagina">
+                <h1>Cadastrar empresa</h1>
+                <p>Cadastre uma organização para preparar seu acesso ao ambiente de observabilidade.</p>
+            </header>
+
+            <div class="area-operacional">
+        <div class="fluxo" id="fluxo">
+            <!-- PROGRESSO DAS ETAPAS -->
+            <ol class="progress step-1" id="progress">
+                <li class="active" data-progress="1">
+                    <span class="circle">1</span>
+                    <span>Dados da empresa</span>
+                </li>
+
+                <li data-progress="2">
+                    <span class="circle">2</span>
+                    <span>Endereço</span>
+                </li>
+
+                <li data-progress="3">
+                    <span class="circle">3</span>
+                    <span>Responsável</span>
+                </li>
+
+                <li data-progress="4">
+                    <span class="circle">4</span>
+                    <span>Confirmação</span>
+                </li>
+            </ol>
+        </div>
+
+        <div class="container-cadastro" id="container_cadastro">
+            <!-- PRIMEIRA PARTE: DADOS DA EMPRESA -->
+            <div class="cabecalho">
+                <div class="subtitulo">Dados da Empresa</div>
+                <div id="card_erro"></div>
+            </div>
+
+            <div class="container-campos">
+                <div class="campos">
+                    <div class="texto">Razão Social</div>
+                    <input type="text" class="input" id="razaoSocial" placeholder="Ex: Tech Jogos Online Ltda" autocomplete="organization">
+                </div>
+                <div class="campos">
+                    <div class="texto">Nome Fantasia</div>
+                    <input type="text" class="input" id="nomeFantasia" placeholder="Ex: Tech Games">
+                </div>
+                <div class="campos">
+                    <div class="texto">CNPJ</div>
+                    <input type="text" class="input" id="cnpj" placeholder="00.000.000/0000-00" inputmode="numeric">
+                </div>
+                <div class="campos">
+                    <div class="texto">E-mail Corporativo</div>
+                    <input type="email" class="input" id="emailEmpresa" placeholder="contato@empresa.com" autocomplete="email">
+                </div>
+                <div class="campos">
+                    <div class="texto">Telefone</div>
+                    <input type="tel" class="input" id="telefone" placeholder="(00) 90000-0000" inputmode="tel">
+                </div>
+                <div class="campos">
+                    <div class="texto">Segmento de Atuação</div>
+                    <input type="text" class="input" id="segmentoAtuacao" placeholder="Ex: Jogos Competitivos, RPG...">
+                </div>
+            </div>
+
+            <div class="container-botoes1">
+                <button type="button" onclick="avancarP1()" class="botao-avancar">Próximo Passo →</button>
+            </div>
+        </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/cadastro_empresa.js"></script>
+</body>
+
+</html>

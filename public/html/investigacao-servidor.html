@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a1117">
+    <title>Investigação e Diagnóstico do Servidor | InfraTech</title>
+    <link rel="icon" href="/assets/icon/logo.png">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/dashboard-global.css">
+    <link rel="stylesheet" href="/css/painel.css">
+    <link rel="stylesheet" href="/css/investigacao-servidor.css">
+    <script src="/js/permissoes.js"></script>
+    <script src="/js/sessao.js"></script>
+</head>
+
+<body class="pagina-painel dashboard-compartilhada pagina-investigacao">
+    <aside class="header-left" aria-label="Navegação principal">
+        <div class="logo">
+            <a href="/dashboard/dash-geral.html" title="InfraTech">
+                <img src="/assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h2 class="nav-categoria secao-dashboards">
+            <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon-title">
+            Dashboards
+        </h2>
+        <a href="/dashboard/dash-geral.html" class="nav-item">
+            <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Visão Geral
+        </a>
+        <a href="/dashboard/especifica-servidor/dash-especifica.html" class="nav-item">
+            <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Dashboard Específica
+        </a>
+        <a href="/dashboard/analista/dashboardV2.html" class="nav-item">
+            <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Saúde e Capacidade
+        </a>
+        <a href="/dashboard/especifica-servidor/investigacao-servidor.html" class="nav-item ativo" aria-current="page">
+            <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon">
+            Investigação e Diagnóstico
+        </a>
+
+        <h2 class="nav-categoria">
+            <img src="/assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h2>
+        <a href="/paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+            <img src="/assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+
+        <h2 class="nav-categoria secao-funcionarios">
+            <img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h2>
+        <a href="/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html" class="nav-item">
+            <img src="/assets/imgs/funcionarios.png" alt="" class="menu-icon">
+            Gerenciar acesso
+        </a>
+        <a href="/paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="/assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+
+        <h2 class="nav-categoria secao-empresas">
+            <img src="/assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h2>
+        <a href="/paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="/assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="/paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+            <img src="/assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <button class="btn-logout" type="button" onclick="limparSessao()" title="Sair do sistema">
+            <img src="/assets/imgs/logout.png" alt="" class="logout-icon">
+            <span>Sair</span>
+        </button>
+    </aside>
+
+    <div class="container-dash">
+        <header class="dashboard-welcome">
+            <h1 class="dashboard-welcome__titulo">
+                Bem-vindo, <span id="nome_usuario">Usuário</span>
+                <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">ANALISTA DE TELEMETRIA</span>)</span>
+            </h1>
+            <div class="dashboard-welcome__meta">
+                <span>InfraTech · Investigação</span>
+                <time class="dashboard-welcome__hora" id="relogio"></time>
+            </div>
+        </header>
+
+        <main class="investigacao-conteudo">
+            <header class="investigacao-introducao">
+                <h1>Investigação e Diagnóstico do Servidor</h1>
+                <p>Explore correlação, regressão, anomalias e distribuição das métricas para identificar padrões, relações entre métricas e possíveis causas.</p>
+            </header>
+
+            <section class="investigacao-filtros" aria-label="Filtros da investigação">
+                <div class="investigacao-filtro investigacao-filtro--servidores">
+                    <span class="investigacao-filtro__rotulo" id="rotuloServidores">Servidores</span>
+                    <button class="investigacao-seletor-servidores" id="alternarServidores" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="listaServidores">
+                        <span id="resumoServidores">4 de 6 selecionados</span>
+                        <span aria-hidden="true">⌄</span>
+                    </button>
+                    <div class="investigacao-lista-servidores" id="listaServidores" role="group" aria-labelledby="rotuloServidores" hidden>
+                        <div class="investigacao-lista-servidores__acoes">
+                            <button type="button" id="selecionarTodosServidores">Selecionar todos</button>
+                            <button type="button" id="limparServidores">Limpar seleção</button>
+                        </div>
+                        <label><input type="checkbox" name="servidores" value="SRV-BR-01" checked> SRV-BR-01</label>
+                        <label><input type="checkbox" name="servidores" value="SRV-BR-02" checked> SRV-BR-02</label>
+                        <label><input type="checkbox" name="servidores" value="SRV-BR-03" checked> SRV-BR-03</label>
+                        <label><input type="checkbox" name="servidores" value="SRV-BR-04" checked> SRV-BR-04</label>
+                        <label><input type="checkbox" name="servidores" value="SRV-BR-05"> SRV-BR-05</label>
+                        <label><input type="checkbox" name="servidores" value="SRV-BR-06"> SRV-BR-06</label>
+                    </div>
+                    <p class="investigacao-filtro__erro" id="avisoSemServidor" role="status" hidden>Selecione pelo menos um servidor para atualizar as análises.</p>
+                </div>
+
+                <label class="investigacao-filtro">
+                    <span class="investigacao-filtro__rotulo">Métrica 1</span>
+                    <select id="metricaPrimaria" name="metricaPrimaria">
+                        <option value="cpu" selected>CPU</option>
+                        <option value="ram">RAM</option>
+                        <option value="disco">Disco</option>
+                        <option value="rede">Rede</option>
+                    </select>
+                </label>
+
+                <label class="investigacao-filtro">
+                    <span class="investigacao-filtro__rotulo">Métrica 2 (comparada)</span>
+                    <select id="metricaComparada" name="metricaComparada">
+                        <option value="cpu">CPU</option>
+                        <option value="ram" selected>RAM</option>
+                        <option value="disco">Disco</option>
+                        <option value="rede">Rede</option>
+                    </select>
+                </label>
+            </section>
+
+            <section class="investigacao-kpis" aria-label="Indicadores da investigação">
+                <article class="investigacao-kpi investigacao-kpi--anomalias">
+                    <span class="investigacao-kpi__icone" aria-hidden="true">⌁</span>
+                    <div><h2>Anomalias detectadas</h2><output id="kpiAnomalias">—</output><p>Comportamentos fora do padrão</p></div>
+                </article>
+                <article class="investigacao-kpi investigacao-kpi--desvio">
+                    <span class="investigacao-kpi__icone" aria-hidden="true">⤴</span>
+                    <div><h2>Maior desvio da regressão</h2><output id="kpiMaiorDesvio">—</output><p>Diferença entre valor real e estimado</p></div>
+                </article>
+                <article class="investigacao-kpi investigacao-kpi--cobertura">
+                    <span class="investigacao-kpi__icone" aria-hidden="true">▤</span>
+                    <div><h2>Cobertura dos dados</h2><output id="kpiCobertura">—</output><p id="descricaoCobertura">Capturas válidas no período disponível</p></div>
+                </article>
+                <article class="investigacao-kpi investigacao-kpi--critico">
+                    <span class="investigacao-kpi__icone" aria-hidden="true">◷</span>
+                    <div><h2>Tempo crítico — <span id="metricaTempoCritico">CPU</span></h2><output id="kpiTempoCritico">—</output><p>Tempo acumulado acima do limite crítico</p></div>
+                </article>
+            </section>
+
+            <section class="investigacao-relacoes" aria-label="Análises de relação entre métricas">
+                <article class="investigacao-painel investigacao-painel--pearson" aria-labelledby="tituloPearson">
+                    <header class="investigacao-painel__cabecalho">
+                        <div><h2 id="tituloPearson">Correlação de Pearson</h2><p>Resume a direção e a intensidade da relação linear.</p></div>
+                        <button class="investigacao-ajuda" type="button" aria-label="Sobre a correlação de Pearson" aria-describedby="ajudaPearson">i</button>
+                    </header>
+                    <p class="investigacao-ajuda__texto" id="ajudaPearson">Correlação mede associação linear e não confirma causalidade.</p>
+                    <div class="investigacao-pearson">
+                        <div class="investigacao-pearson__resultado" aria-label="Coeficiente de correlação">
+                            <output id="coeficientePearson">r = —</output>
+                            <span id="classificacaoPearson">Aguardando amostras alinhadas</span>
+                        </div>
+                        <div class="investigacao-pearson__legenda" aria-label="Escala de interpretação do coeficiente">
+                            <span><i class="ponto-legenda ponto-legenda--forte" aria-hidden="true"></i>0,7 a 1,0 · Forte</span>
+                            <span><i class="ponto-legenda ponto-legenda--moderada" aria-hidden="true"></i>0,4 a 0,6 · Moderada</span>
+                            <span><i class="ponto-legenda ponto-legenda--fraca" aria-hidden="true"></i>0,1 a 0,3 · Fraca</span>
+                            <span><i class="ponto-legenda ponto-legenda--negativa" aria-hidden="true"></i>−1,0 a 0 · Negativa</span>
+                        </div>
+                        <div class="investigacao-leitura-tecnica">
+                            <h3>Leitura técnica</h3>
+                            <label for="servidorFocoPearson">Servidor em foco</label>
+                            <select id="servidorFocoPearson" name="servidorFocoPearson">
+                                <option value="SRV-BR-01">SRV-BR-01</option>
+                                <option value="SRV-BR-02">SRV-BR-02</option>
+                                <option value="SRV-BR-03">SRV-BR-03</option>
+                                <option value="SRV-BR-04">SRV-BR-04</option>
+                            </select>
+                            <dl>
+                                <div><dt>Direção</dt><dd id="direcaoPearson">—</dd></div>
+                                <div><dt>Intensidade</dt><dd id="intensidadePearson">—</dd></div>
+                                <div><dt>Amostras alinhadas</dt><dd id="amostrasPearson">—</dd></div>
+                            </dl>
+                            <p>Interprete a associação junto com o contexto do servidor.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="investigacao-painel investigacao-painel--regressao" aria-labelledby="tituloRegressao">
+                    <header class="investigacao-painel__cabecalho">
+                        <div><h2 id="tituloRegressao">Regressão Linear</h2><p>Analisa a relação matemática e os valores afastados do comportamento estimado.</p></div>
+                        <button class="investigacao-ajuda" type="button" aria-label="Sobre a regressão linear" aria-describedby="ajudaRegressao">i</button>
+                    </header>
+                    <p class="investigacao-ajuda__texto" id="ajudaRegressao">A reta resume a relação observada nas amostras; não é uma previsão futura.</p>
+                    <div class="investigacao-regressao">
+                        <div class="investigacao-regressao__resumo">
+                            <label for="servidorFocoRegressao">Servidor em foco</label>
+                            <select id="servidorFocoRegressao" name="servidorFocoRegressao">
+                                <option value="SRV-BR-01">SRV-BR-01</option>
+                                <option value="SRV-BR-02">SRV-BR-02</option>
+                                <option value="SRV-BR-03">SRV-BR-03</option>
+                                <option value="SRV-BR-04">SRV-BR-04</option>
+                            </select>
+                            <div><span>Variável dependente (Y)</span><strong id="regressaoMetricaY">RAM</strong></div>
+                            <div><span>Variável independente (X)</span><strong id="regressaoMetricaX">CPU</strong></div>
+                            <div><span>Equação da reta</span><strong id="equacaoRegressao">Aguardando cálculo</strong></div>
+                            <div><span>R² (ajuste do modelo)</span><strong id="r2Regressao">—</strong></div>
+                            <p id="interpretacaoR2">Ajuste calculado com os pares válidos do servidor em foco.</p>
+                        </div>
+                        <figure class="investigacao-grafico investigacao-grafico--dispersao">
+                            <figcaption id="tituloGraficoRegressao">Regressão Linear: CPU × RAM</figcaption>
+                            <canvas id="graficoRegressao" role="img" aria-label="Gráfico de dispersão e reta de regressão"></canvas>
+                            <ul class="investigacao-legenda" aria-label="Legenda do gráfico de regressão">
+                                <li><i class="ponto-legenda ponto-legenda--observacao" aria-hidden="true"></i>Observações</li>
+                                <li><i class="linha-legenda linha-legenda--regressao" aria-hidden="true"></i>Reta de regressão</li>
+                                <li><i class="ponto-legenda ponto-legenda--desvio" aria-hidden="true"></i>Maior desvio <span id="legendaMaiorDesvio">(—)</span></li>
+                            </ul>
+                        </figure>
+                    </div>
+                </article>
+            </section>
+
+            <section class="investigacao-comportamento" aria-label="Análises de comportamento das métricas">
+                <article class="investigacao-painel investigacao-painel--anomalias" aria-labelledby="tituloAnomalias">
+                    <header class="investigacao-painel__cabecalho">
+                        <div><h2 id="tituloAnomalias">Anomalias</h2><p>Identifica comportamentos fora do padrão; anomalia estatística não significa falha confirmada.</p></div>
+                        <button class="investigacao-ajuda" type="button" aria-label="Sobre a detecção de anomalias" aria-describedby="ajudaAnomalias">i</button>
+                    </header>
+                    <p class="investigacao-ajuda__texto" id="ajudaAnomalias">A classificação estatística é diferente da ultrapassagem de um limite crítico.</p>
+                    <div class="investigacao-anomalias">
+                        <figure class="investigacao-grafico investigacao-grafico--temporal">
+                            <figcaption>Métricas ao longo do tempo</figcaption>
+                            <canvas id="graficoAnomalias" role="img" aria-label="Evolução temporal das duas métricas selecionadas e marcações de anomalia"></canvas>
+                            <ul class="investigacao-legenda" aria-label="Legenda do gráfico temporal">
+                                <li><i class="ponto-legenda ponto-legenda--cpu" aria-hidden="true"></i><span id="legendaMetricaPrimaria">CPU</span></li>
+                                <li><i class="ponto-legenda ponto-legenda--ram" aria-hidden="true"></i><span id="legendaMetricaComparada">RAM</span></li>
+                                <li><i class="ponto-legenda ponto-legenda--anomalia" aria-hidden="true"></i>Anomalia</li>
+                                <li><i class="linha-legenda linha-legenda--limite" aria-hidden="true"></i>Limite crítico</li>
+                            </ul>
+                        </figure>
+                        <section class="investigacao-lista-anomalias" aria-labelledby="tituloListaAnomalias">
+                            <h3 id="tituloListaAnomalias">Anomalias detectadas</h3>
+                            <p class="investigacao-lista-anomalias__vazia" id="anomaliasVazio">Aguardando a análise das capturas disponíveis.</p>
+                            <ul id="listaAnomalias" aria-live="polite"></ul>
+                        </section>
+                    </div>
+                </article>
+
+                <article class="investigacao-painel investigacao-painel--boxplot" aria-labelledby="tituloBoxplot">
+                    <header class="investigacao-painel__cabecalho">
+                        <div><h2 id="tituloBoxplot">Boxplot — Distribuição por Servidor</h2><p>Compara a distribuição da métrica selecionada entre os servidores.</p></div>
+                        <button class="investigacao-ajuda" type="button" aria-label="Como interpretar o boxplot" aria-describedby="ajudaBoxplot">i</button>
+                    </header>
+                    <p class="investigacao-ajuda__texto" id="ajudaBoxplot">Os pontos além dos bigodes são possíveis outliers estatísticos, não necessariamente falhas.</p>
+                    <div class="investigacao-boxplot__corpo">
+                        <label for="metricaBoxplot">Métrica</label>
+                        <select id="metricaBoxplot" name="metricaBoxplot">
+                            <option value="cpu" selected>CPU</option>
+                            <option value="ram">RAM</option>
+                            <option value="disco">Disco</option>
+                            <option value="rede">Rede</option>
+                        </select>
+                        <figure class="investigacao-grafico investigacao-grafico--boxplot">
+                            <figcaption class="visually-hidden">Distribuição da métrica por servidor selecionado</figcaption>
+                            <canvas id="graficoBoxplot" role="img" aria-label="Diagramas de caixa comparando a distribuição da métrica entre os servidores selecionados"></canvas>
+                        </figure>
+                        <aside class="investigacao-boxplot__legenda" aria-label="Como ler o boxplot">
+                            <h3>Como ler o boxplot</h3>
+                            <dl>
+                                <div><dt>Máximo</dt><dd>Bigode superior</dd></div>
+                                <div><dt>Q3</dt><dd>Terceiro quartil</dd></div>
+                                <div><dt>Mediana</dt><dd>Valor central</dd></div>
+                                <div><dt>Q1</dt><dd>Primeiro quartil</dd></div>
+                                <div><dt>Mínimo</dt><dd>Bigode inferior</dd></div>
+                            </dl>
+                            <p><i class="ponto-legenda ponto-legenda--desvio" aria-hidden="true"></i> Outlier estatístico</p>
+                        </aside>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/dashboard-data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/investigacao-servidor.js"></script>
+</body>
+
+</html>
