@@ -17,6 +17,7 @@ console.log("BANCO CARREGADO:", process.env.DB_DATABASE);
 var express = require("express");
 var cors = require("cors");
 var path = require("path");
+var fs = require("fs");
 var PORTA_APP = process.env.APP_PORT;
 var HOST_APP = process.env.APP_HOST;
 
@@ -36,13 +37,40 @@ var agenteRouter = require("./src/routes/agente")
 var cryptoRouter = require("./src/routes/crypto");
 var autorizacao = require("./src/seguranca/autorizacao");
 
-/* Converte JSON e formulários recebidos para req.body. Em seguida, protege as
- * páginas antes de servi-las e disponibiliza os arquivos estáticos da pasta public.
+/* Converte JSON e formulários recebidos para req.body e protege as páginas antes
+ * de publicá-las. As páginas, estilos e scripts do navegador ficam em pastas
+ * planas; este resolvedor encontra cada arquivo pelo nome e mantém os endereços
+ * antigos usados nos links, sem afetar os arquivos restantes de public.
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // Verifica o acesso às páginas protegidas antes de servir os arquivos públicos.
 app.use(autorizacao.bloquearPagina);
+app.use(function (req, res, next) {
+    var extensao = path.extname(req.path).toLowerCase();
+    var pastasFront = {
+        ".html": path.join(__dirname, "public", "html"),
+        ".css": path.join(__dirname, "public", "css"),
+        ".js": path.join(__dirname, "public", "js")
+    };
+    var pasta = pastasFront[extensao];
+
+    if (req.path === "/") {
+        return res.sendFile(path.join(pastasFront[".html"], "inicio.html"));
+    }
+
+    if (!pasta) return next();
+
+    var nomeArquivo = path.basename(req.path);
+    if (extensao === ".html" && req.path === "/index.html") {
+        nomeArquivo = "inicio.html";
+    }
+
+    var arquivo = path.join(pasta, nomeArquivo);
+    if (!fs.existsSync(arquivo) || !fs.statSync(arquivo).isFile()) return next();
+
+    return res.sendFile(arquivo);
+});
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());

@@ -8,7 +8,7 @@ const crypto = require('crypto');
 // Assim, o desenvolvimento funciona localmente e a implantação pode usar um segredo estável.
 const segredo = process.env.AUTH_TOKEN_SECRET || crypto.randomBytes(32).toString('hex');
 const COOKIE = 'infratech_session';
-const politica = require('../../public/compartilhado/js/permissoes');
+const politica = require('../../public/js/permissoes');
 const database = require('../database/config');
 
 /* Codifica os dados da sessão e calcula uma assinatura para detectar qualquer

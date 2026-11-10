@@ -5,7 +5,7 @@ var express = require("express");
 var router = express.Router();
 
 router.get("/", function (req, res) {
-    res.sendFile(require("path").join(__dirname, "../../public/index.html"));
+    res.sendFile(require("path").join(__dirname, "../../public/html/inicio.html"));
 });
 
 module.exports = router;
