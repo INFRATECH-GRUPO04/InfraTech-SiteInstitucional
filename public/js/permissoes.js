@@ -11,6 +11,7 @@
     const dashboards = [
         { id: 'geral', href: '/dashboard/dash-geral.html', label: 'Visão Geral' },
         { id: 'especifica', href: '/dashboard/especifica-servidor/dash-especifica.html', label: 'Dashboard Específica' },
+        { id: 'investigacao', href: '/dashboard/especifica-servidor/investigacao-servidor.html', label: 'Investigação e Diagnóstico' },
         { id: 'saude', href: '/dashboard/analista/dashboardV2.html', label: 'Saúde e Capacidade' }
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
@@ -23,7 +24,7 @@
     function obter(cargo, podeEditarAlertas) {
         const tipo = normalizar(cargo);
         const completo = completos.includes(tipo);
-        const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
+        const ids = completo ? ['geral', 'especifica', 'investigacao', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica', 'investigacao'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
         return {
             dashboards: ids,
             administrar: completo,

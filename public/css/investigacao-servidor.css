@@ -1,0 +1,851 @@
+/* Define a paleta e as medidas usadas somente pela página de investigação. */
+.pagina-investigacao {
+  --investigacao-fundo: #0b1119;
+  --investigacao-superficie: #111b26;
+  --investigacao-superficie-interna: #0d1721;
+  --investigacao-borda: #26394a;
+  --investigacao-texto: #f2f6fa;
+  --investigacao-texto-secundario: #91a7ba;
+  --investigacao-ciano: #00c8e8;
+  --investigacao-roxo: #a855f7;
+  --investigacao-verde: #22d3a6;
+  --investigacao-amarelo: #fbbf24;
+  --investigacao-vermelho: #fb5360;
+  --investigacao-raio: 10px;
+  color: var(--investigacao-texto);
+  background: var(--investigacao-fundo);
+  overflow-x: hidden;
+}
+
+/* Alinha a área de análise à mesma largura útil das outras dashboards. */
+.pagina-investigacao .container-dash {
+  display: flex;
+  min-height: 100vh;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.pagina-investigacao .investigacao-conteudo {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 9px;
+  box-sizing: border-box;
+  padding: 10px 16px 14px;
+}
+
+/* Mantém o título e a explicação compactos, mas fáceis de localizar. */
+.investigacao-introducao {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0 0 1px;
+}
+
+.investigacao-introducao h1 {
+  margin: 0;
+  color: var(--investigacao-texto);
+  font-size: clamp(1.25rem, 1.65vw, 1.65rem);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.investigacao-introducao p {
+  max-width: 980px;
+  margin: 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* Distribui os três filtros em uma faixa única e oferece um menu compacto de servidores. */
+.investigacao-filtros {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: minmax(240px, 1.1fr) repeat(2, minmax(170px, 1fr));
+  gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--investigacao-borda);
+  border-radius: var(--investigacao-raio);
+  background: var(--investigacao-superficie);
+}
+
+.investigacao-filtro {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.investigacao-filtro__rotulo {
+  color: #dce7ef;
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.investigacao-filtro select,
+.investigacao-seletor-servidores,
+.investigacao-leitura-tecnica select,
+.investigacao-regressao__resumo select,
+.investigacao-boxplot__corpo > select {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: 1px solid #34485a;
+  border-radius: 7px;
+  color: var(--investigacao-texto);
+  background-color: var(--investigacao-superficie-interna);
+  font: inherit;
+  font-size: 0.76rem;
+}
+
+.investigacao-filtro select,
+.investigacao-leitura-tecnica select,
+.investigacao-regressao__resumo select,
+.investigacao-boxplot__corpo > select {
+  cursor: pointer;
+}
+
+.investigacao-filtro :is(select, button):focus-visible,
+.investigacao-lista-servidores button:focus-visible,
+.investigacao-lista-servidores input:focus-visible,
+.investigacao-painel :is(button, select):focus-visible {
+  outline: 2px solid var(--investigacao-ciano);
+  outline-offset: 2px;
+}
+
+.investigacao-seletor-servidores {
+  cursor: pointer;
+  text-align: left;
+}
+
+.investigacao-lista-servidores {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  left: 0;
+  display: grid;
+  gap: 2px;
+  max-height: min(300px, 48vh);
+  overflow-y: auto;
+  padding: 7px;
+  border: 1px solid #3a5063;
+  border-radius: 8px;
+  background: #111c27;
+  box-shadow: 0 12px 28px #050a10;
+}
+
+.investigacao-lista-servidores[hidden],
+.investigacao-filtro__erro[hidden] {
+  display: none;
+}
+
+.investigacao-lista-servidores label {
+  display: flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  color: #dce7ef;
+  font-size: 0.73rem;
+  cursor: pointer;
+}
+
+.investigacao-lista-servidores label:hover {
+  background: #1a2c3a;
+}
+
+.investigacao-lista-servidores input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--investigacao-ciano);
+}
+
+.investigacao-lista-servidores__acoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 7px 6px;
+  border-bottom: 1px solid var(--investigacao-borda);
+}
+
+.investigacao-lista-servidores__acoes button {
+  padding: 3px 0;
+  border: 0;
+  color: var(--investigacao-ciano);
+  background: transparent;
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.investigacao-filtro__erro {
+  margin: 0;
+  color: var(--investigacao-amarelo);
+  font-size: 0.68rem;
+}
+
+/* Mantém os indicadores em uma linha comum e reserva uma cor estável para cada análise. */
+.investigacao-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.investigacao-kpi {
+  display: flex;
+  min-width: 0;
+  min-height: 72px;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border: 1px solid var(--investigacao-borda);
+  border-radius: var(--investigacao-raio);
+  background: var(--investigacao-superficie);
+}
+
+.investigacao-kpi__icone {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 9px;
+  color: var(--investigacao-ciano);
+  background: #122733;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.investigacao-kpi > div {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.investigacao-kpi h2 {
+  margin: 0;
+  color: #dce7ef;
+  font-size: 0.69rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.investigacao-kpi output {
+  color: var(--investigacao-texto);
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.12;
+}
+
+.investigacao-kpi p {
+  margin: 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.62rem;
+  line-height: 1.3;
+}
+
+.investigacao-kpi--anomalias .investigacao-kpi__icone { color: var(--investigacao-amarelo); background: #302818; }
+.investigacao-kpi--desvio .investigacao-kpi__icone { color: var(--investigacao-roxo); background: #251934; }
+.investigacao-kpi--cobertura .investigacao-kpi__icone { color: var(--investigacao-ciano); background: #122733; }
+.investigacao-kpi--critico .investigacao-kpi__icone { color: var(--investigacao-vermelho); background: #321e25; }
+
+/* Coloca as análises de relação em painéis proporcionais, com a regressão mais larga. */
+.investigacao-relacoes,
+.investigacao-comportamento {
+  display: grid;
+  min-width: 0;
+  gap: 9px;
+}
+
+.investigacao-relacoes {
+  grid-template-columns: minmax(290px, 0.78fr) minmax(0, 1.42fr);
+}
+
+.investigacao-comportamento {
+  grid-template-columns: minmax(0, 1.42fr) minmax(300px, 1fr);
+}
+
+.investigacao-painel {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 10px 11px;
+  border: 1px solid var(--investigacao-borda);
+  border-radius: var(--investigacao-raio);
+  background: var(--investigacao-superficie);
+}
+
+.investigacao-relacoes .investigacao-painel,
+.investigacao-comportamento .investigacao-painel {
+  height: clamp(228px, calc(50dvh - 250px), 310px);
+}
+
+.investigacao-painel__cabecalho {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #26394a;
+}
+
+.investigacao-painel__cabecalho h2 {
+  margin: 0;
+  color: var(--investigacao-texto);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.investigacao-painel__cabecalho p {
+  margin: 2px 0 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.64rem;
+  line-height: 1.35;
+}
+
+.investigacao-ajuda {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #486072;
+  border-radius: 50%;
+  color: #b8cad7;
+  background: #142330;
+  font-size: 0.73rem;
+  font-weight: 700;
+  cursor: help;
+}
+
+.investigacao-ajuda__texto {
+  position: absolute;
+  z-index: 4;
+  top: 37px;
+  right: 10px;
+  width: min(270px, calc(100% - 20px));
+  box-sizing: border-box;
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid #3c5366;
+  border-radius: 7px;
+  color: #e6eef4;
+  background: #0b141e;
+  box-shadow: 0 8px 20px #050a10;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 120ms ease;
+}
+
+.investigacao-painel:has(.investigacao-ajuda:hover) .investigacao-ajuda__texto,
+.investigacao-painel:has(.investigacao-ajuda:focus-visible) .investigacao-ajuda__texto {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Organiza o coeficiente de Pearson, sua faixa de interpretação e a leitura técnica. */
+.investigacao-pearson {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(102px, 0.8fr) minmax(118px, 0.95fr) minmax(170px, 1.35fr);
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.investigacao-pearson__resultado {
+  display: flex;
+  width: min(100%, 124px);
+  aspect-ratio: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  gap: 5px;
+  border: 5px solid #22d3a6;
+  border-radius: 50%;
+  color: var(--investigacao-verde);
+  background: #10242a;
+  text-align: center;
+}
+
+.investigacao-pearson__resultado output {
+  font-size: clamp(1rem, 1.3vw, 1.35rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.investigacao-pearson__resultado span {
+  max-width: 90%;
+  color: #b8cbd5;
+  font-size: 0.58rem;
+  line-height: 1.25;
+}
+
+.investigacao-pearson__legenda {
+  display: grid;
+  gap: 8px;
+  color: #c3d0da;
+  font-size: 0.63rem;
+}
+
+.investigacao-pearson__legenda span,
+.investigacao-legenda li {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.ponto-legenda {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: var(--investigacao-ciano);
+}
+
+.ponto-legenda--forte { background: var(--investigacao-verde); }
+.ponto-legenda--moderada { background: var(--investigacao-amarelo); }
+.ponto-legenda--fraca { background: var(--investigacao-vermelho); }
+.ponto-legenda--negativa { background: var(--investigacao-roxo); }
+.ponto-legenda--observacao { background: var(--investigacao-roxo); }
+.ponto-legenda--desvio,
+.ponto-legenda--anomalia { background: var(--investigacao-amarelo); }
+.ponto-legenda--cpu { background: var(--investigacao-ciano); }
+.ponto-legenda--ram { background: var(--investigacao-roxo); }
+
+.investigacao-leitura-tecnica {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding-left: 10px;
+  border-left: 1px solid #304556;
+}
+
+.investigacao-leitura-tecnica h3,
+.investigacao-lista-anomalias h3,
+.investigacao-boxplot__legenda h3 {
+  margin: 0 0 2px;
+  color: var(--investigacao-texto);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.investigacao-leitura-tecnica label,
+.investigacao-regressao__resumo label,
+.investigacao-boxplot__corpo > label {
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.61rem;
+}
+
+.investigacao-leitura-tecnica select,
+.investigacao-regressao__resumo select,
+.investigacao-boxplot__corpo > select {
+  min-height: 29px;
+  padding: 4px 7px;
+  font-size: 0.65rem;
+}
+
+.investigacao-leitura-tecnica dl,
+.investigacao-boxplot__legenda dl {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.investigacao-leitura-tecnica dl div,
+.investigacao-boxplot__legenda dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #26394a;
+  font-size: 0.62rem;
+}
+
+.investigacao-leitura-tecnica dt,
+.investigacao-boxplot__legenda dt {
+  color: var(--investigacao-texto-secundario);
+}
+
+.investigacao-leitura-tecnica dd,
+.investigacao-boxplot__legenda dd {
+  margin: 0;
+  color: #e7eef4;
+  font-weight: 650;
+  text-align: right;
+}
+
+.investigacao-leitura-tecnica > p {
+  margin: 0;
+  color: #8398a9;
+  font-size: 0.58rem;
+  line-height: 1.35;
+}
+
+/* Divide a regressão entre seus parâmetros e o gráfico de dispersão. */
+.investigacao-regressao {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(155px, 0.76fr) minmax(0, 1.55fr);
+  gap: 10px;
+  padding-top: 7px;
+}
+
+.investigacao-regressao__resumo {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.investigacao-regressao__resumo > div {
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 1px solid #2c4254;
+  border-radius: 6px;
+  background: var(--investigacao-superficie-interna);
+}
+
+.investigacao-regressao__resumo > div span {
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.59rem;
+}
+
+.investigacao-regressao__resumo > div strong {
+  color: #e8f0f5;
+  font-size: 0.7rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.investigacao-regressao__resumo > p {
+  margin: 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.58rem;
+  line-height: 1.35;
+}
+
+.investigacao-grafico {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  margin: 0;
+}
+
+.investigacao-grafico figcaption {
+  margin: 0 0 4px;
+  color: #dce7ef;
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.investigacao-grafico canvas {
+  display: block;
+  width: 100% !important;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+}
+
+.investigacao-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 12px;
+  margin: 5px 0 0;
+  padding: 0;
+  color: #c4d0d9;
+  font-size: 0.58rem;
+  list-style: none;
+}
+
+.linha-legenda {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  flex: 0 0 18px;
+  background: var(--investigacao-ciano);
+}
+
+.linha-legenda--limite {
+  height: 0;
+  border-top: 2px dashed var(--investigacao-vermelho);
+  background: transparent;
+}
+
+.linha-legenda--regressao { background: var(--investigacao-ciano); }
+
+/* Divide a investigação temporal do resumo de anomalias sem deixar a lista alongar o painel. */
+.investigacao-anomalias {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(0, 1.65fr) minmax(170px, 0.75fr);
+  gap: 10px;
+  padding-top: 7px;
+}
+
+.investigacao-grafico--temporal {
+  min-height: 0;
+}
+
+.investigacao-lista-anomalias {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  padding-left: 9px;
+  border-left: 1px solid #304556;
+}
+
+.investigacao-lista-anomalias__vazia {
+  margin: 3px 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.62rem;
+  line-height: 1.4;
+}
+
+.investigacao-lista-anomalias ul {
+  display: grid;
+  min-height: 0;
+  gap: 5px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Reserva uma coluna menor para a legenda e um gráfico amplo para comparar os servidores. */
+.investigacao-boxplot__corpo {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) minmax(112px, 0.38fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px 9px;
+  padding-top: 7px;
+}
+
+.investigacao-boxplot__corpo > label {
+  align-self: center;
+}
+
+.investigacao-boxplot__corpo > select {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.investigacao-grafico--boxplot {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.investigacao-boxplot__legenda {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  grid-column: 2;
+  grid-row: 2;
+  padding: 8px;
+  border: 1px solid #2b4051;
+  border-radius: 7px;
+  background: var(--investigacao-superficie-interna);
+}
+
+.investigacao-boxplot__legenda h3 {
+  font-size: 0.65rem;
+}
+
+.investigacao-boxplot__legenda dl div {
+  gap: 5px;
+  font-size: 0.56rem;
+}
+
+.investigacao-boxplot__legenda > p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: #c5d2dc;
+  font-size: 0.58rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+/* Em telas médias, empilha os painéis e mantém filtros e indicadores legíveis. */
+@media (max-width: 1100px) {
+  .pagina-investigacao .investigacao-conteudo {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .investigacao-relacoes,
+  .investigacao-comportamento {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .investigacao-relacoes .investigacao-painel,
+  .investigacao-comportamento .investigacao-painel {
+    height: 300px;
+  }
+}
+
+@media (max-width: 760px) {
+  .investigacao-filtros {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .investigacao-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .investigacao-pearson {
+    grid-template-columns: minmax(90px, 0.75fr) minmax(100px, 1fr);
+  }
+
+  .investigacao-leitura-tecnica {
+    grid-column: 1 / -1;
+    padding: 8px 0 0;
+    border-top: 1px solid #304556;
+    border-left: 0;
+  }
+
+  .investigacao-relacoes .investigacao-painel,
+  .investigacao-comportamento .investigacao-painel {
+    height: auto;
+    min-height: 300px;
+  }
+
+  .investigacao-regressao,
+  .investigacao-anomalias {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .investigacao-regressao__resumo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .investigacao-regressao__resumo > label,
+  .investigacao-regressao__resumo > select,
+  .investigacao-regressao__resumo > p {
+    grid-column: 1 / -1;
+  }
+
+  .investigacao-regressao .investigacao-grafico {
+    min-height: 210px;
+  }
+
+  .investigacao-anomalias .investigacao-grafico--temporal {
+    min-height: 210px;
+  }
+
+  .investigacao-lista-anomalias {
+    min-height: 100px;
+    padding: 8px 0 0;
+    border-top: 1px solid #304556;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .pagina-investigacao .investigacao-conteudo {
+    gap: 8px;
+    padding: 9px 9px 16px;
+  }
+
+  .investigacao-introducao h1 {
+    font-size: 1.2rem;
+  }
+
+  .investigacao-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .investigacao-kpi {
+    min-height: 68px;
+  }
+
+  .investigacao-relacoes .investigacao-painel,
+  .investigacao-comportamento .investigacao-painel {
+    padding: 9px;
+  }
+
+  .investigacao-boxplot__corpo {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(190px, 1fr) auto;
+  }
+
+  .investigacao-boxplot__corpo > label {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .investigacao-boxplot__corpo > select {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+  }
+
+  .investigacao-grafico--boxplot {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .investigacao-boxplot__legenda {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  .investigacao-boxplot__legenda dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -146,6 +146,23 @@
                         <option value="rede">Rede</option>
                     </select>
                 </label>
+
+                <div class="investigacao-filtro investigacao-filtro--periodo" id="filtroPeriodoHistorico" data-estado-historico="aguardando-metadados">
+                    <span class="investigacao-filtro__rotulo">Intervalo do histórico da empresa</span>
+                    <div class="investigacao-periodo__campos">
+                        <label>
+                            <span>De</span>
+                            <input type="date" id="dataInicioHistorico" name="dataInicioHistorico" aria-label="Data inicial do histórico" aria-describedby="estadoHistoricoSilver" disabled>
+                        </label>
+                        <label>
+                            <span>Até</span>
+                            <input type="date" id="dataFimHistorico" name="dataFimHistorico" aria-label="Data final do histórico" aria-describedby="estadoHistoricoSilver" disabled>
+                        </label>
+                        <button type="button" id="aplicarPeriodoHistorico" disabled>Aplicar</button>
+                    </div>
+                    <p class="investigacao-periodo__estado" id="estadoHistoricoSilver" role="status" aria-live="polite">Aguardando as datas da primeira e da última captura da camada Silver.</p>
+                    <p class="investigacao-periodo__nota">Os limites do calendário não garantem capturas em todos os momentos do intervalo.</p>
+                </div>
             </section>
 
             <section class="investigacao-kpis" aria-label="Indicadores da investigação">
