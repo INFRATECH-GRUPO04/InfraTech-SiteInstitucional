@@ -13,8 +13,10 @@
     var opcoesServidores = document.getElementById('opcoesServidores');
     var estadoListaServidores = document.getElementById('estadoListaServidores');
     var resumoServidores = document.getElementById('resumoServidores');
+    var chipsServidores = document.getElementById('chipsServidores');
     var botaoSelecionarTodos = document.getElementById('selecionarTodosServidores');
     var botaoLimparSelecao = document.getElementById('limparServidores');
+    var botaoConcluirSelecao = document.getElementById('concluirSelecaoServidores');
     var avisoSemServidor = document.getElementById('avisoSemServidor');
 
     if (!filtroPeriodo || !dataInicial || !dataFinal || !botaoAplicarPeriodo || !estadoPeriodo
@@ -118,6 +120,35 @@
         resumoServidores.textContent = selecionados.length
             ? `${selecionados.length} de ${servidoresEmpresa.length} selecionados`
             : `0 de ${servidoresEmpresa.length} selecionados`;
+        if (chipsServidores) {
+            chipsServidores.replaceChildren();
+            if (!selecionados.length) {
+                var vazio = document.createElement('span');
+                vazio.className = 'investigacao-seletor-servidores__vazio';
+                vazio.textContent = servidoresEmpresa.length ? 'Nenhum servidor selecionado' : 'Nenhum servidor disponível';
+                chipsServidores.appendChild(vazio);
+            } else {
+                selecionados.forEach(function (servidor) {
+                    var chip = document.createElement('span');
+                    var nome = document.createElement('span');
+                    var remover = document.createElement('button');
+                    chip.className = 'investigacao-servidor-chip';
+                    nome.className = 'investigacao-servidor-chip__nome';
+                    nome.textContent = servidor.nome;
+                    remover.className = 'investigacao-servidor-chip__remover';
+                    remover.type = 'button';
+                    remover.dataset.servidorId = servidor.id;
+                    remover.setAttribute('aria-label', `Remover ${servidor.nome} da seleção`);
+                    remover.textContent = '×';
+                    chip.append(nome, remover);
+                    chipsServidores.appendChild(chip);
+                });
+            }
+            chipsServidores.scrollLeft = 0;
+        }
+        opcoesServidores.querySelectorAll('input[name="servidores"]').forEach(function (entrada) {
+            entrada.closest('label')?.classList.toggle('selecionado', entrada.checked);
+        });
         if (avisoSemServidor) avisoSemServidor.hidden = selecionados.length > 0;
 
         if (persistir && chaveSelecaoServidores) {
@@ -187,7 +218,11 @@
             entrada.value = servidor.id;
             entrada.dataset.nome = servidor.nome;
             entrada.checked = selecionado;
-            entrada.addEventListener('change', function () { atualizarResumoSelecao(true); });
+            rotulo.classList.toggle('selecionado', selecionado);
+            entrada.addEventListener('change', function () {
+                rotulo.classList.toggle('selecionado', entrada.checked);
+                atualizarResumoSelecao(true);
+            });
             rotulo.append(entrada, document.createTextNode(` ${servidor.nome}`));
             opcoesServidores.appendChild(rotulo);
         });
@@ -339,7 +374,20 @@
         var aberto = listaServidores.hidden;
         listaServidores.hidden = !aberto;
         botaoServidores.setAttribute('aria-expanded', String(aberto));
+        if (aberto && opcoesServidores) opcoesServidores.scrollTop = 0;
     });
+
+    if (chipsServidores) {
+        chipsServidores.addEventListener('click', function (evento) {
+            var botaoRemover = evento.target.closest('.investigacao-servidor-chip__remover');
+            if (!botaoRemover) return;
+            var entrada = Array.from(opcoesServidores.querySelectorAll('input[name="servidores"]'))
+                .find(function (item) { return item.value === botaoRemover.dataset.servidorId; });
+            if (!entrada) return;
+            entrada.checked = false;
+            atualizarResumoSelecao(true);
+        });
+    }
 
     document.addEventListener('click', function (evento) {
         if (!listaServidores.hidden && !listaServidores.parentElement.contains(evento.target)) {
@@ -367,6 +415,14 @@
         botaoLimparSelecao.addEventListener('click', function () {
             opcoesServidores.querySelectorAll('input[name="servidores"]').forEach(function (item) { item.checked = false; });
             atualizarResumoSelecao(true);
+        });
+    }
+
+    if (botaoConcluirSelecao) {
+        botaoConcluirSelecao.addEventListener('click', function () {
+            listaServidores.hidden = true;
+            botaoServidores.setAttribute('aria-expanded', 'false');
+            botaoServidores.focus();
         });
     }
 

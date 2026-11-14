@@ -107,18 +107,28 @@
 
             <section class="investigacao-filtros" aria-label="Filtros da investigação">
                 <div class="investigacao-filtro investigacao-filtro--servidores">
-                    <span class="investigacao-filtro__rotulo" id="rotuloServidores">Servidores</span>
-                    <button class="investigacao-seletor-servidores" id="alternarServidores" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="listaServidores">
-                        <span id="resumoServidores">4 de 6 selecionados</span>
-                        <span aria-hidden="true">⌄</span>
-                    </button>
-                    <div class="investigacao-lista-servidores" id="listaServidores" role="group" aria-labelledby="rotuloServidores" hidden>
-                        <div class="investigacao-lista-servidores__acoes">
-                            <button type="button" id="selecionarTodosServidores">Selecionar todos</button>
-                            <button type="button" id="limparServidores">Limpar seleção</button>
+                    <span class="investigacao-filtro__rotulo" id="rotuloServidores">Servidores (<span id="resumoServidores">Carregando...</span>)</span>
+                    <div class="investigacao-filtro__controle-servidores">
+                        <div class="investigacao-seletor-servidores">
+                            <div class="investigacao-seletor-servidores__chips" id="chipsServidores" aria-label="Servidores selecionados">
+                                <span class="investigacao-seletor-servidores__vazio">Carregando servidores...</span>
+                            </div>
+                            <button class="investigacao-seletor-servidores__alternar" id="alternarServidores" type="button" aria-label="Escolher servidores" aria-haspopup="true" aria-expanded="false" aria-controls="listaServidores">
+                                <span aria-hidden="true">⌄</span>
+                            </button>
                         </div>
-                        <div id="opcoesServidores">
-                            <p class="investigacao-lista-servidores__estado" id="estadoListaServidores" role="status" aria-live="polite">Carregando servidores da empresa...</p>
+                        <div class="investigacao-lista-servidores" id="listaServidores" role="group" aria-labelledby="rotuloServidores" hidden>
+                            <div class="investigacao-lista-servidores__acoes">
+                                <button type="button" id="selecionarTodosServidores">Selecionar todos</button>
+                                <button type="button" id="limparServidores">Limpar seleção</button>
+                            </div>
+                            <div id="opcoesServidores">
+                                <p class="investigacao-lista-servidores__estado" id="estadoListaServidores" role="status" aria-live="polite">Carregando servidores da empresa...</p>
+                            </div>
+                            <div class="investigacao-lista-servidores__rodape">
+                                <span>A seleção é aplicada e salva automaticamente.</span>
+                                <button type="button" id="concluirSelecaoServidores">Concluído</button>
+                            </div>
                         </div>
                     </div>
                     <p class="investigacao-filtro__erro" id="avisoSemServidor" role="status" hidden>Selecione pelo menos um servidor para atualizar as análises.</p>
