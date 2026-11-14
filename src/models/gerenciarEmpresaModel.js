@@ -21,6 +21,7 @@ var CAMPOS_EMPRESA = `
     e.email,
     e.telefone,
     e.status_sistema AS status,
+    e.status_sistema AS statusSistema,
     e.dt_cadastro AS dtCadastro,
     e.fk_endereco AS fkEndereco,
     en.cep,
@@ -62,7 +63,7 @@ function buscarGestor(idEmpresa) {
     console.log("ACESSEI O GERENCIAR EMPRESA MODEL \n function buscarGestor():", idEmpresa);
 
     var instrucaoSql = `
-        SELECT id_funcionario AS idFuncionario, nome, email, senha, cpf, status_sistema AS status, dt_cadastro AS dtCadastro
+        SELECT id_funcionario AS idFuncionario, nome, email, senha, cpf, status_sistema AS status, status_sistema AS statusSistema, dt_cadastro AS dtCadastro
         FROM funcionario
         WHERE fk_empresa = ${Number(idEmpresa)} AND tipo_acesso = 'GESTOR'
         LIMIT 1;

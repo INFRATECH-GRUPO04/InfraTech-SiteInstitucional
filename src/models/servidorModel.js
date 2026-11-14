@@ -33,14 +33,14 @@ function cadastrarComponente(fkServidor, tipoComponente, capacidade, limiteAtenc
 }
 
 function listar(idEmpresa) {
-    var instrucaoSql = `SELECT id_servidor, nome, localizacao, status_sistema FROM servidor WHERE fk_empresa = ?;`;
+    var instrucaoSql = `SELECT id_servidor, nome, localizacao, status_sistema, status_sistema AS statusSistema FROM servidor WHERE fk_empresa = ?;`;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql, [Number(idEmpresa)]);
 }
 
 function listarPorFuncionario(idEmpresa, idFuncionario) {
     var instrucaoSql = `
-        SELECT s.id_servidor, s.nome, s.localizacao, s.status_sistema 
+        SELECT s.id_servidor, s.nome, s.localizacao, s.status_sistema, s.status_sistema AS statusSistema 
         FROM servidor s
         JOIN servidor_funcionario sf ON sf.fk_servidor = s.id_servidor
         WHERE s.fk_empresa = ? AND sf.fk_funcionario = ?

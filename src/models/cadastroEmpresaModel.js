@@ -35,7 +35,7 @@ function cadastrarEmpresa(razaoSocial, nomeFantasia, cnpj, segmento, emailEmpres
 }
 
 function cadastrarRepresentante(fkEmpresa, nomeResponsavel, dtNascimentoResponsavel, emailResponsavel, senha, cpf) {
-  var sql = `INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf, status_sistema) VALUES (?, 'GESTOR', ?, ?, ?, ?, ?, 1)`;
+  var sql = `INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, dt_nascimento, email, senha, cpf, status_sistema) VALUES (?, 'GESTOR', ?, ?, ?, ?, ?, 1)`;
   return database.executar(sql, [fkEmpresa, nomeResponsavel, dtNascimentoResponsavel, emailResponsavel, senha, cpf]);
 }
 

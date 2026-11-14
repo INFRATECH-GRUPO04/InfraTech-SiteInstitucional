@@ -27,12 +27,12 @@ var HOST_APP = process.env.APP_HOST;
 var app = express();
 
 var indexRouter = require("./src/routes/index");
-var login_cadastroRouter = require("./src/routes/login_cadastro");
-var servidorRouter = require("./src/routes/servidor")
-var cadastro_empresaRouter = require("./src/routes/cadastro_empresa");
-var gerenciar_empresaRouter = require("./src/routes/gerenciarEmpresa");
-var gerenciarFuncionarioRouter = require("./src/routes/gerenciar_funcionario")
-var agenteRouter = require("./src/routes/agente")
+var loginCadastroRouter = require("./src/routes/loginCadastro");
+var servidorRouter = require("./src/routes/servidor");
+var cadastroEmpresaRouter = require("./src/routes/cadastroEmpresa");
+var gerenciarEmpresaRouter = require("./src/routes/gerenciarEmpresa");
+var gerenciarFuncionarioRouter = require("./src/routes/gerenciarFuncionario");
+var agenteRouter = require("./src/routes/agente");
 
 var cryptoRouter = require("./src/routes/crypto");
 var autorizacao = require("./src/seguranca/autorizacao");
@@ -79,12 +79,12 @@ app.use(cors());
  * e a permissão são verificadas antes que a chamada alcance a funcionalidade.
  */
 app.use("/", indexRouter);
-app.use("/login_cadastro", login_cadastroRouter);
+app.use("/login_cadastro", loginCadastroRouter);
 app.use("/crypto", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), cryptoRouter);
 app.use("/servidor", autorizacao.autenticar, servidorRouter);
-app.use("/cadastro_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), cadastro_empresaRouter);
-app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciar_empresaRouter);
-app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciar_empresaRouter);
+app.use("/cadastro_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), cadastroEmpresaRouter);
+app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
+app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
 app.use("/agente", agenteRouter)
 
