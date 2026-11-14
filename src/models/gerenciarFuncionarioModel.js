@@ -24,6 +24,7 @@ function buscarDadosUsuario(id) {
         f.nome,
         f.tipo_acesso,
         f.status_sistema,
+        f.status_sistema AS statusSistema,
         f.pode_editar_alertas AS podeEditarAlertas,
         (SELECT COUNT(*)
            FROM servidor_funcionario sf
@@ -42,10 +43,11 @@ function buscarDadosUsuarioEspecifico(id, idEmpresa) {
         f.id_funcionario,
         f.tipo_acesso,
         f.nome,
-        DATE_FORMAT(f.data_nascimento, '%d/%m/%Y') AS dataNascimento,
+        DATE_FORMAT(f.dt_nascimento, '%d/%m/%Y') AS dataNascimento,
         f.email,
         f.cpf,
         f.status_sistema,
+        f.status_sistema AS statusSistema,
         f.pode_editar_alertas AS podeEditarAlertas,
         (SELECT COUNT(*)
            FROM servidor_funcionario sf
@@ -111,6 +113,7 @@ function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
         s.nome,
         COALESCE(s.localizacao, en.cidade, 'Não informada') AS localizacao,
         s.status_sistema,
+        s.status_sistema AS statusSistema,
         (sf.fk_funcionario IS NOT NULL) AS temAcesso
     FROM servidor s
     JOIN empresa e ON e.id_empresa = s.fk_empresa

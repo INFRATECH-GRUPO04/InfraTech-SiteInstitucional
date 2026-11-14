@@ -4,7 +4,7 @@
 var express = require("express");
 var router = express.Router();
 
-var empresaController = require("../controllers/cadastro_empresaController");
+var empresaController = require("../controllers/cadastroEmpresaController");
 var admin = require("../seguranca/autorizacao").autenticar;
 var somenteAdmin = require("../seguranca/autorizacao").exigirPermissao('administrar');
 

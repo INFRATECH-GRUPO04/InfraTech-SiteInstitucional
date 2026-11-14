@@ -1,12 +1,12 @@
 /*
  * Este arquivo: Controla as consultas e ações da tela de funcionários, restringindo dados à empresa da sessão e validando alterações antes de chamar o model.
  */
-var gerenciar_funcionarioModel = require("../models/gerenciar_funcionarioModel");
+var gerenciarFuncionarioModel = require("../models/gerenciarFuncionarioModel");
 
 function buscarNomeEmpresa(req, res) {
   var id = req.usuario.empresa;
 
-  gerenciar_funcionarioModel.buscarNomeEmpresa(id).then((resultado) => {
+  gerenciarFuncionarioModel.buscarNomeEmpresa(id).then((resultado) => {
     res.status(200).json(resultado);
   }).catch((erro) => {
     console.log(erro);
@@ -20,7 +20,7 @@ function buscarNomeEmpresa(req, res) {
 function buscarDadosUsuario(req, res) {
   var id = req.usuario.empresa;
 
-  gerenciar_funcionarioModel.buscarDadosUsuario(id).then((resultado) => {
+  gerenciarFuncionarioModel.buscarDadosUsuario(id).then((resultado) => {
     res.status(200).json(resultado);
   }).catch((erro) => {
     console.log(erro);
@@ -32,7 +32,7 @@ function buscarDadosUsuario(req, res) {
 function buscarDadosUsuarioEspecifico(req, res) {
   var id = req.params.id;
 
-  gerenciar_funcionarioModel.buscarDadosUsuarioEspecifico(id, req.usuario.empresa).then((resultado) => {
+  gerenciarFuncionarioModel.buscarDadosUsuarioEspecifico(id, req.usuario.empresa).then((resultado) => {
     if (!resultado.length) return res.status(404).json({ erro: 'Funcionário não encontrado nesta empresa.' });
     res.status(200).json(resultado);
   }).catch((erro) => {
@@ -47,7 +47,7 @@ function buscarDadosUsuarioEspecifico(req, res) {
 function deletarUsuario(req, res) {
   var id = req.params.id;
   
-  gerenciar_funcionarioModel.deletarUsuario(id, req.usuario.empresa, req.usuario.id).then((resultado) => {
+  gerenciarFuncionarioModel.deletarUsuario(id, req.usuario.empresa, req.usuario.id).then((resultado) => {
     if (!resultado.affectedRows) return res.status(403).json({ erro: 'Não é possível excluir este funcionário.' });
     res.status(200).json(resultado);
   }).catch((erro) => {
@@ -58,7 +58,7 @@ function deletarUsuario(req, res) {
 function desativarUsuario(req, res) {
   var idFuncionario = req.params.id;
 
-  gerenciar_funcionarioModel.desativarUsuario(idFuncionario, req.usuario.empresa)
+  gerenciarFuncionarioModel.desativarUsuario(idFuncionario, req.usuario.empresa)
     .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);
@@ -69,7 +69,7 @@ function desativarUsuario(req, res) {
 function ativarUsuario(req, res) {
   var idFuncionario = req.params.id;
 
-  gerenciar_funcionarioModel.ativarUsuario(idFuncionario, req.usuario.empresa)
+  gerenciarFuncionarioModel.ativarUsuario(idFuncionario, req.usuario.empresa)
     .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);
@@ -87,7 +87,7 @@ function alterarPermissaoAlertas(req, res) {
   if (typeof req.body.podeEditarAlertas !== 'boolean') {
     return res.status(400).json({ erro: 'Informe se o funcionário pode editar limites de alerta.' });
   }
-  gerenciar_funcionarioModel.alterarPermissaoAlertas(
+  gerenciarFuncionarioModel.alterarPermissaoAlertas(
     Number(req.params.id), req.usuario.empresa, req.body.podeEditarAlertas
   ).then((resultado) => {
     if (!resultado) return res.status(404).json({ erro: 'Analista de telemetria ativo não encontrado nesta empresa.' });
@@ -103,7 +103,7 @@ function buscarServidoresPorEmpresa(req, res) {
   var idEmpresa = req.usuario ? req.usuario.empresa : Number(req.params.idEmpresa);
   var idFuncionario = Number(req.params.id || req.params.idFuncionario);
 
-  gerenciar_funcionarioModel.buscarServidoresPorEmpresa(idEmpresa, idFuncionario)
+  gerenciarFuncionarioModel.buscarServidoresPorEmpresa(idEmpresa, idFuncionario)
     .then((resultado) => res.status(200).json(resultado))
     .catch((erro) => {
       console.log(erro);
@@ -121,7 +121,7 @@ function alterarServidores(req, res) {
   }
   var servidores = [...new Set(entrada.map(Number))];
 
-  gerenciar_funcionarioModel.alterarServidores(idEmpresa, idFuncionario, servidores)
+  gerenciarFuncionarioModel.alterarServidores(idEmpresa, idFuncionario, servidores)
     .then(() => res.status(200).json({ mensagem: 'Acessos atualizados com sucesso.', quantidade: servidores.length }))
     .catch((erro) => {
       console.log(erro);

@@ -4,38 +4,38 @@
 var express = require("express");
 var router = express.Router();
 
-var login_cadastroController = require("../controllers/login_cadastroController.js");
+var loginCadastroController = require("../controllers/loginCadastroController.js");
 
 router.post("/cadastrar", function (req, res) {
 
     console.log("/cadastrar");
     
-    login_cadastroController.cadastrar(req, res);
+    loginCadastroController.cadastrar(req, res);
 })
 
 router.post("/autenticar", function (req, res) {
     
-    login_cadastroController.autenticar(req, res);
+    loginCadastroController.autenticar(req, res);
 });
 
 router.get("/sessao", function (req, res) {
-    login_cadastroController.sessaoAtual(req, res);
+    loginCadastroController.sessaoAtual(req, res);
 });
 
 router.post("/sair", function (req, res) {
-    login_cadastroController.sair(req, res);
+    loginCadastroController.sair(req, res);
 });
 
 router.get("/verificar", function (req, res) {
-    login_cadastroController.verificar(req, res);
+    loginCadastroController.verificar(req, res);
 });
 
 router.post("/EmailsIguais", function (req, res) {
-    login_cadastroController.EmailsIguais(req, res);
+    loginCadastroController.EmailsIguais(req, res);
 });
 
 router.post("/CodigoEmpresa", function (req, res) {
-    login_cadastroController.CodigoEmpresa(req, res);
+    loginCadastroController.CodigoEmpresa(req, res);
 });
 
 

@@ -4,7 +4,7 @@
 var express = require("express");
 var router = express.Router();
 
-var gerenciar_funcionarioController = require("../controllers/gerenciar_funcionarioController");
+var gerenciarFuncionarioController = require("../controllers/gerenciarFuncionarioController");
 
 
 // router.post("/cadastrar", function (req, res) {
@@ -12,43 +12,43 @@ var gerenciar_funcionarioController = require("../controllers/gerenciar_funciona
 // })
 
 router.get("/buscarNomeEmpresa/:id", function (req, res) {
-  gerenciar_funcionarioController.buscarNomeEmpresa(req, res);
+  gerenciarFuncionarioController.buscarNomeEmpresa(req, res);
 });
 
 router.get("/buscarDadosUsuario/:id", function (req, res) {
-  gerenciar_funcionarioController.buscarDadosUsuario(req, res);
+  gerenciarFuncionarioController.buscarDadosUsuario(req, res);
 });
 
 router.get("/buscarDadosUsuarioEspecifico/:id", function (req, res) {
-  gerenciar_funcionarioController.buscarDadosUsuarioEspecifico(req, res);
+  gerenciarFuncionarioController.buscarDadosUsuarioEspecifico(req, res);
 });
 
 router.delete("/deletarUsuario/:id", function (req, res) {
-  gerenciar_funcionarioController.deletarUsuario(req, res);
+  gerenciarFuncionarioController.deletarUsuario(req, res);
 });
 
 router.put("/desativarUsuario/:id", function (req, res) {
-  gerenciar_funcionarioController.desativarUsuario(req, res);
+  gerenciarFuncionarioController.desativarUsuario(req, res);
 });
 
 router.put("/ativarUsuario/:id", function (req, res) {
-  gerenciar_funcionarioController.ativarUsuario(req, res);
+  gerenciarFuncionarioController.ativarUsuario(req, res);
 });
 
 router.put("/permissao-alertas/:id", function (req, res) {
-  gerenciar_funcionarioController.alterarPermissaoAlertas(req, res);
+  gerenciarFuncionarioController.alterarPermissaoAlertas(req, res);
 });
 
 router.get("/buscarServidoresPorEmpresa/:id", function (req, res) {
-  gerenciar_funcionarioController.buscarServidoresPorEmpresa(req, res);
+  gerenciarFuncionarioController.buscarServidoresPorEmpresa(req, res);
 });
 
 router.get("/buscarServidoresPorEmpresa/:idEmpresa/:id", function (req, res) {
-  gerenciar_funcionarioController.buscarServidoresPorEmpresa(req, res);
+  gerenciarFuncionarioController.buscarServidoresPorEmpresa(req, res);
 });
 
 router.put("/alterarServidores/:id", function (req, res) {
-  gerenciar_funcionarioController.alterarServidores(req, res);
+  gerenciarFuncionarioController.alterarServidores(req, res);
 });
 
 module.exports = router;

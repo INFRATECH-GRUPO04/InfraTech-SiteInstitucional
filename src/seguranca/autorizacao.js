@@ -52,7 +52,7 @@ function verificarToken(token) {
 function criarSessao(funcionario) {
   const sessao = {
     id: Number(funcionario.idFuncionario),
-    empresa: Number(funcionario.fkEmpresa),
+    empresa: Number(funcionario.idEmpresa ?? funcionario.fkEmpresa),
     nome: funcionario.nome,
     email: funcionario.email,
     cargo: String(funcionario.tipoAcesso || '').toUpperCase(),

@@ -9,7 +9,7 @@ var database = require("../database/config")
 function verificar(codigo) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function verificar(): ", codigo);
     var instrucaoSql = `
-        SELECT codigo, fk_empresa AS fkEmpresa FROM convite WHERE codigo = ?;
+        SELECT codigo, fk_empresa AS idEmpresa, fk_empresa AS fkEmpresa FROM convite WHERE codigo = ?;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql, [codigo]);
@@ -20,7 +20,7 @@ function verificar(codigo) {
  */
 function autenticar(email, senha) {
     var instrucaoSql = `
-        SELECT id_funcionario AS idFuncionario, fk_empresa AS fkEmpresa, nome, data_nascimento AS dataNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, pode_editar_alertas AS podeEditarAlertas, dt_cadastro AS dtCadastro
+        SELECT id_funcionario AS idFuncionario, fk_empresa AS idEmpresa, fk_empresa AS fkEmpresa, nome, dt_nascimento AS dataNascimento, dt_nascimento AS dtNascimento, email, senha, cpf, tipo_acesso AS tipoAcesso, status_sistema AS statusSistema, pode_editar_alertas AS podeEditarAlertas, dt_cadastro AS dtCadastro
         FROM funcionario
         WHERE email = ? AND senha = ? AND status_sistema = 1;
     `;
@@ -43,14 +43,14 @@ function buscarPermissaoAlertas(idFuncionario, idEmpresa) {
 }
 
 /* Insere a conta com a empresa e o cargo concedidos pelo convite já validado. */
-function cadastrar(fkEmpresa, nome, data_nascimento, email, senha, cpf, tipoAcesso) {
+function cadastrar(fkEmpresa, nome, dtNascimento, email, senha, cpf, tipoAcesso) {
     var tiposValidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
     var tipoFinal = tiposValidos.includes(tipoAcesso) ? tipoAcesso : 'ANALISTA_DADOS';
     var instrucaoSql = `
-        INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, data_nascimento, email, senha, cpf)
+        INSERT INTO funcionario (fk_empresa, tipo_acesso, nome, dt_nascimento, email, senha, cpf)
         VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
-    return database.executar(instrucaoSql, [fkEmpresa, tipoFinal, nome, data_nascimento, email, senha, cpf]);
+    return database.executar(instrucaoSql, [fkEmpresa, tipoFinal, nome, dtNascimento, email, senha, cpf]);
 }
 
 function EmailsIguais(email) {
@@ -60,7 +60,7 @@ function EmailsIguais(email) {
 
 function CodigoEmpresa(codigo) {
     var instrucao = `
-        SELECT id_convite, fk_empresa, tipo_acesso, quantidade_uso, quantidade_usada
+        SELECT id_convite, fk_empresa AS idEmpresa, fk_empresa, tipo_acesso, quantidade_uso, quantidade_usada
         FROM convite
         WHERE codigo = ? AND quantidade_usada < quantidade_uso;
     `;
@@ -69,7 +69,7 @@ function CodigoEmpresa(codigo) {
 
 /* Confirma no banco que o convite existe e ainda tem utilizações disponíveis. */
 function buscarConviteAtivoPorId(idConvite) {
-    return database.executar(`SELECT id_convite, fk_empresa, tipo_acesso FROM convite WHERE id_convite = ? AND quantidade_usada < quantidade_uso;`, [Number(idConvite)]);
+    return database.executar(`SELECT id_convite, fk_empresa AS idEmpresa, fk_empresa, tipo_acesso FROM convite WHERE id_convite = ? AND quantidade_usada < quantidade_uso;`, [Number(idConvite)]);
 }
 
 

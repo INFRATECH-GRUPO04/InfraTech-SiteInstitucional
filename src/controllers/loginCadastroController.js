@@ -1,7 +1,7 @@
 /*
  * Este arquivo: Coordena autenticação, sessão, cadastro por convite e validações auxiliares. Converte os resultados dos models em respostas HTTP.
  */
-var login_cadastroModel = require("../models/login_cadastroModel");
+var loginCadastroModel = require("../models/loginCadastroModel");
 var autorizacao = require("../seguranca/autorizacao");
 
 
@@ -18,7 +18,7 @@ function autenticar(req, res) {
         res.status(400).send("Sua senha está indefinida!");
     } else {
 
-        login_cadastroModel.autenticar(email, senha)
+        loginCadastroModel.autenticar(email, senha)
             .then(
                 function (resultadoAutenticar) {
                     if (resultadoAutenticar.length == 1) {
@@ -39,7 +39,7 @@ function autenticar(req, res) {
 
                         res.json({
                             idFuncionario: funcionario.idFuncionario,
-                            idEmpresa: funcionario.fkEmpresa,
+                            idEmpresa: funcionario.idEmpresa ?? funcionario.fkEmpresa,
                             nome: funcionario.nome,
                             email: funcionario.email,
                             tipoAcesso: String(funcionario.tipoAcesso).trim().toUpperCase(),
@@ -69,7 +69,7 @@ function autenticar(req, res) {
 function sessaoAtual(req, res) {
     res.set('Cache-Control', 'no-store');
     autorizacao.autenticar(req, res, function () {
-        login_cadastroModel.buscarPermissaoAlertas(req.usuario.id, req.usuario.empresa)
+        loginCadastroModel.buscarPermissaoAlertas(req.usuario.id, req.usuario.empresa)
             .then(function (resultado) {
                 var podeEditarAlertas = resultado.length > 0 && Number(resultado[0].podeEditarAlertas) === 1;
                 var empresa = resultado[0] || {};
@@ -96,7 +96,7 @@ function verificar(req, res) {
     var codigo = req.query.codigo;
     if (!codigo) return res.status(400).send("Seu código está indefinido!");
 
-    login_cadastroModel.verificar(codigo)
+    loginCadastroModel.verificar(codigo)
         .then(function (resultado) {
             if (resultado.length) return res.status(200).json(resultado[0]);
             return res.status(404).send("Código não encontrado");
@@ -114,7 +114,7 @@ function cadastrar(req, res) {
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
     var cpf = req.body.cpfServer;
-    var data_nascimento = req.body.nascimentoServer;
+    var dtNascimento = req.body.nascimentoServer;
     var idConvite = req.body.idConviteServer;
 
     if (nome == undefined) {
@@ -125,18 +125,18 @@ function cadastrar(req, res) {
         res.status(400).send("Sua senha está indefinida!");
     } else if (cpf == undefined) {
         res.status(400).send("Seu cpf está indefinido!");
-    } else if (data_nascimento == undefined) {
+    } else if (dtNascimento == undefined) {
         res.status(400).send("Sua data de nascimento está indefinida!");
     } else if (!idConvite) {
         res.status(403).send("É necessário um convite válido para criar a conta.");
     } else {
-        login_cadastroModel.buscarConviteAtivoPorId(idConvite)
+        loginCadastroModel.buscarConviteAtivoPorId(idConvite)
             .then(function (convites) {
                 if (!convites.length) return res.status(403).send("Convite inválido ou sem usos disponíveis.");
                 var convite = convites[0];
                 var cargosPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
                 if (!cargosPermitidos.includes(String(convite.tipo_acesso).toUpperCase())) return res.status(403).send("O convite possui um cargo inválido.");
-                return login_cadastroModel.cadastrar(convite.fk_empresa, nome, data_nascimento, email, senha, cpf, convite.tipo_acesso)
+                return loginCadastroModel.cadastrar(convite.idEmpresa ?? convite.fk_empresa, nome, dtNascimento, email, senha, cpf, convite.tipo_acesso)
                     .then(function (resultado) {
                         var cryptoModel = require("../models/cryptoModel");
                         return cryptoModel.atualizarCodigo(convite.id_convite).then(function () { res.json(resultado); });
@@ -156,7 +156,7 @@ function EmailsIguais(req, res) {
         res.status(400).send("Seu email está indefinido!");
     } else {
 
-        login_cadastroModel.EmailsIguais(email)
+        loginCadastroModel.EmailsIguais(email)
             .then(
                 function (resultadoEmail) {
                     if (resultadoEmail.length == 1) {
@@ -182,12 +182,13 @@ function CodigoEmpresa(req, res) {
         res.status(400).send("Seu código está indefinido!");
     } else {
 
-        login_cadastroModel.CodigoEmpresa(codigo)
+        loginCadastroModel.CodigoEmpresa(codigo)
             .then(
                 function (resultadoCodigo) {
                     if (resultadoCodigo.length >= 1) {
                          res.status(200).json({
                             mensagem: "Codigo válido",
+                            idEmpresa: resultadoCodigo[0].idEmpresa ?? resultadoCodigo[0].fk_empresa,
                             fk_empresa: resultadoCodigo[0].fk_empresa,
                             id_convite: resultadoCodigo[0].id_convite,
                             tipo_acesso: resultadoCodigo[0].tipo_acesso

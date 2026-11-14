@@ -125,7 +125,7 @@ CREATE TABLE funcionario (
     tipo_acesso ENUM('INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO')
         NOT NULL DEFAULT 'FUNCIONARIO',
     nome VARCHAR(45) NULL,
-    data_nascimento DATETIME NULL,
+    dt_nascimento DATETIME NULL,
     email VARCHAR(45) NOT NULL,
     senha VARCHAR(45) NOT NULL,
     cpf CHAR(11) NULL,
@@ -149,9 +149,8 @@ CREATE TABLE servidor (
     id_servidor INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
     nome VARCHAR(45) NULL,
-    status_sistema TINYINT NOT NULL DEFAULT 1,
     localizacao VARCHAR(200),
-    status_sistema TINYINT NOT NULL,
+    status_sistema TINYINT NOT NULL DEFAULT 1,
     dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
     chave_hash CHAR(64) NULL UNIQUE,
     dt_ultimo_envio DATETIME NULL,
@@ -212,7 +211,7 @@ CREATE TABLE convite (
     tipo_acesso VARCHAR(20) NOT NULL DEFAULT 'FUNCIONARIO',
     quantidade_uso INT NOT NULL,
     quantidade_usada INT NOT NULL DEFAULT 0,
-    criado DATETIME DEFAULT NOW(),
+    dt_criacao DATETIME DEFAULT NOW(),
     fk_empresa INT NOT NULL,
 
     CONSTRAINT fk_convite_empresa
@@ -261,7 +260,7 @@ CREATE TABLE parametro_monitoramento (
 -- -----------------------------------------------------
 =======
     status_monitoramento TINYINT NOT NULL DEFAULT 1,
-    entrada_sistema DATETIME DEFAULT CURRENT_TIMESTAMP,
+    dt_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
     fk_servidor INT NOT NULL,
 
     FOREIGN KEY (fk_servidor)
@@ -416,7 +415,7 @@ INSERT INTO funcionario (
     fk_empresa,
     tipo_acesso,
     nome,
-    data_nascimento,
+    dt_nascimento,
     email,
     senha,
     cpf,
