@@ -117,12 +117,9 @@
                             <button type="button" id="selecionarTodosServidores">Selecionar todos</button>
                             <button type="button" id="limparServidores">Limpar seleção</button>
                         </div>
-                        <label><input type="checkbox" name="servidores" value="SRV-BR-01" checked> SRV-BR-01</label>
-                        <label><input type="checkbox" name="servidores" value="SRV-BR-02" checked> SRV-BR-02</label>
-                        <label><input type="checkbox" name="servidores" value="SRV-BR-03" checked> SRV-BR-03</label>
-                        <label><input type="checkbox" name="servidores" value="SRV-BR-04" checked> SRV-BR-04</label>
-                        <label><input type="checkbox" name="servidores" value="SRV-BR-05"> SRV-BR-05</label>
-                        <label><input type="checkbox" name="servidores" value="SRV-BR-06"> SRV-BR-06</label>
+                        <div id="opcoesServidores">
+                            <p class="investigacao-lista-servidores__estado" id="estadoListaServidores" role="status" aria-live="polite">Carregando servidores da empresa...</p>
+                        </div>
                     </div>
                     <p class="investigacao-filtro__erro" id="avisoSemServidor" role="status" hidden>Selecione pelo menos um servidor para atualizar as análises.</p>
                 </div>
@@ -162,6 +159,7 @@
                     </div>
                     <p class="investigacao-periodo__estado" id="estadoHistoricoSilver" role="status" aria-live="polite">Aguardando as datas da primeira e da última captura da camada Silver.</p>
                     <p class="investigacao-periodo__nota">Os limites do calendário não garantem capturas em todos os momentos do intervalo.</p>
+                    <div class="investigacao-periodo__servidores" id="disponibilidadeHistoricoServidores" aria-live="polite" hidden></div>
                 </div>
             </section>
 

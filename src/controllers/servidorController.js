@@ -100,9 +100,9 @@ function listar(req, res) {
 
     var idUsuario = req.usuario.id;
     var cargo = String(req.usuario.cargo || '').toUpperCase();
-    var ehGestao = ['GESTOR', 'ADMIN', 'INFRATECH'].includes(cargo);
+    var podeVerInventarioDaEmpresa = ['ANALISTA_DADOS', 'GESTOR', 'ADMIN', 'INFRATECH'].includes(cargo);
 
-    var busca = ehGestao
+    var busca = podeVerInventarioDaEmpresa
         ? servidorModel.listar(idEmpresa)
         : servidorModel.listarPorFuncionario(idEmpresa, idUsuario);
 

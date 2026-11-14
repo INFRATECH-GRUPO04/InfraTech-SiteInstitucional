@@ -1,17 +1,17 @@
 /* Define a paleta e as medidas usadas somente pela página de investigação. */
 .pagina-investigacao {
-  --investigacao-fundo: #0b1119;
-  --investigacao-superficie: #111b26;
-  --investigacao-superficie-interna: #0d1721;
-  --investigacao-borda: #26394a;
-  --investigacao-texto: #f2f6fa;
-  --investigacao-texto-secundario: #91a7ba;
-  --investigacao-ciano: #00c8e8;
+  --investigacao-fundo: var(--dashboard-fundo, #0b1119);
+  --investigacao-superficie: var(--fundo-card, #151e29);
+  --investigacao-superficie-interna: var(--fundo-card-alt, #101923);
+  --investigacao-borda: var(--borda-card, #293746);
+  --investigacao-texto: var(--texto-card-titulo, #f2f6fa);
+  --investigacao-texto-secundario: var(--texto-card-suave, #a6b7c7);
+  --investigacao-ciano: #00d2df;
   --investigacao-roxo: #a855f7;
   --investigacao-verde: #22d3a6;
   --investigacao-amarelo: #fbbf24;
   --investigacao-vermelho: #fb5360;
-  --investigacao-raio: 10px;
+  --investigacao-raio: var(--dashboard-raio-card, 12px);
   color: var(--investigacao-texto);
   background: var(--investigacao-fundo);
   overflow-x: hidden;
@@ -31,9 +31,9 @@
   min-width: 0;
   flex: 1;
   flex-direction: column;
-  gap: 9px;
+  gap: var(--dashboard-card-gap, 12px);
   box-sizing: border-box;
-  padding: 10px 16px 14px;
+  padding: 12px 20px 24px;
 }
 
 /* Mantém o título e a explicação compactos, mas fáceis de localizar. */
@@ -48,7 +48,7 @@
 .investigacao-introducao h1 {
   margin: 0;
   color: var(--investigacao-texto);
-  font-size: clamp(1.25rem, 1.65vw, 1.65rem);
+  font-size: clamp(1.25rem, 1.5vw, 1.5rem);
   font-weight: 750;
   line-height: 1.2;
   letter-spacing: -0.025em;
@@ -62,13 +62,13 @@
   line-height: 1.45;
 }
 
-/* Distribui os três filtros em uma faixa única e oferece um menu compacto de servidores. */
+/* Distribui os filtros de servidor, métricas e período na faixa da página. */
 .investigacao-filtros {
   position: relative;
   z-index: 5;
   display: grid;
-  grid-template-columns: minmax(240px, 1.1fr) repeat(2, minmax(170px, 1fr));
-  gap: 10px;
+  grid-template-columns: minmax(220px, 1.25fr) repeat(2, minmax(135px, 0.75fr)) minmax(300px, 1.4fr);
+  gap: var(--dashboard-card-gap, 12px);
   padding: 9px 11px;
   border: 1px solid var(--investigacao-borda);
   border-radius: var(--investigacao-raio);
@@ -168,6 +168,13 @@
   background: #1a2c3a;
 }
 
+.investigacao-lista-servidores__estado {
+  margin: 6px 8px;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
 .investigacao-lista-servidores input {
   width: 15px;
   height: 15px;
@@ -199,11 +206,110 @@
   font-size: 0.68rem;
 }
 
+/* Mantém o intervalo de datas alinhado aos demais filtros e preparado para os limites reais da Silver. */
+.investigacao-filtro--periodo {
+  align-self: stretch;
+}
+
+.investigacao-periodo__campos {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 6px;
+}
+
+.investigacao-periodo__campos label {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.6rem;
+}
+
+.investigacao-periodo__campos input[type="date"] {
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 5px 7px;
+  border: 1px solid #34485a;
+  border-radius: 7px;
+  color: var(--investigacao-texto);
+  color-scheme: dark;
+  background: var(--investigacao-superficie-interna);
+  font: inherit;
+  font-size: 0.67rem;
+}
+
+.investigacao-periodo__campos input[type="date"]:focus-visible {
+  outline: 2px solid var(--investigacao-ciano);
+  outline-offset: 2px;
+}
+
+.investigacao-periodo__campos input[type="date"]:disabled {
+  border-color: #2a3947;
+  color: #738697;
+  background: #111923;
+  cursor: not-allowed;
+}
+
+.investigacao-periodo__campos button {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--investigacao-ciano);
+  border-radius: 7px;
+  color: #06131a;
+  background: var(--investigacao-ciano);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.investigacao-periodo__campos button:disabled {
+  border-color: #344452;
+  color: #8295a5;
+  background: #1a2732;
+  cursor: not-allowed;
+}
+
+.investigacao-periodo__estado,
+.investigacao-periodo__nota {
+  margin: 3px 0 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.65rem;
+  line-height: 1.3;
+}
+
+.investigacao-periodo__nota {
+  color: #748a9b;
+}
+
+.investigacao-periodo__servidores {
+  display: grid;
+  max-height: 72px;
+  gap: 2px;
+  margin-top: 4px;
+  overflow-y: auto;
+}
+
+.investigacao-periodo__servidores[hidden] {
+  display: none;
+}
+
+.investigacao-periodo__servidor {
+  margin: 0;
+  color: #a9bdce;
+  font-size: 0.65rem;
+  line-height: 1.3;
+}
+
 /* Mantém os indicadores em uma linha comum e reserva uma cor estável para cada análise. */
 .investigacao-kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 9px;
+  gap: var(--dashboard-card-gap, 12px);
 }
 
 .investigacao-kpi {
@@ -272,7 +378,7 @@
 .investigacao-comportamento {
   display: grid;
   min-width: 0;
-  gap: 9px;
+  gap: var(--dashboard-card-gap, 12px);
 }
 
 .investigacao-relacoes {
@@ -315,7 +421,7 @@
 .investigacao-painel__cabecalho h2 {
   margin: 0;
   color: var(--investigacao-texto);
-  font-size: 0.88rem;
+  font-size: 0.98rem;
   font-weight: 700;
   line-height: 1.25;
 }
@@ -732,6 +838,14 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .investigacao-filtros {
+    grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(120px, 0.8fr));
+  }
+
+  .investigacao-filtro--periodo {
+    grid-column: 1 / -1;
+  }
+
   .investigacao-relacoes .investigacao-painel,
   .investigacao-comportamento .investigacao-painel {
     height: 300px;
@@ -741,6 +855,10 @@
 @media (max-width: 760px) {
   .investigacao-filtros {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .investigacao-filtro--periodo {
+    grid-column: auto;
   }
 
   .investigacao-kpis {
@@ -808,6 +926,14 @@
 
   .investigacao-kpis {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .investigacao-periodo__campos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .investigacao-periodo__campos button {
+    grid-column: 1 / -1;
   }
 
   .investigacao-kpi {

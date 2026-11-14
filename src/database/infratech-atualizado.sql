@@ -275,13 +275,16 @@ INSERT INTO servidor (
 ) VALUES
 ('SRV-INFRA-01', 1, 1),
 ('SRV-INFRA-02', 1, 1),
-('SRV-GAMECLOUD-01', 2, 1),
-('SRV-GAMECLOUD-02', 2, 1),
-('SRV-GAMECLOUD-LEGADO', 2, 0),
+('SRV-BR-01', 2, 1),
+('SRV-BR-02', 2, 1),
+('SRV-BR-03', 2, 1),
 ('SRV-TECHPLAY-01', 3, 1),
 ('SRV-TECHPLAY-02', 3, 1),
 ('SRV-ARENA-01', 4, 1),
-('Servidor-B21X7M', 4, 1);
+('Servidor-B21X7M', 4, 1),
+('SRV-BR-04', 2, 1),
+('SRV-BR-05', 2, 1),
+('SRV-BR-06', 2, 1);
 
 
 -- =====================================================
