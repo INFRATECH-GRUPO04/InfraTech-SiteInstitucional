@@ -169,7 +169,6 @@
                     </div>
                     <p class="investigacao-periodo__estado" id="estadoHistoricoSilver" role="status" aria-live="polite">Aguardando as datas da primeira e da última captura da camada Silver.</p>
                     <p class="investigacao-periodo__nota">Os limites do calendário não garantem capturas em todos os momentos do intervalo.</p>
-                    <div class="investigacao-periodo__servidores" id="disponibilidadeHistoricoServidores" aria-live="polite" hidden></div>
                 </div>
             </section>
 
@@ -212,19 +211,12 @@
                         </div>
                         <div class="investigacao-leitura-tecnica">
                             <h3>Leitura técnica</h3>
-                            <label for="servidorFocoPearson">Servidor em foco</label>
-                            <select id="servidorFocoPearson" name="servidorFocoPearson">
-                                <option value="SRV-BR-01">SRV-BR-01</option>
-                                <option value="SRV-BR-02">SRV-BR-02</option>
-                                <option value="SRV-BR-03">SRV-BR-03</option>
-                                <option value="SRV-BR-04">SRV-BR-04</option>
-                            </select>
                             <dl>
                                 <div><dt>Direção</dt><dd id="direcaoPearson">—</dd></div>
                                 <div><dt>Intensidade</dt><dd id="intensidadePearson">—</dd></div>
                                 <div><dt>Amostras alinhadas</dt><dd id="amostrasPearson">—</dd></div>
                             </dl>
-                            <p>Interprete a associação junto com o contexto do servidor.</p>
+                            <p>Considera os servidores selecionados no filtro inicial.</p>
                         </div>
                     </div>
                 </article>
@@ -237,18 +229,11 @@
                     <p class="investigacao-ajuda__texto" id="ajudaRegressao">A reta resume a relação observada nas amostras; não é uma previsão futura.</p>
                     <div class="investigacao-regressao">
                         <div class="investigacao-regressao__resumo">
-                            <label for="servidorFocoRegressao">Servidor em foco</label>
-                            <select id="servidorFocoRegressao" name="servidorFocoRegressao">
-                                <option value="SRV-BR-01">SRV-BR-01</option>
-                                <option value="SRV-BR-02">SRV-BR-02</option>
-                                <option value="SRV-BR-03">SRV-BR-03</option>
-                                <option value="SRV-BR-04">SRV-BR-04</option>
-                            </select>
                             <div><span>Variável dependente (Y)</span><strong id="regressaoMetricaY">RAM</strong></div>
                             <div><span>Variável independente (X)</span><strong id="regressaoMetricaX">CPU</strong></div>
                             <div><span>Equação da reta</span><strong id="equacaoRegressao">Aguardando cálculo</strong></div>
                             <div><span>R² (ajuste do modelo)</span><strong id="r2Regressao">—</strong></div>
-                            <p id="interpretacaoR2">Ajuste calculado com os pares válidos do servidor em foco.</p>
+                            <p id="interpretacaoR2">Ajuste calculado com os dados dos servidores selecionados no filtro inicial.</p>
                         </div>
                         <figure class="investigacao-grafico investigacao-grafico--dispersao">
                             <figcaption id="tituloGraficoRegressao">Regressão Linear: CPU × RAM</figcaption>

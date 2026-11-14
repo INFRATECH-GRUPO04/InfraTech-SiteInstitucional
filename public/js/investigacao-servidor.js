@@ -7,7 +7,6 @@
     var dataFinal = document.getElementById('dataFimHistorico');
     var botaoAplicarPeriodo = document.getElementById('aplicarPeriodoHistorico');
     var estadoPeriodo = document.getElementById('estadoHistoricoSilver');
-    var disponibilidadeServidores = document.getElementById('disponibilidadeHistoricoServidores');
     var botaoServidores = document.getElementById('alternarServidores');
     var listaServidores = document.getElementById('listaServidores');
     var opcoesServidores = document.getElementById('opcoesServidores');
@@ -86,7 +85,6 @@
         filtroPeriodo.dataset.estadoHistorico = 'pronto';
         estadoPeriodo.textContent = `Histórico da empresa: ${formatarData(inicio)} a ${formatarData(fim)}.`;
         atualizarEstadoAplicacao();
-        atualizarDisponibilidadeServidores();
         return true;
     }
 
@@ -100,7 +98,6 @@
         if (!id || !inicio || !fim || inicio > fim) return false;
 
         historicoServidores.set(id, { inicio: inicio, fim: fim });
-        atualizarDisponibilidadeServidores();
         return true;
     }
 
@@ -160,7 +157,6 @@
         }
 
         atualizarEstadoAplicacao();
-        atualizarDisponibilidadeServidores();
         if (persistir) {
             document.dispatchEvent(new CustomEvent('infratech:servidores-investigacao-alterados', {
                 detail: { servidores: servidoresEmpresa.slice(), selecionados: selecionados }
@@ -298,39 +294,6 @@
         temporizadorAtualizacao = window.setInterval(atualizarListaServidores, 30000);
     }
 
-    /* Exibe a disponibilidade conhecida por servidor e não trata lacunas como
-     * períodos sem uso nem como valores iguais a zero.
-     */
-    function atualizarDisponibilidadeServidores() {
-        if (!disponibilidadeServidores) return;
-
-        var selecionados = obterSelecionados();
-        disponibilidadeServidores.replaceChildren();
-        if (!selecionados.length) {
-            disponibilidadeServidores.hidden = true;
-            return;
-        }
-
-        var linhas = selecionados.map(function (servidor) {
-            var intervalo = historicoServidores.get(servidor.id);
-            var linha = document.createElement('p');
-            linha.className = 'investigacao-periodo__servidor';
-
-            if (!intervalo) {
-                linha.textContent = `${servidor.nome}: limites do histórico ainda não recebidos.`;
-            } else if (dataInicial.value && dataFinal.value
-                && (dataFinal.value < intervalo.inicio || dataInicial.value > intervalo.fim)) {
-                linha.textContent = `${servidor.nome}: sem capturas nos limites conhecidos para o intervalo escolhido.`;
-            } else {
-                linha.textContent = `${servidor.nome}: histórico conhecido de ${formatarData(intervalo.inicio)} a ${formatarData(intervalo.fim)}; podem existir lacunas.`;
-            }
-            return linha;
-        });
-
-        disponibilidadeServidores.append.apply(disponibilidadeServidores, linhas);
-        disponibilidadeServidores.hidden = false;
-    }
-
     /* Valida datas, seleção de servidores e limites recebidos para só liberar
      * a aplicação de um intervalo possível dentro do histórico da empresa.
      */
@@ -366,7 +329,6 @@
         document.dispatchEvent(new CustomEvent('infratech:periodo-investigacao-selecionado', { detail: periodo }));
         filtroPeriodo.dataset.estadoHistorico = 'periodo-selecionado';
         estadoPeriodo.textContent = `Intervalo selecionado: ${formatarData(periodo.inicio)} a ${formatarData(periodo.fim)}. Pronto para consultar as capturas disponíveis.`;
-        atualizarDisponibilidadeServidores();
     });
 
     /* Abre e fecha o menu, mantendo o estado acessível para teclado e leitor de tela. */
@@ -431,11 +393,9 @@
      */
     dataInicial.addEventListener('change', function () {
         atualizarEstadoAplicacao();
-        atualizarDisponibilidadeServidores();
     });
     dataFinal.addEventListener('change', function () {
         atualizarEstadoAplicacao();
-        atualizarDisponibilidadeServidores();
     });
     window.addEventListener('focus', atualizarListaServidores);
     document.addEventListener('visibilitychange', function () {
