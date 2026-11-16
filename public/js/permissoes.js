@@ -11,7 +11,7 @@
     const dashboards = [
         { id: 'geral', href: '/dashboard/dash-geral.html', label: 'Visão Geral' },
         { id: 'especifica', href: '/dashboard/especifica-servidor/dash-especifica.html', label: 'Dashboard Específica' },
-        { id: 'saude', href: '/dashboard/analista/dashboardV2.html', label: 'Saúde e Capacidade' }
+        { id: 'saude', href: '/paginas/pos-login/dashboards/dashboard_noc.html', label: 'Dashboard NOC' }
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
@@ -51,6 +51,7 @@
         if (rota === '/paginas/pos-login/servidores/modificar_servidor.html') return perfil.modificarServidores;
         const aliases = {
             '/dashboard/analista/dashboard.html': 'saude',
+            '/dashboard/analista/dashboardv2.html': 'saude',
             '/paginas/pos-login/dashboards/dashboard_noc.html': 'saude',
             '/paginas/pos-login/dashboards/dashboard_dados.html': 'especifica'
         };

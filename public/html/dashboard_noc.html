@@ -1,41 +1,346 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard NOC | InfraTech</title>
-<link rel="icon" href="../../../assets/icon/logo.png">
-<link rel="stylesheet" href="/css/global.css">
-<link rel="stylesheet" href="/css/painel.css">
-<script src="/js/permissoes.js"></script>
-<script src="/js/sessao.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard NOC InfraTech: KPIs da frota, triagem de servidores e diagnóstico operacional.">
+  <meta name="theme-color" content="#001a20">
+  <title>Dashboard NOC | InfraTech</title>
+  <link rel="icon" href="/assets/icon/logo.png">
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/painel.css">
+  <script src="/js/permissoes.js"></script>
+  <script src="/js/sessao.js"></script>
+  <link rel="stylesheet" href="/css/dashboard_noc.css">
 </head>
-<body class="pagina-painel">
-<aside class="header-left">
-<div class="logo"><a href="#"><img src="../../../assets/icon/logo.png" alt="InfraTech"></a></div>
-<hr class="linha">
-<h3 class="nav-categoria secao-dashboards">
-<img src="../../../assets/imgs/dashboards.png" class="menu-icon-title"> Dashboards
-</h3>
-<a href="#" class="nav-item ativo">
-<img src="../../../assets/imgs/dashboards.png" class="menu-icon"> Dashboard NOC
-</a>
-<div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
-<img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
-</div>
-</aside>
-<main class="conteudo-painel">
-<header class="barra-superior-painel">
-<div class="migalhas"><span class="text-muted">InfraTech</span> / <span>Dashboard NOC</span></div>
-<div class="usuario-sessao"><span class="ponto-status"></span><span id="nome_usuario" class="nome-usuario">Dashboard NOC</span></div>
-</header>
-<div class="container-em-breve-wrapper">
-<div class="card-em-breve">
-<div class="badge-em-breve">NETWORK OPERATIONS CENTER</div>
-<h1 class="titulo-em-breve">DASHBOARD <span class="text-cyan">NOC</span></h1>
-<p class="descricao-em-breve">Monitoramento em tempo real de latência, disponibilidade de pacotes, alarmes e incidentes críticos de rede.</p>
-</div>
-</div>
-</main>
+<body class="pagina-painel pagina-noc">
+
+  <!-- Ícones SVG inline -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" style="position:absolute">
+    <defs>
+      <symbol id="i-servers" viewBox="0 0 32 32"><rect x="4" y="3" width="24" height="6" rx="3"/><rect x="4" y="13" width="24" height="6" rx="3"/><rect x="4" y="23" width="24" height="6" rx="3"/><path d="M8 6h1m-1 10h1m-1 10h1"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 32 32"><circle cx="16" cy="17" r="11"/><path d="M16 9v9l6 3M13 2h6"/></symbol>
+      <symbol id="i-inspect" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11"/><path d="M16 2v7m0 14v7M2 16h7m14 0h7M16 12v5m0 4v.1"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="23" rx="3"/><path d="M10 2v8m12-8v8M4 14h24"/></symbol>
+      <symbol id="i-layers" viewBox="0 0 32 32"><path d="m3 10 13-7 13 7-13 7zM3 17l13 7 13-7M3 24l13 7 13-7"/></symbol>
+      <symbol id="i-pulse" viewBox="0 0 32 32"><path d="M2 17h6l4-12 5 22 4-16 3 6h6"/></symbol>
+      <symbol id="i-analysis" viewBox="0 0 32 32"><path d="M4 3v25h25M9 21l5-7 6 3 7-12"/></symbol>
+      <symbol id="i-database" viewBox="0 0 32 32"><ellipse cx="16" cy="6" rx="11" ry="4"/><path d="M5 6v19c0 5 22 5 22 0V6M5 13c0 5 22 5 22 0M5 20c0 5 22 5 22 0"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 32 32"><path d="M5 27 27 5M9 5h18v18"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 32 32"><path d="m16 3 14 25H2zM16 12v7m0 4v.2"/></symbol>
+      <symbol id="i-bars" viewBox="0 0 32 32"><path d="M5 28V16m11 12V3m11 25V11" stroke-width="3.5"/></symbol>
+      <symbol id="i-info" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M16 14v9m0-14v.2"/></symbol>
+      <symbol id="i-external" viewBox="0 0 32 32"><path d="M17 4h11v11m0-11L14 18M12 6H5v22h22v-8"/></symbol>
+      <symbol id="i-file" viewBox="0 0 32 32"><path d="M8 3h12l6 6v21H8zM20 3v7h6M12 16h10m-10 5h10"/></symbol>
+      <symbol id="i-search" viewBox="0 0 32 32"><circle cx="14" cy="14" r="9"/><path d="m21 21 7 7"/></symbol>
+      <symbol id="i-swap" viewBox="0 0 32 32"><path d="M6 10h20l-5-5M26 22H6l5 5"/></symbol>
+    </defs>
+  </svg>
+
+  <aside class="header-left">
+    <div class="logo"><a href="#"><img src="/assets/icon/logo.png" alt="InfraTech"></a></div>
+    <hr class="linha">
+    <h3 class="nav-categoria secao-dashboards">
+      <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon-title"> Dashboards
+    </h3>
+    <a href="#" class="nav-item ativo">
+      <img src="/assets/imgs/dashboards.png" alt="" class="menu-icon"> Dashboard NOC
+    </a>
+    <div class="btn-logout" onclick="if (typeof limparSessao === 'function') limparSessao();" title="Sair do Sistema">
+      <img src="/assets/imgs/logout.png" alt="Sair" class="logout-icon">
+    </div>
+  </aside>
+
+  <main class="conteudo-painel">
+    <header class="barra-superior-painel">
+      <div class="migalhas"><span class="text-muted">InfraTech</span> / <span>Dashboard NOC</span></div>
+      <div class="usuario-sessao"><span class="ponto-status"></span><span id="nome_usuario" class="nome-usuario">Analista NOC</span></div>
+    </header>
+
+    <div class="noc-shell">
+      <div class="noc-heading">
+        <div>
+          <div class="noc-heading-title">
+            <h1>Triagem e Monitoramento Operacional de NOC</h1>
+          </div>
+          <p>Acompanhe as KPIs gerais da frota, selecione um servidor na lista e investigue sua telemetria.</p>
+        </div>
+        <span class="noc-source-badge" id="data-source-badge">Carregando fonte...</span>
+      </div>
+
+      <!-- 1. KPIs GERAIS NO TOPO (cores padronizadas) -->
+      <section class="noc-kpis" aria-label="KPIs gerais da frota">
+        <article class="noc-panel kpi-card kpi-card--warning" id="kpi-alerta-card">
+          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-pulse"/></svg></div>
+          <div class="kpi-body">
+            <h2>Frota em alerta</h2>
+            <div class="kpi-value" id="kpi-alerta-val">—</div>
+            <p class="kpi-sub" id="kpi-alerta-sub">Carregando...</p>
+          </div>
+        </article>
+
+        <article class="noc-panel kpi-card kpi-card--purple" id="kpi-sem-telemetria-card">
+          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-analysis"/></svg></div>
+          <div class="kpi-body">
+            <h2>Sem telemetria</h2>
+            <div class="kpi-value" id="kpi-telemetria-val">—</div>
+            <p class="kpi-sub" id="kpi-telemetria-sub">Ausência de coleta S3</p>
+          </div>
+        </article>
+
+        <article class="noc-panel kpi-card kpi-card--cyan" id="kpi-trafego-card">
+          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-database"/></svg></div>
+          <div class="kpi-body">
+            <h2>Tráfego total</h2>
+            <div class="kpi-value" id="kpi-trafego-val">—</div>
+            <p class="kpi-sub" id="kpi-trafego-sub">Download · Upload</p>
+          </div>
+        </article>
+
+        <article class="noc-panel kpi-card kpi-card--critical" id="kpi-critico-card">
+          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-clock"/></svg></div>
+          <div class="kpi-body">
+            <h2>Maior tempo crítico</h2>
+            <div class="kpi-value" id="kpi-critico-val">—</div>
+            <p class="kpi-sub" id="kpi-critico-sub">Persistência acima do limite</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- 2. LISTA DE SERVIDORES (encolhe ao clicar em um servidor) -->
+      <section class="noc-panel server-list-panel" id="server-list-panel" aria-labelledby="servers-title">
+        <!-- Visão expandida -->
+        <div class="server-expanded-view">
+          <div class="server-list-header">
+            <div class="panel-heading">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-servers"/></svg>
+              <div>
+                <h2 id="servers-title">Servidores da Frota</h2>
+                <p id="servers-subtitle">Clique em um servidor para encolher a lista e abrir a Dashboard NOC abaixo.</p>
+              </div>
+            </div>
+            <span class="noc-source-badge" id="servers-count-badge">0 servidores</span>
+          </div>
+
+          <div class="filter-toolbar" role="region" aria-label="Filtros da lista de servidores">
+            <div class="filter-pills" id="status-filter-pills">
+              <span class="filter-label">Estado:</span>
+              <button type="button" class="filter-pill is-active" data-status="all">Todos <span class="pill-count" id="cnt-all">0</span></button>
+              <button type="button" class="filter-pill" data-status="critical">Crítico <span class="pill-count" id="cnt-critical">0</span></button>
+              <button type="button" class="filter-pill" data-status="warning">Atenção <span class="pill-count" id="cnt-warning">0</span></button>
+              <button type="button" class="filter-pill" data-status="neutral">Sem telemetria <span class="pill-count" id="cnt-neutral">0</span></button>
+              <button type="button" class="filter-pill" data-status="healthy">Saudável <span class="pill-count" id="cnt-healthy">0</span></button>
+            </div>
+
+            <div class="filter-search-group">
+              <div class="search-input-wrap">
+                <svg class="noc-icon" aria-hidden="true"><use href="#i-search"/></svg>
+                <input type="search" id="server-search-input" class="noc-input" placeholder="Buscar servidor, região ou chamado..." aria-label="Buscar servidor ou chamado">
+              </div>
+              <button type="button" class="btn-noc btn-noc--ghost" id="btn-clear-server-filters" hidden>Limpar</button>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="noc-table">
+              <thead>
+                <tr>
+                  <th scope="col">Prioridade</th>
+                  <th scope="col">Servidor</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Motivo</th>
+                  <th scope="col">Duração</th>
+                  <th scope="col">Último envio</th>
+                  <th scope="col">Chamado</th>
+                  <th scope="col">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="servers-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Visão encolhida (apenas o servidor escolhido) -->
+        <div class="collapsed-server-bar" id="collapsed-server-bar">
+          <div class="collapsed-info">
+            <svg class="noc-icon" style="color:var(--noc-cyan)" aria-hidden="true"><use href="#i-inspect"/></svg>
+            <div class="server-name-cell">
+              <strong id="collapsed-name">—</strong>
+              <small id="collapsed-location">—</small>
+            </div>
+            <span id="collapsed-status-badge" class="badge-status neutral"><span class="badge-dot"></span>—</span>
+            <div class="collapsed-meta">
+              <span>Motivo: <strong id="collapsed-reason">—</strong></span>
+              <span>Duração: <strong id="collapsed-duration">—</strong></span>
+              <span>Último envio: <strong id="collapsed-last">—</strong></span>
+              <span>Chamado: <strong id="collapsed-ticket">—</strong></span>
+            </div>
+          </div>
+          <button type="button" class="btn-noc" id="btn-expand-servers">
+            <svg class="noc-icon" aria-hidden="true"><use href="#i-swap"/></svg>
+            Trocar servidor
+          </button>
+        </div>
+      </section>
+
+      <!-- Aviso antes de escolher servidor -->
+      <div class="select-prompt" id="select-prompt">
+        Selecione qualquer servidor na lista acima para encolher a tabela e carregar a <strong>Dashboard NOC</strong> detalhada.
+      </div>
+
+      <!-- 3. DASHBOARD DE NOC (aparece abaixo da lista encolhida) -->
+      <section class="noc-detail-section" id="noc-detail-section" hidden aria-label="Dashboard NOC do servidor selecionado">
+        <!-- Barra de contexto e filtros intuitivos -->
+        <div class="noc-panel context-bar">
+          <div class="context-group">
+            <div class="context-chip">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-inspect"/></svg>
+              <span>Em inspeção: <strong id="ctx-server-name">—</strong></span>
+            </div>
+            <div class="context-chip">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-clock"/></svg>
+              <span>Último lote: <strong id="ctx-last-batch">—</strong></span>
+            </div>
+          </div>
+
+          <div class="context-group">
+            <div class="context-chip">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+              <span>Janela:</span>
+              <div class="segmented-filter" id="window-filter" role="group" aria-label="Filtro de janela temporal">
+                <button type="button" class="seg-btn" data-window="1h">1h</button>
+                <button type="button" class="seg-btn is-active" data-window="3h">3h</button>
+                <button type="button" class="seg-btn" data-window="6h">6h</button>
+                <button type="button" class="seg-btn" data-window="24h">24h</button>
+              </div>
+            </div>
+
+            <div class="context-chip">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-layers"/></svg>
+              <span>Lotes:</span>
+              <div class="segmented-filter" id="batch-filter" role="group" aria-label="Filtro de granularidade de lotes">
+                <button type="button" class="seg-btn" data-batch="1m">1 min</button>
+                <button type="button" class="seg-btn is-active" data-batch="5m">5 min</button>
+                <button type="button" class="seg-btn" data-batch="15m">15 min</button>
+              </div>
+            </div>
+
+            <button type="button" class="btn-noc btn-noc--ghost" id="btn-reset-detail-filters">Resetar</button>
+          </div>
+        </div>
+
+        <!-- Gráfico 1: CPU e RAM -->
+        <section class="noc-panel chart-panel">
+          <div class="chart-header">
+            <div class="panel-heading">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+              <div>
+                <h2 id="resource-chart-title">Histórico de recursos — —</h2>
+                <p id="resource-chart-sub">Médias por lote · Limites do banco aplicados</p>
+              </div>
+            </div>
+            <div class="legend">
+              <span class="legend-item"><i class="legend-dot" style="background:var(--noc-cyan)"></i>CPU (%)</span>
+              <span class="legend-item"><i class="legend-dot" style="background:var(--noc-purple)"></i>RAM (%)</span>
+            </div>
+          </div>
+          <div class="chart-scroll" id="resource-chart-container"></div>
+        </section>
+
+        <!-- Gráfico 2: Rede -->
+        <section class="noc-panel chart-panel">
+          <div class="chart-header">
+            <div class="panel-heading">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-layers"/></svg>
+              <div>
+                <h2 id="network-chart-title">Rede — —</h2>
+                <p id="network-chart-sub">Taxa de transferência por intervalo</p>
+              </div>
+            </div>
+            <div class="legend" id="network-legend"></div>
+          </div>
+          <div class="chart-scroll" id="network-chart-container"></div>
+          <div class="chart-notes">
+            <span>Descartes da interface: sem coleta no agente atual</span>
+            <em>Leitura de telemetria simulada em JSON (padrão S3 Gold)</em>
+          </div>
+        </section>
+
+        <!-- Painéis inferiores: Incidentes e Recursos/Processos -->
+        <div class="bottom-panels">
+          <section class="noc-panel bottom-panel">
+            <div class="panel-heading">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-alert"/></svg>
+              <div>
+                <h2 id="incidents-title">Incidentes — —</h2>
+                <p>Eventos e chamados do servidor selecionado</p>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="noc-table incident-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Chamado</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Responsável</th>
+                    <th scope="col">Atualização</th>
+                  </tr>
+                </thead>
+                <tbody id="incidents-tbody"></tbody>
+              </table>
+            </div>
+            <div class="incident-actions">
+              <div class="note-inline">
+                <svg class="noc-icon" aria-hidden="true"><use href="#i-info"/></svg>
+                <em id="incident-note">Aguardando seleção</em>
+              </div>
+              <button type="button" class="btn-noc" id="btn-open-jira">
+                <svg class="noc-icon" aria-hidden="true"><use href="#i-external"/></svg>
+                Abrir Jira
+              </button>
+              <button type="button" class="btn-noc" id="btn-open-procedure">
+                <svg class="noc-icon" aria-hidden="true"><use href="#i-file"/></svg>
+                Ver procedimento
+              </button>
+            </div>
+          </section>
+
+          <section class="noc-panel bottom-panel">
+            <div class="panel-heading">
+              <svg class="noc-icon" aria-hidden="true"><use href="#i-bars"/></svg>
+              <div>
+                <h2 id="resources-title">Recursos e processos — —</h2>
+                <p id="resources-limits-sub">Classificação pelos limites configurados</p>
+              </div>
+            </div>
+
+            <div class="resource-bars" id="resource-bars"></div>
+
+            <div class="processes-box">
+              <h3>Processos identificados (snapshot S3)</h3>
+              <ul class="processes-list" id="processes-list"></ul>
+            </div>
+
+            <div class="note-inline" style="font-size:12px;color:var(--noc-muted);display:flex;align-items:center;gap:6px;">
+              <svg class="noc-icon" style="width:16px;height:16px" aria-hidden="true"><use href="#i-info"/></svg>
+              <em>Limites de atenção/crítico obtidos da tabela <code>metrica</code> / <code>limite_alerta_global</code>.</em>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal dinâmico para Jira / Procedimento -->
+  <div class="noc-modal" id="noc-modal" role="dialog" aria-modal="true" aria-labelledby="noc-modal-title">
+    <div class="noc-modal-card">
+      <h2 id="noc-modal-title">—</h2>
+      <div id="noc-modal-body"></div>
+      <button type="button" class="btn-noc" id="btn-close-modal">Fechar</button>
+    </div>
+  </div>
+
+  <script src="/js/dashboard_noc.js"></script>
 </body>
 </html>
