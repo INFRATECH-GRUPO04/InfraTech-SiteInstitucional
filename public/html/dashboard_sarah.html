@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/dashboard_sarah.css">
+    <link rel="stylesheet" href="../css/global.css">
+
+    <script src="../js/permissoes.js"></script>
+    <script src="../js/sessao.js"></script>
+    <script src="../js/cadastro_token.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <!-- BARRA LATERAL -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="/dashboard/dash-geral.html" title="InfraTech">
+                <img src="../../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../../servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="./cadastro_token.html" class="nav-item ativo" aria-current="page">
+            <img src="../../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <div class="main">
+        <div class="barra-superior">
+            <div class="titulo-pagina">Dashboard de Investigação e Confiabilidade</div>
+            <div class="filtros">
+                <div class="box-filtro">
+                    <span class="label-filtro">Servidor</span>
+                    <select class="filtro" name="servidores" id="filtro_servidor">
+                        <option value="Todos">Todos</option>
+                    </select>
+                </div>
+                <div class="box-filtro">
+                    <span class="label-filtro">Componente</span>
+                    <select class="filtro" name="componentes" id="filtro_componentes">
+                        <option value="Todos">Todos</option>
+                    </select>
+                </div>
+                <div class="box-filtro">
+                    <span class="label-filtro">Data de Início</span>
+                    <input type="date" class="filtro" name="data_inicio" id="filtro_data_inicio">
+                </div>
+                <div class="box-filtro">
+                    <span class="label-filtro">Data Final</span>
+                    <input type="date" class="filtro" name="data_final" id="filtro_data_final">
+                </div>
+            </div>
+        </div>
+
+        <div class="corpo-dashboard" id="corpo_dashboard">
+            <div class="kpis">
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Servidores sem capturas</div>
+                    <div class="conteudo">1 /6</div>
+                    <div class="especificacao">CPU</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Maior variação</div>
+                    <div class="conteudo">Maior variação</div>
+                    <div class="especificacao">CPU</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Disco: Dias até Saturar</div>
+                    <div class="conteudo">9 Dias - 17/NOV</div>
+                    <div class="especificacao">SRV-BR-05 · 87 % ocupado</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Servidor com maior quantidade de alertas</div>
+                    <div class="conteudo">SRV-BR-07</div>
+                    <div class="especificacao">CPU</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Logs</div>
+                    <div class="conteudo">Maior variação</div>
+                    <div class="especificacao">CPU</div>
+                </div>
+            </div>
+
+            <div class="dash-parte1">
+
+                <div class="card-regiao cards">
+                    <div class="titulo-card">Utilização por região</div>
+                    <div class="subtitulo-card">Ranking da demanda</div>
+
+                    <div class="lista-regioes">
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">São Paulo - SP</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida critico" style="width: 94%"></div>
+                            </div>
+                            <span class="percentual">94 %</span>
+                        </div>
+
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Rio de Janeiro - RJ</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida critico" style="width: 89%"></div>
+                            </div>
+                            <span class="percentual">89 %</span>
+                        </div>
+
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Campinas - SP</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida critico" style="width: 85%"></div>
+                            </div>
+                            <span class="percentual">85 %</span>
+                        </div>
+
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Belo Horizonte - MG</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida atencao" style="width: 72%"></div>
+                            </div>
+                            <span class="percentual">72 %</span>
+                        </div>
+
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Brasília - DF</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida atencao" style="width: 69%"></div>
+                            </div>
+                            <span class="percentual">69 %</span>
+                        </div>
+
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Brasília - DFh</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida normal" style="width: 50%"></div>
+                            </div>
+                            <span class="percentual">50 %</span>
+                        </div>
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Salvador - BA</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida normal" style="width: 42%"></div>
+                            </div>
+                            <span class="percentual">42 %</span>
+                        </div>
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Florianópolis - SC</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida normal" style="width: 40%"></div>
+                            </div>
+                            <span class="percentual">40 %</span>
+                        </div>
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Natal - RN</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida normal" style="width: 35%"></div>
+                            </div>
+                            <span class="percentual">35 %</span>
+                        </div>
+                        <div class="linha-regiao">
+                            <span class="nome-regiao">Maceió - AL</span>
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida normal" style="width: 29%"></div>
+                            </div>
+                            <span class="percentual">29 %</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-ocorrencias cards">
+                    <div class="cabecalho-ocorrencias">
+                        <div>
+                            <div class="titulo-card">Ocorrências Registradas</div>
+                            <div class="subtitulo-ocorrencias">
+                                Lista de eventos no período selecionado, ordenada por data e hora.
+                            </div>
+                        </div>
+
+                        <div class="filtro-severidade">
+                            <label for="filtro_severidade">Filtro</label>
+                            <select class="filtro" id="filtro_severidade">
+                                <option value="Todos">Todos</option>
+                                <option value="Atenção">Atenção</option>
+                                <option value="Crítico">Crítico</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="tabela-wrapper">
+                        <table class="tabela-ocorrencias">
+                            <thead>
+                                <tr>
+                                    <th>Data e hora ↓</th>
+                                    <th>Servidor</th>
+                                    <th>Recurso</th>
+                                    <th>Evento</th>
+                                    <th>Severidade</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela_ocorrencias">
+                                <tr>
+                                    <td>04/11/2026 18:32</td>
+                                    <td>GAME-03</td>
+                                    <td>CPU</td>
+                                    <td>CPU em elevação (78%)</td>
+                                    <td><span class="badge atencao">⚠ Atenção</span></td>
+                                    <td>78%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                                <tr>
+                                    <td>01/11/2026 21:10</td>
+                                    <td>GAME-02</td>
+                                    <td>Rede</td>
+                                    <td>Alto uso de rede (94%)</td>
+                                    <td><span class="badge critico">⚠ Crítico</span></td>
+                                    <td>94%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-status-coleta cards">
+                    <div class="titulo-card">Status da coleta</div>
+                    <div class="subtitulo-card">Dados coletados, atrasados ou sem coleta</div>
+                    <div id="box-grafico-status-coleta">
+                        <canvas id="grafico_status_coleta"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-parte2">
+                <div class="container-variacoes cards">
+                    <div class="titulo-card">5 servidores com maior variação dos recursos</div>
+                    <div class="subtitulo-card">Captura Atual - Anterior</div>
+
+                    <div class="container-componentes">
+                        <div class="box-componente">
+                            <span class="componente-variacao">CPU</span>
+                            <div class="lista-variacoes">
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-07</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 90%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+21,4</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-12</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 76%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+18,0</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-21</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+14,7</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-EU-04</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+11,2</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-03</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida normal" style="width: 35%"></div>
+                                    </div>
+                                    <span class="percentual valor-normal">8,5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-componente">
+                            <span class="componente-variacao">RAM</span>
+                            <div class="lista-variacoes">
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-07</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 90%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+21,4</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-12</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 76%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+18,0</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-21</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+14,7</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-EU-04</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+11,2</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-03</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida normal" style="width: 35%"></div>
+                                    </div>
+                                    <span class="percentual valor-normal">8,5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-componente">
+                            <span class="componente-variacao">Disco</span>
+                            <div class="lista-variacoes">
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-07</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 90%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+21,4</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-12</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 76%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+18,0</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-21</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+14,7</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-EU-04</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+11,2</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-03</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida normal" style="width: 35%"></div>
+                                    </div>
+                                    <span class="percentual valor-normal">8,5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-componente">
+                            <span class="componente-variacao">Rede</span>
+                            <div class="lista-variacoes">
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-07</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 90%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+21,4</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-12</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 76%"></div>
+                                    </div>
+                                    <span class="percentual valor-critico">+18,0</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-BR-21</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+14,7</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-EU-04</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
+                                    </div>
+                                    <span class="percentual valor-atencao">+11,2</span>
+                                </div>
+                                <div class="linha-regiao linha-variacao">
+                                    <span class="nome-servidor">GS-US-03</span>
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida normal" style="width: 35%"></div>
+                                    </div>
+                                    <span class="percentual valor-normal">8,5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="kpis">
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Componente com mais alertas</div>
+                    <div class="conteudo">RAM</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Saúde do servidor</div>
+                    <div class="conteudo-saude">
+                        <div class="conteudo">80%</div>
+                        <div class="especificacao">
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida" style="width: 80%; background-color: #fbbf24;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Logs em Alerta</div>
+                    <div class="conteudo">20</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Maior variação</div>
+                    <div class="conteudo">CPU 89%</div>
+                    <div class="especificacao">+21</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Alertas registrados</div>
+                    <div class="conteudo">20</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- <div class="dash-parte1">
+                <div class="card-ranking-variacoes cards">
+                    <div class="titulo-card">Maior variação dos componentes</div>
+                    <div class="subtitulo-ocorrencias">Atual - anterior</div>
+
+                    <div class="lista-ranking">
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">CPU</span>
+                                <span class="ranking-hora">16:40</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida critico" style="width: 89%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-critico">+ 21</span>
+                            </div>
+                            <span class="ranking-percentual valor-critico">89%</span>
+                        </div>
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">RAM</span>
+                                <span class="ranking-hora">12:27</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida critico" style="width: 76%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-critico">+ 18</span>
+                            </div>
+                            <span class="ranking-percentual valor-critico">76%</span>
+                        </div>
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">Disco</span>
+                                <span class="ranking-hora">20:54</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida atencao" style="width: 79%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-atencao">+ 15</span>
+                            </div>
+                            <span class="ranking-percentual valor-atencao">79%</span>
+                        </div>
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">Rede</span>
+                                <span class="ranking-hora">17:38</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida atencao" style="width: 76%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-atencao">+ 12</span>
+                            </div>
+                            <span class="ranking-percentual valor-atencao">76%</span>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="card-uso-recursos cards">
+                    <div class="titulo-card">Maior variação dos componentes</div>
+                    <div class="subtitulo-ocorrencias">Atual - anterior</div>
+
+                    <div class="box-grafico-uso-recurso">
+                        <canvas id="grafico_uso_recurso"></canvas>
+                    </div>
+                </div>
+            </div> -->
+            <!-- <div class="dash-parte2 especifica">
+                <div class="card-logs cards">
+                    <div class="cabecalho-logs">
+                        <div>
+                            <div class="titulo-card">Logs e eventos — 24h</div>
+                            <div class="subtitulo-ocorrencias">Leituras registradas no mesmo período e nas séries do
+                                gráfico.</div>
+                        </div>
+                        <div class="contador-logs" id="contador_logs">12</div>
+                    </div>
+
+                    <div class="nota-logs">
+                        A severidade usa os limites dos KPIs. Leituras não confirmam incidente persistente.
+                    </div>
+
+                    <div class="tabela-wrapper tabela-logs-wrapper">
+                        <table class="tabela-ocorrencias tabela-logs">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Recurso</th>
+                                    <th>Evento</th>
+                                    <th>Faixa</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela_logs">
+                                <tr>
+                                    <td>24h</td>
+                                    <td>CPU</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">42%</td>
+                                </tr>
+                                <tr>
+                                    <td>24h</td>
+                                    <td>RAM</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">67%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>CPU</td>
+                                    <td>Leitura acima do limite de atenção</td>
+                                    <td><span class="badge atencao">Atenção</span></td>
+                                    <td class="valor-log">72%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>RAM</td>
+                                    <td>Leitura acima do limite de atenção</td>
+                                    <td><span class="badge atencao">Atenção</span></td>
+                                    <td class="valor-log">78%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-demanda-mapa-calor cards">
+                    <div class="titulo-card">Demanda por Período</div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+
+    <script>
+
+        function desenharGraficoStatusColeta() {
+            new Chart(
+                document.getElementById('grafico_status_coleta'),
+                {
+                    type: 'bar',
+                    options: {
+                        animation: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    },
+                    data: {
+                        labels: ["Coletado", "Atrasado", "Sem coleta"],
+                        datasets: [{
+                            data: [5, 2, 1],
+                            backgroundColor: [
+                                'rgb(46, 204, 113)',
+                                'rgb(245, 197, 24)',
+                                'rgb(240, 77, 82)'
+                            ],
+                            borderColor: [
+                                'rgb(46, 204, 113)',
+                                'rgb(245, 197, 24)',
+                                'rgb(240, 77, 82)'
+                            ],
+                            borderWidth: 0.2
+                        }]
+                    }
+                }
+            );
+        }
+
+        desenharGraficoStatusColeta();
+        var idEmpresa = sessionStorage.ID_EMPRESA;
+        var idUsuario = sessionStorage.ID_USUARIO;
+
+        fetch(`/dashboardSarah/buscarServidoresPorEmpresa/${idEmpresa}/${idUsuario}`, { cache: 'no-store' })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        for (var i = 0; i < resposta.length; i++) {
+                            if (resposta[i].temAcesso == 1) {
+                                filtro_servidor.innerHTML += `
+                                <option value="${resposta[i].nome}">${resposta[i].nome}</option>
+                                `
+                            }
+                        }
+                    });
+                } else {
+                    console.log("Não funfou")
+                }
+            })
+            .catch(function (error) {
+                console.error("Erro na obtenção de dados", error);
+            });
+
+        var filtroServidor = document.getElementById('filtro_servidor');
+        var corpoDashboard = document.getElementById('corpo_dashboard');
+
+        // guarda o HTML original para poder voltar ao "Todos"
+        var htmlGeral = corpoDashboard.innerHTML;
+
+        filtroServidor.addEventListener('change', function () {
+            if (filtroServidor.value != "Todos") {
+                plotarDashboardEspecifica()
+        //         corpoDashboard.innerHTML = `
+        //     <div>hello world! ${filtroServidor.value}</div>
+        // `;
+            } else {
+                corpoDashboard.innerHTML = htmlGeral;
+                desenharGraficoStatusColeta(); // recria o gráfico, veja abaixo
+            }
+        });
+
+        function plotarDashboardEspecifica() {
+            corpoDashboard.innerHTML = `
+            <div class="kpis">
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Componente com mais alertas</div>
+                    <div class="conteudo">RAM</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Saúde do servidor</div>
+                    <div class="conteudo-saude">
+                        <div class="conteudo">80%</div>
+                        <div class="especificacao">
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida" style="width: 80%; background-color: #fbbf24;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Logs em Alerta</div>
+                    <div class="conteudo">20</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Maior variação</div>
+                    <div class="conteudo">CPU 89%</div>
+                    <div class="especificacao">+21</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Alertas registrados</div>
+                    <div class="conteudo">20</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-parte1">
+                <div class="card-ranking-variacoes cards">
+                    <div class="titulo-card">Maior variação dos componentes</div>
+                    <div class="subtitulo-ocorrencias">Atual - anterior</div>
+
+                    <div class="lista-ranking">
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">CPU</span>
+                                <span class="ranking-hora">16:40</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida critico" style="width: 89%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-critico">+ 21</span>
+                            </div>
+                            <span class="ranking-percentual valor-critico">89%</span>
+                        </div>
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">RAM</span>
+                                <span class="ranking-hora">12:27</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida critico" style="width: 76%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-critico">+ 18</span>
+                            </div>
+                            <span class="ranking-percentual valor-critico">76%</span>
+                        </div>
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">Disco</span>
+                                <span class="ranking-hora">20:54</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida atencao" style="width: 79%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-atencao">+ 15</span>
+                            </div>
+                            <span class="ranking-percentual valor-atencao">79%</span>
+                        </div>
+                        <div class="item-ranking">
+                            <div class="ranking-topo">
+                                <span class="ranking-nome">Rede</span>
+                                <span class="ranking-hora">17:38</span>
+                            </div>
+                            <div class="variacao">
+                                <div class="barra-fundo">
+                                    <div class="barra-preenchida atencao" style="width: 76%"></div>
+                                </div>
+                                <span class="ranking-variacao valor-atencao">+ 12</span>
+                            </div>
+                            <span class="ranking-percentual valor-atencao">76%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-uso-recursos cards">
+                    <div class="titulo-card">Maior variação dos componentes</div>
+                    <div class="subtitulo-ocorrencias">Atual - anterior</div>
+
+                    <div class="box-grafico-uso-recurso">
+                        <canvas id="grafico_uso_recurso"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-parte2 especifica">
+                <div class="card-logs cards">
+                    <div class="cabecalho-logs">
+                        <div>
+                            <div class="titulo-card">Logs e eventos — 24h</div>
+                            <div class="subtitulo-ocorrencias">Leituras registradas no mesmo período e nas séries do
+                                gráfico.</div>
+                        </div>
+                        <div class="contador-logs" id="contador_logs">12</div>
+                    </div>
+
+                    <div class="nota-logs">
+                        A severidade usa os limites dos KPIs. Leituras não confirmam incidente persistente.
+                    </div>
+
+                    <div class="tabela-wrapper tabela-logs-wrapper">
+                        <table class="tabela-ocorrencias tabela-logs">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Recurso</th>
+                                    <th>Evento</th>
+                                    <th>Faixa</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela_logs">
+                                <tr>
+                                    <td>24h</td>
+                                    <td>CPU</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">42%</td>
+                                </tr>
+                                <tr>
+                                    <td>24h</td>
+                                    <td>RAM</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">67%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>CPU</td>
+                                    <td>Leitura acima do limite de atenção</td>
+                                    <td><span class="badge atencao">Atenção</span></td>
+                                    <td class="valor-log">72%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>RAM</td>
+                                    <td>Leitura acima do limite de atenção</td>
+                                    <td><span class="badge atencao">Atenção</span></td>
+                                    <td class="valor-log">78%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                                <tr>
+                                    <td>22h</td>
+                                    <td>Disco</td>
+                                    <td>Retorno à faixa saudável</td>
+                                    <td><span class="badge info">Info</span></td>
+                                    <td class="valor-log">74%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-demanda-mapa-calor cards">
+                    <div class="titulo-card">Demanda por Período</div>
+                </div>
+            </div>
+            `
+        }
+
+        var labelsHora = ["07:40", "08:40", "09:40", "10:40", "11:40", "12:40", "13:40", "14:40", "15:40", "16:40"];
+        new Chart(
+            document.getElementById('grafico_uso_recurso'),
+            {
+                type: 'line',
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: { color: '#e5e9f5' }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function (item) {
+                                    return item.dataset.label + ': ' + item.parsed.y + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#9aa4bf' },
+                            grid: { color: '#232B40' }
+                        },
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                color: '#9aa4bf',
+                                callback: function (v) { return v + '%'; }
+                            },
+                            grid: { color: '#232B40' }
+                        }
+                    }
+                },
+                data: {
+                    labels: labelsHora,
+                    datasets: [
+                        {
+                            label: 'CPU',
+                            data: [42, 45, 50, 54, 58, 61, 64, 66, 67.6, 89],
+                            borderColor: '#4f8ef7',
+                            backgroundColor: '#4f8ef7',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'RAM',
+                            data: [68, 72, 75, 81, 84, 80, 82, 76, 67, 85],
+                            borderColor: '#a78bfa',
+                            backgroundColor: '#a78bfa',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Disco',
+                            data: [52, 54, 55, 57, 58, 59, 59, 60, 60.3, 75],
+                            borderColor: '#fbbf24',
+                            backgroundColor: '#fbbf24',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Rede',
+                            data: [58, 60, 63, 66, 62, 65, 68, 63, 64.7, 50],
+                            borderColor: '#2ecc71',
+                            backgroundColor: '#2ecc71',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3
+                        }
+                    ]
+                }
+            }
+        );
+
+
+
+    </script>
+</body>
+
+</html>

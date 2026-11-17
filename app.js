@@ -32,6 +32,7 @@ var servidorRouter = require("./src/routes/servidor");
 var cadastroEmpresaRouter = require("./src/routes/cadastroEmpresa");
 var gerenciarEmpresaRouter = require("./src/routes/gerenciarEmpresa");
 var gerenciarFuncionarioRouter = require("./src/routes/gerenciarFuncionario");
+var dashboardSarahRouter = require("./src/routes/dashboardSarah");
 var agenteRouter = require("./src/routes/agente");
 
 var cryptoRouter = require("./src/routes/crypto");
@@ -87,6 +88,7 @@ app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissa
 app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
 app.use("/agente", agenteRouter)
+app.use("/dashboardSarah", dashboardSarahRouter)
 
 module.exports = app;
 

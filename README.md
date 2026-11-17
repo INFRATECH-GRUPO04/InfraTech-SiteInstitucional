@@ -8,12 +8,12 @@
 
 ### **Integrantes:**
 
-* Maria Eduarda Nogueiro
-* Jefferson Palma
-* Isaac Azevedo
-* Arthur Martins
-* Amanda Tavares
-* Guilherme Lima
+* Felie Gonçalvez
+* Guilherme Albuquerque
+* Luiz Duarte
+* Manuella Arantes
+* Sarah Sato
+* Vitor Andrade
  
 ---
 
