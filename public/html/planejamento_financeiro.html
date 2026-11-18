@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planejamento Financeiro | InfraTech</title>
+  <link rel="icon" href="../assets/icon/logo.png" type="image/png" />
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/dashboard-global.css" />
+  <link rel="stylesheet" href="/css/planejamento_financeiro.css" />
+
+  <script src="/js/permissoes.js"></script>
+  <script src="/js/sessao.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="pagina-planejamento-financeiro dashboard-compartilhada">
+
+  <!-- Barra lateral padrão (os menus são preenchidos pelo sessao.js) -->
+  <aside class="header-left" id="sidebar_dash">
+    <div class="logo">
+      <a href="./dash-geral.html" title="InfraTech Painel">
+        <img src="../assets/icon/logo.png" alt="InfraTech">
+      </a>
+    </div>
+
+    <hr class="linha">
+
+    <h3 class="nav-categoria">
+      <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+      Servidores
+    </h3>
+
+    <a href="../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+      <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+      Cadastrar Host
+    </a>
+
+    <h3 class="nav-categoria secao-funcionarios">
+      <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+      Funcionários
+    </h3>
+
+    <a href="../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+      <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+      Cadastrar Token
+    </a>
+
+    <h3 class="nav-categoria secao-empresas">
+      <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+      Empresas
+    </h3>
+
+    <a href="../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+      <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+      Gerenciar
+    </a>
+    <a href="../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+      <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+      Cadastrar Empresa
+    </a>
+
+    <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+      <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+    </div>
+  </aside>
+
+  <!-- Conteúdo principal -->
+  <main class="conteudo-principal">
+
+    <header class="dashboard-welcome">
+      <h1 class="dashboard-welcome__titulo">
+        BEM-VINDO, <span id="nome_usuario">USUÁRIO</span>
+        <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
+      </h1>
+      <div class="dashboard-welcome__meta">
+        <span class="plan-chip plan-chip--online"><span class="plan-chip__dot"></span><span id="fisicos-online">6</span> físicos online</span>
+        <time class="dashboard-welcome__hora" id="relogio"></time>
+        <button type="button" class="plan-btn plan-btn--ghost" id="btn-premissas-topo">Premissas</button>
+        <button type="button" class="plan-btn plan-btn--muted" id="btn-dados-ilustrativos">Dados ilustrativos</button>
+      </div>
+    </header>
+
+    <section class="plan-intro">
+      <h2 class="plan-intro__titulo">Planejamento Financeiro</h2>
+      <p class="plan-intro__descricao">
+        Dados cadastrados pelo gestor (<strong id="nome-gestor">Alberto Santos</strong>)
+        em <strong id="data-cadastro">10/11/2026</strong>: custos, capacidade, crescimento,
+        orçamento, custo de expansão e meta de uso.
+      </p>
+    </section>
+
+    <div class="plan-notice" id="aviso-ilustrativo">
+      Esta tela está usando dados ilustrativos. As premissas podem ser alteradas no botão
+      <strong>Premissas</strong> e os valores são recalculados na hora.
+    </div>
+
+    <!-- Billing: custo, receita, lucro e retorno -->
+    <section class="plan-billing" aria-label="Billing e rentabilidade">
+      <div class="plan-section__cabecalho">
+        <div>
+          <h2 class="plan-section__titulo">Billing &amp; Rentabilidade</h2>
+          <p class="plan-section__descricao">Quanto custa manter a operação e o retorno estimado para o negócio.</p>
+        </div>
+        <span class="plan-tag plan-tag--calculado">Calculado</span>
+      </div>
+
+      <div class="plan-kpis">
+        <article class="plan-kpi">
+          <div class="plan-kpi__topo">
+            <span class="plan-kpi__rotulo">Custo mensal InfraTech</span>
+            <span class="plan-tag plan-tag--cadastro">Cadastro</span>
+          </div>
+          <p class="plan-kpi__valor" id="kpi-custo">R$ 19.200</p>
+          <p class="plan-kpi__detalhe" id="kpi-custo-detalhe">Plano Profissional · 6 servidores</p>
+        </article>
+
+        <article class="plan-kpi">
+          <div class="plan-kpi__topo">
+            <span class="plan-kpi__rotulo">Receita estimada/mês</span>
+            <span class="plan-tag plan-tag--estimado">Estimado</span>
+          </div>
+          <p class="plan-kpi__valor" id="kpi-receita">R$ 32.000</p>
+          <p class="plan-kpi__detalhe" id="kpi-receita-detalhe">10.000 jogadores × R$ 3,20</p>
+        </article>
+
+        <article class="plan-kpi">
+          <div class="plan-kpi__topo">
+            <span class="plan-kpi__rotulo">Lucro líquido/mês</span>
+            <span class="plan-tag plan-tag--calculado">Calculado</span>
+          </div>
+          <p class="plan-kpi__valor plan-kpi__valor--positivo" id="kpi-lucro">R$ 12.800</p>
+          <p class="plan-kpi__detalhe" id="kpi-margem">Margem de 40,00%</p>
+        </article>
+
+        <article class="plan-kpi">
+          <div class="plan-kpi__topo">
+            <span class="plan-kpi__rotulo">ROI de infraestrutura</span>
+            <span class="plan-tag plan-tag--calculado">Calculado</span>
+          </div>
+          <p class="plan-kpi__valor" id="kpi-roi">66,67%</p>
+          <p class="plan-kpi__detalhe" id="kpi-breakeven">Break-even: 6.000 jogadores</p>
+        </article>
+      </div>
+
+      <div class="plan-value-banner">
+        <strong>Por que vale a pena:</strong>
+        além de evitar compra de servidores e equipe própria de NOC, a operação estima
+        <strong id="economia-estimada">R$ 8.400</strong> de economia por mês em relação a uma
+        infraestrutura montada internamente.
+      </div>
+    </section>
+
+    <!-- Cards de decisão -->
+    <section class="plan-top-grid" aria-label="Resumo do planejamento">
+      <article class="plan-card">
+        <div class="plan-card__cabecalho">
+          <h3 class="plan-card__titulo">Runway de capacidade global</h3>
+          <span class="plan-tag plan-tag--calculado">Calculado</span>
+        </div>
+        <p class="plan-runway" id="runway-valor">5 meses e 1 semana</p>
+        <div class="plan-progress" aria-hidden="true">
+          <div class="plan-progress__fill" id="runway-barra" style="width: 83.3%"></div>
+        </div>
+        <div class="plan-progress__legenda">
+          <span id="runway-uso">10.000 / 12.000 jogadores</span>
+          <span id="runway-percentual">83,3%</span>
+        </div>
+        <p class="plan-card__nota" id="runway-detalhe">Prazo útil para decidir: 3 meses e 1 semana (provisionamento: 2 meses).</p>
+      </article>
+
+      <article class="plan-card">
+        <div class="plan-card__cabecalho">
+          <h3 class="plan-card__titulo">Maior necessidade de expansão</h3>
+          <span class="plan-tag plan-tag--medido">Medido</span>
+        </div>
+        <p class="plan-destaque" id="expansao-servidor">SRV-SP-01</p>
+        <div class="plan-linha">
+          <span class="plan-texto-suave" id="expansao-local">São Paulo - Paulista</span>
+          <span class="plan-status plan-status--saturado" id="expansao-status">Gargalo local</span>
+        </div>
+        <p class="plan-card__nota">Servidor com maior pressão de uso no período analisado.</p>
+      </article>
+
+      <article class="plan-card">
+        <div class="plan-card__cabecalho">
+          <h3 class="plan-card__titulo">Projeção de jogadores bloqueados</h3>
+          <span class="plan-tag plan-tag--calculado">Calculado</span>
+        </div>
+        <div class="plan-bloqueados">
+          <div><span class="plan-bloqueados__rotulo">1 mês</span><strong id="bloqueados-1">0</strong></div>
+          <div><span class="plan-bloqueados__rotulo">3 meses</span><strong id="bloqueados-3">0</strong></div>
+          <div><span class="plan-bloqueados__rotulo">6 meses</span><strong id="bloqueados-6">250</strong></div>
+        </div>
+        <p class="plan-alerta" id="bloqueados-risco">
+          Risco local: SRV-SP-01 a 96% de CPU pode gerar fila antes do teto global.
+        </p>
+      </article>
+    </section>
+
+    <!-- Custo x uso e orçamento -->
+    <section class="plan-split">
+      <article class="plan-card plan-card--tabela">
+        <div class="plan-card__cabecalho">
+          <div>
+            <h3 class="plan-card__titulo">Custo × uso por servidor</h3>
+            <p class="plan-card__subtitulo">Custo mensal estimado (cadastro do gestor) · uso médio dos últimos 30 dias · servidores físicos.</p>
+          </div>
+          <div class="plan-tags">
+            <span class="plan-tag plan-tag--cadastro">Cadastro</span>
+            <span class="plan-tag plan-tag--medido">Medido</span>
+            <span class="plan-tag plan-tag--calculado">Calculado</span>
+          </div>
+        </div>
+
+        <div class="plan-tabela-wrap">
+          <table class="plan-tabela">
+            <thead>
+              <tr>
+                <th>Servidor físico</th>
+                <th>Custo mensal</th>
+                <th>Uso médio</th>
+                <th>Custo ocioso estimado</th>
+                <th>Situação</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-servidores"></tbody>
+          </table>
+        </div>
+        <p class="plan-card__nota">
+          Saturado ≥<span id="limite-saturado">75</span>% ·
+          Normal <span class="limite-subutilizado-nota">40</span>–<span id="limite-normal">74</span>% ·
+          Subutilizado &lt;<span class="limite-subutilizado-nota">40</span>% (limites de alerta editáveis).
+          Custo ocioso estimado = custo mensal × (meta de uso − uso médio), mínimo zero.
+        </p>
+      </article>
+
+      <article class="plan-card plan-card--grafico">
+        <div class="plan-card__cabecalho">
+          <div>
+            <h3 class="plan-card__titulo">Custo estimado mensal vs orçamento</h3>
+            <p class="plan-card__subtitulo">Últimos 6 meses · valores estimados a partir do cadastro de custos.</p>
+          </div>
+          <div class="plan-tags">
+            <span class="plan-tag plan-tag--estimado">Estimado</span>
+            <span class="plan-tag plan-tag--calculado">Calculado</span>
+          </div>
+        </div>
+
+        <div class="plan-projecao" id="projecao-orcamento">Projeção de nov/26: R$ 19.200 (96% do orçamento)</div>
+        <div class="plan-grafico-wrap">
+          <canvas id="grafico-custo" aria-label="Gráfico de custo mensal comparado ao orçamento" role="img"></canvas>
+        </div>
+        <p class="plan-card__nota">Orçamento mensal: <strong id="texto-orcamento">R$ 20.000</strong></p>
+      </article>
+    </section>
+
+    <!-- Cenários -->
+    <section class="plan-card plan-card--cenarios">
+      <div class="plan-card__cabecalho">
+        <div>
+          <h3 class="plan-card__titulo">Simulação de cenários de investimento</h3>
+          <p class="plan-card__subtitulo">Decisões para o próximo trimestre e ano · capacidade em jogadores simultâneos.</p>
+        </div>
+        <div class="plan-tags">
+          <span class="plan-tag plan-tag--cadastro">Cadastro</span>
+          <span class="plan-tag plan-tag--calculado">Calculado</span>
+          <span class="plan-tag plan-tag--estimado">Estimado</span>
+        </div>
+      </div>
+
+      <div class="plan-tabela-wrap">
+        <table class="plan-tabela plan-tabela--cenarios">
+          <thead>
+            <tr>
+              <th>Cenário</th>
+              <th>Servidores físicos</th>
+              <th>Capacidade total (jogadores)</th>
+              <th>Custo mensal adicional</th>
+              <th>Implantação (única)</th>
+              <th>Prazo de entrega</th>
+              <th>Runway / saturação</th>
+            </tr>
+          </thead>
+          <tbody id="corpo-cenarios"></tbody>
+        </table>
+      </div>
+      <p class="plan-card__nota">Custos de expansão e capacidade dos servidores novos conforme premissas cadastradas pelo gestor.</p>
+    </section>
+
+    <!-- Rodapé de transparência -->
+    <footer class="plan-footer">
+      <p class="plan-footer__fontes">
+        <strong>Fontes:</strong> jogadores simultâneos (telemetria do jogo), uso por servidor
+        (script de captura), custo e capacidade por servidor (cadastro do gestor). Custos
+        estimados, não faturados. Projeção linear, sem sazonalidade.
+      </p>
+      <div class="plan-footer__premissas">
+        <span><strong>Premissas:</strong> <span id="resumo-premissas">crescimento 375 jogadores/mês · 2.000 jogadores por servidor · provisionamento 2 meses · meta de uso 75% · novo servidor R$ 3.200/mês + R$ 2.000 de implantação.</span></span>
+        <button type="button" class="plan-link" id="btn-editar-premissas">Editar premissas</button>
+      </div>
+      <div class="plan-legenda">
+        <span class="plan-tag plan-tag--medido">Medido</span> (coletado dos servidores)
+        <span class="plan-tag plan-tag--cadastro">Cadastro</span> (informado pelo gestor)
+        <span class="plan-tag plan-tag--calculado">Calculado</span> (derivado de medido + cadastro)
+        <span class="plan-tag plan-tag--estimado">Estimado</span> (projeção ou valor assumido)
+      </div>
+    </footer>
+  </main>
+
+  <!-- Modal de premissas -->
+  <div class="plan-modal" id="modal-premissas" hidden>
+    <div class="plan-modal__fundo" data-fechar-premissas></div>
+    <div class="plan-modal__caixa" role="dialog" aria-modal="true" aria-labelledby="titulo-premissas">
+      <div class="plan-modal__cabecalho">
+        <div>
+          <h2 id="titulo-premissas">Premissas</h2>
+          <p>Preenchido pelo gestor no cadastro · atualizado em <span id="modal-data">10/11/2026</span></p>
+        </div>
+        <button type="button" class="plan-modal__fechar" id="btn-fechar-premissas" aria-label="Fechar premissas">&times;</button>
+      </div>
+
+      <form id="form-premissas">
+        <div class="plan-modal__grade">
+
+          <fieldset class="plan-modal__grupo">
+            <legend>Capacidade</legend>
+            <div class="plan-campo">
+              <label for="premissa-capacidade-atual">Capacidade por servidor atual</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-capacidade-atual" min="1" step="1" value="2000">
+                <span>jogadores</span>
+              </div>
+              <small>Usada no cálculo da capacidade total e do runway.</small>
+            </div>
+            <div class="plan-campo">
+              <label for="premissa-capacidade-nova">Capacidade por servidor novo</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-capacidade-nova" min="1" step="1" value="1250">
+                <span>jogadores</span>
+              </div>
+              <small>Usada na simulação dos cenários de expansão.</small>
+            </div>
+          </fieldset>
+
+          <fieldset class="plan-modal__grupo">
+            <legend>Crescimento e prazos</legend>
+            <div class="plan-campo">
+              <label for="premissa-crescimento">Crescimento</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-crescimento" min="0" step="1" value="375">
+                <span>jogadores/mês</span>
+              </div>
+              <small>Usado na projeção de demanda e de jogadores bloqueados.</small>
+            </div>
+            <div class="plan-campo">
+              <label for="premissa-provisionamento">Prazo de provisionamento</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-provisionamento" min="0" step="1" value="2">
+                <span>meses</span>
+              </div>
+              <small>Usado para calcular o prazo útil de decisão.</small>
+            </div>
+          </fieldset>
+
+          <fieldset class="plan-modal__grupo">
+            <legend>Orçamento e alertas</legend>
+            <div class="plan-campo">
+              <label for="premissa-orcamento">Orçamento mensal</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-orcamento" min="1" step="100" value="20000">
+                <span>R$/mês</span>
+              </div>
+              <small>Usado na comparação entre custo mensal e orçamento.</small>
+            </div>
+            <div class="plan-campo">
+              <label for="premissa-meta">Meta de uso</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-meta" min="1" max="100" step="1" value="75">
+                <span>%</span>
+              </div>
+              <small>Uso considerado saudável. A reserva para picos não conta como custo ocioso.</small>
+            </div>
+            <div class="plan-campo">
+              <label for="premissa-subutilizado">Limite de alerta de uso — subutilizado</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-subutilizado" min="1" max="100" step="1" value="40">
+                <span>%</span>
+              </div>
+              <small>Classifica servidores com uso baixo / próximos do limite.</small>
+            </div>
+          </fieldset>
+
+          <fieldset class="plan-modal__grupo">
+            <legend>Custo de expansão</legend>
+            <div class="plan-campo">
+              <label for="premissa-custo-servidor">Custo mensal por servidor novo</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-custo-servidor" min="0" step="100" value="3200">
+                <span>R$/mês</span>
+              </div>
+              <small>Usado no custo mensal adicional dos cenários.</small>
+            </div>
+            <div class="plan-campo">
+              <label for="premissa-custo-implantacao">Custo de implantação por servidor novo</label>
+              <div class="plan-campo__entrada">
+                <input type="number" id="premissa-custo-implantacao" min="0" step="100" value="2000">
+                <span>R$ · único</span>
+              </div>
+              <small>Usado na implantação dos cenários.</small>
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="plan-modal__rodape">
+          <button type="button" class="plan-btn plan-btn--ghost" id="btn-cancelar-premissas">Cancelar</button>
+          <button type="submit" class="plan-btn plan-btn--principal">Aplicar e recalcular</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="plan-toast" id="toast-premissas" hidden>Premissas aplicadas. Valores recalculados.</div>
+
+  <script src="/js/planejamento_financeiro.js"></script>
+</body>
+</html>

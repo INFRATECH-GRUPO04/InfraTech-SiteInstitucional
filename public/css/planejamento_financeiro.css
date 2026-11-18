@@ -1,0 +1,869 @@
+/*
+ * Estilos exclusivos da página Planejamento Financeiro & Billing.
+ * A paleta, as fontes e a sidebar continuam vindo de global.css e
+ * dashboard-global.css; aqui ficam apenas layout, cards, tabelas e modal.
+ */
+
+body.pagina-planejamento-financeiro {
+  --plan-fundo: #0b1119;
+  --plan-card: #151e29;
+  --plan-card-alt: #101923;
+  --plan-borda: #293746;
+  --plan-texto: #eef4f8;
+  --plan-texto-suave: #a6b7c7;
+  --plan-texto-mudo: #8da1b3;
+  --plan-ciano: #00cfff;
+  --plan-ciano-fraco: rgb(0 207 255 / 0.1);
+  --plan-verde: #6ee7a8;
+  --plan-ambar: #fbbf24;
+  --plan-vermelho: #fda4af;
+  --plan-roxo: #c4b5fd;
+
+  display: flex;
+  min-height: 100vh;
+  background: var(--plan-fundo);
+  color: var(--plan-texto);
+}
+
+body.pagina-planejamento-financeiro .conteudo-principal {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 24px 44px;
+  box-sizing: border-box;
+}
+
+body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
+  margin-top: 0;
+}
+
+/* ---------- Cabeçalho / ações ---------- */
+
+.plan-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.plan-btn--ghost {
+  background: transparent;
+  border-color: rgb(0 207 255 / 0.35);
+  color: var(--plan-ciano);
+}
+
+.plan-btn--ghost:hover {
+  background: var(--plan-ciano-fraco);
+}
+
+.plan-btn--muted {
+  background: #182430;
+  border-color: #334454;
+  color: var(--plan-texto-suave);
+}
+
+.plan-btn--muted:hover {
+  color: var(--plan-texto);
+  border-color: #466178;
+}
+
+.plan-btn--principal {
+  background: var(--plan-ciano);
+  border-color: var(--plan-ciano);
+  color: #04121c;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.plan-btn--principal:hover {
+  background: #33d4ff;
+}
+
+.plan-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.plan-chip--online {
+  color: var(--plan-verde);
+  background: rgb(34 197 94 / 0.12);
+  border: 1px solid rgb(34 197 94 / 0.25);
+}
+
+.plan-chip__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--plan-verde);
+  box-shadow: 0 0 8px rgb(110 231 168 / 0.7);
+}
+
+/* ---------- Introdução ---------- */
+
+.plan-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 2px 0 16px;
+}
+
+.plan-intro__titulo {
+  margin: 0;
+  color: #f4f9fd;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.plan-intro__descricao {
+  margin: 0;
+  max-width: 92ch;
+  color: var(--plan-texto-suave);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.plan-intro__descricao strong {
+  color: #dceaf4;
+  font-weight: 600;
+}
+
+.plan-notice {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--plan-ambar);
+  border-radius: 8px;
+  background: rgb(245 158 11 / 0.1);
+  color: #f5d491;
+  font-size: 12.5px;
+}
+
+/* ---------- Cabeçalho de seção ---------- */
+
+.plan-section__cabecalho,
+.plan-card__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.plan-section__cabecalho {
+  margin-bottom: 12px;
+}
+
+.plan-section__titulo,
+.plan-card__titulo {
+  margin: 0;
+  color: #f2f7fb;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.plan-section__descricao,
+.plan-card__subtitulo {
+  margin: 3px 0 0;
+  color: var(--plan-texto-mudo);
+  font-size: 11.8px;
+  line-height: 1.45;
+}
+
+.plan-card__nota {
+  margin: 12px 0 0;
+  color: var(--plan-texto-mudo);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.plan-card__nota strong {
+  color: var(--plan-texto-suave);
+}
+
+/* ---------- Etiquetas de origem ---------- */
+
+.plan-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.plan-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.plan-tag--medido {
+  color: var(--plan-ciano);
+  background: rgb(0 207 255 / 0.1);
+  border-color: rgb(0 207 255 / 0.25);
+}
+
+.plan-tag--cadastro {
+  color: var(--plan-roxo);
+  background: rgb(139 92 246 / 0.14);
+  border-color: rgb(139 92 246 / 0.3);
+}
+
+.plan-tag--calculado {
+  color: var(--plan-verde);
+  background: rgb(34 197 94 / 0.12);
+  border-color: rgb(34 197 94 / 0.26);
+}
+
+.plan-tag--estimado {
+  color: var(--plan-ambar);
+  background: rgb(245 158 11 / 0.12);
+  border-color: rgb(245 158 11 / 0.26);
+}
+
+/* ---------- Billing ---------- */
+
+.plan-billing {
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid var(--plan-borda);
+  border-radius: 12px;
+  background: var(--plan-card);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.22);
+}
+
+.plan-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.plan-kpi {
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid #263746;
+  border-radius: 10px;
+  background: var(--plan-card-alt);
+}
+
+.plan-kpi__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.plan-kpi__rotulo {
+  color: var(--plan-texto-suave);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.plan-kpi__valor {
+  margin: 0 0 5px;
+  color: var(--plan-ciano);
+  font-size: clamp(1.35rem, 1.9vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-kpi__valor--positivo {
+  color: var(--plan-verde);
+}
+
+.plan-kpi__valor--negativo {
+  color: var(--plan-vermelho);
+}
+
+.plan-kpi__detalhe {
+  margin: 0;
+  color: var(--plan-texto-mudo);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.plan-value-banner {
+  margin-top: 12px;
+  padding: 11px 14px;
+  border: 1px dashed rgb(0 207 255 / 0.35);
+  border-radius: 8px;
+  background: rgb(0 207 255 / 0.05);
+  color: #b8d6e6;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.plan-value-banner strong {
+  color: var(--plan-ciano);
+}
+
+/* ---------- Cards de decisão ---------- */
+
+.plan-top-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.plan-card {
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--plan-borda);
+  border-radius: 12px;
+  background: var(--plan-card);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.22);
+}
+
+.plan-card__cabecalho {
+  margin-bottom: 12px;
+}
+
+.plan-runway {
+  margin: 0 0 12px;
+  color: var(--plan-ciano);
+  font-size: clamp(1.55rem, 2.4vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-progress {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #263746;
+}
+
+.plan-progress__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #00cfff, #33d4ff);
+  box-shadow: 0 0 10px rgb(0 207 255 / 0.35);
+}
+
+.plan-progress__legenda {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 7px;
+  color: var(--plan-texto-suave);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-destaque {
+  margin: 0 0 10px;
+  color: #f4f9fd;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.plan-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.plan-texto-suave {
+  color: var(--plan-texto-suave);
+  font-size: 12px;
+}
+
+.plan-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.plan-status--saturado {
+  color: var(--plan-vermelho);
+  background: rgb(239 68 68 / 0.16);
+}
+
+.plan-status--normal {
+  color: var(--plan-verde);
+  background: rgb(34 197 94 / 0.14);
+}
+
+.plan-status--subutilizado {
+  color: var(--plan-ambar);
+  background: rgb(245 158 11 / 0.16);
+}
+
+.plan-bloqueados {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.plan-bloqueados > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plan-bloqueados__rotulo {
+  color: var(--plan-texto-mudo);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.plan-bloqueados strong {
+  color: var(--plan-ambar);
+  font-size: 1.55rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-alerta {
+  margin: 0;
+  padding: 9px 11px;
+  border-left: 3px solid var(--plan-ambar);
+  border-radius: 6px;
+  background: rgb(245 158 11 / 0.1);
+  color: #f0d097;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ---------- Custo x uso + gráfico ---------- */
+
+.plan-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.plan-tabela-wrap {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.plan-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.plan-tabela th {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--plan-borda);
+  color: var(--plan-texto-mudo);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.plan-tabela td {
+  padding: 10px;
+  border-bottom: 1px solid rgb(41 55 70 / 0.65);
+  color: #cbd8e3;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.plan-tabela tbody tr:hover {
+  background: #1b2837;
+}
+
+.plan-tabela__total td {
+  border-bottom: none;
+  border-top: 1px solid var(--plan-borda);
+  color: #edf4fa;
+  font-weight: 700;
+}
+
+.plan-tabela__valor {
+  color: #e8f2f9;
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-tabela__destaque {
+  color: var(--plan-ambar);
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-tabela__zero {
+  color: var(--plan-texto-mudo);
+  font-variant-numeric: tabular-nums;
+}
+
+.plan-tabela--cenarios td {
+  white-space: normal;
+  line-height: 1.45;
+}
+
+.plan-tabela--cenarios th:first-child,
+.plan-tabela--cenarios td:first-child {
+  min-width: 170px;
+  color: #e8f2f9;
+}
+
+.plan-tabela--cenarios td:first-child small {
+  display: block;
+  color: var(--plan-texto-mudo);
+  font-size: 10.5px;
+}
+
+.plan-tabela__linha--destaque {
+  background: rgb(0 207 255 / 0.08);
+  box-shadow: inset 3px 0 0 var(--plan-ciano);
+}
+
+.plan-tabela__linha--destaque:hover {
+  background: rgb(0 207 255 / 0.12);
+}
+
+.plan-tabela__cenario-nome {
+  color: var(--plan-ciano);
+  font-weight: 700;
+}
+
+.plan-projecao {
+  margin-bottom: 10px;
+  padding: 8px 11px;
+  border: 1px solid rgb(0 207 255 / 0.28);
+  border-radius: 7px;
+  background: rgb(0 207 255 / 0.07);
+  color: #bfeaff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.plan-grafico-wrap {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  min-width: 0;
+}
+
+/* ---------- Cenários ---------- */
+
+.plan-card--cenarios {
+  margin-bottom: 16px;
+}
+
+/* ---------- Rodapé ---------- */
+
+.plan-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 2px 0;
+  border-top: 1px solid rgb(41 55 70 / 0.7);
+  color: var(--plan-texto-mudo);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.plan-footer p {
+  margin: 0;
+}
+
+.plan-footer__fontes strong {
+  color: var(--plan-texto-suave);
+}
+
+.plan-footer__premissas {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--plan-texto-suave);
+}
+
+.plan-footer__premissas strong {
+  color: #dce8f2;
+}
+
+.plan-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--plan-ciano);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.plan-link:hover {
+  color: #66e3ff;
+}
+
+.plan-legenda {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding-top: 6px;
+  color: var(--plan-texto-mudo);
+}
+
+/* ---------- Modal de premissas ---------- */
+
+.plan-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.plan-modal[hidden],
+.plan-toast[hidden],
+.plan-notice[hidden] {
+  display: none !important;
+}
+
+.plan-modal__fundo {
+  position: absolute;
+  inset: 0;
+  background: rgb(2 6 11 / 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.plan-modal__caixa {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 980px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 20px 22px 0;
+  border: 1px solid #2c3d4e;
+  border-radius: 12px;
+  background: #101923;
+  box-shadow: 0 26px 70px rgb(0 0 0 / 0.55);
+}
+
+.plan-modal__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgb(41 55 70 / 0.8);
+}
+
+.plan-modal__cabecalho h2 {
+  margin: 0 0 4px;
+  color: #f4f9fd;
+  font-size: 1.35rem;
+}
+
+.plan-modal__cabecalho p {
+  margin: 0;
+  color: var(--plan-texto-mudo);
+  font-size: 11.5px;
+}
+
+.plan-modal__fechar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid #334454;
+  border-radius: 8px;
+  background: #1a2735;
+  color: var(--plan-texto-suave);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.plan-modal__fechar:hover {
+  color: #fff;
+  border-color: #4a647c;
+}
+
+.plan-modal__grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 28px;
+  padding: 18px 0;
+}
+
+.plan-modal__grupo {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.plan-modal__grupo legend {
+  margin-bottom: 10px;
+  color: var(--plan-ciano);
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.plan-campo {
+  margin-bottom: 12px;
+}
+
+.plan-campo label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--plan-texto-suave);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.plan-campo__entrada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-campo__entrada input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 38px;
+  border-color: #334454;
+  background: #0b1420;
+  color: #eef4f8;
+  font-size: 12.5px;
+}
+
+.plan-campo__entrada span {
+  flex: 0 0 auto;
+  color: var(--plan-texto-mudo);
+  font-size: 11px;
+}
+
+.plan-campo small {
+  display: block;
+  margin-top: 4px;
+  color: var(--plan-texto-mudo);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.plan-modal__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 0 18px;
+  border-top: 1px solid rgb(41 55 70 / 0.8);
+}
+
+/* ---------- Toast ---------- */
+
+.plan-toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1300;
+  padding: 10px 16px;
+  border: 1px solid rgb(34 197 94 / 0.4);
+  border-radius: 8px;
+  background: #10291f;
+  color: #b7f7d4;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 0.45);
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 1200px) {
+  .plan-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plan-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plan-grafico-wrap {
+    height: 280px;
+  }
+}
+
+@media (max-width: 991px) {
+  body.pagina-planejamento-financeiro .conteudo-principal {
+    padding: 12px 16px 32px;
+  }
+
+  .plan-top-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plan-modal__grade {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  body.pagina-planejamento-financeiro .conteudo-principal {
+    padding: 10px 12px 28px;
+  }
+
+  .plan-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plan-section__cabecalho,
+  .plan-card__cabecalho {
+    flex-direction: column;
+  }
+
+  .plan-tags {
+    justify-content: flex-start;
+  }
+
+  .plan-bloqueados {
+    gap: 12px;
+  }
+
+  .plan-modal {
+    padding: 10px;
+  }
+
+  .plan-modal__caixa {
+    padding: 16px 14px 0;
+    max-height: calc(100vh - 20px);
+  }
+}

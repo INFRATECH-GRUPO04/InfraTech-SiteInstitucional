@@ -11,7 +11,8 @@
     const dashboards = [
         { id: 'geral', href: '/dashboard/dash-geral.html', label: 'Visão Geral' },
         { id: 'especifica', href: '/dashboard/especifica-servidor/dash-especifica.html', label: 'Dashboard Específica' },
-        { id: 'saude', href: '/dashboard/analista/dashboardV2.html', label: 'Saúde e Capacidade' }
+        { id: 'saude', href: '/dashboard/analista/dashboardV2.html', label: 'Saúde e Capacidade' },
+        { id: 'planejamento', href: '/dashboard/planejamento.html', label: 'Planejamento' }
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
@@ -24,6 +25,9 @@
         const tipo = normalizar(cargo);
         const completo = completos.includes(tipo);
         const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
+        /* O planejamento financeiro fica restrito a gestão: o funcionário comum
+         * vê as dashboards operacionais, mas não os custos e a rentabilidade. */
+        if (['GESTOR', 'ADMIN', 'INFRATECH'].includes(tipo)) ids.push('planejamento');
         return {
             dashboards: ids,
             administrar: completo,
