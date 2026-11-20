@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - InfraTech</title>
+    <script>
+        if (window.location.protocol === "file:") {
+            var caminhoLocal = decodeURIComponent(window.location.pathname).replace(/\\/g, "/");
+            var marcadorPublico = "/public/";
+            var indicePublico = caminhoLocal.lastIndexOf(marcadorPublico);
+
+            if (indicePublico !== -1) {
+                var rotaLocal = caminhoLocal.slice(indicePublico + marcadorPublico.length);
+                window.location.replace("http://localhost:8080/" + rotaLocal);
+            }
+        }
+    </script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/branding/infratech_favicon_32.png">
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+    <script src="/js/login.js" defer></script>
+</head>
+
+<body class="pagina-autenticacao">
+
+    <div class="alerta_erro">
+        <div class="card_erro" id="cardErro">
+            <span id="mensagem_erro"></span>
+        </div>
+    </div>
+
+    <div class="box-login">
+        <div class="posicao-titulo-formulario">
+            <div class="titulo-imagem">
+                <a href="/paginas/institucional/home/index.html" class="posicao-imagem" title="Voltar ao início">
+                    <img src="/assets/icon/logo.png" alt="InfraTech Logo">
+                </a>
+
+                <h1 class="titulo-login"><span class="destaque-branco">INFRA</span><span class="destaque-azul">TECH</span></h1>
+                <p class="subtitulo-autenticacao">Painel de Observabilidade & Monitoramento</p>
+                <div class="bloco-linha"><div class="linha-divisao"></div></div>
+            </div>
+
+            <div class="formulario-login">
+                <form class="login-formulario" id="loginFormulario" onsubmit="event.preventDefault(); entrar();">
+                    <div class="bloco-input">
+                        <label for="emailInput">E-mail corporativo</label>
+                        <input class="inputs" type="email" id="emailInput" placeholder="infratech@empresa.com" required autocomplete="email">
+                        <span class="mensagem-erro" id="emailError"></span>
+                    </div>
+
+                    <div class="bloco-input">
+                        <div class="titulo-senha">
+                            <label for="passwordInput">Senha</label>
+                        </div>
+                        <input class="inputs" type="password" id="passwordInput" placeholder="••••••••" required autocomplete="current-password">
+                        <span class="mensagem-erro" id="passwordError"></span>
+                    </div>
+
+                    <button class="botao-login" type="submit" id="btn_entrar">Entrar no Sistema</button>
+                </form>
+            </div>
+
+            <div class="opcao-cadastro">
+                <span class="linha-opcao"></span>
+                <span class="texto-opcao">ou</span>
+                <span class="linha-opcao"></span>
+            </div>
+
+            <div class="criar-conta">
+                <a href="/paginas/autenticacao/cadastro_funcionario/cadastro-funcionario.html" class="btn-outline-login">
+                    Criar nova conta com token
+                </a>
+            </div>
+
+            <div class="rodape-auth">
+                <a href="/paginas/institucional/home/index.html">← Voltar para o site institucional</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

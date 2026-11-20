@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Token | InfraTech</title>
+    <link rel="icon" href="../../../../assets/icon/logo.png">
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/cadastro-base.css">
+    <link rel="stylesheet" href="/css/cadastro_token.css">
+
+    <script src="/js/permissoes.js"></script>
+    <script src="/js/sessao.js"></script>
+    <script src="/js/cadastro_token.js" defer></script>
+</head>
+
+<body class="pagina-servidores">
+
+    <!-- BARRA LATERAL -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="/dashboard/dash-geral.html" title="InfraTech">
+                <img src="../../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../../servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="./cadastro_token.html" class="nav-item ativo" aria-current="page">
+            <img src="../../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <div class="content">
+        <div class="barra-topo">
+            <p class="caminho">Funcionários / Gerar token</p>
+            <div class="usuario-topo">
+                <span class="ponto-online" aria-hidden="true"></span>
+                <span id="nome_usuario">Usuário</span>
+            </div>
+        </div>
+
+        <div class="corpo-pagina">
+            <div class="intro-token-layout">
+                <header class="intro-pagina">
+                    <div class="titulo-com-ajuda">
+                        <h1>Gerar token</h1>
+                        <div class="ajuda-token-ancora">
+                            <button type="button" class="botao-ajuda-token" id="btn_ajuda_token"
+                                aria-label="Como funciona o token?" aria-expanded="false"
+                                aria-haspopup="dialog" aria-controls="ajuda_token"
+                                aria-describedby="texto_ajuda_token">?</button>
+                            <aside class="ajuda-token" id="ajuda_token" role="dialog"
+                                aria-labelledby="titulo_ajuda_token" hidden>
+                                <h2 id="titulo_ajuda_token">Como funciona o token?</h2>
+                                <p id="texto_ajuda_token">O token permite que um colaborador crie sua conta e seja vinculado automaticamente à empresa. O perfil de acesso será definido durante a configuração.</p>
+                            </aside>
+                        </div>
+                    </div>
+                    <p>Crie tokens de acesso para convidar colaboradores e definir o perfil inicial da conta.</p>
+                </header>
+            </div>
+
+        <div class="layout block_token">
+            <div class="forms bg_token">
+                <ol class="stepper" aria-label="Etapas">
+                    <li class="step-item">
+                        <span class="step-dot" data-step="1"><span class="sr-only">Etapa </span>1</span>
+                        <span class="step-copy"><strong>Configuração</strong><span>Defina os detalhes do token</span></span>
+                    </li>
+                    <li class="step-line" aria-hidden="true"></li>
+                    <li class="step-item">
+                        <span class="step-dot" data-step="2"><span class="sr-only">Etapa </span>2</span>
+                        <span class="step-copy"><strong>Permissões</strong><span>Selecione o perfil de acesso</span></span>
+                    </li>
+                    <li class="step-line" aria-hidden="true"></li>
+                    <li class="step-item">
+                        <span class="step-dot" data-step="3"><span class="sr-only">Etapa </span>3</span>
+                        <span class="step-copy"><strong>Revisão</strong><span>Confirme e gere o token</span></span>
+                    </li>
+                </ol>
+
+                <div class="insert-forms">
+                    <div class="header-forms">
+                        <span class="icone-token" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="m10.2 13.8 3.6-3.6M8.1 15.9l-1.4 1.4a3 3 0 0 1-4.2-4.2l4.2-4.2a3 3 0 0 1 4.2 0M15.9 8.1l1.4-1.4a3 3 0 0 1 4.2 4.2l-4.2 4.2a3 3 0 0 1-4.2 0" />
+                            </svg>
+                        </span>
+                        <div class="texto-header-forms-token">
+                            <h2 class="titulo-token">Configuração do token</h2>
+                            <p>Defina quantos colaboradores poderão utilizar os tokens gerados.</p>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA 1 -->
+                    <div class="step-panel" data-panel="1">
+                        <div class="campo-quantidade-token">
+                            <label class="span_token" for="ipt_qtd_token">
+                                Quantidade de funcionários
+                                <span class="dica-campo" aria-label="Cada cadastro concluído consome uma utilização">?</span>
+                            </label>
+                            <p class="pergunta-quantidade">Quantos funcionários deverão ser cadastrados com este token?</p>
+                            <input type="number" id="ipt_qtd_token" class="ipt_token" value="1" min="1" max="1000"
+                                inputmode="numeric" aria-describedby="ajuda_quantidade erro_qtd">
+                            <small id="ajuda_quantidade">Informe a quantidade de colaboradores que poderão utilizar este acesso.</small>
+                            <p class="erro_campo" id="erro_qtd" role="alert"></p>
+                        </div>
+                    </div>
+
+                    <!-- ETAPA 2 -->
+                    <div class="step-panel" data-panel="2">
+                        <p class="resumo_token">
+                            Funcionários a cadastrar:
+                            <span id="qtd_user" class="text-cyan"></span>
+                        </p>
+
+                        <fieldset class="radios-grupo">
+                            <legend class="span_token">Qual o nível de permissão que o usuário possuirá?</legend>
+
+                            <div class="radios">
+                                <input type="radio" id="perm_infratech" name="permissao" value="INFRATECH">
+                                <label for="perm_infratech"><strong>Funcionário InfraTech</strong><span>Acesso administrativo à plataforma.</span></label>
+
+                                <input type="radio" id="perm_gestor" name="permissao" value="GESTOR">
+                                <label for="perm_gestor"><strong>Gestor da Empresa</strong><span>Gerencia a empresa e acompanha suas dashboards.</span></label>
+
+                                <input type="radio" id="perm_analista_dados" name="permissao" value="ANALISTA_DADOS" checked>
+                                <label for="perm_analista_dados"><strong>Engenheiro(a) de Telemetria</strong><span>Acompanha telemetria e recursos dos servidores.</span></label>
+
+                                <input type="radio" id="perm_analista_noc" name="permissao" value="ANALISTA_NOC">
+                                <label for="perm_analista_noc"><strong>Analista NOC</strong><span>Acompanha saúde e capacidade da infraestrutura.</span></label>
+                            </div>
+                        </fieldset>
+
+                        <p class="erro_campo" id="erro_perm" role="alert"></p>
+                    </div>
+
+                    <!-- ETAPA 3 -->
+                    <div class="step-panel" data-panel="3">
+                        <div class="resumo_final" id="revisao_token">
+                            <p>Funcionários permitidos: <span id="qtd_users"></span></p>
+                            <p>Perfil de acesso: <span id="tipo_user"></span></p>
+                        </div>
+                        <p class="erro_campo" id="erro_geracao" role="alert"></p>
+
+                        <div id="resultado_token" hidden>
+                            <p class="span_token">Token gerado com sucesso:</p>
+                            <div class="token_box">
+                                <span id="token"></span>
+                                <button type="button" id="btn_copiar">Copiar Token</button>
+                            </div>
+                            <p class="aviso_copia" id="aviso_copia" role="status"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="continuar-cadastro">
+                    <button type="button" id="voltar" class="btn-outline">Voltar</button>
+                    <button type="button" id="btn_avancar" class="btn-cyan">Continuar →</button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

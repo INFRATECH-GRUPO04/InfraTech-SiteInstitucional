@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Servidor | InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png" type="image/png">
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/cadastro-base.css">
+    <link rel="stylesheet" href="/css/cadastro_servidor.css">
+
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+</head>
+
+<body class="pagina-servidores">
+
+    <!-- BARRA LATERAL -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="/dashboard/dash-geral.html" title="InfraTech">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria secao-servidores">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="./cadastro_servidor.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+        <a href="./modificar_servidor.html" class="nav-item ativo">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar Servidor
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo-principal">
+        <div class="barra-superior-painel">
+            <div class="migalhas">
+                <span class="text-muted">Servidores</span> / <span>Modificar Recursos</span>
+            </div>
+            <div class="usuario-sessao">
+                <span class="ponto-status"></span>
+                <span id="nome_usuario" class="nome-usuario">Administrador</span>
+            </div>
+        </div>
+
+        <div class="titulo-pagina">
+            <span class="destaque">|</span> MODIFICAR RECURSOS
+        </div>
+
+        <div class="painel-formulario">
+            <div class="cabecalho-painel">
+                <img src="../../../assets/icon/logo_server.png" alt="Servidor">
+                <div>
+                    <h3>Modificar Recursos do Host</h3>
+                    <p>Gerencie e atualize especificações da infraestrutura existente</p>
+                </div>
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="servidor_selecionado_id">SELECIONE O SERVIDOR</label>
+                <select class="controle-formulario" id="servidor_selecionado_id" onchange="buscarComponentes()">
+                    <option value="">Selecione um servidor...</option>
+                </select>
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="mod_nome_servidor">NOME DO SERVIDOR</label>
+                <input type="text" class="controle-formulario" id="mod_nome_servidor" placeholder="Nome do servidor">
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="mod_localizacao_servidor">LOCALIZAÇÃO DO SERVIDOR</label>
+                <input type="text" class="controle-formulario" id="mod_localizacao_servidor" placeholder="Ex: Rack 02 - Sala 04 / Datacenter SP">
+            </div>
+
+            <div class="titulo-secao">
+                <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 5a3 3 0 016 0v3H9V7z"/></svg>
+                CHAVE DE ACESSO DO AGENTE (SCRIPT LOCAL)
+            </div>
+
+            <div class="grupo-formulario" id="secao-chave-servidor">
+                <p style="color: var(--cor-texto-suave); font-size: 0.85rem; margin-bottom: 8px;">
+                    Esta chave é utilizada pelo script de coleta para autenticar este servidor. Ao gerar uma nova chave, a anterior é invalidada.
+                </p>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <input type="text" class="controle-formulario" id="chave_servidor_input" readonly placeholder="Selecione um servidor e clique em 'Gerar Nova Chave'" style="flex: 1; min-width: 250px; font-family: monospace; letter-spacing: 0.5px; background: rgba(255,255,255,0.04);">
+                    <button type="button" class="btn-cyan" id="btn_copiar_chave" onclick="copiarChaveServidor()" style="white-space: nowrap;" disabled>Copiar</button>
+                    <button type="button" class="btn-cyan" onclick="gerarChaveServidor()" style="white-space: nowrap;">Gerar Nova Chave</button>
+                </div>
+            </div>
+
+            <div class="titulo-secao">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                COMPONENTES VINCULADOS
+            </div>
+
+            <!-- Área preenchido dinamicamente pelo JS (Grade 2x2) -->
+            <div id="componentes-lista" class="grade-componentes">
+                <div class="estado-vazio" style="grid-column: 1 / -1; text-align: center; padding: 32px 16px; border: 1px dashed var(--cor-borda); border-radius: var(--raio); color: var(--cor-texto-suave);">
+                    <p style="margin: 0; font-size: 0.95rem;">Selecione um servidor acima para visualizar e gerenciar seus recursos.</p>
+                </div>
+            </div>
+
+            <div class="acoes-rodape">
+                <button type="button" class="btn-danger" onclick="excluirServidor()">Excluir Servidor</button>
+                <button type="button" class="btn-cyan" onclick="atualizarServidor()">Salvar Alterações</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/modificar_servidor.js"></script>
+</body>
+
+</html>

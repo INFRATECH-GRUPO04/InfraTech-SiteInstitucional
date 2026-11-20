@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar acesso | InfraTech</title>
+    <link rel="icon" href="../../../../assets/icon/logo.png" type="image/png">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/gerenciar_funcionario.css">
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+</head>
+
+<body class="pagina-gerenciar-acesso" onload="validarSessao()">
+    <aside class="header-left">
+        <div class="logo">
+            <img src="../../../../assets/icon/logo.png" alt="Logo">
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../../servidores/cadastro_servidor.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+        <a href="gerenciar_funcionario.html" class="nav-item">
+            <img src="../../../../assets/imgs/funcionarios.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+        <a href="../../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <div class="container_main">
+        <div class=" header">
+
+        </div>
+
+        <div class="main">
+            <header class="intro-pagina">
+                <h1>Gerenciar Funcionários</h1>
+                <p>Consulte os funcionários da empresa, exclua contas e confira os acessos definidos pelo cargo.</p>
+            </header>
+
+            <div class="container-gerenciamento" id="container_gerenciamento">
+                <div class="boxes-funcionario" id="boxes_funcionario"><h2>Funcionários</h2><input class="busca-funcionarios" id="busca_funcionarios" type="search" placeholder="Buscar por nome, cargo ou e-mail..." aria-label="Buscar funcionários"><div class="lista-funcionarios" id="lista_funcionarios"></div>
+                </div>
+
+                <div class="box-crud" id="box_crud">
+                    <div class="head-crud" id="head_crud">
+
+                    </div>
+                    <div class="botoes-modificar" id="botoes_modificar"></div>
+                    <div class="box-modificar" id="box_modificar">
+                    </div>
+
+                    <div class="footer-crud" id="footer_crud">
+                    </div>
+                    <div class="trecho-inicial" id="trecho_inicial">
+                        <div class="texto-inicial">Seleciona um usuário <img
+                                src="../../../../assets/icon/icon_user2.svg" style="width: 1.2vw;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-modal" id="modal_excluir"></div>
+</body>
+
+</html>
+
+<script>
+    /* Controla a gestão de funcionários: carrega as contas da empresa da sessão,
+       mostra os dados selecionados, salva a permissão de métricas e trata exclusões. */
+
+    var idEmpresa = sessionStorage.ID_EMPRESA;
+    var idUsuario = sessionStorage.ID_USUARIO;
+    var lista_funcionarios = document.getElementById('lista_funcionarios');
+
+    head_crud.style.display = "none"
+    box_crud.style.display = "none"
+    botoes_modificar.style.display = "none"
+    box_modificar.style.display = "none"
+    footer_crud.style.display = "none"
+
+
+    /* Desenha a lista devolvida pelo backend e prepara cada funcionário para
+       abrir seu painel de informações. */
+    function listarUsuarios(resposta) {
+        lista_funcionarios.innerHTML = "";
+
+        for (var i = 0; i < resposta.length; i++) {
+            func = resposta[i];
+            tipoAcesso = "cargo-usuario";
+            acesso = rotuloCargo(func.tipo_acesso) || func.tipo_acesso;
+
+            if (func.tipo_acesso == "GESTOR") {
+                tipoAcesso = "cargo-admin";
+                acesso = "GESTOR";
+            } else if (func.tipo_acesso == "FUNCIONARIO") {
+                tipoAcesso = "cargo-usuario";
+                acesso = "COMUM";
+            } else if (func.tipo_acesso == "ADMIN") {
+                tipoAcesso = "cargo-infratech";
+                acesso = "ADMIN";
+            }
+
+
+            cor_status = "";
+            if (func.status_sistema == 1) {
+                cor_status = "#05DF72"
+            } else {
+                cor_status = "#FF0000"
+            }
+
+            servidores = (func.qtdServidores == 1) ? "1 Servidor" : `${func.qtdServidores || 0} Servidores`;
+
+            iniciais = (func.nome || "Nome não informado").trim().split(/\s+/)
+                .map(n => n[0]).slice(0, 2).join("").toUpperCase();
+
+            lista_funcionarios.innerHTML += `
+        <div class="box-funcionario" id="func_${func.id_funcionario}">
+            <button type="button" class="container-funcionario"
+                onclick="selecionarFuncionario(${func.id_funcionario})">
+                <span class="hover-funcionario">
+                    <span class="circulo-iniciais">${iniciais}</span>
+                    <span class="infos-escritas">
+                        <span class="nome-funcionario">${func.nome || "Nome não informado"}<span class="bolinha-status" style="background-color: ${cor_status};"></span></span>
+                        <span class="cargo-servidor">
+                            <span class="${tipoAcesso}">${acesso}</span>
+                            <span class="servidor">${servidores}</span>
+                        </span>
+                    </span>
+                </span>
+                <span class="botao-acessar-funcionario">Acessar funcionário</span>
+            </button>
+        </div>`;
+        }
+        document.getElementById('busca_funcionarios').oninput = function () {
+            var termo = this.value.trim().toLowerCase();
+            document.querySelectorAll('.box-funcionario').forEach(function (card) { card.hidden = !card.textContent.toLowerCase().includes(termo); });
+        };
+    }
+
+    idFuncionarioSelecionado = null
+    funcionarioSelecionado = null
+
+    /* Consulta os dados completos do funcionário selecionado e atualiza o painel,
+       inclusive o estado atual da permissão de editar métricas. */
+    function selecionarFuncionario(id) {
+        idFuncionarioSelecionado = id
+
+        var todos = document.querySelectorAll(".box-funcionario");
+        for (var i = 0; i < todos.length; i++) {
+            todos[i].classList.remove("selecionado");
+        }
+
+        document.getElementById(`func_${id}`).classList.add("selecionado");
+
+        fetch(`/gerenciar_funcionario/buscarDadosUsuarioEspecifico/${id}`, { cache: 'no-store' })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+
+                        box_crud.style.display = "flex";
+                        container_gerenciamento.classList.add("tem-selecao");
+                        head_crud.style.display = "flex";
+                        botoes_modificar.style.display = "flex";
+                        box_modificar.style.display = "flex";
+                        footer_crud.style.display = "flex";
+                        trecho_inicial.style.display = "none";
+
+                        func = resposta[0];
+                        tipoAcesso = "cargo-usuario";
+                        acesso = rotuloCargo(func.tipo_acesso) || func.tipo_acesso;
+
+                        if (func.tipo_acesso == "GESTOR") {
+                            tipoAcesso = "cargo-admin";
+                            acesso = "GESTOR";
+                        } else if (func.tipo_acesso == "FUNCIONARIO") {
+                            tipoAcesso = "cargo-usuario";
+                            acesso = "COMUM";
+                        } else if (func.tipo_acesso == "ADMIN") {
+                            tipoAcesso = "cargo-infratech";
+                            acesso = "ADMIN";
+                        } else if (func.tipo_acesso == "ANALISTA_DADOS" || func.tipo_acesso == "ANALISTA_NOC") {
+                            tipoAcesso = "cargo-analista";
+                        }
+
+                        cor_status = "";
+                        status = "";
+                        largura = "";
+                        if (func.status_sistema == 1) {
+                            cor_status = "#05DF72"
+                            status = "Ativo"
+                            largura = "5.5"
+                        } else {
+                            cor_status = "#FF0000"
+                            status = "Desativado"
+                            largura = "7.3"
+                        }
+
+                        var srvTexto = (func.qtdServidores == 1) ? "1 Servidor" : `${func.qtdServidores || 0} Servidores`;
+
+                        iniciais = (func.nome || "Nome não informado").trim().split(/\s+/)
+                            .map(n => n[0]).slice(0, 2).join("").toUpperCase();
+
+                        head_crud.innerHTML = `<div class="crud-identificacao">
+                            <div class="circulo-iniciais-crud" style="width: 3.6vw; height: 3.6vw;">${iniciais}</div>
+                            <div class="identificacao">
+                                <div class="nome-funcionario" style="font-size: 1.2vw;">${func.nome || "Nome não informado"}</div>
+                                <div class="email-funcionario">${func.email}</div>
+                                <div class="cargo-servidor"><span class="${tipoAcesso}">${acesso}</span></div>
+                            </div>
+                            <div class= "container-status-sistema-crud" style = "background-color: ${cor_status}30; border: solid 1px ${cor_status}; width: ${largura}vw;">
+                                <div class = "bolinha-crud" style = "background-color: ${cor_status};"></div>
+                                <div class = "status-sistema-crud" style = "color: ${cor_status};">${status}</div>
+                                </div>
+                        </div>
+                        <div class="servidor-crud-head">${srvTexto}</div>
+                    `
+                        funcionarioSelecionado = resposta
+                        mostrarDadosFunc()
+                    })
+
+                } else {
+                    console.log("Nenhum dado encontrado")
+                }
+
+            })
+            .catch(function (error) {
+                console.error("Erro na obtenção de dados")
+            })
+
+
+    }
+
+
+
+    function mostrarDadosFunc() {
+        resposta = funcionarioSelecionado
+        var ehGestor = ['GESTOR', 'ADMIN', 'INFRATECH'].includes(String(sessionStorage.TIPO_ACESSO || '').toUpperCase());
+        botoes_modificar.innerHTML = `
+            <button type="button" class="botao-modificar ativo" onclick="mostrarDadosFunc()">Dados</button>
+            <button type="button" class="botao-modificar" onclick="mostrarServidores()">Servidores</button>
+        `;
+
+        box_modificar.innerHTML = `
+                            <div class="titulo-retorno">
+                                <div class="subtitulo-box-crud"> <img src="../../../../assets/icon/icon_user2.svg"
+                                        class="img-titulo">INFORMAÇÕES DO FUNCIONÁRIO</div>
+                                <div class="retorno" id="retorno"></div>
+                            </div>
+                            <section class="container-dados">
+                                <div class="box-dados" >
+                                    <label class="texto-dado">Nome Completo</label>
+                                    <div class="dado-funcionario" id="nome">${resposta[0].nome || "Nome não informado"}</div>
+                                </div>
+                                <div class="box-dados">
+                                    <label class="texto-dado">Email</label>
+                                    <div class="dado-funcionario" id="email">${resposta[0].email}</div>
+                                </div>
+
+                                <div class="box-dados">
+                                    <label class="texto-dado">CPF</label>
+                                    <div class="dado-funcionario" id="cpf">${formatarCpf(resposta[0].cpf)}</div>
+                                </div>
+
+                                <div class="box-dados">
+                                    <label class="texto-dado">Data de nascimento</label>
+                                    <div class="dado-funcionario" id="dtNascimento">${resposta[0].dataNascimento}</div>
+                                </div>
+                            </section>
+                            <section class="cartao-permissoes" id="cartao_permissoes" ${resposta[0].tipo_acesso !== 'ANALISTA_DADOS' ? 'hidden' : ''}>
+                                <div class="titulo-permissoes"><span class="icone-permissao">◇</span><div><strong>Acesso para editar métricas</strong><small>Escolha se este analista pode alterar os limites de alerta na Dashboard Específica.</small></div></div>
+                                <div class="permissao-limites">
+                                    <div><strong>CPU, RAM, Disco e Rede</strong><small>O acesso permite salvar limites individuais e globais da empresa.</small></div>
+                                    ${ehGestor ? `<label class="controle-permissao" for="toggle-permissao-alertas">
+                                        <input id="toggle-permissao-alertas" type="checkbox" ${Number(resposta[0].podeEditarAlertas) === 1 ? 'checked' : ''} onchange="salvarPermissaoAlertas(this.checked)">
+                                        <span class="estado-permissao ${Number(resposta[0].podeEditarAlertas) === 1 ? 'autorizado' : ''}" id="estado-permissao-alertas">${Number(resposta[0].podeEditarAlertas) === 1 ? 'Autorizado' : 'Sem acesso'}</span>
+                                    </label>` : `<span class="estado-permissao ${Number(resposta[0].podeEditarAlertas) === 1 ? 'autorizado' : ''}">${Number(resposta[0].podeEditarAlertas) === 1 ? 'Autorizado' : 'Sem acesso'}</span>`}
+                                </div>
+                                <p class="ajuda-permissoes" id="retorno-permissao-alertas" role="status">A permissão é aplicada pelo servidor e pode ser revogada pelo gestor.</p>
+                            </section>
+                            `
+
+        footer_crud.innerHTML = Number(resposta[0].id_funcionario) !== Number(idUsuario)
+            && !['GESTOR', 'ADMIN', 'INFRATECH'].includes(resposta[0].tipo_acesso)
+            ? `<div class="box-excluir"><button type="button" class="excluir" onclick="excluirUsuario()" aria-label="Excluir funcionário ${func.nome || ''}"><span>Excluir funcionário</span><img class="img-excluir" src="../../../../assets/icon/icon_excluir.svg" alt=""></button></div>`
+            : `<span class="texto-revisao">Contas de gestão não podem ser excluídas por esta tela.</span>`;
+
+    }
+
+    function mostrarServidores() {
+        botoes_modificar.innerHTML = `
+            <button type="button" class="botao-modificar" onclick="mostrarDadosFunc()">Dados</button>
+            <button type="button" class="botao-modificar ativo" onclick="mostrarServidores()">Servidores</button>
+        `;
+
+        box_modificar.innerHTML = `
+            <div class="titulo-retorno">
+                <div class="subtitulo-box-crud">
+                    <img src="../../../../assets/icon/icon_server.svg" class="img-server">ACESSO AOS SERVIDORES
+                </div>
+                <div class="retorno" id="retorno"></div>
+            </div>
+            <div class="box-servidores" id="box_servidores">
+                <p style="color: var(--texto-suave); font-size: 14px; grid-column: 1 / -1;">Carregando servidores...</p>
+            </div>
+        `;
+
+        footer_crud.innerHTML = `
+            <div class="texto-revisao">Certifique-se de revisar as alterações antes de confirmar</div>
+            <button class="botao-salvar" type="button" onclick="alterarServidores()">Salvar alterações</button>
+        `;
+
+        fetch(`/gerenciar_funcionario/buscarServidoresPorEmpresa/${idEmpresa}/${idFuncionarioSelecionado}`, { cache: 'no-store' })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        var boxServidores = document.getElementById("box_servidores");
+                        if (!boxServidores) return;
+                        boxServidores.innerHTML = "";
+
+                        if (!resposta || resposta.length === 0) {
+                            boxServidores.innerHTML = `<p style="color: var(--texto-suave); font-size: 14px; grid-column: 1 / -1;">Nenhum servidor cadastrado para esta empresa.</p>`;
+                            return;
+                        }
+
+                        for (var i = 0; i < resposta.length; i++) {
+                            var srv = resposta[i];
+                            var cor = srv.status_sistema == 1 ? "#05DF72" : "#FB2C36";
+
+                            boxServidores.innerHTML += `
+                                <div class="servidor-crud">
+                                    <label class="checkbox-custom">
+                                        <input type="checkbox" class="checkbox" value="${srv.id_servidor}" ${srv.temAcesso ? "checked" : ""}>
+                                    </label>
+                                    <div class="infos-servidor">
+                                        <div class="nome-servidor">${srv.nome || "Sem nome"}</div>
+                                        <div class="localizacao-servidor">${srv.localizacao || "Localização não informada"}</div>
+                                    </div>
+                                    <div class="bola-ativo" style="background-color: ${cor};"></div>
+                                </div>
+                            `;
+                        }
+                    });
+                } else {
+                    var boxServidores = document.getElementById("box_servidores");
+                    if (boxServidores) boxServidores.innerHTML = `<p style="color: #ff5c5c; font-size: 14px; grid-column: 1 / -1;">Erro ao carregar servidores.</p>`;
+                }
+            })
+            .catch(function (error) {
+                console.error("Erro na obtenção de dados", error);
+                var boxServidores = document.getElementById("box_servidores");
+                if (boxServidores) boxServidores.innerHTML = `<p style="color: #ff5c5c; font-size: 14px; grid-column: 1 / -1;">Erro ao carregar servidores.</p>`;
+            });
+    }
+
+    function alterarServidores() {
+        var marcados = document.querySelectorAll("#box_servidores input[type=checkbox]:checked");
+        var ids = [];
+
+        for (var i = 0; i < marcados.length; i++) {
+            ids.push(Number(marcados[i].value));
+        }
+
+        var retorno = document.getElementById("retorno");
+        if (retorno) {
+            retorno.style.display = "block";
+            retorno.textContent = "Salvando alterações...";
+            retorno.style.color = "#8b95a7";
+        }
+
+        fetch(`/gerenciar_funcionario/alterarServidores/${idFuncionarioSelecionado}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ servidores: ids })
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    if (retorno) {
+                        retorno.innerHTML = "Acessos atualizados com sucesso";
+                        retorno.style.color = "#05DF72";
+                    }
+
+                    // atualiza o contador no card e no cabeçalho
+                    var texto = ids.length == 1 ? "1 Servidor" : `${ids.length} Servidores`;
+                    var cardServidor = document.querySelector(`#func_${idFuncionarioSelecionado} .servidor`);
+                    if (cardServidor) cardServidor.innerHTML = texto;
+                    var headServidor = document.querySelector(".servidor-crud-head");
+                    if (headServidor) headServidor.innerHTML = texto;
+
+                    if (funcionarioSelecionado && funcionarioSelecionado[0]) {
+                        funcionarioSelecionado[0].qtdServidores = ids.length;
+                    }
+                } else {
+                    if (retorno) {
+                        retorno.innerHTML = "Erro ao atualizar os acessos";
+                        retorno.style.color = "#FB2C36";
+                    }
+                }
+            })
+            .catch(function (error) {
+                console.error("Erro ao atualizar os acessos", error);
+                if (retorno) {
+                    retorno.innerHTML = "Erro ao atualizar os acessos";
+                    retorno.style.color = "#FB2C36";
+                }
+            });
+    }
+
+    /* Envia ao servidor a nova autorização individual. A interface só confirma
+       a mudança depois que a API informa que ela foi gravada. */
+    async function salvarPermissaoAlertas(habilitada) {
+        var controle = document.getElementById('toggle-permissao-alertas');
+        var estado = document.getElementById('estado-permissao-alertas');
+        var retorno = document.getElementById('retorno-permissao-alertas');
+        if (!controle || !funcionarioSelecionado || !funcionarioSelecionado[0]) return;
+        controle.disabled = true;
+        retorno.textContent = 'Salvando permissão…';
+        try {
+            var resposta = await fetch(`/gerenciar_funcionario/permissao-alertas/${idFuncionarioSelecionado}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store',
+                body: JSON.stringify({ podeEditarAlertas: habilitada })
+            });
+            var tipoResposta = resposta.headers.get('content-type') || '';
+            if (!tipoResposta.includes('application/json')) {
+                throw new Error(resposta.status === 404
+                    ? 'O servidor ainda não carregou a rota de permissões. Reinicie o backend com npm run dev e tente novamente.'
+                    : `O servidor respondeu em um formato inesperado (HTTP ${resposta.status}). Reinicie o backend e tente novamente.`);
+            }
+            var dados = await resposta.json();
+            if (!resposta.ok) throw new Error(dados.erro || 'Não foi possível salvar a permissão.');
+            funcionarioSelecionado[0].podeEditarAlertas = habilitada ? 1 : 0;
+            estado.textContent = habilitada ? 'Autorizado' : 'Sem acesso';
+            estado.classList.toggle('autorizado', habilitada);
+            retorno.textContent = habilitada
+                ? 'Acesso liberado. A API já permite que este analista salve limites de alerta.'
+                : 'Acesso removido. A API já bloqueia alterações de limites para este analista.';
+        } catch (erro) {
+            controle.checked = !habilitada;
+            retorno.textContent = erro.message;
+        } finally {
+            controle.disabled = false;
+        }
+    }
+
+    function formatarCpf(cpf) {
+        return String(cpf || "Não informado").replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4");
+    }
+
+    /* Guarda o funcionário escolhido e abre a confirmação para evitar exclusão
+       acidental pelo botão da tela. */
+    function excluirUsuario() {
+        if (!idFuncionarioSelecionado || !funcionarioSelecionado || !funcionarioSelecionado[0]) return;
+        modal_excluir.innerHTML = `
+        <div class="modal-excluir" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-excluir">
+            <h3 class="modal-titulo" id="titulo-modal-excluir">Excluir funcionário</h3>
+            <p class="modal-texto">Tem certeza que deseja excluir <strong id="nome-funcionario-excluir"></strong>? Essa ação não pode ser desfeita.</p>
+            <p class="modal-erro" id="erro-modal-excluir" role="alert" hidden></p>
+            <div class="modal-botoes">
+                <button type="button" class="btn-cancelar" onclick="fecharModalExcluir()">Cancelar</button>
+                <button type="button" class="btn-confirmar" id="confirmar-exclusao" onclick="confirmarExclusao()">Excluir funcionário</button>
+            </div>
+        </div>`;
+
+        modal_excluir.style.display = "flex";
+        document.getElementById('nome-funcionario-excluir').textContent = funcionarioSelecionado[0].nome || 'este funcionário';
+        modal_excluir.querySelector('.btn-cancelar').focus();
+    }
+
+    function fecharModalExcluir() {
+        modal_excluir.style.display = "none";
+        modal_excluir.innerHTML = "";
+    }
+
+    /* Confirma a exclusão na API e, se ela for concluída, recarrega a lista para
+       remover da tela a conta apagada. */
+    async function confirmarExclusao() {
+        if (!idFuncionarioSelecionado) return;
+
+        var botaoConfirmar = document.getElementById('confirmar-exclusao');
+        var mensagemErro = document.getElementById('erro-modal-excluir');
+        var idParaExcluir = idFuncionarioSelecionado;
+        if (!botaoConfirmar || !mensagemErro) return;
+
+        botaoConfirmar.disabled = true;
+        botaoConfirmar.textContent = 'Excluindo…';
+        mensagemErro.hidden = true;
+
+        try {
+            var resposta = await fetch(`/gerenciar_funcionario/deletarUsuario/${idParaExcluir}`, {
+                method: 'DELETE',
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+            var tipoResposta = resposta.headers.get('content-type') || '';
+            var dados = tipoResposta.includes('application/json') ? await resposta.json() : null;
+
+            if (!resposta.ok) {
+                throw new Error((dados && dados.erro) || `Não foi possível excluir o funcionário (HTTP ${resposta.status}).`);
+            }
+
+            fecharModalExcluir();
+            head_crud.style.display = 'none';
+            box_crud.style.display = 'none';
+            botoes_modificar.style.display = 'none';
+            box_modificar.style.display = 'none';
+            footer_crud.style.display = 'none';
+            trecho_inicial.style.display = 'flex';
+            container_gerenciamento.classList.remove('tem-selecao');
+            idFuncionarioSelecionado = null;
+            funcionarioSelecionado = null;
+            await recarregarUsuarios();
+        } catch (erro) {
+            if (!document.getElementById('confirmar-exclusao')) return;
+            mensagemErro.textContent = erro.message || 'Ocorreu um erro ao excluir o funcionário. Tente novamente.';
+            mensagemErro.hidden = false;
+            botaoConfirmar.disabled = false;
+            botaoConfirmar.textContent = 'Tentar novamente';
+        }
+    }
+
+    /* Atualiza os funcionários da empresa da sessão e apresenta os dados mais
+       recentes ou a mensagem de falha retornada pela API. */
+    async function recarregarUsuarios() {
+        try {
+            var resposta = await fetch(`/gerenciar_funcionario/buscarDadosUsuario/${idEmpresa}`, {
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                cache: 'no-store'
+            });
+            if (!resposta.ok) throw new Error(`Não foi possível atualizar a lista (HTTP ${resposta.status}).`);
+            listarUsuarios(await resposta.json());
+            return true;
+        } catch (erro) {
+            console.error('Erro ao carregar funcionários', erro);
+            var listaVazia = document.getElementById('lista_funcionarios');
+            if (listaVazia) listaVazia.innerHTML = '<p class="mensagem-lista-funcionarios">Não foi possível carregar os funcionários. Atualize a página e tente novamente.</p>';
+            return false;
+        }
+    }
+
+    recarregarUsuarios();
+
+    modal_excluir.addEventListener('click', function (evento) {
+        if (evento.target === modal_excluir) fecharModalExcluir();
+    });
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' && modal_excluir.style.display === 'flex') fecharModalExcluir();
+    });
+
+</script>

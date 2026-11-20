@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/dashboardV2.css">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/dashboard-global.css">
+    <script src="/js/dashboard-data.js"></script>
+    <title>Saúde e Capacidade | InfraTech</title>
+</head>
+
+<body class="dashboard-compartilhada">
+
+    <div class="pagina">
+        <aside class="header-left">
+            <div class="logo">
+                <a href="/dashboard/dash-geral.html" title="InfraTech">
+                    <img src="../../assets/icon/logo.png" alt="InfraTech">
+                </a>
+            </div>
+
+            <hr class="linha">
+
+            <h3 class="nav-categoria">
+                <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+                Servidores
+            </h3>
+
+            <a href="../../paginas/pos-login/servidores/cadastro_servidor.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Cadastrar Host
+            </a>
+
+            <h3 class="nav-categoria secao-funcionarios">
+                <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+                Funcionários
+            </h3>
+
+            <a href="../../paginas/pos-login/funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+                <img src="../../assets/imgs/token.png" alt="" class="menu-icon">
+                Cadastrar Token
+            </a>
+            <a href="/paginas/pos-login/funcionarios/gerenciar_funcionario/gerenciar_funcionario.html" class="nav-item">
+                <img src="../../assets/imgs/funcionarios.png" alt="" class="menu-icon">
+                Gerenciar
+            </a>
+
+            <h3 class="nav-categoria secao-empresas">
+                <img src="../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+                Empresas
+            </h3>
+
+            <a href="../../paginas/pos-login/empresas/gerenciar_empresa.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Gerenciar
+            </a>
+            <a href="../../paginas/pos-login/empresas/cadastro_empresa.html" class="nav-item">
+                <img src="../../assets/imgs/modificar.png" alt="" class="menu-icon">
+                Cadastrar Empresa
+            </a>
+
+            <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+                <img src="../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+            </div>
+        </aside>
+
+        <div class="conteudo">
+            <header class="dashboard-welcome">
+                <h1 class="dashboard-welcome__titulo">Bem-vindo, <span id="nome_usuario">Usuário</span>
+                    <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
+                </h1>
+                <div class="dashboard-welcome__meta">
+                    <span>InfraTech · Monitoramento</span>
+                    <time class="dashboard-welcome__hora" id="relogio"></time>
+                </div>
+            </header>
+            <div class="area-principal">
+                <div class="painel">
+
+                    <!-- Introdução da página -->
+                    <div class="introducao">
+                        <div class="introducao-texto">
+                            <div class="introducao-titulo">Saúde e Capacidade</div>
+                            <div class="introducao-descricao">
+                                Ranking por severidade para decidir onde agir primeiro.
+                                Percentuais mostram pressão; GB livres mostram a distância
+                                real até o problema.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPIs -->
+                    <div class="kpis">
+                        <div class="cartao kpi kpi--cpu estado--critico">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/relogioIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge" id="kpiCpuBadge">Aguardando dados compartilhados</div>
+                            </div>
+                            <div class="kpi-valor" id="kpiCpuValor">—</div>
+                            <div class="kpi-titulo">CPU mais pressionada</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Pico de leitura; incidente não confirmado sem histórico temporal
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+
+                        <div class="cartao kpi kpi--ram estado--atencao">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/memoriaIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge" id="kpiRamBadge">Aguardando dados compartilhados</div>
+                            </div>
+                            <div class="kpi-valor" id="kpiRamValor">—</div>
+                            <div class="kpi-titulo">Menor memória disponível</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Memória livre estimada pela leitura e capacidade cadastrada
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+
+                        <div class="cartao kpi kpi--disco estado--atencao">
+                            <div class="kpi-topo">
+                                <div class="kpi-icone">
+                                    <img class="kpi-icone-img" src="../../assets/icon/espacoIcon.svg" alt="">
+                                </div>
+                                <div class="kpi-badge" id="kpiDiscoBadge">Aguardando dados compartilhados</div>
+                            </div>
+                            <div class="kpi-valor" id="kpiDiscoValor">—</div>
+                            <div class="kpi-titulo">Menor espaço disponível</div>
+                            <div class="kpi-alerta">
+                                <span class="ponto"></span>Previsão indisponível: histórico de tendência insuficiente
+                            </div>
+                            <div class="kpi-barra"></div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico + ranking -->
+                    <div class="paineis">
+
+                        <div class="cartao cartao--frota">
+                            <div class="cartao-titulo">Comparativo da Frota</div>
+                            <div class="cartao-subtitulo">CPU, RAM e Disco na leitura mais recente</div>
+                            <div class="grafico">
+                                <div class="grafico-canvas">
+                                    <canvas id="graficoFrota"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cartao cartao--prioridade">
+                            <div class="cartao-titulo">Prioridade de Investigação</div>
+                            <div class="cartao-subtitulo">
+                                Servidores offline e leituras críticas aparecem primeiro.
+                            </div>
+
+                            <div class="ranking" id="rankingServidores"></div>
+                        </div>
+                    </div>
+
+                    <!-- Investigação temporal e histórico operacional -->
+                    <div class="investigacao-paineis">
+                        <section class="cartao cartao--evolucao" aria-labelledby="tituloEvolucao">
+                            <div class="investigacao-cabecalho">
+                                <div>
+                                    <div class="cartao-titulo" id="tituloEvolucao">Evolução dos Recursos</div>
+                                    <div class="cartao-subtitulo">Leituras históricas e limites configurados</div>
+                                </div>
+                                <div class="controles-evolucao">
+                                    <label class="sr-only" for="evolucaoServidor">Servidor</label>
+                                    <select id="evolucaoServidor" aria-label="Selecionar servidor"></select>
+                                    <label class="sr-only" for="evolucaoRecurso">Recurso</label>
+                                    <select id="evolucaoRecurso" aria-label="Selecionar recurso">
+                                        <option value="cpu">CPU</option>
+                                        <option value="ram">RAM</option>
+                                        <option value="disco">Disco</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="evolucao-grafico" id="evolucaoGraficoWrap">
+                                <canvas id="graficoEvolucao" aria-label="Gráfico temporal do recurso selecionado"></canvas>
+                            </div>
+                            <p class="mensagem-historico" id="evolucaoSemDados" hidden>Histórico insuficiente para este servidor e recurso.</p>
+                        </section>
+
+                        <section class="cartao cartao--historico" aria-labelledby="tituloHistoricoAlertas">
+                            <div class="investigacao-cabecalho">
+                                <div>
+                                    <div class="cartao-titulo" id="tituloHistoricoAlertas">Histórico de Alertas</div>
+                                    <div class="cartao-subtitulo">Ocorrências derivadas das leituras disponíveis</div>
+                                </div>
+                            </div>
+                            <div class="filtros-historico" role="group" aria-label="Filtros do histórico de alertas">
+                                <label><span>Severidade</span>
+                                    <select id="filtroSeveridade">
+                                        <option value="todos">Todas</option>
+                                        <option value="critico">Crítico</option>
+                                        <option value="atencao">Atenção</option>
+                                        <option value="normalizado">Normalizado</option>
+                                    </select>
+                                </label>
+                                <label><span>Servidor</span>
+                                    <select id="filtroServidor"><option value="todos">Todos</option></select>
+                                </label>
+                            </div>
+                            <div class="tabela-historico-wrap">
+                                <table class="tabela-historico">
+                                    <thead><tr><th>Horário</th><th>Servidor</th><th>Ocorrência</th><th>Severidade</th><th>Status</th></tr></thead>
+                                    <tbody id="corpoHistoricoAlertas"></tbody>
+                                </table>
+                                <p class="mensagem-historico" id="historicoSemDados" hidden>Não há histórico suficiente para exibir ocorrências.</p>
+                            </div>
+                            <p class="nota-historico">As leituras chegam a cada 1 minuto; o histórico exibido nesta versão é simulado em intervalos horários.</p>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const dadosDashboard = window.InfraTechDashboardData;
+        const servidoresOnline = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline');
+        const leituras = {
+            cpu: servidoresOnline.map((servidor) => servidor.cpu),
+            ram: servidoresOnline.map((servidor) => servidor.ram),
+            disco: servidoresOnline.map((servidor) => servidor.disco),
+        };
+        const CORES = {
+            cpu: '#00b8d9',
+            ram: '#7c3aed',
+            disco: '#10b981',
+        };
+        const COR_TEXTO = '#a6b7c7';
+        const chavesRecursos = ['cpu', 'ram', 'disco'];
+
+        function recursoPrioritario(servidor) {
+            const ordem = { critico: 2, atencao: 1, saudavel: 0, 'sem-dados': -1 };
+            return chavesRecursos.filter((recurso) => servidor[recurso] != null && Number.isFinite(Number(servidor[recurso])))
+                .map((recurso) => {
+                    const limite = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                    const valor = Number(servidor[recurso]);
+                    return { recurso, valor, estado: window.InfraTechAlertas.classificar(recurso, valor, servidor.id), pressao: (valor - limite.atencao) / (limite.critico - limite.atencao) };
+                })
+                .sort((a, b) => ordem[b.estado] - ordem[a.estado] || b.pressao - a.pressao)[0] || null;
+        }
+
+        function severidade(servidor, recurso) {
+            if (servidor.status === 'offline') return 'offline';
+            const metricas = recurso ? [recurso] : chavesRecursos;
+            const estados = metricas.filter((chave) => Number.isFinite(servidor[chave]))
+                .map((chave) => window.InfraTechAlertas.classificar(chave, servidor[chave], servidor.id));
+            if (!estados.length) return 'sem-dados';
+            if (estados.includes('critico')) return 'critico';
+            if (estados.includes('atencao')) return 'atencao';
+            return 'saudavel';
+        }
+        function classeSeveridade(estado) {
+            return estado === 'offline' || estado === 'critico' ? 'estado--critico'
+                : estado === 'atencao' ? 'estado--atencao' : estado === 'saudavel' ? 'estado--ok' : 'estado--sem-dados';
+        }
+        function pressaoRelativa(servidor) {
+            return chavesRecursos.reduce((maior, recurso) => {
+                if (!Number.isFinite(servidor[recurso])) return maior;
+                const limite = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                const pressao = (servidor[recurso] - limite.atencao) / (limite.critico - limite.atencao);
+                return Math.max(maior, pressao);
+            }, -1);
+        }
+
+        function renderizarDestaques() {
+            const maiorCpu = servidoresOnline.reduce((maior, servidor) => servidor.cpu > maior.cpu ? servidor : maior);
+            const menorMemoriaLivre = servidoresOnline.reduce((menor, servidor) => {
+                const livre = servidor.memoriaTotalGb * (1 - servidor.ram / 100);
+                return livre < menor.livre ? { servidor, livre } : menor;
+            }, { servidor: null, livre: Infinity });
+            const menorDiscoLivre = servidoresOnline.reduce((menor, servidor) => {
+                const livre = servidor.discoTotalGb * (1 - servidor.disco / 100);
+                return livre < menor.livre ? { servidor, livre } : menor;
+            }, { servidor: null, livre: Infinity });
+
+            document.getElementById('kpiCpuBadge').textContent = `${maiorCpu.id} · leitura ${window.InfraTechAlertas.classificar('cpu', maiorCpu.cpu, maiorCpu.id)}`;
+            document.getElementById('kpiCpuValor').textContent = `${maiorCpu.cpu}%`;
+            document.getElementById('kpiRamBadge').textContent = `${menorMemoriaLivre.servidor.id} · ${menorMemoriaLivre.servidor.ram}% · ${window.InfraTechAlertas.classificar('ram', menorMemoriaLivre.servidor.ram, menorMemoriaLivre.servidor.id)}`;
+            document.getElementById('kpiRamValor').textContent = `${Math.round(menorMemoriaLivre.livre)} GB`;
+            document.getElementById('kpiDiscoBadge').textContent = `${menorDiscoLivre.servidor.id} · ${menorDiscoLivre.servidor.disco}% · ${window.InfraTechAlertas.classificar('disco', menorDiscoLivre.servidor.disco, menorDiscoLivre.servidor.id)}`;
+            document.getElementById('kpiDiscoValor').textContent = `${Math.round(menorDiscoLivre.livre)} GB`;
+
+            const offlineTotal = dadosDashboard.servidores.filter((servidor) => servidor.status === 'offline').length;
+            const atencaoTotal = dadosDashboard.servidores.filter((servidor) => servidor.status !== 'offline' && ['atencao', 'critico'].includes(severidade(servidor))).length;
+            const resumo = document.querySelectorAll('.resumo-status__item');
+            if (resumo[0]) resumo[0].textContent = `${dadosDashboard.servidores.length - offlineTotal} online`;
+            if (resumo[1]) resumo[1].textContent = `${atencaoTotal} atenção`;
+            if (resumo[2]) resumo[2].textContent = `${offlineTotal} offline`;
+
+            [
+                ['cpu', maiorCpu, maiorCpu.cpu],
+                ['ram', menorMemoriaLivre.servidor, menorMemoriaLivre.servidor.ram],
+                ['disco', menorDiscoLivre.servidor, menorDiscoLivre.servidor.disco]
+            ].forEach(([recurso, servidor, percentual]) => {
+                const card = document.querySelector(`.kpi--${recurso}`);
+                card.classList.remove('estado--ok', 'estado--atencao', 'estado--critico', 'estado--sem-dados');
+                card.classList.add(classeSeveridade(window.InfraTechAlertas.classificar(recurso, percentual, servidor.id)));
+                const badge = card.querySelector('.kpi-badge');
+                badge.classList.remove('kpi-badge--positivo');
+            });
+
+            const ranking = document.getElementById('rankingServidores');
+            const ordenar = [...dadosDashboard.servidores].sort((a, b) => {
+                const ordem = { offline: 4, critico: 3, atencao: 2, saudavel: 1, 'sem-dados': 0 };
+                const estadoA = severidade(a), estadoB = severidade(b);
+                return ordem[estadoB] - ordem[estadoA] || pressaoRelativa(b) - pressaoRelativa(a);
+            }).filter((servidor) => servidor.status === 'offline' || ['critico', 'atencao'].includes(severidade(servidor)));
+            if (!ordenar.length) {
+                ranking.innerHTML = '<p class="ranking-vazio">Nenhuma leitura exige investigação pelos limites configurados.</p>';
+                return;
+            }
+            ranking.replaceChildren(...ordenar.map((servidor, indice) => {
+                const pior = recursoPrioritario(servidor);
+                const estado = severidade(servidor);
+                const estadoClasse = classeSeveridade(estado);
+                const item = document.createElement('article');
+                item.className = `ranking-item ${estadoClasse}`;
+                const topo = document.createElement('div');
+                topo.className = 'ranking-item__topo';
+                const nome = document.createElement('strong');
+                nome.className = 'ranking-servidor';
+                nome.textContent = servidor.id;
+                const estadoTexto = document.createElement('span');
+                estadoTexto.className = 'ranking-estado';
+                estadoTexto.textContent = servidor.status === 'offline' ? 'OFFLINE' : estado === 'saudavel' ? 'SEM ALERTA NA LEITURA' : `LEITURA ${estado.toUpperCase()}`;
+                topo.append(nome, estadoTexto);
+                const descricao = document.createElement('p');
+                descricao.className = 'ranking-recurso';
+                descricao.textContent = servidor.status === 'offline'
+                    ? `Offline desde ${servidor.offlineDesde || 'horário não informado'} · sem leitura atual.`
+                    : pior ? `${pior.recurso.toUpperCase()} em ${pior.valor}% · limite de ${pior.estado === 'critico' ? 'crítico' : 'atenção'}: ${window.InfraTechAlertas.obter(servidor.id)[pior.recurso][pior.estado === 'critico' ? 'critico' : 'atencao']}%.`
+                      : 'Sem dados de recurso para classificar.';
+                item.append(topo, descricao);
+                return item;
+            }));
+        }
+
+        renderizarDestaques();
+
+        const serie = (label, chave) => ({
+            label,
+                data: leituras[chave],
+            backgroundColor: CORES[chave],
+            borderRadius: 3,
+            barPercentage: 0.95,
+            categoryPercentage: 0.8,
+        });
+
+        const ordemLegenda = ['CPU', 'Disco', 'RAM'];
+
+        new Chart(document.getElementById('graficoFrota'), {
+            type: 'bar',
+            data: {
+                labels: servidoresOnline.map((servidor) => servidor.id.replace('SRV-', '')),
+                datasets: [
+                    serie('CPU', 'cpu'),
+                    serie('RAM', 'ram'),
+                    serie('Disco', 'disco'),
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // preenche o .grafico-canvas
+                font: { family: 'Inter, sans-serif', size: 11 },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 25,
+                            color: COR_TEXTO,
+                            callback: (valor) => valor + '%',
+                        },
+                        grid: { color: 'rgb(145 165 183 / 0.16)', borderDash: [4, 4] },
+                        border: { color: '#4a5568', dash: [] },
+                    },
+                    x: {
+                        ticks: { color: COR_TEXTO },
+                        grid: { display: false },
+                        border: { color: '#4a5568' },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 8,
+                            boxHeight: 8,
+                            padding: 14,
+                            // CPU, Disco, RAM (diferente da ordem das barras)
+                            sort: (a, b) => ordemLegenda.indexOf(a.text) - ordemLegenda.indexOf(b.text),
+                            generateLabels(chart) {
+                                const itens = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                                itens.forEach((item) => {
+                                    item.fontColor = CORES[item.text.toLowerCase()];
+                                });
+                                return itens;
+                            },
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const recurso = ctx.dataset.label.toLowerCase();
+                                const servidor = servidoresOnline[ctx.dataIndex];
+                                const limite = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                                const estado = window.InfraTechAlertas.classificar(recurso, ctx.parsed.y, servidor.id);
+                                return ` ${servidor.id} · ${ctx.dataset.label}: ${ctx.parsed.y}% · leitura ${estado} · atenção ${limite.atencao}% · crítico ${limite.critico}%`;
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        let graficoEvolucao = null;
+        const recursoNome = { cpu: 'CPU', ram: 'RAM', disco: 'Disco' };
+
+        function formatarDataHora(timestamp, hora) {
+            const data = new Date(timestamp);
+            const dataFormatada = Number.isNaN(data.getTime()) ? 'Data indisponível' : new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit' }).format(data);
+            return `${dataFormatada} ${hora || ''}`.trim();
+        }
+
+        function obterHistoricoAlertas() {
+            const eventos = [];
+            const timestamp = dadosDashboard.dataLeitura;
+            const dataLeitura = new Date(timestamp);
+            dadosDashboard.servidores.forEach((servidor) => {
+                if (servidor.status === 'offline') {
+                    const horaOffline = servidor.offlineDesde || 'Horário indisponível';
+                    eventos.push({
+                        timestamp: Number.isNaN(dataLeitura.getTime()) ? 0 : new Date(dataLeitura).setHours(parseInt(horaOffline, 10) || 0, 0, 0, 0),
+                        horario: formatarDataHora(timestamp, horaOffline),
+                        servidor: servidor.id,
+                        ocorrencia: 'Servidor offline',
+                        severidade: 'critico',
+                        status: 'Ativo'
+                    });
+                    return;
+                }
+                const historico = dadosDashboard.obterHistoricoServidor(servidor.id);
+                if (!historico || !historico.horas?.length) return;
+                chavesRecursos.forEach((recurso) => {
+                    const serie = historico[recurso];
+                    if (!Array.isArray(serie)) return;
+                    const alertasHistoricos = [];
+                    serie.forEach((valor, indice) => {
+                        if (valor == null || !Number.isFinite(Number(valor))) return;
+                        const faixa = window.InfraTechAlertas.classificar(recurso, valor, servidor.id);
+                        if (faixa === 'atencao' || faixa === 'critico') alertasHistoricos.push({ valor: Number(valor), indice, faixa });
+                    });
+                    if (!alertasHistoricos.length) return;
+
+                    const leituraAtual = servidor[recurso];
+                    const estadoAtual = window.InfraTechAlertas.classificar(recurso, leituraAtual, servidor.id);
+                    const ativo = estadoAtual === 'atencao' || estadoAtual === 'critico';
+                    const amostraMaisRecente = alertasHistoricos[alertasHistoricos.length - 1];
+                    const amostraPico = alertasHistoricos.reduce((maior, amostra) => amostra.valor > maior.valor ? amostra : maior);
+                    const amostraEvento = ativo ? amostraMaisRecente : amostraPico;
+                    const instante = ativo && !Number.isNaN(dataLeitura.getTime())
+                        ? dataLeitura.getTime()
+                        : Number.isNaN(dataLeitura.getTime()) ? amostraEvento.indice : new Date(dataLeitura).setHours(parseInt(historico.horas[amostraEvento.indice], 10) || 0, 0, 0, 0);
+                    const limites = window.InfraTechAlertas.obter(servidor.id)[recurso];
+                    const nivelLimite = estadoAtual === 'critico' ? 'critico' : 'atencao';
+                    eventos.push({
+                        timestamp: instante,
+                        horario: formatarDataHora(timestamp, ativo ? new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(dataLeitura) : historico.horas[amostraEvento.indice]),
+                        servidor: servidor.id,
+                        ocorrencia: ativo
+                            ? `${recursoNome[recurso]} ${leituraAtual}% · limite ${nivelLimite} ${limites[nivelLimite]}%`
+                            : `${recursoNome[recurso]} normalizado · pico ${amostraPico.valor}%`,
+                        severidade: ativo ? estadoAtual : 'normalizado',
+                        status: ativo ? 'Ativo' : 'Resolvido'
+                    });
+                });
+            });
+            return eventos.sort((a, b) => b.timestamp - a.timestamp);
+        }
+
+        function renderizarHistoricoAlertas() {
+            const corpo = document.getElementById('corpoHistoricoAlertas');
+            const semDados = document.getElementById('historicoSemDados');
+            const filtroSeveridade = document.getElementById('filtroSeveridade').value;
+            const filtroServidor = document.getElementById('filtroServidor').value;
+            const eventos = obterHistoricoAlertas().filter((evento) =>
+                (filtroSeveridade === 'todos' || evento.severidade === filtroSeveridade)
+                && (filtroServidor === 'todos' || evento.servidor === filtroServidor));
+            corpo.replaceChildren();
+            semDados.hidden = eventos.length > 0;
+            eventos.forEach((evento) => {
+                const linha = document.createElement('tr');
+                const classeSeveridade = evento.severidade === 'critico' ? 'critico'
+                    : evento.severidade === 'atencao' ? 'atencao' : 'normalizado';
+                const celulas = [
+                    evento.horario,
+                    evento.servidor,
+                    evento.ocorrencia,
+                    null,
+                    null
+                ];
+                celulas.forEach((texto, indice) => {
+                    const celula = document.createElement('td');
+                    if (indice === 3) {
+                        const selo = document.createElement('span');
+                        selo.className = `historico-severidade historico-severidade--${classeSeveridade}`;
+                        selo.textContent = classeSeveridade === 'critico' ? 'Crítico' : classeSeveridade === 'atencao' ? 'Atenção' : 'Normalizado';
+                        celula.append(selo);
+                    } else if (indice === 4) {
+                        celula.className = `historico-status historico-status--${evento.status === 'Ativo' ? 'ativo' : 'resolvido'}`;
+                        celula.textContent = evento.status;
+                    } else {
+                        celula.textContent = texto;
+                    }
+                    linha.append(celula);
+                });
+                corpo.append(linha);
+            });
+        }
+
+        function renderizarEvolucao() {
+            const servidorId = document.getElementById('evolucaoServidor').value;
+            const recurso = document.getElementById('evolucaoRecurso').value;
+            const historico = dadosDashboard.obterHistoricoServidor(servidorId);
+            const valores = historico?.[recurso];
+            const validos = Array.isArray(valores) ? valores.filter((valor) => valor != null && Number.isFinite(Number(valor))) : [];
+            const graficoWrap = document.getElementById('evolucaoGraficoWrap');
+            const semDados = document.getElementById('evolucaoSemDados');
+            if (!historico?.horas?.length || validos.length < 2) {
+                graficoWrap.hidden = true;
+                semDados.hidden = false;
+                if (graficoEvolucao) { graficoEvolucao.destroy(); graficoEvolucao = null; }
+                return;
+            }
+            graficoWrap.hidden = false;
+            semDados.hidden = true;
+            const limites = window.InfraTechAlertas.obter(servidorId)[recurso];
+            const cor = CORES[recurso];
+            const datasets = [
+                {
+                    label: recursoNome[recurso],
+                    data: valores,
+                    borderColor: cor,
+                    backgroundColor: cor,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    pointBackgroundColor: valores.map((valor) => {
+                        const estado = window.InfraTechAlertas.classificar(recurso, valor, servidorId);
+                        return estado === 'critico' ? '#ef4444' : estado === 'atencao' ? '#f59e0b' : cor;
+                    }),
+                    tension: 0.25,
+                    spanGaps: false
+                },
+                { label: `Atenção ${limites.atencao}%`, data: historico.horas.map(() => limites.atencao), borderColor: '#f59e0b', borderWidth: 1.5, borderDash: [6, 5], pointRadius: 0, tension: 0 },
+                { label: `Crítico ${limites.critico}%`, data: historico.horas.map(() => limites.critico), borderColor: '#ef4444', borderWidth: 1.5, borderDash: [6, 5], pointRadius: 0, tension: 0 }
+            ];
+            if (!graficoEvolucao) {
+                graficoEvolucao = new Chart(document.getElementById('graficoEvolucao'), {
+                    type: 'line',
+                    data: { labels: historico.horas, datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 14, color: COR_TEXTO } } },
+                        scales: {
+                            y: { min: 0, max: 100, ticks: { stepSize: 20, color: COR_TEXTO, callback: (valor) => `${valor}%` }, grid: { color: 'rgb(145 165 183 / 0.16)' } },
+                            x: { ticks: { color: COR_TEXTO, maxRotation: 0, autoSkip: true }, grid: { display: false } }
+                        }
+                    }
+                });
+            } else {
+                graficoEvolucao.data.labels = historico.horas;
+                graficoEvolucao.data.datasets = datasets;
+                graficoEvolucao.update();
+            }
+        }
+
+        function inicializarInvestigacao() {
+            const seletorServidor = document.getElementById('evolucaoServidor');
+            const filtroServidor = document.getElementById('filtroServidor');
+            dadosDashboard.servidores.forEach((servidor) => {
+                const opcaoGrafico = document.createElement('option');
+                opcaoGrafico.value = servidor.id;
+                opcaoGrafico.textContent = `${servidor.id}${servidor.status === 'offline' ? ' · Offline' : ''}`;
+                seletorServidor.append(opcaoGrafico);
+                const opcaoFiltro = opcaoGrafico.cloneNode(true);
+                filtroServidor.append(opcaoFiltro);
+            });
+            seletorServidor.value = dadosDashboard.servidores[0]?.id || '';
+            seletorServidor.addEventListener('change', renderizarEvolucao);
+            document.getElementById('evolucaoRecurso').addEventListener('change', renderizarEvolucao);
+            document.getElementById('filtroSeveridade').addEventListener('change', renderizarHistoricoAlertas);
+            filtroServidor.addEventListener('change', renderizarHistoricoAlertas);
+            renderizarEvolucao();
+            renderizarHistoricoAlertas();
+        }
+
+        inicializarInvestigacao();
+        window.addEventListener('infratech:limites-alerta-alterados', renderizarDestaques);
+        window.addEventListener('infratech:limites-alerta-alterados', () => { renderizarEvolucao(); renderizarHistoricoAlertas(); });
+        window.addEventListener('storage', () => window.InfraTechAlertas.sincronizarBackend().finally(() => { renderizarDestaques(); renderizarEvolucao(); renderizarHistoricoAlertas(); }));
+    </script>
+</body>
+
+</html>

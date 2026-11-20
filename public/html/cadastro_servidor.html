@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Servidor | InfraTech</title>
+    <link rel="icon" href="../../../assets/icon/logo.png">
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/cadastro-base.css">
+    <link rel="stylesheet" href="/css/cadastro_servidor.css">
+
+    <script src="/js/permissoes.js"></script>
+<script src="/js/sessao.js"></script>
+</head>
+
+<body class="pagina-servidores" onload="validarSessao()">
+
+    <!-- BARRA LATERAL -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="/dashboard/dash-geral.html" title="InfraTech">
+                <img src="../../../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="./cadastro_servidor.html" class="nav-item ativo">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+        <a href="./modificar_servidor.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar Servidor
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../../../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../../../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../../../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../../../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../../../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo-principal pagina-cadastro-host">
+        <div class="barra-superior-painel">
+            <div class="migalhas">
+                <span class="text-muted">Servidores</span> / <span>Cadastrar Host</span>
+            </div>
+            <div class="usuario-sessao">
+                <span class="ponto-status"></span>
+                <span id="nome_usuario" class="nome-usuario">Administrador</span>
+            </div>
+        </div>
+
+        <div class="corpo-pagina">
+        <header class="intro-pagina">
+            <h1>Cadastrar host</h1>
+            <p>Cadastre um servidor, associe seus componentes e configure os limites de telemetria.</p>
+        </header>
+
+        <div class="area-operacional">
+        <!-- ABAS DE NAVEGAÇÃO ENTRE TIPOS -->
+        <div class="container-abas">
+            <a href="./cadastro_servidor.html" class="botao-aba ativo">Servidores Físicos</a>
+            </div>
+
+        <div class="painel-formulario">
+            <div class="cabecalho-painel">
+                <img src="../../../assets/icon/logo_server.png" alt="Servidor">
+                <div>
+                    <h3>Cadastrar Infraestrutura</h3>
+                    <p>Provisione novos servidores físicos e defina limites de telemetria</p>
+                </div>
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="nome_servidor_id">NOME DO SERVIDOR</label>
+                <input type="text" class="controle-formulario" placeholder="Ex: SRV-DATABASE-PRIMARY" id="nome_servidor_id" autocomplete="off">
+            </div>
+
+            <div class="grupo-formulario">
+                <label for="localizacao_servidor_id">LOCALIZAÇÃO DO SERVIDOR</label>
+                <input type="text" class="controle-formulario" placeholder="Ex: Rack 02 - Sala 04 / Datacenter SP" id="localizacao_servidor_id" autocomplete="off">
+            </div>
+
+            <div class="titulo-secao">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                ALOCAÇÃO DE RECURSOS (COMPONENTES)
+            </div>
+
+            <!-- Área para componentes dinâmicos (Grade 2x2) -->
+            <div id="alinhar" class="grade-componentes"></div>
+
+            <button type="button" class="btn-cyan" onclick="cadastrarServidorCompleto()" style="align-self: flex-start; margin-top: 10px;">
+                Cadastrar Servidor
+            </button>
+        </div>
+        </div>
+        </div>
+    </main>
+
+    <script src="/js/cadastro_servidor.js"></script>
+</body>
+
+</html>

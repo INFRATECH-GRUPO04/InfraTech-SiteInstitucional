@@ -1,0 +1,63 @@
+/*
+ * Mantém em um só lugar a regra que diz quais dashboards e funções cada cargo
+ * pode usar. O mesmo módulo funciona no navegador e também pode ser carregado
+ * pelo backend, evitando duas listas de cargos com regras diferentes.
+ */
+(function (root, factory) {
+    if (typeof module === 'object' && module.exports) module.exports = factory();
+    else root.InfraTechPermissoes = factory();
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+    /* Endereços e nomes usados para montar os menus e reconhecer páginas. */
+    const dashboards = [
+        { id: 'geral', href: '/dashboard/dash-geral.html', label: 'Visão Geral' },
+        { id: 'especifica', href: '/dashboard/especifica-servidor/dash-especifica.html', label: 'Dashboard Específica' },
+        { id: 'saude', href: '/dashboard/analista/dashboardV2.html', label: 'Saúde e Capacidade' }
+    ];
+    const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
+    function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
+    /* Converte o cargo em permissões claras. As áreas de empresas ficam
+     * reservadas a ADMIN e INFRATECH, enquanto a manutenção de servidores fica
+     * disponível para GESTOR e administradores. A edição de alertas também
+     * considera a liberação individual que o gestor pode conceder a um analista.
+     */
+    function obter(cargo, podeEditarAlertas) {
+        const tipo = normalizar(cargo);
+        const completo = completos.includes(tipo);
+        const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
+        return {
+            dashboards: ids,
+            administrar: completo,
+            gerenciarEmpresas: ['ADMIN', 'INFRATECH'].includes(tipo),
+            modificarServidores: ['GESTOR', 'ADMIN', 'INFRATECH'].includes(tipo),
+            editarLimites: completo || (tipo === 'ANALISTA_DADOS' && podeEditarAlertas === true),
+            monitorar: ids.length > 0
+        };
+    }
+    function destino(cargo) {
+        const id = obter(cargo).dashboards[0];
+        return dashboards.find(item => item.id === id)?.href || '/paginas/autenticacao/login/login.html';
+    }
+    function protegida(caminho) {
+        const rota = String(caminho).toLowerCase();
+        return (rota.startsWith('/dashboard/') || rota.startsWith('/paginas/pos-login/')) && (rota.endsWith('.html') || rota.endsWith('/'));
+    }
+    /* Decide se o cargo pode abrir um endereço específico. Os aliases mantêm
+     * compatibilidade com páginas antigas que ainda apontem para dashboards.
+     */
+    function podeAcessar(cargo, caminho) {
+        const rota = String(caminho).toLowerCase();
+        const perfil = obter(cargo);
+        if (rota.startsWith('/paginas/pos-login/empresas/')) return perfil.gerenciarEmpresas;
+        if (rota === '/paginas/pos-login/servidores/modificar_servidor.html') return perfil.modificarServidores;
+        const aliases = {
+            '/dashboard/analista/dashboard.html': 'saude',
+            '/paginas/pos-login/dashboards/dashboard_noc.html': 'saude',
+            '/paginas/pos-login/dashboards/dashboard_dados.html': 'especifica'
+        };
+        const id = dashboards.find(item => item.href.toLowerCase() === rota)?.id || aliases[rota];
+        if (id) return perfil.dashboards.includes(id);
+        if (protegida(rota)) return perfil.administrar;
+        return false;
+    }
+    return { dashboards, normalizar, obter, destino, protegida, podeAcessar };
+});

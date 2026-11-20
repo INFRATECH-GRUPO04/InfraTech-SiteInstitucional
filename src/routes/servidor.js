@@ -1,14 +1,44 @@
+/*
+ * Este arquivo: Define os endereços de servidores e limites. Cada operação exige a permissão correspondente antes de chamar o controller.
+ */
 var express = require("express");
 var router = express.Router();
 
 var servidorController = require("../controllers/servidorController");
+var permitir = require("../seguranca/autorizacao").exigirPermissao;
 
-router.post("/cadastrar", function (req, res) {
+router.post("/cadastrar", permitir('administrar'), function (req, res) {
     servidorController.cadastrar(req, res);
 });
 
-router.post("/cadastrar/componente", function (req, res) {
+router.post("/cadastrar/componente", permitir('administrar'), function (req, res) {
     servidorController.cadastrarComponente(req, res);
+});
+
+router.get("/listar/:idEmpresa", permitir('monitorar'), function (req, res) {
+    servidorController.listar(req, res);
+});
+
+router.get("/listarComponentes/:idServidor", permitir('monitorar'), function (req, res) {
+    servidorController.listarComponentesPorServidor(req, res);
+});
+
+/* Estas rotas retomam a manutenção de servidores: edição do nome, edição de
+ * capacidade e limites dos componentes e remoção do servidor selecionado.
+ */
+router.put("/editar/:idServidor", permitir('modificarServidores'), servidorController.atualizar);
+router.put("/editar/componente/:idComponente", permitir('modificarServidores'), servidorController.atualizarComponente);
+router.delete("/deletar/:idServidor", permitir('modificarServidores'), servidorController.excluir);
+
+router.get("/alertas/globais/:idEmpresa", permitir('monitorar'), servidorController.listarLimitesGlobais);
+router.put("/alertas/globais/:idEmpresa", permitir('editarLimites'), servidorController.salvarLimitesGlobais);
+
+router.put("/alertas/componentes/:idComponente", permitir('editarLimites'), function (req, res) {
+    servidorController.atualizarLimitesComponente(req, res);
+});
+
+router.post("/atualizar-chave/:idServidor", permitir('administrar'), function (req, res) {
+    servidorController.atualizarChave(req, res);
 });
 
 module.exports = router;
