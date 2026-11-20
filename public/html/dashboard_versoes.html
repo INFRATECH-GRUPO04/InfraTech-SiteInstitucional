@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/painel.css">
     <link rel="stylesheet" href="../css/dashboard-global.css">
+    <link rel="stylesheet" href="../css/dashboard-versoes.css">
+
     <title>Dashboard de Versões | InfraTech</title>
     <link rel="icon" href="../assets/icon/logo.png" type="image/png"/>
 </head>
@@ -14,7 +16,7 @@
     <!-- BARRA LATERAL -->
     <aside class="header-left">
         <div class="logo">
-                <a href="./dash-geral.html" title="InfraTech"></a>
+            <a href="./dash-geral.html" title="InfraTech">
                 <img src="../assets/icon/logo.png" alt="InfraTech">
             </a>
         </div>
@@ -66,143 +68,178 @@
     <div class="container-dashboard">
         <div class="container-cabecalho-dash">
             <div class="barra-bem-vindo">
-             <h3>BEM-VINDO, LUCAS (engenheiro de QA)</h3>   
+                <div><h4>BEM-VINDO, LUCAS (engenheiro de QA)</h4></div>
+                <div class="indicador-status"><h6>Revisão pré-release</h6></div>   
             </div>
             <div class="caixa-titulo">
                 <div class="titulo-dash">
-                    <div>
+                    <div class="primeiro-titulo">
                         <h2>Comparativo entre versões do jogo</h2>
                     </div>
-                    <div><h5>Detecte sinais de vazamento e regressões de recursos antes da liberação oficial. </h5></div>
+                    <div class="barra-bem-vindo"><h5>Detecte sinais de vazamento e regressões de recursos antes da liberação oficial.</h5></div>
                 </div>
-                <div class="indicador-status"><h5>Revisão pré-release</h5></div>
-            </div>
-            <div class="caixa-builds">
-                <div class="builds">
-                    <div class="seletor">
-                        <div class="titulo_build"><h5>BUILD BASE · BASELINE</h5></div>
-                        <div class="nome-build"><h4>Build v1.1</h4></div>
-                    </div>
-                    <div class="seta"></div>
-                    <div class="seletor">
-                        <div class="titulo_build"><h5>BUILD CANDIDATA</h5></div>
-                        <div class="nome-build"><h4>Build v1.2</h4></div>
+                <div class="caixa-builds">
+                    <div class="builds">
+                        <div class="seletor">
+                            <div class="titulo_build"><h5>BUILD BASE · BASELINE</h5></div>
+                            <div class="nome-build1"><h4>● Build v1.1</h4></div>
+                        </div>
+                        <div class="seta">→</div>
+                        <div class="seletor">
+                            <div class="titulo_build"><h5>BUILD CANDIDATA</h5></div>
+                            <div class="nome-build2"><h4>● Build v1.2</h4></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="container-kpi">
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h4>Índice de Crescimento de Memória</h4></div>
-                <div class="subtitulo-kpi"><h5>Memory Leak Rate · crescimento da RAM</h5></div>
+                <div class="titulo-kpi"><h5>Índice de Crescimento de Memória</h5></div>
                 <div class="status-kpi">
-                    <div class="status"><h3>84MB/h</h3></div>
-                    <div class="status"><h3>● CRITICO</h3></div>
+                    <p>
+                        <span class="status-valor">84</span>
+                        <span class="status-metrica">MB/h</span>
+                    </p>
+                    <div class="status status-critico"><h3>● CRÍTICO</h3></div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div><h5>v1.1: 12 MB/h</h5></div>
-                    <div><h5>v1.2: +72 MB/h</h5></div>
+                    <div class="versao1"><h6>v1.1: 12 MB/h</h6></div>
+                    <div class="versao2"><h6>v1.2: +72 MB/h</h6></div>
                 </div>
-                <div class="tempo-kpi"><h5>Atualizado a cada 10 minutos</h5></div>
-                
+                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
             </div>
+
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h4>Taxa de Troca de Contexto</h4></div>
-                <div class="subtitulo-kpi"><h5>Alternâncias da CPU entre threads</h5></div>
+                <div class="titulo-kpi"><h5>Taxa de Troca de Contexto</h5></div>
                 <div class="status-kpi">
-                    <div class="status"><h3>27.000trocas/s</h3></div>
-                    <div class="status"><h3>● ALERTA</h3></div>
+                    <p>
+                        <span class="status-valor status-alerta">27.000</span>
+                        <span class="status-metrica status-alerta">trocas/s</span>
+                    </p>
+                    <div class="status status-alerta"><h3>● ALERTA</h3></div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div><h5>v1.1: 18.000 trocas/s</h5></div>
-                    <div><h5>V1.2: +50% sobre v1.1</h5></div>
+                    <div class="versao1"><h6>v1.1: 18.000 trocas/s</h6></div>
+                    <div class="versao2"><h6>v1.2: +50% sobre v1.1</h6></div>
                 </div>
-                <div class="tempo-kpi"><h5>Atualizado a cada 10 minutos</h5></div>
+                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
             </div>
+
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h4>Tempo de Fila de Disco</h4></div>
-                <div class="subtitulo-kpi"><h5>Disk I/O Wait Time</h5></div>
+                <div class="titulo-kpi"><h5>Tempo de Fila de Disco</h5></div>
                 <div class="status-kpi">
-                    <div class="status"><h3>800ms</h3></div>
-                    <div class="status"><h3>● CRITICO</h3></div>
+                    <p>
+                        <span class="status-valor">800</span>
+                        <span class="status-metrica">ms</span>
+                    </p>
+                    <div class="status status-critico"><h3>● CRÍTICO</h3></div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div><h5>v1.1: 12 MB/h</h5></div>
-                    <div><h5>v1.1: 12 MB/h</h5></div>
+                    <div class="versao1"><h6>v1.1: 12 MB/h</h6></div>
+                    <div class="versao2"><h6>v1.2: +788 ms</h6></div>
                 </div>
-                <div class="tempo-kpi"><h5>Atualizado a cada 10 minutos</h5></div>
+                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
             </div>
+
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h4>Eficiência de Payload</h4></div>
-                <div class="subtitulo-kpi"><h5>Sobrecarga de netcode</h5></div>
+                <div class="titulo-kpi"><h5>Eficiência de Payload</h5></div>
                 <div class="status-kpi">
-                    <div class="status"><h3>80B/jogador</h3></div>
-                    <div class="status"><h3>● ESTÁVEL</h3></div>
+                    <p>
+                        <span class="status-valor status-estavel">80</span>
+                        <span class="status-metrica status-estavel">B/jogador</span>
+                    </p>
+                    <div class="status status-estavel"><h3>● ESTÁVEL</h3></div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div><h5>v1.1: 32 B/jogador/tick</h5></div>
-                    <div><h5>v1.2: +48 B · +150%</h5></div>
+                    <div class="versao1"><h6>v1.1: 32 B/jogador/tick</h6></div>
+                    <div class="versao2"><h6>v1.2: +48 B · +150%</h6></div>
                 </div>
-                <div class="tempo-kpi"><h5>Atualizado a cada 10 minutos</h5></div>
+                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
             </div>
         </div>
+
         <div class="container-consumo-recursos">
             <div class="cabecalho-grafico">
                 <div class="titulo-recursos">
                     <div class="titulo-principal"><h4>Consumo de recursos ao longo do tempo</h4></div>
-                    <div class="subtitulo-principal">Taxa de I/O de disco · leitura + escrita · 64 jogadores nas duas builds</div>
+                    <div class="subtitulo-principal"><h6 id="subtitulo-consumo">Taxa de I/O de disco · leitura + escrita · 64 jogadores nas duas builds</h6></div>
                 </div>
                 <div class="seletor-recurso">
-                    <div class="recurso-selecionado"><h4>CPU</h4></div>
-                    <div class="recurso-selecionado"><h4>RAM</h4></div>
-                    <div class="recurso-selecionado"><h4>DISCO</h4></div>
-                    <div class="recurso-selecionado"><h4>REDE</h4></div>
+                    <div class="seletor-componente">
+                        <div class="recurso-selecionado" data-recurso="CPU"><h4>CPU</h4></div>
+                        <div class="recurso-selecionado" data-recurso="RAM"><h4>RAM</h4></div>
+                        <div class="recurso-selecionado ativo" data-recurso="DISCO"><h4>Disco</h4></div>
+                        <div class="recurso-selecionado" data-recurso="REDE"><h4>REDE</h4></div>
+                    </div>
+                    <div class="caixa-evento" id="btn-adicionar-evento"><h5>+ Adicionar evento</h5></div>
                 </div>
-                <div class="caixa-evento"><h5>+ Adicionar evento</h5></div>
             </div>
-            <div class="caixa-grafico-recursos"></div>
+
+            <div class="barra-info-grafico">
+                <span class="unidade-eixo" id="unidade-consumo">I/O DE DISCO (MB/S)</span>
+                <div class="legenda-builds-grafico">
+                    <div class="versao1"><h6>v1.1 · baseline</h6></div>
+                    <div class="versao2"><h6>v1.2 · candidata</h6></div>
+                </div>
+            </div>
+
+            <div class="caixa-grafico-recursos">
+                <canvas id="graficoConsumoRecursos"></canvas>
+            </div>
         </div>
+
         <div class="container-escalabilidade-e-performance">
             <div class="caixa-grafico-escalabilidade">
                 <div class="cabecalho-grafico">
-                <div class="titulo-recursos">
-                    <div class="titulo-principal"><h4>Escalabilidade de jogadores</h4></div>
-                    <div class="subtitulo-principal"><h5> Radar de Proximidade </h5></div>
-                </div>
-                <div class="status-grafico"><h4>CRITICO</h4></div>
+                    <div class="titulo-recursos">
+                        <div class="titulo-principal"><h4>Escalabilidade de jogadores</h4></div>
+                        <div class="subtitulo-principal"><h6>Radar de Proximidade</h6></div>
+                    </div>
+                    <div class="status status-critico"><h3>● CRÍTICO</h3></div>
                 </div>
                 <div class="builds">
-                    <div><h6>v1.1 · baseline</h6></div>
-                    <div><h6>v1.2 · candidata</h6></div>
+                    <div class="versao1"><h6>v1.1 · baseline</h6></div>
+                    <div class="versao2"><h6>v1.2 · candidata</h6></div>
                 </div>
-                <div class="caixa-grafico-recursos"></div>
+                <span class="unidade-eixo">CPU (%)</span>
+                <div class="caixa-grafico-recursos">
+                    <canvas id="graficoEscalabilidade"></canvas>
+                </div>
                 <div class="caixa-projecao"><h5>A nova versão 1.2 não suportaria mais de 90 jogadores simultâneos</h5></div>
             </div>
+
             <div class="caixa-grafico-performance">
                 <div class="cabecalho-grafico">
-                <div class="titulo-recursos">
-                    <div class="titulo-principal"><h4>Assinatura de performance dos componentes</h4></div>
-                    <div class="subtitulo-principal"><h5>Atualizado a cada 24h · estados sempre referentes à v1.2</h5></div>
-                </div>
-                <div class="builds">
-                    <div><h6>v1.1 · baseline</h6></div>
-                    <div><h6>v1.2 · candidata</h6></div>
-                </div>
+                    <div class="titulo-recursos">
+                        <div class="titulo-principal"><h4>Assinatura de performance dos componentes</h4></div>
+                        <div class="subtitulo-principal"><h6>Atualizado a cada 24h · estados sempre referentes à v1.2</h6></div>
+                    </div>
+                    <div class="builds">
+                        <div class="versao1"><h6>v1.1 · baseline</h6></div>
+                        <div class="versao2"><h6>v1.2 · candidata</h6></div>
+                    </div>
                 </div>
                 <div class="parte-grafico">
-                    <div class="caixa-grafico-recursos"></div>
+                    <div class="caixa-grafico-recursos">
+                        <span class="unidade-eixo">0% no centro · 100% em cada ponta</span>
+                        <canvas id="graficoPerformance"></canvas>
+                    </div>
                     <div class="estado-componentes">
                         <div class="estado-componente"><h5>COMPONENTE / v1.2 Estado</h5></div>
-                        <div class="estado-componente"><h5>RAM  72%</h5><h5>● Alerta</h5></div>
-                        <div class="estado-componente"><h5>CPU  94%</h5><h5>● Alerta</h5></div>
-                        <div class="estado-componente"><h5>Disco  64%</h5><h5><h5>● Alerta</h5></h5></div>
-                        <div class="estado-componente"><h5>Rede  88%</h5><h5><h5>● Alerta</h5></h5></div>
-                        <div class="estado-componente"><h5>Ef. térmica  82%</h5><h5><h5>● Alerta</h5></h5></div>
+                        <div class="estado-componente"><h5>RAM  72%</h5><h5 class="estado-alerta">● Alerta</h5></div>
+                        <div class="estado-componente"><h5>CPU  94%</h5><h5 class="estado-critico">● Crítico</h5></div>
+                        <div class="estado-componente"><h5>Disco  64%</h5><h5 class="estado-saudavel">● Saudável</h5></div>
+                        <div class="estado-componente"><h5>Rede  88%</h5><h5 class="estado-alerta">● Alerta</h5></div>
+                        <div class="estado-componente"><h5>Ef. térmica  82%</h5><h5 class="estado-saudavel">● Saudável</h5></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/dashboard-versoes.js"></script>
 </body>
 </html>
