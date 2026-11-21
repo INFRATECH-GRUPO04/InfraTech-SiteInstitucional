@@ -93,29 +93,29 @@
         <div class="corpo-dashboard" id="corpo_dashboard">
             <div class="kpis">
                 <div class="kpi cards">
-                    <div class="titulo-conteudo">Servidores sem capturas</div>
-                    <div class="conteudo">1 /6</div>
-                    <div class="especificacao">CPU</div>
+                    <div class="titulo-conteudo">Servidor com mais falhas na coleta</div>
+                    <div class="conteudo" style="color: #f04a55;;">SRV-BR-01</div>
+                    <div class="especificacao" style="color: #f04a55;;">3 status "Sem Coleta"</div>
                 </div>
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Maior variação</div>
-                    <div class="conteudo">Maior variação</div>
-                    <div class="especificacao">CPU</div>
+                    <div class="conteudo">SRV-BR-07</div>
+                    <div class="especificacao" style="color: #f04a55;;">CPU - 89%</div>
                 </div>
-                <div class="kpi cards">
+                <!-- <div class="kpi cards">
                     <div class="titulo-conteudo">Disco: Dias até Saturar</div>
                     <div class="conteudo">9 Dias - 17/NOV</div>
                     <div class="especificacao">SRV-BR-05 · 87 % ocupado</div>
-                </div>
+                </div> -->
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Servidor com maior quantidade de alertas</div>
-                    <div class="conteudo">SRV-BR-07</div>
-                    <div class="especificacao">CPU</div>
+                    <div class="conteudo" style="color: #f04a55;;">SRV-BR-07</div>
+                    <div class="especificacao" style="color: #f04a55;">20 Alertas</div>
                 </div>
                 <div class="kpi cards">
-                    <div class="titulo-conteudo">Logs</div>
-                    <div class="conteudo">Maior variação</div>
-                    <div class="especificacao">CPU</div>
+                    <div class="titulo-conteudo">Menor saúde</div>
+                    <div class="conteudo">SRV-GAME</div>
+                    <div class="especificacao" style="color:  #fbbf24;">54%</div>
                 </div>
             </div>
 
@@ -318,6 +318,7 @@
                     <div id="box-grafico-status-coleta">
                         <canvas id="grafico_status_coleta"></canvas>
                     </div>
+
                 </div>
             </div>
             <div class="dash-parte2">
@@ -702,7 +703,64 @@
 
     <script>
 
+
+        console.log(filtro_data_inicio.value)
+        const cpu = [
+            42.5, 45.8, null, 51.0, 54.6, 63.2, 78.4, 84.1, 76.5, 69.0,
+            65.3, null, 59.4, 57.1, 61.5, 72.8, 81.0, 74.3, 58.9, 49.7
+        ];
+
+        const ram = [
+            52.0, 52.8, 53.5, 54.1, 55.0, 55.8, 56.9, 58.2, 59.0, 60.4,
+            61.1, 62.5, 63.0, 64.2, null, 67.1, 68.4, 69.0, 69.7, 70.5
+        ];
+
+        const disco = [
+            71.0, 71.1, 71.2, 71.4, 71.5, 71.7, 71.8, 72.0, 72.1, 72.3,
+            72.4, 72.6, 72.7, 72.9, 73.0, 73.2, 73.3, 73.5, 73.6, null
+        ];
+
+        const rede = [
+            31.4, 34.0, 38.6, 44.2, 49.8, 61.5, 73.2, 79.8, 72.1, 64.7,
+            58.3, 55.0, 52.6, 50.2, 56.4, 68.9, 75.4, 66.2, 47.5, null
+        ];
+
+        function calcularStatusColeta() {
+            const componentes = [cpu, ram, disco, rede];
+            let coletado = 0;
+            let atrasado = 0;
+            let semColeta = 0;
+
+            componentes.forEach((arr) => {
+                if (!Array.isArray(arr) || arr.length === 0) return;
+
+                const ultimoValor = arr[arr.length - 1];
+                const ultimoSemDado = ultimoValor === null || ultimoValor === undefined || ultimoValor === "";
+
+                if (ultimoSemDado) {
+                    atrasado++;
+                }
+
+                arr.forEach((valor, indice) => {
+                    const estaEmBranco = valor === null || valor === undefined || valor === "";
+
+                    if (estaEmBranco) {
+                        // Evita contar duas vezes se o último item já foi contabilizado como atrasado
+                        const ehUltimoItem = indice === arr.length - 1;
+                        if (!ehUltimoItem) {
+                            semColeta++;
+                        }
+                    } else {
+                        coletado++;
+                    }
+                });
+            });
+            return [coletado, atrasado, semColeta];
+        }
+
         function desenharGraficoStatusColeta() {
+            const dadosStatus = calcularStatusColeta();
+
             new Chart(
                 document.getElementById('grafico_status_coleta'),
                 {
@@ -729,7 +787,7 @@
                     data: {
                         labels: ["Coletado", "Atrasado", "Sem coleta"],
                         datasets: [{
-                            data: [5, 2, 1],
+                            data: dadosStatus,
                             backgroundColor: [
                                 'rgb(46, 204, 113)',
                                 'rgb(245, 197, 24)',
@@ -777,15 +835,35 @@
         // guarda o HTML original para poder voltar ao "Todos"
         var htmlGeral = corpoDashboard.innerHTML;
 
+        limite_atencao = 0;
+        limite_critico = 0;
         filtroServidor.addEventListener('change', function () {
             if (filtroServidor.value != "Todos") {
                 plotarDashboardEspecifica()
-        //         corpoDashboard.innerHTML = `
-        //     <div>hello world! ${filtroServidor.value}</div>
-        // `;
+                servidorEscolhido = filtroServidor.value
+                //         corpoDashboard.innerHTML = `
+                //     <div>hello world! ${servidorEscolhido}</div>
+                // `;
+
+                // fetch(`/dashboardSarah/buscarLimites/${idEmpresa}/${servidorEscolhido}`, { cache: 'no-store' })
+                //     .then(function (response) {
+                //         if (response.ok) {
+                //             response.json().then(function (resposta) {
+                                
+                //             });
+                //         } else {
+                //             console.log("Não funfou")
+                //         }
+                //     })
+                //     .catch(function (error) {
+                //         console.error("Erro na obtenção de dados", error);
+                //     });
+
             } else {
                 corpoDashboard.innerHTML = htmlGeral;
                 desenharGraficoStatusColeta(); // recria o gráfico, veja abaixo
+
+
             }
         });
 
@@ -803,7 +881,7 @@
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Saúde do servidor</div>
                     <div class="conteudo-saude">
-                        <div class="conteudo">80%</div>
+                        <div class="conteudo" style = "color: #fbbf24;">80%</div>
                         <div class="especificacao">
                             <div class="barra-fundo">
                                 <div class="barra-preenchida" style="width: 80%; background-color: #fbbf24;"></div>
@@ -811,18 +889,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="kpi cards">
-                    <div class="titulo-conteudo">Logs em Alerta</div>
-                    <div class="conteudo">20</div>
-                    <div class="especificacao">
-                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
-                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
-                    </div>
-                </div>
+                
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Maior variação</div>
-                    <div class="conteudo">CPU 89%</div>
-                    <div class="especificacao">+21</div>
+                    <div class="conteudo" style="color: #f04a55;;">CPU 89%</div>
+                    <div class="especificacao" style="color: #f04a55;">+21</div>
                 </div>
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Alertas registrados</div>
@@ -991,101 +1062,236 @@
                 </div>
                 <div class="card-demanda-mapa-calor cards">
                     <div class="titulo-card">Demanda por Período</div>
+                    <div class="mapa-calor">
+        <!-- cabeçalho -->
+        <div class="linha-calor linha-calor-topo">
+            <div class="legenda-calor">DIA / PICO (%)</div>
+            <div class="coluna-periodo">Manhã<span>06-12h</span></div>
+            <div class="coluna-periodo">Tarde<span>12-18h</span></div>
+            <div class="coluna-periodo">Noite<span>18-24h</span></div>
+            <div class="coluna-periodo">Madrugada<span>00-06h</span></div>
+        </div>
+
+        <div class="linha-calor">
+            <div class="dia-calor">Segunda · 19/10</div>
+            <div class="celula-calor normal">56%</div>
+            <div class="celula-calor normal">68%</div>
+            <div class="celula-calor atencao">84%</div>
+            <div class="celula-calor normal">48%</div>
+        </div>
+        <div class="linha-calor">
+            <div class="dia-calor">Terça · 20/10</div>
+            <div class="celula-calor normal">58%</div>
+            <div class="celula-calor normal">72%</div>
+            <div class="celula-calor critico">88%</div>
+            <div class="celula-calor normal">51%</div>
+        </div>
+        <div class="linha-calor">
+            <div class="dia-calor">Quarta · 21/10</div>
+            <div class="celula-calor normal">61%</div>
+            <div class="celula-calor atencao">76%</div>
+            <div class="celula-calor critico">91%</div>
+            <div class="celula-calor normal">55%</div>
+        </div>
+        <div class="linha-calor">
+            <div class="dia-calor">Quinta · 22/10</div>
+            <div class="celula-calor normal">60%</div>
+            <div class="celula-calor atencao">79%</div>
+            <div class="celula-calor critico">92%</div>
+            <div class="celula-calor normal">57%</div>
+        </div>
+        <div class="linha-calor">
+            <div class="dia-calor">Sexta · 23/10</div>
+            <div class="celula-calor normal">64%</div>
+            <div class="celula-calor atencao">85%</div>
+            <div class="celula-calor critico">96%</div>
+            <div class="celula-calor normal">68%</div>
+        </div>
+        <div class="linha-calor">
+            <div class="dia-calor">Sábado · 24/10</div>
+            <div class="celula-calor normal">69%</div>
+            <div class="celula-calor critico">93%</div>
+            <div class="celula-calor critico">99%</div>
+            <div class="celula-calor atencao">82%</div>
+        </div>
+        <div class="linha-calor">
+            <div class="dia-calor">Domingo · 25/10</div>
+            <div class="celula-calor normal">65%</div>
+            <div class="celula-calor atencao">86%</div>
+            <div class="celula-calor critico">97%</div>
+            <div class="celula-calor atencao">77%</div>
+        </div>
+    </div>
                 </div>
-            </div>
+                </div>
+                
             `
+            plotarGraficoUsoRecursos();
+            plotarGraficoProjecaoDisco();
         }
 
-        var labelsHora = ["07:40", "08:40", "09:40", "10:40", "11:40", "12:40", "13:40", "14:40", "15:40", "16:40"];
-        new Chart(
-            document.getElementById('grafico_uso_recurso'),
-            {
-                type: 'line',
-                options: {
-                    animation: false,
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: { color: '#e5e9f5' }
+
+        function plotarGraficoUsoRecursos() {
+
+            var labelsHora = ["07:40", "08:40", "09:40", "10:40", "11:40", "12:40", "13:40", "14:40", "15:40", "16:40"];
+            new Chart(
+                document.getElementById('grafico_uso_recurso'),
+                {
+                    type: 'line',
+                    options: {
+                        animation: false,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
                         },
-                        tooltip: {
-                            enabled: true,
-                            callbacks: {
-                                label: function (item) {
-                                    return item.dataset.label + ': ' + item.parsed.y + '%';
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: { color: '#e5e9f5' }
+                            },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function (item) {
+                                        return item.dataset.label + ': ' + item.parsed.y + '%';
+                                    }
                                 }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#9aa4bf' },
+                                grid: { color: '#232B40' }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20,
+                                    color: '#9aa4bf',
+                                    callback: function (v) { return v + '%'; }
+                                },
+                                grid: { color: '#232B40' }
                             }
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: { color: '#9aa4bf' },
-                            grid: { color: '#232B40' }
-                        },
-                        y: {
-                            min: 0,
-                            max: 100,
-                            ticks: {
-                                stepSize: 20,
-                                color: '#9aa4bf',
-                                callback: function (v) { return v + '%'; }
+                    data: {
+                        labels: labelsHora,
+                        datasets: [
+                            {
+                                label: 'CPU',
+                                data: [42, 45, 50, 54, 58, 61, 64, 66, 67.6, 89],
+                                borderColor: '#4f8ef7',
+                                backgroundColor: '#4f8ef7',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                pointRadius: 3
                             },
-                            grid: { color: '#232B40' }
-                        }
+                            {
+                                label: 'RAM',
+                                data: [68, 72, 75, 81, 84, 80, 82, 76, 67, 85],
+                                borderColor: '#a78bfa',
+                                backgroundColor: '#a78bfa',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                pointRadius: 3
+                            },
+                            {
+                                label: 'Disco',
+                                data: [52, 54, 55, 57, 58, 59, 59, 60, 60.3, 75],
+                                borderColor: '#fbbf24',
+                                backgroundColor: '#fbbf24',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                pointRadius: 3
+                            },
+                            {
+                                label: 'Rede',
+                                data: [58, 60, 63, 66, 62, 65, 68, 63, 64.7, 50],
+                                borderColor: '#2ecc71',
+                                backgroundColor: '#2ecc71',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                pointRadius: 3
+                            }
+                        ]
                     }
-                },
-                data: {
-                    labels: labelsHora,
-                    datasets: [
-                        {
-                            label: 'CPU',
-                            data: [42, 45, 50, 54, 58, 61, 64, 66, 67.6, 89],
-                            borderColor: '#4f8ef7',
-                            backgroundColor: '#4f8ef7',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
-                        },
-                        {
-                            label: 'RAM',
-                            data: [68, 72, 75, 81, 84, 80, 82, 76, 67, 85],
-                            borderColor: '#a78bfa',
-                            backgroundColor: '#a78bfa',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
-                        },
-                        {
-                            label: 'Disco',
-                            data: [52, 54, 55, 57, 58, 59, 59, 60, 60.3, 75],
-                            borderColor: '#fbbf24',
-                            backgroundColor: '#fbbf24',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
-                        },
-                        {
-                            label: 'Rede',
-                            data: [58, 60, 63, 66, 62, 65, 68, 63, 64.7, 50],
-                            borderColor: '#2ecc71',
-                            backgroundColor: '#2ecc71',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3
-                        }
-                    ]
                 }
-            }
-        );
+            );
+        }
 
 
+        // <div class = "dash-parte3">
+        //             <div class = "card-projecaoDisco cards">
+        //                 <div class="titulo-card">Projeção de saturação do Disco</div>
+        //                 <div class="subtitulo-card">Ocupação do disco (%)</div>
+        //                 <div class = "conteudo-projecaoDisco">
+        //                     <div class = "box-grafico-projecaoDisco">
+        //                         <canvas id = "grafico_projecao_disco"></canvas>
+        //                         </div>
+        //                         <div class = "insights-projecao">
+
+        //                             </div>
+        //                     </div>
+        //                 </div>
+        //             </div>
+        function plotarGraficoProjecaoDisco() {
+            labels = ["1/NOV", "2/NOV", "3/NOV", "4/NOV", "5/NOV", "6/NOV", "7/NOV", "8/NOV", "9/NOV", "10/NOV",]
+            new Chart(
+                document.getElementById('grafico_projecao_disco'),
+                {
+                    type: 'line',
+                    options: {
+                        animation: false,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: { color: '#e5e9f5' }
+                            },
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#9aa4bf' },
+                                grid: { color: '#232B40' }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20,
+                                    color: '#9aa4bf'
+                                },
+                                grid: { color: '#232B40' }
+                            }
+                        }
+                    },
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Uso do Disco',
+                                data: [42, 45, 50, 54, 58, 61, 64, 66, 67.6, 89],
+                                borderColor: '#1FC08A',
+                                backgroundColor: '#1FC08A',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                pointRadius: 3
+                            }
+                        ]
+                    }
+                }
+            );
+        }
 
     </script>
 </body>
