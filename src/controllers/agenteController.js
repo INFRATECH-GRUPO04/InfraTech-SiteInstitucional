@@ -11,7 +11,7 @@ var s3 = new clientS3.S3Client({ region: process.env.AWS_REGION || "us-east-1" }
 
 // Primeira linha que cada tipo de CSV precisa ter (é a mesma que o script Python gera)
 var CABECALHOS = {
-    dados: "id_empresa,id_servidor,username,data_hora,cpu,inte_cpu,ram_disponivel,ram_total,ram,disco,disco_disponivel,disco_total,bytes_enviados,bytes_recebidos,pacotes_enviados,pacotes_recebidos",
+    dados: "id_empresa,id_servidor,username,data_hora,cpu,inte_cpu,ram_disponivel,ram_total,ram,disco,disco_disponivel,disco_total,bytes_enviados,bytes_recebidos,pacotes_enviados,pacotes_recebidos,trocas_contexto,temperatura_cpu,tempo_escrita_disco",
     processos: "id_empresa,id_servidor,Usuario,data_hora,PID,Nome,Username"
 };
 
