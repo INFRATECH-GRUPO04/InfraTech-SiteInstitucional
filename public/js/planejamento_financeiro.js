@@ -739,6 +739,274 @@ function mostrarToast(mensagem, erro) {
   }, 3200);
 }
 
+/* ---------- Relatório Executivo com IA (Google Gemini + PDF) ---------- */
+
+function escaparTexto(valor) {
+  return String(valor || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function definirCarregandoRelatorio(carregando) {
+  var btnTopo = document.getElementById('btn-gerar-relatorio');
+  var btnRegerar = document.getElementById('btn-regerar-relatorio');
+  if (btnTopo) {
+    btnTopo.disabled = carregando;
+    if (carregando) {
+      btnTopo.textContent = 'Analisando com IA...';
+    } else {
+      btnTopo.textContent = 'Gerar relatório IA';
+    }
+  }
+  if (btnRegerar) {
+    btnRegerar.disabled = carregando;
+    if (carregando) {
+      btnRegerar.textContent = 'Analisando...';
+    } else {
+      btnRegerar.textContent = 'Regerar análise';
+    }
+  }
+}
+
+function montarRelatorioLocalFallback() {
+  var billing = dadosBilling();
+  var totais = totaisServidores();
+  var capacidadeTotal = planejamento.servidores.length * planejamento.capacidadeAtual;
+  var runway = runwayMeses(capacidadeTotal);
+  var servidoresDetalhados = planejamento.servidores.map(function (srv, indice) {
+    var ref = USOS_ILUSTRATIVOS[indice] || { uso: 0, pico: 0 };
+    var uso = ref.uso;
+    if (srv.uso !== undefined && srv.uso !== null) {
+      uso = Number(srv.uso) || 0;
+    }
+    var pico = ref.pico;
+    if (srv.pico !== undefined && srv.pico !== null) {
+      pico = Number(srv.pico) || uso;
+    }
+    var situacao = situacaoServidor(uso);
+    return {
+      nome: srv.nome,
+      local: srv.local || '-',
+      custo: Number(srv.custo) || 0,
+      uso: uso,
+      pico: pico,
+      custoOcioso: custoOcioso(srv),
+      situacao: situacao.texto
+    };
+  });
+
+  var maior = servidoresDetalhados[0] || null;
+  servidoresDetalhados.forEach(function (srv) {
+    if (srv.uso > maior.uso) maior = srv;
+  });
+
+  var nomeGargalo = 'Nenhum servidor';
+  if (maior) {
+    nomeGargalo = maior.nome;
+  }
+
+  var projecoes = [1, 3, 6].map(function (meses) {
+    var previstos = planejamento.jogadores + planejamento.crescimento * meses;
+    var bloqueados = Math.max(0, previstos - capacidadeTotal);
+    var unidadeMes = ' meses';
+    if (meses === 1) unidadeMes = ' mês';
+    var impacto = 'Capacidade global suficiente, monitorando picos em ' + nomeGargalo + '.';
+    if (bloqueados > 0) {
+      impacto = 'Risco de bloquear ' + formatarNumero(bloqueados) + ' jogadores (' + formatarMoeda(bloqueados * planejamento.ticketMedio) + '/mês).';
+    }
+    return {
+      horizonte: meses + unidadeMes,
+      previsao: 'Demanda estimada de ' + formatarNumero(previstos) + ' jogadores simultâneos.',
+      impactoNegocio: impacto
+    };
+  });
+
+  return {
+    origem: 'analitico_local',
+    modelo: 'motor-analitico-local',
+    emitidoEm: new Date().toLocaleString('pt-BR'),
+    dados: planejamento,
+    metricas: {
+      receita: billing.receita,
+      lucro: billing.lucro,
+      margem: billing.margem,
+      roi: billing.roi,
+      breakeven: billing.breakeven,
+      capacidadeTotal: capacidadeTotal,
+      runwayMeses: runway,
+      custoOciosoTotal: totais.ociosoTotal,
+      servidoresDetalhados: servidoresDetalhados
+    },
+    analise: {
+      tituloExecutivo: 'Relatório Executivo de Infraestrutura e FinOps — Plano ' + planejamento.plano,
+      vereditoSituacao: 'Análise Executiva Local (servidor indisponível)',
+      resumoExecutivo: 'Operação com ' + servidoresDetalhados.length + ' servidores ativos suportando ' +
+        formatarNumero(planejamento.jogadores) + ' jogadores, gerando receita estimada de ' +
+        formatarMoeda(billing.receita) + ' e lucro líquido de ' + formatarMoeda(billing.lucro) + '.',
+      analiseFinanceira: 'Margem estimada de ' + formatarPercentual(billing.margem, 2) +
+        ' e ROI de ' + formatarPercentual(billing.roi, 2) + ', com break-even em ' +
+        formatarNumero(billing.breakeven) + ' jogadores.',
+      analiseFrotaGargalos: 'Custo ocioso total estimado em ' + formatarMoeda(totais.ociosoTotal) +
+        '/mês. Principal ponto de atenção: ' + nomeGargalo + '.',
+      previsoesFuturas: projecoes,
+      insightsEstrategicos: [
+        'Avaliar realocação de carga em ' + nomeGargalo + ' para equilibrar a frota.',
+        'Reduzir ociosidade aproximando os servidores subutilizados da meta de ' + planejamento.metaUso + '%.'
+      ],
+      cenarioRecomendado: 'Crescimento esperado (+2 servidores físicos)',
+      justificativaRecomendacao: 'Considerando o provisionamento de ' + textoUnidade(planejamento.provisionamento, 'mês', 'meses') +
+        ', a antecipação evita bloqueios nos próximos meses.',
+      planoAcaoImediato: [
+        'Revisar distribuição de jogadores em ' + nomeGargalo + '.',
+        'Validar orçamento de expansão antes do prazo crítico de decisão.'
+      ]
+    }
+  };
+}
+
+function renderizarRelatorio(pacote) {
+  var dados = pacote.dados || planejamento;
+  var metricas = pacote.metricas || {};
+  var analise = pacote.analise || {};
+
+  var selo = document.getElementById('relatorio-selo-origem');
+  if (selo) {
+    if (pacote.origem === 'ia') {
+      selo.textContent = 'Gerado com Google Gemini';
+    } else {
+      selo.textContent = 'Análise Analítica Local';
+    }
+  }
+
+  document.getElementById('rel-titulo').textContent = analise.tituloExecutivo || 'Relatório Executivo de Infraestrutura';
+  document.getElementById('rel-gestor').textContent = dados.gestor || 'Não informado';
+  document.getElementById('rel-plano').textContent = dados.plano || 'Padrão';
+  document.getElementById('rel-emissao').textContent = pacote.emitidoEm || new Date().toLocaleString('pt-BR');
+  document.getElementById('rel-modelo').textContent = pacote.modelo || 'gemini-3.8-flash';
+  document.getElementById('rel-veredito').textContent = analise.vereditoSituacao || '';
+  document.getElementById('rel-resumo').textContent = analise.resumoExecutivo || '';
+  document.getElementById('rel-financeiro').textContent = analise.analiseFinanceira || '';
+  document.getElementById('rel-frota-analise').textContent = analise.analiseFrotaGargalos || '';
+
+  var textoRunwayRel = 'Sem saturação';
+  if (metricas.runwayMeses !== null && metricas.runwayMeses !== undefined && metricas.runwayMeses !== Infinity) {
+    textoRunwayRel = mesesTexto(Number(metricas.runwayMeses));
+  }
+
+  var listaKpis = [
+    { rotulo: 'Custo InfraTech', valor: formatarMoeda(dados.custoInfraTech) },
+    { rotulo: 'Receita Estimada', valor: formatarMoeda(metricas.receita) },
+    { rotulo: 'Lucro Líquido', valor: formatarMoeda(metricas.lucro) },
+    { rotulo: 'Margem / ROI', valor: formatarPercentual(metricas.margem, 1) + ' · ' + formatarPercentual(metricas.roi, 1) },
+    { rotulo: 'Break-even', valor: formatarNumero(metricas.breakeven) + ' jog.' },
+    { rotulo: 'Capacidade Global', valor: formatarNumero(metricas.capacidadeTotal) + ' jog.' },
+    { rotulo: 'Runway Global', valor: textoRunwayRel },
+    { rotulo: 'Custo Ocioso', valor: formatarMoeda(metricas.custoOciosoTotal) }
+  ];
+
+  var kpisHtml = '';
+  listaKpis.forEach(function (item) {
+    kpisHtml += '<div class="plan-folha__kpi"><span>' + escaparTexto(item.rotulo) + '</span><strong>' + escaparTexto(item.valor) + '</strong></div>';
+  });
+  document.getElementById('rel-kpis').innerHTML = kpisHtml;
+
+  var servidoresRel = metricas.servidoresDetalhados || [];
+  var tabelaHtml = '';
+  servidoresRel.forEach(function (srv) {
+    tabelaHtml += '<tr>' +
+      '<td><strong>' + escaparTexto(srv.nome) + '</strong></td>' +
+      '<td>' + escaparTexto(srv.local) + '</td>' +
+      '<td>' + escaparTexto(formatarMoeda(srv.custo)) + '</td>' +
+      '<td>' + escaparTexto(srv.uso) + '%</td>' +
+      '<td>' + escaparTexto(srv.pico) + '%</td>' +
+      '<td>' + escaparTexto(formatarMoeda(srv.custoOcioso)) + '</td>' +
+      '<td>' + escaparTexto(srv.situacao) + '</td>' +
+      '</tr>';
+  });
+  document.getElementById('rel-tabela-servidores').innerHTML = tabelaHtml;
+
+  var previsoesHtml = '';
+  var previsoes = analise.previsoesFuturas || [];
+  previsoes.forEach(function (prev) {
+    previsoesHtml += '<div class="plan-folha__previsao-card">' +
+      '<strong>' + escaparTexto(prev.horizonte) + '</strong>' +
+      '<p>' + escaparTexto(prev.previsao) + '</p>' +
+      '<p><em>' + escaparTexto(prev.impactoNegocio) + '</em></p>' +
+      '</div>';
+  });
+  document.getElementById('rel-previsoes').innerHTML = previsoesHtml;
+
+  document.getElementById('rel-cenario-recomendado').textContent = 'Cenário recomendado: ' + (analise.cenarioRecomendado || '—');
+  document.getElementById('rel-cenario-justificativa').textContent = analise.justificativaRecomendacao || '';
+
+  var insightsHtml = '';
+  (analise.insightsEstrategicos || []).forEach(function (item) {
+    insightsHtml += '<li>' + escaparTexto(item) + '</li>';
+  });
+  document.getElementById('rel-insights').innerHTML = insightsHtml;
+
+  var acoesHtml = '';
+  (analise.planoAcaoImediato || []).forEach(function (item) {
+    acoesHtml += '<li>' + escaparTexto(item) + '</li>';
+  });
+  document.getElementById('rel-plano-acao').innerHTML = acoesHtml;
+
+  document.getElementById('rel-premissas-rodape').textContent =
+    'crescimento ' + formatarNumero(dados.crescimento) + ' jog./mês · ' +
+    formatarNumero(dados.capacidadeAtual) + ' jog./servidor · provisionamento ' +
+    textoUnidade(dados.provisionamento, 'mês', 'meses') + ' · orçamento ' +
+    formatarMoeda(dados.orcamento) + ' · meta ' + dados.metaUso + '% · subutilizado <' + dados.limiteSubutilizado + '%.';
+}
+
+function abrirModalRelatorio() {
+  document.getElementById('modal-relatorio').hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharModalRelatorio() {
+  document.getElementById('modal-relatorio').hidden = true;
+  document.body.style.overflow = '';
+}
+
+function gerarRelatorioIA() {
+  definirCarregandoRelatorio(true);
+
+  fetch('/planejamento/relatorio', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ servidores: planejamento.servidores })
+  })
+    .then(function (resposta) {
+      if (!resposta.ok) throw new Error('Falha ao gerar relatório');
+      return resposta.json();
+    })
+    .then(function (pacote) {
+      renderizarRelatorio(pacote);
+      abrirModalRelatorio();
+      if (pacote.origem === 'ia') {
+        mostrarToast('Relatório gerado com Google Gemini.', false);
+      } else {
+        mostrarToast('Relatório gerado com motor analítico local.', false);
+      }
+    })
+    .catch(function () {
+      renderizarRelatorio(montarRelatorioLocalFallback());
+      abrirModalRelatorio();
+      mostrarToast('Relatório gerado localmente (servidor indisponível).', false);
+    })
+    .finally(function () {
+      definirCarregandoRelatorio(false);
+    });
+}
+
+function imprimirRelatorioPDF() {
+  window.print();
+}
+
 /* ---------- Inicialização ---------- */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -752,11 +1020,22 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('btn-cancelar-premissas').addEventListener('click', fecharPremissas);
   document.getElementById('form-premissas').addEventListener('submit', aplicarPremissas);
 
+  document.getElementById('btn-gerar-relatorio').addEventListener('click', gerarRelatorioIA);
+  document.getElementById('btn-regerar-relatorio').addEventListener('click', gerarRelatorioIA);
+  document.getElementById('btn-imprimir-relatorio').addEventListener('click', imprimirRelatorioPDF);
+  document.getElementById('btn-fechar-relatorio').addEventListener('click', fecharModalRelatorio);
+
   document.querySelector('[data-fechar-premissas]').addEventListener('click', fecharPremissas);
+  document.querySelector('[data-fechar-relatorio]').addEventListener('click', fecharModalRelatorio);
 
   document.addEventListener('keydown', function (evento) {
-    if (evento.key === 'Escape' && !document.getElementById('modal-premissas').hidden) {
-      fecharPremissas();
+    if (evento.key === 'Escape') {
+      if (!document.getElementById('modal-premissas').hidden) {
+        fecharPremissas();
+      }
+      if (!document.getElementById('modal-relatorio').hidden) {
+        fecharModalRelatorio();
+      }
     }
   });
 });

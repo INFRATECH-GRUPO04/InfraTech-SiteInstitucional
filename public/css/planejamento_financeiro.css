@@ -114,7 +114,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   margin: 2px 0 16px;
 }
 
-.plan-introducaoducao__titulo {
+.plan-introducao__titulo {
   margin: 0;
   color: #f4f9fd;
   font-size: clamp(1.45rem, 2vw, 1.9rem);
@@ -122,7 +122,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   letter-spacing: -0.02em;
 }
 
-.plan-introducaoducao__descricao {
+.plan-introducao__descricao {
   margin: 0;
   max-width: 92ch;
   color: var(--plan-texto-suave);
@@ -130,7 +130,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   line-height: 1.55;
 }
 
-.plan-introducaoducao__descricao strong {
+.plan-introducao__descricao strong {
   color: #dceaf4;
   font-weight: 600;
 }
@@ -841,5 +841,346 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   .plan-modal__caixa {
     padding: 16px 14px 0;
     max-height: calc(100vh - 20px);
+  }
+}
+
+/* ---------- Relatório Executivo (IA + PDF A4) ---------- */
+
+.plan-modal--relatorio {
+  padding: 16px;
+}
+
+.plan-relatorio__janela {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 960px);
+  max-height: calc(100vh - 32px);
+  border: 1px solid #2c3d4e;
+  border-radius: 12px;
+  background: #0d1520;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 0.65);
+  overflow: hidden;
+}
+
+.plan-relatorio__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--plan-borda);
+  background: #101923;
+}
+
+.plan-relatorio__topo-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f4f9fd;
+  font-size: 13.5px;
+}
+
+.plan-relatorio__selo {
+  padding: 2px 9px;
+  border: 1px solid rgb(0 207 255 / 0.35);
+  border-radius: 999px;
+  background: var(--plan-ciano-fraco);
+  color: var(--plan-ciano);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.plan-relatorio__acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.plan-relatorio__palco {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 20px;
+  background: #090f17;
+}
+
+.plan-folha {
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 28px 32px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 12.5px;
+  line-height: 1.55;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+}
+
+.plan-folha__cabecalho {
+  padding-bottom: 14px;
+  border-bottom: 2px solid #0284c7;
+  margin-bottom: 18px;
+}
+
+.plan-folha__marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.plan-folha__marca img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #0b1119;
+  padding: 4px;
+}
+
+.plan-folha__eyebrow {
+  display: block;
+  color: #0284c7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.plan-folha__cabecalho h1 {
+  margin: 2px 0 0;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.plan-folha__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: #475569;
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+
+.plan-folha__veredito {
+  padding: 8px 12px;
+  border-left: 4px solid #0284c7;
+  border-radius: 4px;
+  background: #f0f9ff;
+  color: #0c4a6e;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.plan-folha__secao {
+  margin-bottom: 18px;
+  break-inside: avoid;
+}
+
+.plan-folha__secao h2 {
+  margin: 0 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.plan-folha__secao h3 {
+  margin: 0 0 6px;
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.plan-folha__secao p {
+  margin: 0 0 8px;
+  color: #334155;
+}
+
+.plan-folha__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.plan-folha__kpi {
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.plan-folha__kpi span {
+  display: block;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.plan-folha__kpi strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.plan-folha__tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+.plan-folha__tabela th,
+.plan-folha__tabela td {
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+}
+
+.plan-folha__tabela th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+}
+
+.plan-folha__previsoes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plan-folha__previsao-card {
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.plan-folha__previsao-card strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #0284c7;
+  font-size: 12px;
+}
+
+.plan-folha__previsao-card p {
+  margin: 0 0 4px;
+  font-size: 11px;
+}
+
+.plan-folha__recomendacao {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  background: #f0f9ff;
+}
+
+.plan-folha__recomendacao strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #0369a1;
+  font-size: 12.5px;
+}
+
+.plan-folha__recomendacao p {
+  margin: 0;
+}
+
+.plan-folha__colunas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.plan-folha__lista {
+  margin: 0;
+  padding-left: 18px;
+  color: #334155;
+}
+
+.plan-folha__lista li {
+  margin-bottom: 5px;
+}
+
+.plan-folha__rodape {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid #cbd5e1;
+  color: #64748b;
+  font-size: 10.5px;
+}
+
+.plan-folha__rodape p {
+  margin: 0 0 4px;
+}
+
+@media (max-width: 760px) {
+  .plan-folha {
+    padding: 18px 16px;
+  }
+
+  .plan-folha__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plan-folha__previsoes,
+  .plan-folha__colunas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  body.pagina-planejamento-financeiro {
+    display: block !important;
+    background: #ffffff !important;
+  }
+
+  body.pagina-planejamento-financeiro .header-left,
+  body.pagina-planejamento-financeiro .btn-hamburguer-global,
+  body.pagina-planejamento-financeiro .overlay-sidebar-global,
+  body.pagina-planejamento-financeiro .conteudo-principal,
+  body.pagina-planejamento-financeiro #modal-premissas,
+  body.pagina-planejamento-financeiro #toast-premissas,
+  body.pagina-planejamento-financeiro .plan-modal__fundo,
+  body.pagina-planejamento-financeiro .plan-relatorio__topo {
+    display: none !important;
+  }
+
+  body.pagina-planejamento-financeiro #modal-relatorio {
+    position: static !important;
+    display: block !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  body.pagina-planejamento-financeiro .plan-relatorio__janela,
+  body.pagina-planejamento-financeiro .plan-relatorio__palco {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  body.pagina-planejamento-financeiro .plan-folha {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
   }
 }
