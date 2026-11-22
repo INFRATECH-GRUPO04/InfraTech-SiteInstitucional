@@ -63,17 +63,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   background: var(--plan-ciano-fraco);
 }
 
-.plan-btn--muted {
-  background: #182430;
-  border-color: #334454;
-  color: var(--plan-texto-suave);
-}
-
-.plan-btn--muted:hover {
-  color: var(--plan-texto);
-  border-color: #466178;
-}
-
 .plan-btn--principal {
   background: var(--plan-ciano);
   border-color: var(--plan-ciano);
@@ -191,51 +180,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-card__nota strong {
   color: var(--plan-texto-suave);
-}
-
-/* ---------- Etiquetas de origem ---------- */
-
-.plan-tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 5px;
-}
-
-.plan-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1.5;
-  white-space: nowrap;
-}
-
-.plan-tag--medido {
-  color: var(--plan-ciano);
-  background: rgb(0 207 255 / 0.1);
-  border-color: rgb(0 207 255 / 0.25);
-}
-
-.plan-tag--cadastro {
-  color: var(--plan-roxo);
-  background: rgb(139 92 246 / 0.14);
-  border-color: rgb(139 92 246 / 0.3);
-}
-
-.plan-tag--calculado {
-  color: var(--plan-verde);
-  background: rgb(34 197 94 / 0.12);
-  border-color: rgb(34 197 94 / 0.26);
-}
-
-.plan-tag--estimado {
-  color: var(--plan-ambar);
-  background: rgb(245 158 11 / 0.12);
-  border-color: rgb(245 158 11 / 0.26);
 }
 
 /* ---------- Billing ---------- */
@@ -628,15 +572,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   color: #66e3ff;
 }
 
-.plan-legenda {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  padding-top: 6px;
-  color: var(--plan-texto-mudo);
-}
-
 /* ---------- Modal de premissas ---------- */
 
 .plan-modal {
@@ -848,10 +783,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   .plan-section__cabecalho,
   .plan-card__cabecalho {
     flex-direction: column;
-  }
-
-  .plan-tags {
-    justify-content: flex-start;
   }
 
   .plan-bloqueados {

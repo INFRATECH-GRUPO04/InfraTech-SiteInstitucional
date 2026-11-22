@@ -44,7 +44,7 @@
     }
     function protegida(caminho) {
         const rota = String(caminho).toLowerCase();
-        if (rota === '/planejamento_financeiro.html') return true;
+        if (rota === '/planejamento_financeiro.html' || rota === '/html/planejamento_financeiro.html') return true;
         return (rota.startsWith('/dashboard/') || rota.startsWith('/paginas/pos-login/')) && (rota.endsWith('.html') || rota.endsWith('/'));
     }
     /* Decide se o cargo pode abrir um endereço específico. Os aliases mantêm

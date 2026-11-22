@@ -96,8 +96,9 @@ function mesAno(mesesAdiante) {
 /* ---------- Cálculos ---------- */
 
 function custoOcioso(servidor) {
-  if (servidor.uso >= planejamento.metaUso) return 0;
-  return servidor.custo * (planejamento.metaUso - servidor.uso) / 100;
+  var uso = Number(servidor.uso) || 0;
+  if (uso >= planejamento.metaUso) return 0;
+  return (Number(servidor.custo) || 0) * (planejamento.metaUso - uso) / 100;
 }
 
 function totaisServidores() {
@@ -106,9 +107,9 @@ function totaisServidores() {
   var somaUso = 0;
 
   planejamento.servidores.forEach(function (servidor) {
-    custoTotal += servidor.custo;
+    custoTotal += Number(servidor.custo) || 0;
     ociosoTotal += custoOcioso(servidor);
-    somaUso += servidor.uso;
+    somaUso += Number(servidor.uso) || 0;
   });
 
   return {
@@ -196,28 +197,38 @@ function renderCards() {
       ' (provisionamento: ' + planejamento.provisionamento +
       (planejamento.provisionamento === 1 ? ' mês' : ' meses') + ').';
 
-  var maior = planejamento.servidores[0];
+  var maior = planejamento.servidores[0] || null;
   planejamento.servidores.forEach(function (servidor) {
-    if (servidor.uso > maior.uso) maior = servidor;
+    if ((Number(servidor.uso) || 0) > (Number(maior.uso) || 0)) maior = servidor;
   });
 
-  document.getElementById('expansao-servidor').textContent = maior.nome;
-  document.getElementById('expansao-local').textContent = maior.local;
+  if (maior) {
+    var usoMaior = Number(maior.uso) || 0;
+    document.getElementById('expansao-servidor').textContent = maior.nome;
+    document.getElementById('expansao-local').textContent = maior.local;
 
-  var situacao = situacaoServidor(maior.uso);
-  var status = document.getElementById('expansao-status');
-  status.textContent = maior.uso >= planejamento.metaUso ? 'Gargalo local' : situacao.texto;
-  status.className = 'plan-status plan-status--' + situacao.classe;
+    var situacao = situacaoServidor(usoMaior);
+    var status = document.getElementById('expansao-status');
+    status.textContent = usoMaior >= planejamento.metaUso ? 'Gargalo local' : situacao.texto;
+    status.className = 'plan-status plan-status--' + situacao.classe;
+
+    document.getElementById('bloqueados-risco').textContent =
+      'Risco local: ' + maior.nome + ' a ' + (maior.pico || usoMaior) +
+      '% de uso pode gerar fila antes do teto global.';
+  } else {
+    document.getElementById('expansao-servidor').textContent = '—';
+    document.getElementById('expansao-local').textContent = 'Sem servidores ativos';
+    var statusVazio = document.getElementById('expansao-status');
+    statusVazio.textContent = 'Sem dados';
+    statusVazio.className = 'plan-status';
+    document.getElementById('bloqueados-risco').textContent = 'Nenhum servidor ativo cadastrado.';
+  }
 
   [1, 3, 6].forEach(function (mes) {
     var previstos = planejamento.jogadores + planejamento.crescimento * mes;
     var bloqueados = Math.max(0, previstos - capacidadeTotal);
     document.getElementById('bloqueados-' + mes).textContent = formatarNumero(bloqueados);
   });
-
-  document.getElementById('bloqueados-risco').textContent =
-    'Risco local: ' + maior.nome + ' a ' + (maior.pico || maior.uso) +
-    '% de uso pode gerar fila antes do teto global.';
 
   document.getElementById('fisicos-online').textContent = planejamento.servidores.length;
 }
@@ -228,13 +239,14 @@ function renderServidores() {
   var html = '';
 
   planejamento.servidores.forEach(function (servidor) {
+    var uso = Number(servidor.uso) || 0;
     var ocioso = custoOcioso(servidor);
-    var situacao = situacaoServidor(servidor.uso);
+    var situacao = situacaoServidor(uso);
 
     html += '<tr>' +
       '<td><strong>' + servidor.nome + '</strong></td>' +
       '<td class="plan-tabela__valor">' + formatarMoeda(servidor.custo) + '</td>' +
-      '<td class="plan-tabela__valor">' + servidor.uso + '%</td>' +
+      '<td class="plan-tabela__valor">' + uso + '%</td>' +
       '<td class="' + (ocioso > 0 ? 'plan-tabela__destaque' : 'plan-tabela__zero') + '">' +
         formatarMoeda(ocioso) +
       '</td>' +
@@ -425,16 +437,22 @@ function iniciarRelogio() {
 
 /* ---------- Modal de premissas ---------- */
 
+var CAMPOS_PREMISSAS = [
+  { chave: 'capacidadeAtual', id: 'premissa-capacidade-atual', min: 1 },
+  { chave: 'capacidadeNova', id: 'premissa-capacidade-nova', min: 1 },
+  { chave: 'crescimento', id: 'premissa-crescimento', min: 0 },
+  { chave: 'provisionamento', id: 'premissa-provisionamento', min: 0 },
+  { chave: 'orcamento', id: 'premissa-orcamento', min: 1 },
+  { chave: 'metaUso', id: 'premissa-meta', min: 1, max: 100 },
+  { chave: 'limiteSubutilizado', id: 'premissa-subutilizado', min: 1, max: 100 },
+  { chave: 'custoNovoServidor', id: 'premissa-custo-servidor', min: 0 },
+  { chave: 'custoImplantacao', id: 'premissa-custo-implantacao', min: 0 }
+];
+
 function preencherFormulario() {
-  document.getElementById('premissa-capacidade-atual').value = planejamento.capacidadeAtual;
-  document.getElementById('premissa-capacidade-nova').value = planejamento.capacidadeNova;
-  document.getElementById('premissa-crescimento').value = planejamento.crescimento;
-  document.getElementById('premissa-provisionamento').value = planejamento.provisionamento;
-  document.getElementById('premissa-orcamento').value = planejamento.orcamento;
-  document.getElementById('premissa-meta').value = planejamento.metaUso;
-  document.getElementById('premissa-subutilizado').value = planejamento.limiteSubutilizado;
-  document.getElementById('premissa-custo-servidor').value = planejamento.custoNovoServidor;
-  document.getElementById('premissa-custo-implantacao').value = planejamento.custoImplantacao;
+  CAMPOS_PREMISSAS.forEach(function (campo) {
+    document.getElementById(campo.id).value = planejamento[campo.chave];
+  });
 }
 
 function abrirPremissas() {
@@ -457,15 +475,11 @@ function lerNumero(id, padrao) {
 function aplicarPremissas(evento) {
   evento.preventDefault();
 
-  planejamento.capacidadeAtual = Math.max(1, lerNumero('premissa-capacidade-atual', planejamento.capacidadeAtual));
-  planejamento.capacidadeNova = Math.max(1, lerNumero('premissa-capacidade-nova', planejamento.capacidadeNova));
-  planejamento.crescimento = Math.max(0, lerNumero('premissa-crescimento', planejamento.crescimento));
-  planejamento.provisionamento = Math.max(0, lerNumero('premissa-provisionamento', planejamento.provisionamento));
-  planejamento.orcamento = Math.max(1, lerNumero('premissa-orcamento', planejamento.orcamento));
-  planejamento.metaUso = Math.min(100, Math.max(1, lerNumero('premissa-meta', planejamento.metaUso)));
-  planejamento.limiteSubutilizado = Math.min(100, Math.max(1, lerNumero('premissa-subutilizado', planejamento.limiteSubutilizado)));
-  planejamento.custoNovoServidor = Math.max(0, lerNumero('premissa-custo-servidor', planejamento.custoNovoServidor));
-  planejamento.custoImplantacao = Math.max(0, lerNumero('premissa-custo-implantacao', planejamento.custoImplantacao));
+  CAMPOS_PREMISSAS.forEach(function (campo) {
+    var valor = Math.max(campo.min, lerNumero(campo.id, planejamento[campo.chave]));
+    if (campo.max !== undefined) valor = Math.min(campo.max, valor);
+    planejamento[campo.chave] = valor;
+  });
 
   renderTudo();
   fecharPremissas();
@@ -501,16 +515,6 @@ document.addEventListener('DOMContentLoaded', function () {
       fecharPremissas();
     }
   });
-
-  document.getElementById('btn-dados-ilustrativos').addEventListener('click', function () {
-    var aviso = document.getElementById('aviso-ilustrativo');
-    aviso.hidden = !aviso.hidden;
-    document.getElementById('btn-dados-ilustrativos').textContent =
-      aviso.hidden ? 'Dados ilustrativos' : 'Ocultar aviso';
-  });
-
-  document.getElementById('btn-dados-ilustrativos').textContent =
-    document.getElementById('aviso-ilustrativo').hidden ? 'Dados ilustrativos' : 'Ocultar aviso';
 });
 
 /* Deixa os dados acessíveis para uma futura integração com o backend. */

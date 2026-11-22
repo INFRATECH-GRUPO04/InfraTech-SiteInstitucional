@@ -102,6 +102,20 @@ function validarPremissas(dados) {
     return null;
 }
 
+/* Carrega em paralelo todas as informações do planejamento de uma empresa. */
+function carregarPlanejamento(idEmpresa) {
+    return Promise.all([
+        planejamentoModel.buscarPlanejamento(idEmpresa),
+        planejamentoModel.listarServidoresAtivos(idEmpresa),
+        planejamentoModel.listarHistorico(idEmpresa),
+        planejamentoModel.buscarGestor(idEmpresa)
+    ]).then(function (resultados) {
+        var plano = resultados[0];
+        if (!plano || plano.length === 0) return null;
+        return montarResposta(plano, resultados[1], resultados[2], resultados[3]);
+    });
+}
+
 /* Lê as premissas da empresa da sessão e devolve o JSON do dashboard. */
 function obter(req, res) {
     var idEmpresa = req.usuario && req.usuario.empresa;
@@ -109,22 +123,14 @@ function obter(req, res) {
         return res.status(400).json({ erro: 'Empresa da sessão não identificada.' });
     }
 
-    planejamentoModel.buscarPlanejamento(idEmpresa)
-        .then(function (plano) {
-            if (!plano || plano.length === 0) {
+    carregarPlanejamento(idEmpresa)
+        .then(function (dados) {
+            if (!dados) {
                 return res.status(404).json({ erro: 'Planejamento não configurado para esta empresa.' });
             }
-            return planejamentoModel.listarServidoresAtivos(idEmpresa)
-                .then(function (servidores) {
-                    return planejamentoModel.listarHistorico(idEmpresa)
-                        .then(function (historico) {
-                            return planejamentoModel.buscarGestor(idEmpresa)
-                                .then(function (gestor) {
-                                    return res.status(200).json(montarResposta(plano, servidores, historico, gestor));
-                                });
-                        });
-                });
-        }).catch(function (erro) {
+            return res.status(200).json(dados);
+        })
+        .catch(function (erro) {
             console.log(erro);
             res.status(500).json({ erro: 'Não foi possível carregar o planejamento.' });
         });
@@ -142,25 +148,20 @@ function atualizar(req, res) {
         return res.status(400).json({ erro: erro });
     }
 
-    planejamentoModel.buscarPlanejamento(idEmpresa)
-        .then(function (plano) {
-            if (!plano || plano.length === 0) {
+    planejamentoModel.atualizarPremissas(idEmpresa, req.body)
+        .then(function (resultado) {
+            if (resultado && resultado.affectedRows === 0) {
+                return null;
+            }
+            return carregarPlanejamento(idEmpresa);
+        })
+        .then(function (dados) {
+            if (!dados) {
                 return res.status(404).json({ erro: 'Planejamento não configurado para esta empresa.' });
             }
-            return planejamentoModel.atualizarPremissas(idEmpresa, req.body)
-                .then(function () {
-                    return planejamentoModel.listarServidoresAtivos(idEmpresa)
-                        .then(function (servidores) {
-                            return planejamentoModel.listarHistorico(idEmpresa)
-                                .then(function (historico) {
-                                    return planejamentoModel.buscarGestor(idEmpresa)
-                                        .then(function (gestor) {
-                                            return res.status(200).json(montarResposta(plano, servidores, historico, gestor));
-                                        });
-                                });
-                        });
-                });
-        }).catch(function (erro) {
+            return res.status(200).json(dados);
+        })
+        .catch(function (erro) {
             console.log(erro);
             res.status(500).json({ erro: 'Não foi possível atualizar as premissas.' });
         });
