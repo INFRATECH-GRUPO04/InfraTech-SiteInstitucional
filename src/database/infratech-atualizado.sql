@@ -433,7 +433,8 @@ INSERT INTO metrica (
 -- para alimentar a dashboard de planejamento financeiro.
 -- =====================================================
 
-UPDATE servidor SET custo_mensal = IF(status_sistema = 1, 3200.00, 0.00) WHERE fk_empresa = 2;
+UPDATE servidor SET custo_mensal = 3200.00 WHERE fk_empresa = 2 AND status_sistema = 1;
+UPDATE servidor SET custo_mensal = 0.00 WHERE fk_empresa = 2 AND status_sistema = 0;
 
 
 -- =====================================================
