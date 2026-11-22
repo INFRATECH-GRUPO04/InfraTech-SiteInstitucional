@@ -34,6 +34,7 @@ var gerenciarEmpresaRouter = require("./src/routes/gerenciarEmpresa");
 var gerenciarFuncionarioRouter = require("./src/routes/gerenciarFuncionario");
 var agenteRouter = require("./src/routes/agente");
 
+var planejamentoRouter = require("./src/routes/planejamento");
 var cryptoRouter = require("./src/routes/crypto");
 var autorizacao = require("./src/seguranca/autorizacao");
 
@@ -87,6 +88,7 @@ app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissa
 app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
 app.use("/agente", agenteRouter)
+app.use("/planejamento", autorizacao.autenticar, planejamentoRouter);
 
 module.exports = app;
 

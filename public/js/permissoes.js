@@ -30,6 +30,7 @@
         if (['GESTOR', 'ADMIN'].includes(tipo)) ids.push('planejamento');
         return {
             dashboards: ids,
+            planejamento: ids.includes('planejamento'),
             administrar: completo,
             gerenciarEmpresas: ['ADMIN', 'INFRATECH'].includes(tipo),
             modificarServidores: ['GESTOR', 'ADMIN', 'INFRATECH'].includes(tipo),
