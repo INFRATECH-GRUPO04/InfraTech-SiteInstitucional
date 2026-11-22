@@ -75,32 +75,32 @@
         <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
       </h1>
       <div class="dashboard-welcome__meta">
-        <span class="plan-chip plan-chip--online"><span class="plan-chip__dot"></span><span id="fisicos-online">6</span> físicos online</span>
+        <span class="plan-selo plan-selo--online"><span class="plan-selo__ponto"></span><span id="fisicos-online">6</span> físicos online</span>
         <time class="dashboard-welcome__hora" id="relogio"></time>
-        <button type="button" class="plan-btn plan-btn--ghost" id="btn-premissas-topo">Premissas</button>
+        <button type="button" class="plan-botao plan-botao--contorno" id="btn-premissas-topo">Premissas</button>
       </div>
     </header>
 
-    <section class="plan-intro">
-      <h2 class="plan-intro__titulo">Planejamento Financeiro</h2>
-      <p class="plan-intro__descricao">
+    <section class="plan-introducao">
+      <h2 class="plan-introducaoducao__titulo">Planejamento Financeiro</h2>
+      <p class="plan-introducaoducao__descricao">
         Dados cadastrados pelo gestor (<strong id="nome-gestor">Alberto Santos</strong>)
         em <strong id="data-cadastro">10/11/2026</strong>: custos, capacidade, crescimento,
         orçamento, custo de expansão e meta de uso.
       </p>
     </section>
 
-    <div class="plan-notice" id="aviso-ilustrativo">
+    <div class="plan-aviso" id="aviso-ilustrativo">
       Esta tela está usando dados ilustrativos. As premissas podem ser alteradas no botão
       <strong>Premissas</strong> e os valores são recalculados na hora.
     </div>
 
     <!-- Billing: custo, receita, lucro e retorno -->
-    <section class="plan-billing" aria-label="Billing e rentabilidade">
-      <div class="plan-section__cabecalho">
+    <section class="plan-faturamento" aria-label="Billing e rentabilidade">
+      <div class="plan-secao__cabecalho">
         <div>
-          <h2 class="plan-section__titulo">Billing &amp; Rentabilidade</h2>
-          <p class="plan-section__descricao">Quanto custa manter a operação e o retorno estimado para o negócio.</p>
+          <h2 class="plan-secao__titulo">Billing &amp; Rentabilidade</h2>
+          <p class="plan-secao__descricao">Quanto custa manter a operação e o retorno estimado para o negócio.</p>
         </div>
       </div>
 
@@ -138,7 +138,7 @@
         </article>
       </div>
 
-      <div class="plan-value-banner">
+      <div class="plan-faixa-economia">
         <strong>Por que vale a pena:</strong>
         além de evitar compra de servidores e equipe própria de NOC, a operação estima
         <strong id="economia-estimada">R$ 8.400</strong> de economia por mês em relação a uma
@@ -147,37 +147,37 @@
     </section>
 
     <!-- Cards de decisão -->
-    <section class="plan-top-grid" aria-label="Resumo do planejamento">
-      <article class="plan-card">
-        <div class="plan-card__cabecalho">
-          <h3 class="plan-card__titulo">Runway de capacidade global</h3>
+    <section class="plan-grade-resumo" aria-label="Resumo do planejamento">
+      <article class="plan-cartao">
+        <div class="plan-cartao__cabecalho">
+          <h3 class="plan-cartao__titulo">Runway de capacidade global</h3>
         </div>
-        <p class="plan-runway" id="runway-valor">5 meses e 1 semana</p>
-        <div class="plan-progress" aria-hidden="true">
-          <div class="plan-progress__fill" id="runway-barra" style="width: 83.3%"></div>
+        <p class="plan-capacidade-restante" id="runway-valor">5 meses e 1 semana</p>
+        <div class="plan-progresso" aria-hidden="true">
+          <div class="plan-progressoo__preenchimento" id="runway-barra" style="width: 83.3%"></div>
         </div>
-        <div class="plan-progress__legenda">
+        <div class="plan-progressoo__legenda">
           <span id="runway-uso">10.000 / 12.000 jogadores</span>
           <span id="runway-percentual">83,3%</span>
         </div>
-        <p class="plan-card__nota" id="runway-detalhe">Prazo útil para decidir: 3 meses e 1 semana (provisionamento: 2 meses).</p>
+        <p class="plan-cartao__nota" id="runway-detalhe">Prazo útil para decidir: 3 meses e 1 semana (provisionamento: 2 meses).</p>
       </article>
 
-      <article class="plan-card">
-        <div class="plan-card__cabecalho">
-          <h3 class="plan-card__titulo">Maior necessidade de expansão</h3>
+      <article class="plan-cartao">
+        <div class="plan-cartao__cabecalho">
+          <h3 class="plan-cartao__titulo">Maior necessidade de expansão</h3>
         </div>
         <p class="plan-destaque" id="expansao-servidor">SRV-SP-01</p>
         <div class="plan-linha">
           <span class="plan-texto-suave" id="expansao-local">São Paulo - Paulista</span>
-          <span class="plan-status plan-status--saturado" id="expansao-status">Gargalo local</span>
+          <span class="plan-situacao plan-situacao--saturado" id="expansao-status">Gargalo local</span>
         </div>
-        <p class="plan-card__nota">Servidor com maior pressão de uso no período analisado.</p>
+        <p class="plan-cartao__nota">Servidor com maior pressão de uso no período analisado.</p>
       </article>
 
-      <article class="plan-card">
-        <div class="plan-card__cabecalho">
-          <h3 class="plan-card__titulo">Projeção de jogadores bloqueados</h3>
+      <article class="plan-cartao">
+        <div class="plan-cartao__cabecalho">
+          <h3 class="plan-cartao__titulo">Projeção de jogadores bloqueados</h3>
         </div>
         <div class="plan-bloqueados">
           <div><span class="plan-bloqueados__rotulo">1 mês</span><strong id="bloqueados-1">0</strong></div>
@@ -191,16 +191,16 @@
     </section>
 
     <!-- Custo x uso e orçamento -->
-    <section class="plan-split">
-      <article class="plan-card plan-card--tabela">
-        <div class="plan-card__cabecalho">
+    <section class="plan-paineis">
+      <article class="plan-cartao plan-cartao--tabela">
+        <div class="plan-cartao__cabecalho">
           <div>
-            <h3 class="plan-card__titulo">Custo × uso por servidor</h3>
-            <p class="plan-card__subtitulo">Custo mensal estimado (cadastro do gestor) · uso médio dos últimos 30 dias · servidores físicos.</p>
+            <h3 class="plan-cartao__titulo">Custo × uso por servidor</h3>
+            <p class="plan-cartao__subtitulo">Custo mensal estimado (cadastro do gestor) · uso médio dos últimos 30 dias · servidores físicos.</p>
           </div>
         </div>
 
-        <div class="plan-tabela-wrap">
+        <div class="plan-tabela-container">
           <table class="plan-tabela">
             <thead>
               <tr>
@@ -214,7 +214,7 @@
             <tbody id="corpo-servidores"></tbody>
           </table>
         </div>
-        <p class="plan-card__nota">
+        <p class="plan-cartao__nota">
           Saturado ≥<span id="limite-saturado">75</span>% ·
           Normal <span class="limite-subutilizado-nota">40</span>–<span id="limite-normal">74</span>% ·
           Subutilizado &lt;<span class="limite-subutilizado-nota">40</span>% (limites de alerta editáveis).
@@ -222,32 +222,32 @@
         </p>
       </article>
 
-      <article class="plan-card plan-card--grafico">
-        <div class="plan-card__cabecalho">
+      <article class="plan-cartao plan-cartao--grafico">
+        <div class="plan-cartao__cabecalho">
           <div>
-            <h3 class="plan-card__titulo">Custo estimado mensal vs orçamento</h3>
-            <p class="plan-card__subtitulo">Últimos 6 meses · valores estimados a partir do cadastro de custos.</p>
+            <h3 class="plan-cartao__titulo">Custo estimado mensal vs orçamento</h3>
+            <p class="plan-cartao__subtitulo">Últimos 6 meses · valores estimados a partir do cadastro de custos.</p>
           </div>
         </div>
 
         <div class="plan-projecao" id="projecao-orcamento">Projeção de nov/26: R$ 19.200 (96% do orçamento)</div>
-        <div class="plan-grafico-wrap">
+        <div class="plan-grafico-container">
           <canvas id="grafico-custo" aria-label="Gráfico de custo mensal comparado ao orçamento" role="img"></canvas>
         </div>
-        <p class="plan-card__nota">Orçamento mensal: <strong id="texto-orcamento">R$ 20.000</strong></p>
+        <p class="plan-cartao__nota">Orçamento mensal: <strong id="texto-orcamento">R$ 20.000</strong></p>
       </article>
     </section>
 
     <!-- Cenários -->
-    <section class="plan-card plan-card--cenarios">
-      <div class="plan-card__cabecalho">
+    <section class="plan-cartao plan-cartao--cenarios">
+      <div class="plan-cartao__cabecalho">
         <div>
-          <h3 class="plan-card__titulo">Simulação de cenários de investimento</h3>
-          <p class="plan-card__subtitulo">Decisões para o próximo trimestre e ano · capacidade em jogadores simultâneos.</p>
+          <h3 class="plan-cartao__titulo">Simulação de cenários de investimento</h3>
+          <p class="plan-cartao__subtitulo">Decisões para o próximo trimestre e ano · capacidade em jogadores simultâneos.</p>
         </div>
       </div>
 
-      <div class="plan-tabela-wrap">
+      <div class="plan-tabela-container">
         <table class="plan-tabela plan-tabela--cenarios">
           <thead>
             <tr>
@@ -263,19 +263,19 @@
           <tbody id="corpo-cenarios"></tbody>
         </table>
       </div>
-      <p class="plan-card__nota">Custos de expansão e capacidade dos servidores novos conforme premissas cadastradas pelo gestor.</p>
+      <p class="plan-cartao__nota">Custos de expansão e capacidade dos servidores novos conforme premissas cadastradas pelo gestor.</p>
     </section>
 
     <!-- Rodapé de transparência -->
-    <footer class="plan-footer">
-      <p class="plan-footer__fontes">
+    <footer class="plan-rodape">
+      <p class="plan-rodape__fontes">
         <strong>Fontes:</strong> jogadores simultâneos (telemetria do jogo), uso por servidor
         (script de captura), custo e capacidade por servidor (cadastro do gestor). Custos
         estimados, não faturados. Projeção linear, sem sazonalidade.
       </p>
-      <div class="plan-footer__premissas">
+      <div class="plan-rodape__premissas">
         <span><strong>Premissas:</strong> <span id="resumo-premissas">crescimento 375 jogadores/mês · 2.000 jogadores por servidor · provisionamento 2 meses · meta de uso 75% · novo servidor R$ 3.200/mês + R$ 2.000 de implantação.</span></span>
-        <button type="button" class="plan-link" id="btn-editar-premissas">Editar premissas</button>
+        <button type="button" class="plan-atalho" id="btn-editar-premissas">Editar premissas</button>
       </div>
     </footer>
   </main>
@@ -386,14 +386,14 @@
         </div>
 
         <div class="plan-modal__rodape">
-          <button type="button" class="plan-btn plan-btn--ghost" id="btn-cancelar-premissas">Cancelar</button>
-          <button type="submit" class="plan-btn plan-btn--principal">Aplicar e recalcular</button>
+          <button type="button" class="plan-botao plan-botao--contorno" id="btn-cancelar-premissas">Cancelar</button>
+          <button type="submit" class="plan-botao plan-botao--principal">Aplicar e recalcular</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div class="plan-toast" id="toast-premissas" hidden>Premissas aplicadas. Valores recalculados.</div>
+  <div class="plan-notificacao" id="toast-premissas" hidden>Premissas aplicadas. Valores recalculados.</div>
 
   <script src="/js/planejamento_financeiro.js"></script>
 </body>

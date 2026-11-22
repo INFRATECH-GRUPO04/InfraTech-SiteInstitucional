@@ -210,7 +210,7 @@ function renderCards() {
     var situacao = situacaoServidor(usoMaior);
     var status = document.getElementById('expansao-status');
     status.textContent = usoMaior >= planejamento.metaUso ? 'Gargalo local' : situacao.texto;
-    status.className = 'plan-status plan-status--' + situacao.classe;
+    status.className = 'plan-situacao plan-situacao--' + situacao.classe;
 
     document.getElementById('bloqueados-risco').textContent =
       'Risco local: ' + maior.nome + ' a ' + (maior.pico || usoMaior) +
@@ -220,7 +220,7 @@ function renderCards() {
     document.getElementById('expansao-local').textContent = 'Sem servidores ativos';
     var statusVazio = document.getElementById('expansao-status');
     statusVazio.textContent = 'Sem dados';
-    statusVazio.className = 'plan-status';
+    statusVazio.className = 'plan-situacao';
     document.getElementById('bloqueados-risco').textContent = 'Nenhum servidor ativo cadastrado.';
   }
 
@@ -250,7 +250,7 @@ function renderServidores() {
       '<td class="' + (ocioso > 0 ? 'plan-tabela__destaque' : 'plan-tabela__zero') + '">' +
         formatarMoeda(ocioso) +
       '</td>' +
-      '<td><span class="plan-status plan-status--' + situacao.classe + '">' + situacao.texto + '</span></td>' +
+      '<td><span class="plan-situacao plan-situacao--' + situacao.classe + '">' + situacao.texto + '</span></td>' +
       '</tr>';
   });
 
