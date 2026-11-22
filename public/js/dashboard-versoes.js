@@ -12,10 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         DISCO: {
             subtitulo: 'Taxa de I/O de disco · leitura + escrita · 64 jogadores nas duas builds',
             unidadeEixo: 'I/O DE DISCO (MB/S)',
-            unidadeCurta: 'MB/s',
-            maxY: 175,
-            stepY: 40,
-            limiteValor: 140,
+            unidadeCurta: 'MB/s', //mostrada no evento adicionado.
+            maxY: 175, // onde termina
+            stepY: 40, // onde começa
+            limiteValor: 140, 
             limiteTexto: 'Limite proposto · 140 MB/s',
             v1: [32, 35, 38, 42, 40, 48, 70, 38, 36, 40, 37, 36, 37],
             v2: [45, 50, 56, 62, 68, 56, 128, 66, 68, 72, 65, 63, 66]
@@ -55,29 +55,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    let recursoAtual = 'DISCO';
+    let recursoAtual = 'DISCO'; // a tela inicia com o DISCO
     let eventoCustom = {
         indice: 6, // '12:00'
         titulo: '12h · teste da batalha na colina'
     };
 
-    /* 1. GRÁFICO DE LINHA: CONSUMO DE RECURSOS AO LONGO DO TEMPO */
+    /*GRÁFICO DE LINHA: CONSUMO DE RECURSOS AO LONGO DO TEMPO */
     const ctxConsumo = document.getElementById('graficoConsumoRecursos').getContext('2d');
 
+    //plugin customizado para colocar informações extras:
     const pluginAnotacoesConsumo = {
         id: 'anotacoesConsumo',
+         /*gancho de ciclo de vida: desenhe primeiro as linhas do grafico
+            e depois faça essa parte*/
         afterDatasetsDraw(chart) {
             const { ctx, chartArea, scales } = chart;
+            /*Proteção para o primeiro milissegundo de carregamento da página,
+             quando o Chart.js ainda está calculando o tamanho da tela e
+              chartArea ainda não existe:*/
             if (!chartArea) return;
 
-            const cfg = dadosRecursos[recursoAtual];
+            const cfg = dadosRecursos[recursoAtual]; //AAAAAA
             const yLimite = scales.y.getPixelForValue(cfg.limiteValor);
 
             ctx.save();
 
             // Linha horizontal tracejada de limite proposto
-            ctx.beginPath();
-            ctx.setLineDash([4, 4]);
+            ctx.beginPath(); //Avisa o Canvas que vamos começar um traço novo.
+            ctx.setLineDash([4, 4]); /*Configura o traço como tracejado (4px pintados, 4px vazios)*/
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'rgba(240, 101, 101, 0.55)';
             ctx.moveTo(chartArea.left, yLimite);
@@ -93,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Linha vertical tracejada do evento (padrão 12:00)
             const idx = eventoCustom.indice;
-            const xEvento = scales.x.getPixelForValue(idx);
+            const xEvento = scales.x.getPixelForValue(idx); //busca o 12 na lista de horarios
 
             ctx.beginPath();
             ctx.setLineDash([4, 4]);
@@ -101,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.strokeStyle = 'rgba(240, 180, 76, 0.65)';
             ctx.moveTo(xEvento, chartArea.top + 4);
             ctx.lineTo(xEvento, chartArea.bottom);
-            ctx.stroke();
+            ctx.stroke(); //desenha a borda da linha
 
             // Caixa de anotação do evento ao lado da linha vertical
             const valV1 = cfg.v1[idx];
@@ -111,33 +117,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ctx.setLineDash([]);
             ctx.font = '600 11px Inter, sans-serif';
-            const largura1 = ctx.measureText(linha1).width;
+            /* Mede quantos pixels de largura cada frase vai ocupar na tela
+             com aquela fonte. Isso permite que, se o usuário clicar em
+              "+ Adicionar evento" e digitar um texto longo, a caix
+              a cresça automaticamente.*/
+            const largura1 = ctx.measureText(linha1).width; 
             ctx.font = '400 10.5px Inter, sans-serif';
             const largura2 = ctx.measureText(linha2).width;
-
-            const boxW = Math.max(largura1, largura2) + 20;
-            const boxH = 38;
+            /*Pega a maior das duas linhas e soma 20px de margem
+             interna (10px de cada lado)  */
+            const boxW = Math.max(largura1, largura2) + 20; 
+            const boxH = 38; //altura da caixa
+            /*Posiciona a caixa 10px à direita da linha amarela, mas impede
+             que ela ultrapasse a borda direita do gráfico caso o evento
+              esteja muito perto do fim. */
             const boxX = Math.min(xEvento + 10, chartArea.right - boxW - 6);
-            const boxY = chartArea.top + 8;
+            const boxY = chartArea.top + 8; //AAAAAAAAAAA
 
             ctx.fillStyle = 'rgba(42, 34, 21, 0.92)';
             ctx.strokeStyle = 'rgba(240, 180, 76, 0.4)';
             ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(boxX, boxY, boxW, boxH, 6);
-            ctx.fill();
-            ctx.stroke();
+            ctx.beginPath(); //AAAAAAAAA
+            ctx.roundRect(boxX, boxY, boxW, boxH, 6); //Desenha o retângulo com bordas arredondadas de 6px
+            ctx.fill(); //preenche o fundo da caixa
+            ctx.stroke(); //borda da caixa
 
             ctx.textAlign = 'left';
             ctx.font = '600 11px Inter, sans-serif';
             ctx.fillStyle = COR_ALERTA;
-            ctx.fillText(linha1, boxX + 10, boxY + 15);
+            ctx.fillText(linha1, boxX + 10, boxY + 15); //AAAAAA
 
+            //texto das versões embaixo:
             ctx.font = '400 10.5px Inter, sans-serif';
             ctx.fillStyle = '#a6b7c7';
-            ctx.fillText(linha2, boxX + 10, boxY + 30);
+            ctx.fillText(linha2, boxX + 10, boxY + 30); //AAAAAA
 
-            ctx.restore();
+            ctx.restore(); //AAAAAAA
         }
     };
 
@@ -163,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     borderWidth: 2.2,
                     tension: 0.15,
                     fill: true,
+                    /*Cria o degrade vertical saindo das linhas v1 e v2:*/
                     backgroundColor: (context) => {
                         const { ctx, chartArea } = context.chart;
                         if (!chartArea) return 'rgba(167, 139, 250, 0.08)';
@@ -171,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         gradient.addColorStop(1, 'rgba(167, 139, 250, 0.0)');
                         return gradient;
                     },
+                    //Deixa aparecendo somente a bolinha do evento:*/
                     pointRadius: (ctx) => (ctx.dataIndex === eventoCustom.indice ? 4 : 0),
                     pointBackgroundColor: '#ffffff',
                     pointBorderColor: COR_V2,
@@ -181,11 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         options: {
             responsive: true,
+            /*Desativa a proporção fixa padrão do Chart.js,
+             pro grafico não estourar a altura: */
             maintainAspectRatio: false,
+            //mostra as informações ao passar o mouse:
             interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: { display: false },
-                tooltip: {
+                legend: { display: false }, //tira a legenda automática
+                tooltip: { //cores da caixinha que aparece ao passar o mouse:
                     backgroundColor: '#0d141c',
                     borderColor: '#253445',
                     borderWidth: 1,
@@ -197,14 +217,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 x: {
                     grid: { display: false },
                     border: { color: '#222f3e' },
-                    ticks: { font: { size: 10.5 }, padding: 6 }
+                    ticks: { font: { size: 10.5 }, padding: 6 } // ajusta o tamanho da fonte da linha horizontal.
                 },
                 y: {
-                    min: 0,
-                    max: dadosRecursos.DISCO.maxY,
+                    min: 0, //começa em zero
+                    max: dadosRecursos.DISCO.maxY, //termina no valor max do disco
                     border: { display: false },
+                    //linhas branco claro horizontais do grafico:
                     grid: { color: 'rgba(255, 255, 255, 0.06)' },
-                    ticks: {
+                    ticks: { // define o intervalo entre os valores do eixo y:
                         stepSize: dadosRecursos.DISCO.stepY,
                         font: { size: 10.5 },
                         padding: 8
@@ -212,24 +233,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         },
-        plugins: [pluginAnotacoesConsumo]
+        plugins: [pluginAnotacoesConsumo] //conecta o grafico ao plugin extra
     });
 
     // Interatividade das abas CPU / RAM / Disco / REDE
+    //busca no html todos os botoes com a classe .recurso-selecionado':
     document.querySelectorAll('.recurso-selecionado').forEach((aba) => {
-        aba.addEventListener('click', () => {
-            const recurso = aba.dataset.recurso;
-            if (!dadosRecursos[recurso]) return;
+        aba.addEventListener('click', () => { // so acontece quando o usuário clica.
+            const recurso = aba.dataset.recurso; //atribui o componente selecionado.
+            if (!dadosRecursos[recurso]) return; //se nao existir não faça nada.
 
             document.querySelectorAll('.recurso-selecionado').forEach((el) => el.classList.remove('ativo'));
-            aba.classList.add('ativo');
+            aba.classList.add('ativo'); //muda a cor do componente
 
             recursoAtual = recurso;
-            const cfg = dadosRecursos[recurso];
+            const cfg = dadosRecursos[recurso]; 
 
             document.getElementById('subtitulo-consumo').textContent = cfg.subtitulo;
             document.getElementById('unidade-consumo').textContent = cfg.unidadeEixo;
 
+            //muda toda a estrutura do gráfico conforme o componente selecionado:
             graficoConsumo.data.datasets[0].data = cfg.v1;
             graficoConsumo.data.datasets[1].data = cfg.v2;
             graficoConsumo.options.scales.y.max = cfg.maxY;
@@ -239,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Interatividade do botão "+ Adicionar evento"
+    //mostra a caixinha de adicionar evento:
     const btnEvento = document.getElementById('btn-adicionar-evento');
     if (btnEvento) {
         btnEvento.addEventListener('click', () => {
@@ -249,32 +273,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* 2. GRÁFICO DE ESCALABILIDADE DE JOGADORES */
+    /*GRÁFICO DE ESCALABILIDADE DE JOGADORES */
     const ctxEscalabilidade = document.getElementById('graficoEscalabilidade').getContext('2d');
 
     const pluginLimiteEscalabilidade = {
         id: 'limiteEscalabilidade',
-        afterDatasetsDraw(chart) {
+        afterDatasetsDraw(chart) { // só aparece depois do grafico ser criado
             const { ctx, chartArea, scales } = chart;
             if (!chartArea) return;
 
+            /*identifica em qual posição vertical (em pixels) fica o
+             valor 90 do eixo Y e guarda esse número na variável */
+             //sendo o 90 o limite critico.
             const yCritico = scales.y.getPixelForValue(90);
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.setLineDash([3, 3]);
+/*O canvas funciona como uma tela em branco, enquanto o ctx é o pincel,
+toda vez que precisamos desenhar algo novo(uma linha) precisamos 
+configurar o ctx e antes salvar seu estado atual, depois de usar precisamos
+"limpar o pincel" apagando do ctx as configurações que atribuimos, dessa
+forma possibilitando que ele seja configurado novamente posteriormente
+para desenha outra linha. */
+            ctx.save(); 
+            ctx.beginPath(); //avisa o canvas que vamos criar uma linha nova
+            ctx.setLineDash([3, 3]); // linha pontilhada
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'rgba(240, 101, 101, 0.55)';
             ctx.moveTo(chartArea.left, yCritico);
             ctx.lineTo(chartArea.right, yCritico);
-            ctx.stroke();
+            ctx.stroke(); // faz a linha aparecer 
 
-            ctx.setLineDash([]);
+            ctx.setLineDash([]); //remove o pontilhado do pincel
             ctx.font = '500 10.5px Inter, sans-serif';
             ctx.fillStyle = COR_CRITICO;
             ctx.textAlign = 'right';
+            //texto critico e sua posição:
             ctx.fillText('Crítico >90%', chartArea.right - 16, yCritico - 5);
-            ctx.restore();
+            ctx.restore(); //volta o pincel ao seu estado normal salvo no ctx.save().
         }
     };
 
@@ -299,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     borderWidth: 2,
                     borderDash: [4, 4],
                     tension: 0.35,
-                    pointRadius: (ctx) => (ctx.dataIndex >= 3 ? 2.5 : 0),
+                    pointRadius: (ctx) => (ctx.dataIndex >= 3 ? 2.5 : 2.5),
                     pointBackgroundColor: (ctx) => (ctx.dataIndex === 9 ? COR_CRITICO : COR_V2),
                     pointBorderColor: (ctx) => (ctx.dataIndex === 9 ? '#ffffff' : COR_V2),
                     pointHoverRadius: 5
@@ -320,13 +353,10 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             scales: {
                 x: {
-                    grid: { display: false },
+                    grid: { display: false }, //esconde as linhas verticais
                     border: { color: '#222f3e' },
                     ticks: {
                         autoSkip: false,
-                        callback(value, index) {
-                            return index % 2 === 0 ? this.getLabelForValue(value) : '';
-                        },
                         font: { size: 10.5 }
                     },
                     title: {
@@ -344,16 +374,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     grid: { color: 'rgba(255, 255, 255, 0.06)' },
                     ticks: {
                         stepSize: 25,
+                        /*coloca a porcentagem no numeros e esconde qualque 
+                        numero acima de 100%: */
                         callback: (v) => (v <= 100 ? `${v}%` : ''),
                         font: { size: 10.5 }
                     }
                 }
             }
         },
-        plugins: [pluginLimiteEscalabilidade]
+        plugins: [pluginLimiteEscalabilidade] //ativa o plugin personalizado da linha limite
     });
 
-    /* 3. GRÁFICO RADAR: ASSINATURA DE PERFORMANCE DOS COMPONENTES */
+    /*GRÁFICO RADAR: ASSINATURA DE PERFORMANCE DOS COMPONENTES */
     const ctxPerformance = document.getElementById('graficoPerformance').getContext('2d');
 
     new Chart(ctxPerformance, {
@@ -393,12 +425,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             scales: {
-                r: {
+                r: { // ao inves de eixos x e y, utiliza o r que vai do centro as pontas.
                     min: 0,
                     max: 100,
                     startAngle: 0,
                     ticks: {
-                        stepSize: 25,
+                        stepSize: 25, //a escala aumenta de 25 em 25.
                         backdropColor: 'transparent',
                         color: '#6b8196',
                         font: { size: 9 },
