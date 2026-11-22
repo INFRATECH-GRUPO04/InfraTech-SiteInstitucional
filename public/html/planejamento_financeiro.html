@@ -90,7 +90,7 @@
       </p>
     </section>
 
-    <div class="plan-aviso" id="aviso-ilustrativo">
+    <div class="plan-aviso" id="aviso-ilustrativo" hidden>
       Esta tela está usando dados ilustrativos. As premissas podem ser alteradas no botão
       <strong>Premissas</strong> e os valores são recalculados na hora.
     </div>
@@ -385,9 +385,11 @@
 
         </div>
 
+        <p class="plan-modal__erro" id="erro-premissas" role="alert" hidden></p>
+
         <div class="plan-modal__rodape">
           <button type="button" class="plan-botao plan-botao--contorno" id="btn-cancelar-premissas">Cancelar</button>
-          <button type="submit" class="plan-botao plan-botao--principal">Aplicar e recalcular</button>
+          <button type="submit" class="plan-botao plan-botao--principal" id="btn-salvar-premissas">Aplicar e recalcular</button>
         </div>
       </form>
     </div>

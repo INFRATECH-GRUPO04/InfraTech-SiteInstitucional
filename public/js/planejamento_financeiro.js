@@ -395,6 +395,9 @@ function renderGrafico() {
   });
 
   var cores = valores.map(function (valor, indice) {
+    if (valor > planejamento.orcamento) {
+      return 'rgba(253, 164, 175, 0.85)';
+    }
     if (indice === valores.length - 1) {
       return 'rgba(0, 207, 255, 0.35)';
     }
@@ -432,7 +435,7 @@ function renderGrafico() {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          labels: { color: '#a6b7c7', boxWidth: 12, font: { size: 10 } }
+          labels: { color: '#a6b7c7', boxWidth: 12, font: { family: 'Inter, sans-serif', size: 11 } }
         },
         tooltip: {
           callbacks: {
@@ -444,14 +447,14 @@ function renderGrafico() {
       },
       scales: {
         x: {
-          ticks: { color: '#8da1b3', font: { size: 10 } },
+          ticks: { color: '#8da1b3', font: { family: 'Inter, sans-serif', size: 11 } },
           grid: { display: false }
         },
         y: {
           beginAtZero: true,
           ticks: {
             color: '#8da1b3',
-            font: { size: 10 },
+            font: { family: 'Inter, sans-serif', size: 11 },
             callback: function (valor) { return formatarMoeda(valor); }
           },
           grid: { color: 'rgba(255, 255, 255, 0.05)' }
@@ -466,12 +469,15 @@ function renderGrafico() {
     percentual = (ultimo / planejamento.orcamento) * 100;
   }
 
+  var projecaoEl = document.getElementById('projecao-orcamento');
   if (labels.length > 0) {
-    document.getElementById('projecao-orcamento').textContent =
+    projecaoEl.textContent =
       'Projeção de ' + labels[labels.length - 1] + ': ' + formatarMoeda(ultimo) +
       ' (' + percentual.toFixed(0) + '% do orçamento)';
+    projecaoEl.classList.toggle('plan-projecao--acima', ultimo > planejamento.orcamento);
   } else {
-    document.getElementById('projecao-orcamento').textContent = 'Sem histórico mensal cadastrado';
+    projecaoEl.textContent = 'Sem histórico mensal cadastrado';
+    projecaoEl.classList.remove('plan-projecao--acima');
   }
   document.getElementById('texto-orcamento').textContent = formatarMoeda(planejamento.orcamento);
 }
@@ -610,14 +616,46 @@ function preencherFormulario() {
   });
 }
 
+function definirErroModal(mensagem) {
+  var erroEl = document.getElementById('erro-premissas');
+  if (!erroEl) return;
+  if (mensagem) {
+    erroEl.textContent = mensagem;
+    erroEl.hidden = false;
+  } else {
+    erroEl.textContent = '';
+    erroEl.hidden = true;
+  }
+}
+
+function definirSalvandoModal(salvando) {
+  var btnSalvar = document.getElementById('btn-salvar-premissas');
+  var btnCancelar = document.getElementById('btn-cancelar-premissas');
+  if (btnSalvar) {
+    btnSalvar.disabled = salvando;
+    if (salvando) {
+      btnSalvar.textContent = 'Salvando...';
+    } else {
+      btnSalvar.textContent = 'Aplicar e recalcular';
+    }
+  }
+  if (btnCancelar) {
+    btnCancelar.disabled = salvando;
+  }
+}
+
 function abrirPremissas() {
   preencherFormulario();
+  definirErroModal('');
+  definirSalvandoModal(false);
   document.getElementById('modal-premissas').hidden = false;
   document.body.style.overflow = 'hidden';
   document.getElementById('premissa-capacidade-atual').focus();
 }
 
 function fecharPremissas() {
+  definirErroModal('');
+  definirSalvandoModal(false);
   document.getElementById('modal-premissas').hidden = true;
   document.body.style.overflow = '';
 }
@@ -630,6 +668,7 @@ function lerNumero(id, padrao) {
 
 function aplicarPremissas(evento) {
   evento.preventDefault();
+  definirErroModal('');
 
   var novasPremissas = {};
   CAMPOS_PREMISSAS.forEach(function (campo) {
@@ -639,9 +678,14 @@ function aplicarPremissas(evento) {
   });
 
   if (novasPremissas.limiteSubutilizado >= novasPremissas.metaUso) {
-    mostrarToast('O limite subutilizado deve ser menor que a meta de uso.', true);
+    var msg = 'O limite subutilizado deve ser menor que a meta de uso.';
+    definirErroModal(msg);
+    mostrarToast(msg, true);
+    document.getElementById('premissa-subutilizado').focus();
     return;
   }
+
+  definirSalvandoModal(true);
 
   fetch('/planejamento', {
     method: 'PUT',
@@ -662,7 +706,9 @@ function aplicarPremissas(evento) {
       }
       return resposta.json().catch(function () { return {}; }).then(function (corpo) {
         if (resposta.status >= 400 && resposta.status < 500) {
-          mostrarToast(corpo.erro || 'Não foi possível validar as premissas.', true);
+          var erroMsg = corpo.erro || 'Não foi possível validar as premissas.';
+          definirErroModal(erroMsg);
+          mostrarToast(erroMsg, true);
           return;
         }
         throw new Error(corpo.erro || 'Erro no servidor');
@@ -675,21 +721,16 @@ function aplicarPremissas(evento) {
       renderTudo();
       fecharPremissas();
       mostrarToast('Premissas aplicadas localmente (servidor indisponível).', false);
+    })
+    .finally(function () {
+      definirSalvandoModal(false);
     });
 }
 
 function mostrarToast(mensagem, erro) {
   var toast = document.getElementById('toast-premissas');
   toast.textContent = mensagem || 'Premissas aplicadas. Valores recalculados.';
-  if (erro) {
-    toast.style.borderColor = 'rgb(239 68 68 / 0.5)';
-    toast.style.background = '#2b1318';
-    toast.style.color = '#fda4af';
-  } else {
-    toast.style.borderColor = '';
-    toast.style.background = '';
-    toast.style.color = '';
-  }
+  toast.classList.toggle('plan-notificacao--erro', Boolean(erro));
   toast.hidden = false;
 
   if (toastTimer) clearTimeout(toastTimer);
