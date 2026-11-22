@@ -12,7 +12,7 @@
         { id: 'geral', href: '/dashboard/dash-geral.html', label: 'Visão Geral' },
         { id: 'especifica', href: '/dashboard/especifica-servidor/dash-especifica.html', label: 'Dashboard Específica' },
         { id: 'saude', href: '/dashboard/analista/dashboardV2.html', label: 'Saúde e Capacidade' },
-        { id: 'planejamento', href: '/dashboard/planejamento.html', label: 'Planejamento' }
+        { id: 'planejamento', href: '/dashboard/planejamento_financeiro.html', label: 'Planejamento Financeiro' }
     ];
     const completos = ['FUNCIONARIO', 'GESTOR', 'ADMIN', 'INFRATECH'];
     function normalizar(cargo) { return String(cargo || '').trim().toUpperCase(); }
@@ -27,7 +27,7 @@
         const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
         /* O planejamento financeiro fica restrito a gestão: o funcionário comum
          * vê as dashboards operacionais, mas não os custos e a rentabilidade. */
-        if (['GESTOR', 'ADMIN', 'INFRATECH'].includes(tipo)) ids.push('planejamento');
+        if (['GESTOR', 'ADMIN'].includes(tipo)) ids.push('planejamento');
         return {
             dashboards: ids,
             administrar: completo,
@@ -43,6 +43,7 @@
     }
     function protegida(caminho) {
         const rota = String(caminho).toLowerCase();
+        if (rota === '/planejamento_financeiro.html') return true;
         return (rota.startsWith('/dashboard/') || rota.startsWith('/paginas/pos-login/')) && (rota.endsWith('.html') || rota.endsWith('/'));
     }
     /* Decide se o cargo pode abrir um endereço específico. Os aliases mantêm
@@ -56,7 +57,8 @@
         const aliases = {
             '/dashboard/analista/dashboard.html': 'saude',
             '/paginas/pos-login/dashboards/dashboard_noc.html': 'saude',
-            '/paginas/pos-login/dashboards/dashboard_dados.html': 'especifica'
+            '/paginas/pos-login/dashboards/dashboard_dados.html': 'especifica',
+            '/planejamento_financeiro.html': 'planejamento'
         };
         const id = dashboards.find(item => item.href.toLowerCase() === rota)?.id || aliases[rota];
         if (id) return perfil.dashboards.includes(id);
