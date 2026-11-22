@@ -70,7 +70,7 @@
                 <div class="box-filtro">
                     <span class="label-filtro">Servidor</span>
                     <select class="filtro" name="servidores" id="filtro_servidor">
-                        <option value="Todos">Todos</option>
+                        
                     </select>
                 </div>
                 <div class="box-filtro">
@@ -93,406 +93,6 @@
         <div class="corpo-dashboard" id="corpo_dashboard">
             <div class="kpis">
                 <div class="kpi cards">
-                    <div class="titulo-conteudo">Servidor com mais falhas na coleta</div>
-                    <div class="conteudo" style="color: #f04a55;;">SRV-BR-01</div>
-                    <div class="especificacao" style="color: #f04a55;;">3 status "Sem Coleta"</div>
-                </div>
-                <div class="kpi cards">
-                    <div class="titulo-conteudo">Maior variação</div>
-                    <div class="conteudo">SRV-BR-07</div>
-                    <div class="especificacao" style="color: #f04a55;;">CPU - 89%</div>
-                </div>
-                <!-- <div class="kpi cards">
-                    <div class="titulo-conteudo">Disco: Dias até Saturar</div>
-                    <div class="conteudo">9 Dias - 17/NOV</div>
-                    <div class="especificacao">SRV-BR-05 · 87 % ocupado</div>
-                </div> -->
-                <div class="kpi cards">
-                    <div class="titulo-conteudo">Servidor com maior quantidade de alertas</div>
-                    <div class="conteudo" style="color: #f04a55;;">SRV-BR-07</div>
-                    <div class="especificacao" style="color: #f04a55;">20 Alertas</div>
-                </div>
-                <div class="kpi cards">
-                    <div class="titulo-conteudo">Menor saúde</div>
-                    <div class="conteudo">SRV-GAME</div>
-                    <div class="especificacao" style="color:  #fbbf24;">54%</div>
-                </div>
-            </div>
-
-            <div class="dash-parte1">
-
-                <div class="card-regiao cards">
-                    <div class="titulo-card">Utilização por região</div>
-                    <div class="subtitulo-card">Ranking da demanda</div>
-
-                    <div class="lista-regioes">
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">São Paulo - SP</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida critico" style="width: 94%"></div>
-                            </div>
-                            <span class="percentual">94 %</span>
-                        </div>
-
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Rio de Janeiro - RJ</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida critico" style="width: 89%"></div>
-                            </div>
-                            <span class="percentual">89 %</span>
-                        </div>
-
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Campinas - SP</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida critico" style="width: 85%"></div>
-                            </div>
-                            <span class="percentual">85 %</span>
-                        </div>
-
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Belo Horizonte - MG</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida atencao" style="width: 72%"></div>
-                            </div>
-                            <span class="percentual">72 %</span>
-                        </div>
-
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Brasília - DF</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida atencao" style="width: 69%"></div>
-                            </div>
-                            <span class="percentual">69 %</span>
-                        </div>
-
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Brasília - DFh</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida normal" style="width: 50%"></div>
-                            </div>
-                            <span class="percentual">50 %</span>
-                        </div>
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Salvador - BA</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida normal" style="width: 42%"></div>
-                            </div>
-                            <span class="percentual">42 %</span>
-                        </div>
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Florianópolis - SC</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida normal" style="width: 40%"></div>
-                            </div>
-                            <span class="percentual">40 %</span>
-                        </div>
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Natal - RN</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida normal" style="width: 35%"></div>
-                            </div>
-                            <span class="percentual">35 %</span>
-                        </div>
-                        <div class="linha-regiao">
-                            <span class="nome-regiao">Maceió - AL</span>
-                            <div class="barra-fundo">
-                                <div class="barra-preenchida normal" style="width: 29%"></div>
-                            </div>
-                            <span class="percentual">29 %</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-ocorrencias cards">
-                    <div class="cabecalho-ocorrencias">
-                        <div>
-                            <div class="titulo-card">Ocorrências Registradas</div>
-                            <div class="subtitulo-ocorrencias">
-                                Lista de eventos no período selecionado, ordenada por data e hora.
-                            </div>
-                        </div>
-
-                        <div class="filtro-severidade">
-                            <label for="filtro_severidade">Filtro</label>
-                            <select class="filtro" id="filtro_severidade">
-                                <option value="Todos">Todos</option>
-                                <option value="Atenção">Atenção</option>
-                                <option value="Crítico">Crítico</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="tabela-wrapper">
-                        <table class="tabela-ocorrencias">
-                            <thead>
-                                <tr>
-                                    <th>Data e hora ↓</th>
-                                    <th>Servidor</th>
-                                    <th>Recurso</th>
-                                    <th>Evento</th>
-                                    <th>Severidade</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela_ocorrencias">
-                                <tr>
-                                    <td>04/11/2026 18:32</td>
-                                    <td>GAME-03</td>
-                                    <td>CPU</td>
-                                    <td>CPU em elevação (78%)</td>
-                                    <td><span class="badge atencao">⚠ Atenção</span></td>
-                                    <td>78%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                                <tr>
-                                    <td>01/11/2026 21:10</td>
-                                    <td>GAME-02</td>
-                                    <td>Rede</td>
-                                    <td>Alto uso de rede (94%)</td>
-                                    <td><span class="badge critico">⚠ Crítico</span></td>
-                                    <td>94%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-status-coleta cards">
-                    <div class="titulo-card">Status da coleta</div>
-                    <div class="subtitulo-card">Dados coletados, atrasados ou sem coleta</div>
-                    <div id="box-grafico-status-coleta">
-                        <canvas id="grafico_status_coleta"></canvas>
-                    </div>
-
-                </div>
-            </div>
-            <div class="dash-parte2">
-                <div class="container-variacoes cards">
-                    <div class="titulo-card">5 servidores com maior variação dos recursos</div>
-                    <div class="subtitulo-card">Captura Atual - Anterior</div>
-
-                    <div class="container-componentes">
-                        <div class="box-componente">
-                            <span class="componente-variacao">CPU</span>
-                            <div class="lista-variacoes">
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-07</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 90%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+21,4</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-12</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 76%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+18,0</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-21</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+14,7</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-EU-04</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+11,2</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-03</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida normal" style="width: 35%"></div>
-                                    </div>
-                                    <span class="percentual valor-normal">8,5</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box-componente">
-                            <span class="componente-variacao">RAM</span>
-                            <div class="lista-variacoes">
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-07</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 90%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+21,4</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-12</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 76%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+18,0</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-21</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+14,7</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-EU-04</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+11,2</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-03</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida normal" style="width: 35%"></div>
-                                    </div>
-                                    <span class="percentual valor-normal">8,5</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box-componente">
-                            <span class="componente-variacao">Disco</span>
-                            <div class="lista-variacoes">
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-07</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 90%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+21,4</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-12</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 76%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+18,0</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-21</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+14,7</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-EU-04</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+11,2</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-03</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida normal" style="width: 35%"></div>
-                                    </div>
-                                    <span class="percentual valor-normal">8,5</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box-componente">
-                            <span class="componente-variacao">Rede</span>
-                            <div class="lista-variacoes">
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-07</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 90%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+21,4</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-12</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 76%"></div>
-                                    </div>
-                                    <span class="percentual valor-critico">+18,0</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-BR-21</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 60%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+14,7</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-EU-04</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 47%"></div>
-                                    </div>
-                                    <span class="percentual valor-atencao">+11,2</span>
-                                </div>
-                                <div class="linha-regiao linha-variacao">
-                                    <span class="nome-servidor">GS-US-03</span>
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida normal" style="width: 35%"></div>
-                                    </div>
-                                    <span class="percentual valor-normal">8,5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="kpis">
-                <div class="kpi cards">
                     <div class="titulo-conteudo">Componente com mais alertas</div>
                     <div class="conteudo">RAM</div>
                     <div class="especificacao">
@@ -503,7 +103,7 @@
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Saúde do servidor</div>
                     <div class="conteudo-saude">
-                        <div class="conteudo">80%</div>
+                        <div class="conteudo" style="color: #fbbf24;">80%</div>
                         <div class="especificacao">
                             <div class="barra-fundo">
                                 <div class="barra-preenchida" style="width: 80%; background-color: #fbbf24;"></div>
@@ -511,18 +111,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="kpi cards">
-                    <div class="titulo-conteudo">Logs em Alerta</div>
-                    <div class="conteudo">20</div>
-                    <div class="especificacao">
-                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
-                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
-                    </div>
-                </div>
+
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Maior variação</div>
-                    <div class="conteudo">CPU 89%</div>
-                    <div class="especificacao">+21</div>
+                    <div class="conteudo" style="color: #f04a55;;">CPU 89%</div>
+                    <div class="especificacao" style="color: #f04a55;">+21</div>
                 </div>
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Alertas registrados</div>
@@ -532,9 +125,8 @@
                         <div class="alerta" style="color: #f04a55;">10 Crítico</div>
                     </div>
                 </div>
-            </div> -->
-
-            <!-- <div class="dash-parte1">
+            </div>
+            <div class="dash-parte1">
                 <div class="card-ranking-variacoes cards">
                     <div class="titulo-card">Maior variação dos componentes</div>
                     <div class="subtitulo-ocorrencias">Atual - anterior</div>
@@ -543,6 +135,7 @@
                         <div class="item-ranking">
                             <div class="ranking-topo">
                                 <span class="ranking-nome">CPU</span>
+                                <span class="ranking-percentual valor-critico">89%</span>
                                 <span class="ranking-hora">16:40</span>
                             </div>
                             <div class="variacao">
@@ -551,11 +144,11 @@
                                 </div>
                                 <span class="ranking-variacao valor-critico">+ 21</span>
                             </div>
-                            <span class="ranking-percentual valor-critico">89%</span>
                         </div>
                         <div class="item-ranking">
                             <div class="ranking-topo">
                                 <span class="ranking-nome">RAM</span>
+                                <span class="ranking-percentual valor-critico">76%</span>
                                 <span class="ranking-hora">12:27</span>
                             </div>
                             <div class="variacao">
@@ -564,11 +157,11 @@
                                 </div>
                                 <span class="ranking-variacao valor-critico">+ 18</span>
                             </div>
-                            <span class="ranking-percentual valor-critico">76%</span>
                         </div>
                         <div class="item-ranking">
                             <div class="ranking-topo">
                                 <span class="ranking-nome">Disco</span>
+                                <span class="ranking-percentual valor-atencao">79%</span>
                                 <span class="ranking-hora">20:54</span>
                             </div>
                             <div class="variacao">
@@ -577,11 +170,11 @@
                                 </div>
                                 <span class="ranking-variacao valor-atencao">+ 15</span>
                             </div>
-                            <span class="ranking-percentual valor-atencao">79%</span>
                         </div>
                         <div class="item-ranking">
                             <div class="ranking-topo">
                                 <span class="ranking-nome">Rede</span>
+                                <span class="ranking-percentual valor-atencao">76%</span>
                                 <span class="ranking-hora">17:38</span>
                             </div>
                             <div class="variacao">
@@ -590,23 +183,19 @@
                                 </div>
                                 <span class="ranking-variacao valor-atencao">+ 12</span>
                             </div>
-                            <span class="ranking-percentual valor-atencao">76%</span>
                         </div>
-
-
-
                     </div>
                 </div>
                 <div class="card-uso-recursos cards">
-                    <div class="titulo-card">Maior variação dos componentes</div>
+                    <div class="titulo-card">Uso de recursos</div>
                     <div class="subtitulo-ocorrencias">Atual - anterior</div>
 
                     <div class="box-grafico-uso-recurso">
                         <canvas id="grafico_uso_recurso"></canvas>
                     </div>
                 </div>
-            </div> -->
-            <!-- <div class="dash-parte2 especifica">
+            </div>
+            <div class="dash-parte2 especifica">
                 <div class="card-logs cards">
                     <div class="cabecalho-logs">
                         <div>
@@ -615,10 +204,6 @@
                                 gráfico.</div>
                         </div>
                         <div class="contador-logs" id="contador_logs">12</div>
-                    </div>
-
-                    <div class="nota-logs">
-                        A severidade usa os limites dos KPIs. Leituras não confirmam incidente persistente.
                     </div>
 
                     <div class="tabela-wrapper tabela-logs-wrapper">
@@ -695,117 +280,79 @@
                 </div>
                 <div class="card-demanda-mapa-calor cards">
                     <div class="titulo-card">Demanda por Período</div>
+                    <div class="mapa-calor">
+                        <!-- cabeçalho -->
+                        <div class="linha-calor linha-calor-topo">
+                            <div class="legenda-calor">DIA / PICO (%)</div>
+                            <div class="coluna-periodo">Manhã<span>06-12h</span></div>
+                            <div class="coluna-periodo">Tarde<span>12-18h</span></div>
+                            <div class="coluna-periodo">Noite<span>18-24h</span></div>
+                            <div class="coluna-periodo">Madrugada<span>00-06h</span></div>
+                        </div>
+
+                        <div class="linha-calor">
+                            <div class="dia-calor">Segunda · 19/10</div>
+                            <div class="celula-calor normal">56%</div>
+                            <div class="celula-calor normal">68%</div>
+                            <div class="celula-calor atencao">84%</div>
+                            <div class="celula-calor normal">48%</div>
+                        </div>
+                        <div class="linha-calor">
+                            <div class="dia-calor">Terça · 20/10</div>
+                            <div class="celula-calor normal">58%</div>
+                            <div class="celula-calor normal">72%</div>
+                            <div class="celula-calor critico">88%</div>
+                            <div class="celula-calor normal">51%</div>
+                        </div>
+                        <div class="linha-calor">
+                            <div class="dia-calor">Quarta · 21/10</div>
+                            <div class="celula-calor normal">61%</div>
+                            <div class="celula-calor atencao">76%</div>
+                            <div class="celula-calor critico">91%</div>
+                            <div class="celula-calor normal">55%</div>
+                        </div>
+                        <div class="linha-calor">
+                            <div class="dia-calor">Quinta · 22/10</div>
+                            <div class="celula-calor normal">60%</div>
+                            <div class="celula-calor atencao">79%</div>
+                            <div class="celula-calor critico">92%</div>
+                            <div class="celula-calor normal">57%</div>
+                        </div>
+                        <div class="linha-calor">
+                            <div class="dia-calor">Sexta · 23/10</div>
+                            <div class="celula-calor normal">64%</div>
+                            <div class="celula-calor atencao">85%</div>
+                            <div class="celula-calor critico">96%</div>
+                            <div class="celula-calor normal">68%</div>
+                        </div>
+                        <div class="linha-calor">
+                            <div class="dia-calor">Sábado · 24/10</div>
+                            <div class="celula-calor normal">69%</div>
+                            <div class="celula-calor critico">93%</div>
+                            <div class="celula-calor critico">99%</div>
+                            <div class="celula-calor atencao">82%</div>
+                        </div>
+                        <div class="linha-calor">
+                            <div class="dia-calor">Domingo · 25/10</div>
+                            <div class="celula-calor normal">65%</div>
+                            <div class="celula-calor atencao">86%</div>
+                            <div class="celula-calor critico">97%</div>
+                            <div class="celula-calor atencao">77%</div>
+                        </div>
+                    </div>
                 </div>
-            </div> -->
+            </div>
+
+
         </div>
     </div>
 
 
     <script>
-
+        plotarGraficoUsoRecursos();
 
         console.log(filtro_data_inicio.value)
-        const cpu = [
-            42.5, 45.8, null, 51.0, 54.6, 63.2, 78.4, 84.1, 76.5, 69.0,
-            65.3, null, 59.4, 57.1, 61.5, 72.8, 81.0, 74.3, 58.9, 49.7
-        ];
-
-        const ram = [
-            52.0, 52.8, 53.5, 54.1, 55.0, 55.8, 56.9, 58.2, 59.0, 60.4,
-            61.1, 62.5, 63.0, 64.2, null, 67.1, 68.4, 69.0, 69.7, 70.5
-        ];
-
-        const disco = [
-            71.0, 71.1, 71.2, 71.4, 71.5, 71.7, 71.8, 72.0, 72.1, 72.3,
-            72.4, 72.6, 72.7, 72.9, 73.0, 73.2, 73.3, 73.5, 73.6, null
-        ];
-
-        const rede = [
-            31.4, 34.0, 38.6, 44.2, 49.8, 61.5, 73.2, 79.8, 72.1, 64.7,
-            58.3, 55.0, 52.6, 50.2, 56.4, 68.9, 75.4, 66.2, 47.5, null
-        ];
-
-        function calcularStatusColeta() {
-            const componentes = [cpu, ram, disco, rede];
-            let coletado = 0;
-            let atrasado = 0;
-            let semColeta = 0;
-
-            componentes.forEach((arr) => {
-                if (!Array.isArray(arr) || arr.length === 0) return;
-
-                const ultimoValor = arr[arr.length - 1];
-                const ultimoSemDado = ultimoValor === null || ultimoValor === undefined || ultimoValor === "";
-
-                if (ultimoSemDado) {
-                    atrasado++;
-                }
-
-                arr.forEach((valor, indice) => {
-                    const estaEmBranco = valor === null || valor === undefined || valor === "";
-
-                    if (estaEmBranco) {
-                        // Evita contar duas vezes se o último item já foi contabilizado como atrasado
-                        const ehUltimoItem = indice === arr.length - 1;
-                        if (!ehUltimoItem) {
-                            semColeta++;
-                        }
-                    } else {
-                        coletado++;
-                    }
-                });
-            });
-            return [coletado, atrasado, semColeta];
-        }
-
-        function desenharGraficoStatusColeta() {
-            const dadosStatus = calcularStatusColeta();
-
-            new Chart(
-                document.getElementById('grafico_status_coleta'),
-                {
-                    type: 'bar',
-                    options: {
-                        animation: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                enabled: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
-                            }
-                        }
-                    },
-                    data: {
-                        labels: ["Coletado", "Atrasado", "Sem coleta"],
-                        datasets: [{
-                            data: dadosStatus,
-                            backgroundColor: [
-                                'rgb(46, 204, 113)',
-                                'rgb(245, 197, 24)',
-                                'rgb(240, 77, 82)'
-                            ],
-                            borderColor: [
-                                'rgb(46, 204, 113)',
-                                'rgb(245, 197, 24)',
-                                'rgb(240, 77, 82)'
-                            ],
-                            borderWidth: 0.2
-                        }]
-                    }
-                }
-            );
-        }
-
-        desenharGraficoStatusColeta();
+    
         var idEmpresa = sessionStorage.ID_EMPRESA;
         var idUsuario = sessionStorage.ID_USUARIO;
 
@@ -832,8 +379,7 @@
         var filtroServidor = document.getElementById('filtro_servidor');
         var corpoDashboard = document.getElementById('corpo_dashboard');
 
-        // guarda o HTML original para poder voltar ao "Todos"
-        var htmlGeral = corpoDashboard.innerHTML;
+        
 
         limite_atencao = 0;
         limite_critico = 0;
@@ -849,7 +395,7 @@
                 //     .then(function (response) {
                 //         if (response.ok) {
                 //             response.json().then(function (resposta) {
-                                
+
                 //             });
                 //         } else {
                 //             console.log("Não funfou")
@@ -858,11 +404,6 @@
                 //     .catch(function (error) {
                 //         console.error("Erro na obtenção de dados", error);
                 //     });
-
-            } else {
-                corpoDashboard.innerHTML = htmlGeral;
-                desenharGraficoStatusColeta(); // recria o gráfico, veja abaixo
-
 
             }
         });

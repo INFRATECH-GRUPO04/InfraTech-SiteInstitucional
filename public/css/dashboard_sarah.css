@@ -105,41 +105,6 @@
     margin-top: 0.7vw;
 }
 
-.card-regiao {
-    padding: 24px;
-    width: 26%;
-    height: 58vh;
-    color: #e5e9f5;
-}
-
-.titulo-card {
-    font-size: 3vw;
-    font-weight: 700;
-    color: #fff;
-}
-
-.subtitulo-card {
-    font-size: 13px;
-    font-weight: 600;
-    margin: 12px 0 24px;
-}
-
-.lista-regioes {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    gap: 18px;
-    height: 80%;
-}
-
-.linha-regiao {
-    display: grid;
-    grid-template-columns: 140px 1fr 40px;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-}
-
 .barra-fundo {
     height: 8px;
     background: #2a3350;
@@ -156,60 +121,16 @@
 .barra-preenchida.atencao { background: #fbbf24; }  /* 60% a 79% */
 .barra-preenchida.normal  { background: #2ecc71; }  /* < 60% */
 
-.percentual {
-    font-weight: 700;
-    color: #4f8ef7;
-    text-align: right;
-    white-space: nowrap;
-}
-
-.card-ocorrencias {
-    padding: 28px 8px 24px;
-    width: 42%;
-    height: 58vh;
-    color: #e5e9f5;
-}
-
 .titulo-card {
     font-size: 24px;
     font-weight: 700;
     color: #fff;
 }
 
-.cabecalho-ocorrencias {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 0 28px 20px;
-    border-bottom: 1px solid #232b43;
-}
-
 .subtitulo-ocorrencias {
     margin-top: 8px;
     font-size: 14px;
     color: #22bfd0;
-}
-
-.filtro-severidade {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 20%;
-}
-
-.filtro-severidade label {
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.filtro-severidade select {
-    background: #111626;
-    color: #e5e9f5;
-    border: 1px solid #2c6272;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 14px;
-    width: 90%;
 }
 
 .tabela-wrapper {
@@ -271,122 +192,12 @@
     color: #f04a55;
 }
 
-.card-status-coleta{
-    width: 28%;
-    height: 58vh;
-}
-
-.box-grafico-status-coleta{
-    width: 90%;
-    height: 60%;
-}
-
-.descricoes{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1vw;
-    width: 100%;
-    height: 48%;
-}
-
-.descricao{
-    width: 95%;
-    height: 20%;
-    background-color: #1B2438;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5vw;
-    padding-right: 1vw;
-}
-
-.bolinha{
-    width: 0.8vw;
-    height: 0.8vw;
-    border-radius: 10px;
-}
-
-.label-status{
-    gap: 1vw;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.status-coleta{
-    color: white;
-    font-size: 0.9vw;
-}
-
-.quantidade-status-coleta{
-    color: white;
-    font-size: 1vw;
-}
-
 .dash-parte2{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
     margin-top: 0.7vw;
-}
-
-.container-variacoes{
-    width: 98%;
-    height: 45vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.container-componentes{
-    width: 100%;
-    height: 70%;
-    background-color: transparent;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.box-componente{
-    width: 23%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.componente-variacao{
-    width: 100%;
-    height: 10%;
-    background-color: #1B2438;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.7vw;
-    font-size: 1vw;
-}
-
-.lista-variacoes {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 2.4vh;
-}
-
-.linha-variacao {
-    grid-template-columns: 22% 1fr 14%;
-    gap: 0.6vw;
-    font-size: 0.8vw;
-}
-
-.linha-variacao .barra-fundo {
-    height: 0.7vh;
 }
 
 .valor-critico { color: #f04a55; }
@@ -413,24 +224,32 @@
 .lista-ranking{
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    height: 90%;
+    justify-content: space-between;
+    height: 78%;
+    margin-top: 0.5vw;
+}
+
+.item-ranking{
+    height: 15%;
 }
 
 .ranking-topo{
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 3vw;
+    justify-content: space-between;
 }
 
 .ranking-nome{
     font-size: 1vw;
 }
 
+.ranking-hora{
+    font-size: 1vw;
+}
+
 .variacao{
     width: 100%;
-    height: 35%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -501,9 +320,10 @@
 .tabela-logs-wrapper {
     flex: 1;
     min-height: 0;
-    max-height: 82%;
+    max-height: 85%;
     padding: 0;
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 .card-demanda-mapa-calor {
@@ -619,4 +439,231 @@
 .insights-projecao{
     width: 30%;
     height: 90%;
+}
+
+/* ===================== RESPONSIVIDADE ===================== */
+
+/* ---------- Notebooks / telas até 1200px ---------- */
+@media (max-width: 1200px) {
+    .titulo-pagina { font-size: 1.9vw; }
+    .filtros { width: 48vw; }
+    .label-filtro { font-size: 0.95vw; }
+
+    .titulo-conteudo { font-size: 1vw; }
+    .conteudo { font-size: 2vw; }
+    .especificacao { font-size: 1vw; }
+
+    .ranking-nome,
+    .variacao .ranking-variacao { font-size: 1.2vw; }
+
+    .legenda-calor,
+    .coluna-periodo span { font-size: 1vw; }
+    .coluna-periodo,
+    .dia-calor,
+    .celula-calor { font-size: 1.1vw; }
+
+    .titulo-card { font-size: 20px; }
+}
+
+/* ---------- Tablets (barra lateral vira gaveta) ---------- */
+@media (max-width: 991px) {
+    .main {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Barra superior */
+    .barra-superior {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .titulo-pagina { font-size: 24px; }
+
+    .filtros {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .box-filtro {
+        width: 100%;
+        height: auto;
+        gap: 4px;
+    }
+
+    .label-filtro { font-size: 12px; }
+
+    .filtro {
+        width: 100%;
+        height: 42px;
+    }
+
+    /* Corpo */
+    .corpo-dashboard { padding: 0 16px 16px; }
+
+    /* KPIs em grade 2x2 */
+    .kpis {
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .kpi {
+        width: auto;
+        height: auto;
+        min-height: 110px;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .titulo-conteudo { font-size: 13px; }
+    .conteudo { font-size: 24px; }
+
+    .especificacao {
+        font-size: 13px;
+        width: 100%;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .especificacao .barra-fundo { margin-bottom: 0; }
+
+    /* Parte 1: ranking + gráfico empilhados */
+    .dash-parte1,
+    .dash-parte2 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .card-ranking-variacoes,
+    .card-uso-recursos,
+    .card-logs,
+    .card-demanda-mapa-calor {
+        width: 100%;
+        height: auto;
+    }
+
+    .titulo-card { font-size: 20px; }
+
+    .lista-ranking {
+        height: auto;
+        gap: 18px;
+        margin-top: 16px;
+    }
+
+    .ranking-topo { gap: 16px; }
+    .ranking-nome { font-size: 14px; }
+
+    .variacao {
+        height: auto;
+        gap: 8px;
+        margin: 6px 0;
+    }
+
+    .variacao .barra-fundo { height: 8px; }
+
+    .variacao .ranking-variacao {
+        width: 56px;
+        font-size: 14px;
+    }
+
+    /* Gráfico precisa de altura fixa (maintainAspectRatio: false) */
+    .box-grafico-uso-recurso {
+        position: relative;
+        height: 320px;
+        margin-top: 12px;
+    }
+
+    #grafico_uso_recurso { height: 100%; }
+
+    /* Logs */
+    .contador-logs {
+        min-width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .tabela-logs-wrapper {
+        max-height: 360px;
+        overflow-x: auto;
+    }
+
+    .tabela-ocorrencias { font-size: 13px; }
+
+    /* Mapa de calor: rola na horizontal se faltar espaço */
+    .card-demanda-mapa-calor { overflow-x: auto; }
+
+    .mapa-calor {
+        flex: none;
+        min-width: 560px;
+        gap: 6px;
+        margin-top: 16px;
+    }
+
+    .linha-calor {
+        flex: none;
+        grid-template-columns: 130px repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    .linha-calor-topo { margin-bottom: 8px; }
+
+    .legenda-calor,
+    .coluna-periodo span { font-size: 11px; }
+
+    .coluna-periodo,
+    .dia-calor,
+    .celula-calor { font-size: 13px; }
+
+    .dia-calor { font-size: 12px; }
+
+    .celula-calor {
+        height: 40px;
+        border-radius: 8px;
+    }
+
+    
+}
+
+/* ---------- Celulares ---------- */
+@media (max-width: 600px) {
+    .barra-superior { padding: 12px; }
+    .titulo-pagina { font-size: 20px; }
+
+    .filtros { grid-template-columns: repeat(2, 1fr); }
+
+    .corpo-dashboard { padding: 0 12px 12px; }
+
+    .kpis { grid-template-columns: 1fr; }
+
+    .kpi { min-height: 96px; }
+    .conteudo { font-size: 22px; }
+
+    .titulo-card { font-size: 18px; }
+    .subtitulo-ocorrencias { font-size: 13px; }
+
+    .box-grafico-uso-recurso { height: 260px; }
+
+    .cabecalho-logs { gap: 12px; }
+
+    .tabela-ocorrencias th,
+    .tabela-ocorrencias td { padding: 10px 6px; }
+
+    .badge {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
+    .mapa-calor { min-width: 520px; }
+
+    .linha-calor { grid-template-columns: 110px repeat(4, 1fr); }
 }
