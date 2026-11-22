@@ -59,7 +59,8 @@
             '/dashboard/analista/dashboard.html': 'saude',
             '/paginas/pos-login/dashboards/dashboard_noc.html': 'saude',
             '/paginas/pos-login/dashboards/dashboard_dados.html': 'especifica',
-            '/planejamento_financeiro.html': 'planejamento'
+            '/planejamento_financeiro.html': 'planejamento',
+            '/html/planejamento_financeiro.html': 'planejamento'
         };
         const id = dashboards.find(item => item.href.toLowerCase() === rota)?.id || aliases[rota];
         if (id) return perfil.dashboards.includes(id);

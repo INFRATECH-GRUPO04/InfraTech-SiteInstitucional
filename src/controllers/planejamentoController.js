@@ -27,13 +27,17 @@ function formatarMes(data) {
 /* Monta o objeto de resposta usado pelo frontend, a partir dos dados do banco. */
 function montarResposta(plano, servidores, historico, gestor) {
     var primeiro = (plano && plano[0]) || {};
+    var nomeGestor = '';
+    if (gestor && gestor[0]) {
+        nomeGestor = gestor[0].nome;
+    }
     var custoInfraTech = servidores
         .reduce(function (soma, servidor) {
             return soma + (Number(servidor.custo_mensal) || 0);
         }, 0);
 
     return {
-        gestor: gestor && gestor[0] ? gestor[0].nome : '',
+        gestor: nomeGestor,
         data: formatarData(primeiro.dt_atualizacao),
         plano: primeiro.plano || '',
         jogadores: primeiro.jogadores || 0,
@@ -98,6 +102,9 @@ function validarPremissas(dados) {
         if (campo.max !== undefined && numero > campo.max) {
             return 'O campo ' + campo.nome + ' deve ser menor ou igual a ' + campo.max + '.';
         }
+    }
+    if (Number(dados.limiteSubutilizado) >= Number(dados.metaUso)) {
+        return 'O limite subutilizado deve ser menor que a meta de uso.';
     }
     return null;
 }

@@ -1,7 +1,7 @@
 /*
  * Controla a página Planejamento Financeiro & Billing.
- * Nesta fase os números vêm de um objeto local (dados ilustrativos). Quando o
- * backend estiver pronto, basta trocar o objeto pelas respostas das rotas.
+ * Carrega os dados da empresa em GET /planejamento e persiste alterações de
+ * premissas em PUT /planejamento, mantendo os dados locais como fallback.
  */
 
 var planejamento = {
@@ -51,11 +51,22 @@ var planejamento = {
 var graficoCusto = null;
 var toastTimer = null;
 var nomesMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+var USOS_ILUSTRATIVOS = [
+  { uso: 78, pico: 96 },
+  { uso: 58, pico: 58 },
+  { uso: 52, pico: 52 },
+  { uso: 44, pico: 44 },
+  { uso: 41, pico: 41 },
+  { uso: 18, pico: 18 }
+];
 
 /* ---------- Formatação ---------- */
 
 function formatarMoeda(valor, casas) {
-  var decimais = casas === undefined ? 0 : casas;
+  var decimais = 0;
+  if (casas !== undefined) {
+    decimais = casas;
+  }
   return 'R$ ' + Number(valor || 0).toLocaleString('pt-BR', {
     minimumFractionDigits: decimais,
     maximumFractionDigits: decimais
@@ -67,11 +78,21 @@ function formatarNumero(valor) {
 }
 
 function formatarPercentual(valor, casas) {
-  var decimais = casas === undefined ? 1 : casas;
+  var decimais = 1;
+  if (casas !== undefined) {
+    decimais = casas;
+  }
   return Number(valor || 0).toLocaleString('pt-BR', {
     minimumFractionDigits: decimais,
     maximumFractionDigits: decimais
   }) + '%';
+}
+
+function textoUnidade(quantidade, singular, plural) {
+  if (quantidade === 1) {
+    return quantidade + ' ' + singular;
+  }
+  return quantidade + ' ' + plural;
 }
 
 function mesesTexto(meses) {
@@ -81,8 +102,10 @@ function mesesTexto(meses) {
     inteiros += 1;
     semanas = 0;
   }
-  var texto = inteiros + (inteiros === 1 ? ' mês' : ' meses');
-  if (semanas > 0) texto += ' e ' + semanas + (semanas === 1 ? ' semana' : ' semanas');
+  var texto = textoUnidade(inteiros, 'mês', 'meses');
+  if (semanas > 0) {
+    texto += ' e ' + textoUnidade(semanas, 'semana', 'semanas');
+  }
   return texto;
 }
 
@@ -112,20 +135,40 @@ function totaisServidores() {
     somaUso += Number(servidor.uso) || 0;
   });
 
+  var usoMedio = 0;
+  if (planejamento.servidores.length > 0) {
+    usoMedio = somaUso / planejamento.servidores.length;
+  }
+
+  var percentualOcioso = 0;
+  if (custoTotal > 0) {
+    percentualOcioso = (ociosoTotal / custoTotal) * 100;
+  }
+
   return {
     custoTotal: custoTotal,
     ociosoTotal: ociosoTotal,
-    usoMedio: planejamento.servidores.length ? somaUso / planejamento.servidores.length : 0,
-    percentualOcioso: custoTotal > 0 ? (ociosoTotal / custoTotal) * 100 : 0
+    usoMedio: usoMedio,
+    percentualOcioso: percentualOcioso
   };
 }
 
 function dadosBilling() {
   var receita = planejamento.jogadores * planejamento.ticketMedio;
   var lucro = receita - planejamento.custoInfraTech;
-  var margem = receita > 0 ? (lucro / receita) * 100 : 0;
-  var roi = planejamento.custoInfraTech > 0 ? (lucro / planejamento.custoInfraTech) * 100 : 0;
-  var breakeven = planejamento.ticketMedio > 0 ? Math.ceil(planejamento.custoInfraTech / planejamento.ticketMedio) : 0;
+  var margem = 0;
+  var roi = 0;
+  var breakeven = 0;
+
+  if (receita > 0) {
+    margem = (lucro / receita) * 100;
+  }
+  if (planejamento.custoInfraTech > 0) {
+    roi = (lucro / planejamento.custoInfraTech) * 100;
+  }
+  if (planejamento.ticketMedio > 0) {
+    breakeven = Math.ceil(planejamento.custoInfraTech / planejamento.ticketMedio);
+  }
 
   return {
     receita: receita,
@@ -143,7 +186,10 @@ function situacaoServidor(uso) {
 }
 
 function runwayMeses(capacidade) {
-  if (planejamento.crescimento <= 0) return capacidade > planejamento.jogadores ? Infinity : 0;
+  if (planejamento.crescimento <= 0) {
+    if (capacidade > planejamento.jogadores) return Infinity;
+    return 0;
+  }
   return Math.max(0, (capacidade - planejamento.jogadores) / planejamento.crescimento);
 }
 
@@ -183,19 +229,30 @@ function renderBilling() {
 function renderCards() {
   var capacidadeTotal = planejamento.servidores.length * planejamento.capacidadeAtual;
   var runway = runwayMeses(capacidadeTotal);
-  var percentual = capacidadeTotal > 0 ? (planejamento.jogadores / capacidadeTotal) * 100 : 0;
+  var percentual = 0;
+  if (capacidadeTotal > 0) {
+    percentual = (planejamento.jogadores / capacidadeTotal) * 100;
+  }
 
-  document.getElementById('runway-valor').textContent =
-    runway === Infinity ? 'Sem saturação prevista' : runway > 0 ? mesesTexto(runway) : 'Capacidade esgotada';
+  var textoRunwayValor = 'Capacidade esgotada';
+  if (runway === Infinity) {
+    textoRunwayValor = 'Sem saturação prevista';
+  } else if (runway > 0) {
+    textoRunwayValor = mesesTexto(runway);
+  }
+  document.getElementById('runway-valor').textContent = textoRunwayValor;
   document.getElementById('runway-barra').style.width = Math.min(100, percentual).toFixed(1) + '%';
   document.getElementById('runway-uso').textContent =
     formatarNumero(planejamento.jogadores) + ' / ' + formatarNumero(capacidadeTotal) + ' jogadores';
   document.getElementById('runway-percentual').textContent = formatarPercentual(percentual);
-  document.getElementById('runway-detalhe').textContent = runway === Infinity
-    ? 'Sem crescimento cadastrado; o prazo de decisão não se aplica.'
-    : 'Prazo útil para decidir: ' + mesesTexto(Math.max(0, runway - planejamento.provisionamento)) +
-      ' (provisionamento: ' + planejamento.provisionamento +
-      (planejamento.provisionamento === 1 ? ' mês' : ' meses') + ').';
+
+  if (runway === Infinity) {
+    document.getElementById('runway-detalhe').textContent = 'Sem crescimento cadastrado; o prazo de decisão não se aplica.';
+  } else {
+    document.getElementById('runway-detalhe').textContent =
+      'Prazo útil para decidir: ' + mesesTexto(Math.max(0, runway - planejamento.provisionamento)) +
+      ' (provisionamento: ' + textoUnidade(planejamento.provisionamento, 'mês', 'meses') + ').';
+  }
 
   var maior = planejamento.servidores[0] || null;
   planejamento.servidores.forEach(function (servidor) {
@@ -209,7 +266,11 @@ function renderCards() {
 
     var situacao = situacaoServidor(usoMaior);
     var status = document.getElementById('expansao-status');
-    status.textContent = usoMaior >= planejamento.metaUso ? 'Gargalo local' : situacao.texto;
+    if (usoMaior >= planejamento.metaUso) {
+      status.textContent = 'Gargalo local';
+    } else {
+      status.textContent = situacao.texto;
+    }
     status.className = 'plan-situacao plan-situacao--' + situacao.classe;
 
     document.getElementById('bloqueados-risco').textContent =
@@ -242,12 +303,16 @@ function renderServidores() {
     var uso = Number(servidor.uso) || 0;
     var ocioso = custoOcioso(servidor);
     var situacao = situacaoServidor(uso);
+    var classeOcioso = 'plan-tabela__zero';
+    if (ocioso > 0) {
+      classeOcioso = 'plan-tabela__destaque';
+    }
 
     html += '<tr>' +
       '<td><strong>' + servidor.nome + '</strong></td>' +
       '<td class="plan-tabela__valor">' + formatarMoeda(servidor.custo) + '</td>' +
       '<td class="plan-tabela__valor">' + uso + '%</td>' +
-      '<td class="' + (ocioso > 0 ? 'plan-tabela__destaque' : 'plan-tabela__zero') + '">' +
+      '<td class="' + classeOcioso + '">' +
         formatarMoeda(ocioso) +
       '</td>' +
       '<td><span class="plan-situacao plan-situacao--' + situacao.classe + '">' + situacao.texto + '</span></td>' +
@@ -278,23 +343,34 @@ function renderCenarios() {
     var adicionalCapacidade = cenario.adicionais * planejamento.capacidadeNova + cenario.capacidadeExtra;
     var custoMensal = cenario.adicionais * planejamento.custoNovoServidor;
     var implantacao = cenario.adicionais * planejamento.custoImplantacao;
-    var classe = cenario.destaque ? 'plan-tabela__linha--destaque' : '';
-    var nome = cenario.destaque
-      ? '<span class="plan-tabela__cenario-nome">' + cenario.nome + '</span>'
-      : cenario.nome;
-    var servidoresTexto = cenario.adicionais > 0
-      ? servidores + ' (+' + cenario.adicionais + ')'
-      : formatarNumero(servidores);
-    var capacidadeTexto = formatarNumero(capacidade) +
-      (adicionalCapacidade > 0 ? ' (+' + formatarNumero(adicionalCapacidade) + ')' : '');
+
+    var classe = '';
+    var nome = cenario.nome;
+    if (cenario.destaque) {
+      classe = 'plan-tabela__linha--destaque';
+      nome = '<span class="plan-tabela__cenario-nome">' + cenario.nome + '</span>';
+    }
+
+    var servidoresTexto = formatarNumero(servidores);
+    if (cenario.adicionais > 0) {
+      servidoresTexto = servidores + ' (+' + cenario.adicionais + ')';
+    }
+
+    var capacidadeTexto = formatarNumero(capacidade);
+    if (adicionalCapacidade > 0) {
+      capacidadeTexto += ' (+' + formatarNumero(adicionalCapacidade) + ')';
+    }
+
+    var custoMensalTexto = 'R$ 0/mês';
+    if (custoMensal > 0) {
+      custoMensalTexto = '+ ' + formatarMoeda(custoMensal) + '/mês';
+    }
 
     html += '<tr class="' + classe + '">' +
       '<td>' + nome + '<small>' + cenario.detalhe + '</small></td>' +
       '<td class="plan-tabela__valor">' + servidoresTexto + '</td>' +
       '<td class="plan-tabela__valor">' + capacidadeTexto + '</td>' +
-      '<td class="plan-tabela__valor">' +
-        (custoMensal > 0 ? '+ ' + formatarMoeda(custoMensal) + '/mês' : 'R$ 0/mês') +
-      '</td>' +
+      '<td class="plan-tabela__valor">' + custoMensalTexto + '</td>' +
       '<td class="plan-tabela__valor">' + formatarMoeda(implantacao) + '</td>' +
       '<td>' + cenario.prazo + '</td>' +
       '<td>' + textoRunway(capacidade) + '</td>' +
@@ -319,7 +395,10 @@ function renderGrafico() {
   });
 
   var cores = valores.map(function (valor, indice) {
-    return indice === valores.length - 1 ? 'rgba(0, 207, 255, 0.35)' : 'rgba(0, 207, 255, 0.85)';
+    if (indice === valores.length - 1) {
+      return 'rgba(0, 207, 255, 0.35)';
+    }
+    return 'rgba(0, 207, 255, 0.85)';
   });
 
   if (graficoCusto) graficoCusto.destroy();
@@ -382,11 +461,18 @@ function renderGrafico() {
   });
 
   var ultimo = valores[valores.length - 1] || 0;
-  var percentual = planejamento.orcamento > 0 ? (ultimo / planejamento.orcamento) * 100 : 0;
+  var percentual = 0;
+  if (planejamento.orcamento > 0) {
+    percentual = (ultimo / planejamento.orcamento) * 100;
+  }
 
-  document.getElementById('projecao-orcamento').textContent =
-    'Projeção de ' + labels[labels.length - 1] + ': ' + formatarMoeda(ultimo) +
-    ' (' + percentual.toFixed(0) + '% do orçamento)';
+  if (labels.length > 0) {
+    document.getElementById('projecao-orcamento').textContent =
+      'Projeção de ' + labels[labels.length - 1] + ': ' + formatarMoeda(ultimo) +
+      ' (' + percentual.toFixed(0) + '% do orçamento)';
+  } else {
+    document.getElementById('projecao-orcamento').textContent = 'Sem histórico mensal cadastrado';
+  }
   document.getElementById('texto-orcamento').textContent = formatarMoeda(planejamento.orcamento);
 }
 
@@ -398,7 +484,7 @@ function renderPremissasResumo() {
   document.getElementById('resumo-premissas').textContent =
     'crescimento ' + formatarNumero(planejamento.crescimento) + ' jogadores/mês · ' +
     formatarNumero(planejamento.capacidadeAtual) + ' jogadores por servidor · provisionamento ' +
-    planejamento.provisionamento + (planejamento.provisionamento === 1 ? ' mês' : ' meses') +
+    textoUnidade(planejamento.provisionamento, 'mês', 'meses') +
     ' · meta de uso ' + planejamento.metaUso + '% · novo servidor ' +
     formatarMoeda(planejamento.custoNovoServidor) + '/mês + ' +
     formatarMoeda(planejamento.custoImplantacao) + ' de implantação.';
@@ -417,6 +503,75 @@ function renderTudo() {
   renderCenarios();
   renderGrafico();
   renderPremissasResumo();
+}
+
+/* ---------- Integração com API ---------- */
+
+function aplicarDadosServidor(dados) {
+  if (!dados) return;
+  var servidoresRecebidos = [];
+  if (Array.isArray(dados.servidores)) {
+    servidoresRecebidos = dados.servidores;
+  }
+
+  planejamento.gestor = dados.gestor || planejamento.gestor;
+  planejamento.data = dados.data || planejamento.data;
+  planejamento.plano = dados.plano || planejamento.plano;
+  planejamento.jogadores = Number(dados.jogadores) || 0;
+  planejamento.ticketMedio = Number(dados.ticketMedio) || 0;
+  planejamento.custoInfraTech = Number(dados.custoInfraTech) || 0;
+  planejamento.economiaInfraPropria = Number(dados.economiaInfraPropria) || 0;
+  planejamento.orcamento = Number(dados.orcamento) || 0;
+  planejamento.metaUso = Number(dados.metaUso) || 0;
+  planejamento.limiteSubutilizado = Number(dados.limiteSubutilizado) || 0;
+  planejamento.crescimento = Number(dados.crescimento) || 0;
+  planejamento.provisionamento = Number(dados.provisionamento) || 0;
+  planejamento.capacidadeAtual = Number(dados.capacidadeAtual) || 0;
+  planejamento.capacidadeNova = Number(dados.capacidadeNova) || 0;
+  planejamento.custoNovoServidor = Number(dados.custoNovoServidor) || 0;
+  planejamento.custoImplantacao = Number(dados.custoImplantacao) || 0;
+
+  planejamento.servidores = servidoresRecebidos.map(function (servidor, indice) {
+    var referencia = USOS_ILUSTRATIVOS[indice] || { uso: 0, pico: 0 };
+    var uso = referencia.uso;
+    if (servidor.uso != null) {
+      uso = Number(servidor.uso);
+    }
+    var pico = referencia.pico;
+    if (servidor.pico != null) {
+      pico = Number(servidor.pico);
+    }
+    return {
+      nome: servidor.nome,
+      local: servidor.local || '-',
+      custo: Number(servidor.custo) || 0,
+      uso: uso,
+      pico: pico
+    };
+  });
+
+  if (Array.isArray(dados.historico)) {
+    planejamento.historico = dados.historico;
+  } else {
+    planejamento.historico = [];
+  }
+}
+
+function carregarPlanejamentoBackend() {
+  var aviso = document.getElementById('aviso-ilustrativo');
+  return fetch('/planejamento', { credentials: 'same-origin', cache: 'no-store' })
+    .then(function (resposta) {
+      if (!resposta.ok) throw new Error('Falha ao carregar planejamento');
+      return resposta.json();
+    })
+    .then(function (dados) {
+      aplicarDadosServidor(dados);
+      if (aviso) aviso.hidden = true;
+      renderTudo();
+    })
+    .catch(function () {
+      if (aviso) aviso.hidden = false;
+    });
 }
 
 /* ---------- Relógio ---------- */
@@ -469,25 +624,72 @@ function fecharPremissas() {
 
 function lerNumero(id, padrao) {
   var valor = parseFloat(document.getElementById(id).value);
-  return isNaN(valor) ? padrao : valor;
+  if (isNaN(valor)) return padrao;
+  return valor;
 }
 
 function aplicarPremissas(evento) {
   evento.preventDefault();
 
+  var novasPremissas = {};
   CAMPOS_PREMISSAS.forEach(function (campo) {
     var valor = Math.max(campo.min, lerNumero(campo.id, planejamento[campo.chave]));
     if (campo.max !== undefined) valor = Math.min(campo.max, valor);
-    planejamento[campo.chave] = valor;
+    novasPremissas[campo.chave] = valor;
   });
 
-  renderTudo();
-  fecharPremissas();
-  mostrarToast();
+  if (novasPremissas.limiteSubutilizado >= novasPremissas.metaUso) {
+    mostrarToast('O limite subutilizado deve ser menor que a meta de uso.', true);
+    return;
+  }
+
+  fetch('/planejamento', {
+    method: 'PUT',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(novasPremissas)
+  })
+    .then(function (resposta) {
+      if (resposta.ok) {
+        return resposta.json().then(function (dados) {
+          aplicarDadosServidor(dados);
+          var aviso = document.getElementById('aviso-ilustrativo');
+          if (aviso) aviso.hidden = true;
+          renderTudo();
+          fecharPremissas();
+          mostrarToast('Premissas salvas e valores recalculados.', false);
+        });
+      }
+      return resposta.json().catch(function () { return {}; }).then(function (corpo) {
+        if (resposta.status >= 400 && resposta.status < 500) {
+          mostrarToast(corpo.erro || 'Não foi possível validar as premissas.', true);
+          return;
+        }
+        throw new Error(corpo.erro || 'Erro no servidor');
+      });
+    })
+    .catch(function () {
+      CAMPOS_PREMISSAS.forEach(function (campo) {
+        planejamento[campo.chave] = novasPremissas[campo.chave];
+      });
+      renderTudo();
+      fecharPremissas();
+      mostrarToast('Premissas aplicadas localmente (servidor indisponível).', false);
+    });
 }
 
-function mostrarToast() {
+function mostrarToast(mensagem, erro) {
   var toast = document.getElementById('toast-premissas');
+  toast.textContent = mensagem || 'Premissas aplicadas. Valores recalculados.';
+  if (erro) {
+    toast.style.borderColor = 'rgb(239 68 68 / 0.5)';
+    toast.style.background = '#2b1318';
+    toast.style.color = '#fda4af';
+  } else {
+    toast.style.borderColor = '';
+    toast.style.background = '';
+    toast.style.color = '';
+  }
   toast.hidden = false;
 
   if (toastTimer) clearTimeout(toastTimer);
@@ -501,6 +703,7 @@ function mostrarToast() {
 document.addEventListener('DOMContentLoaded', function () {
   renderTudo();
   iniciarRelogio();
+  carregarPlanejamentoBackend();
 
   document.getElementById('btn-premissas-topo').addEventListener('click', abrirPremissas);
   document.getElementById('btn-editar-premissas').addEventListener('click', abrirPremissas);
@@ -517,7 +720,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-/* Deixa os dados acessíveis para uma futura integração com o backend. */
+/* Deixa os dados acessíveis para inspeção e testes. */
 window.InfraTechPlanejamentoFinanceiro = {
   dados: planejamento,
   renderTudo: renderTudo
