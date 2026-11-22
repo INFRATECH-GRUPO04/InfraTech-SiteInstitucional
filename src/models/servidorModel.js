@@ -58,6 +58,7 @@ function listarComponentesPorServidor(idServidor) {
             c.capacidade_total,
             c.unidade_capacidade,
             m.id_metrica,
+            m.nome AS nome_metrica,
             m.limite_atencao,
             m.limite_critico 
         FROM componente c

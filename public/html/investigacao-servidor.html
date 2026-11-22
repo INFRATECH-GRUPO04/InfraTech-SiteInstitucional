@@ -99,10 +99,14 @@
             </div>
         </header>
 
-        <main class="investigacao-conteudo">
+        <main class="investigacao-conteudo" id="conteudoInvestigacao" data-estado="carregando" aria-busy="true">
             <header class="investigacao-introducao">
                 <h1>Investigação e Diagnóstico do Servidor</h1>
-                <p>Explore correlação, regressão, anomalias e distribuição das métricas para identificar padrões, relações entre métricas e possíveis causas.</p>
+                <div class="investigacao-introducao__linha">
+                    <p>Explore correlação, regressão, anomalias e distribuição das métricas para identificar padrões e relações.</p>
+                    <!-- (Cláudia - M) Exibe a origem confirmada pelo backend após consultar a Gold no S3. -->
+                    <span class="investigacao-origem" id="indicadorOrigemGold" data-estado="verificando" role="status" aria-live="polite">Verificando origem dos dados…</span>
+                </div>
             </header>
 
             <section class="investigacao-filtros" aria-label="Filtros da investigação">
@@ -154,20 +158,21 @@
                     </select>
                 </label>
 
+                <!-- (Cláudia - M) Associa os filtros de data ao aviso dos metadados históricos publicados na Gold. -->
                 <div class="investigacao-filtro investigacao-filtro--periodo" id="filtroPeriodoHistorico" data-estado-historico="aguardando-metadados">
                     <span class="investigacao-filtro__rotulo">Intervalo do histórico da empresa</span>
                     <div class="investigacao-periodo__campos">
                         <label>
                             <span>De</span>
-                            <input type="date" id="dataInicioHistorico" name="dataInicioHistorico" aria-label="Data inicial do histórico" aria-describedby="estadoHistoricoSilver" disabled>
+                            <input type="date" id="dataInicioHistorico" name="dataInicioHistorico" aria-label="Data inicial do histórico" aria-describedby="estadoHistoricoGold" disabled>
                         </label>
                         <label>
                             <span>Até</span>
-                            <input type="date" id="dataFimHistorico" name="dataFimHistorico" aria-label="Data final do histórico" aria-describedby="estadoHistoricoSilver" disabled>
+                            <input type="date" id="dataFimHistorico" name="dataFimHistorico" aria-label="Data final do histórico" aria-describedby="estadoHistoricoGold" disabled>
                         </label>
                         <button type="button" id="aplicarPeriodoHistorico" disabled>Aplicar</button>
                     </div>
-                    <p class="investigacao-periodo__estado" id="estadoHistoricoSilver" role="status" aria-live="polite">Aguardando as datas da primeira e da última captura da camada Silver.</p>
+                    <p class="investigacao-periodo__estado" id="estadoHistoricoGold" role="status" aria-live="polite">Aguardando os limites de data do histórico publicado na Gold.</p>
                     <p class="investigacao-periodo__nota">Os limites do calendário não garantem capturas em todos os momentos do intervalo.</p>
                 </div>
             </section>
@@ -175,15 +180,16 @@
             <section class="investigacao-kpis" aria-label="Indicadores da investigação">
                 <article class="investigacao-kpi investigacao-kpi--anomalias">
                     <span class="investigacao-kpi__icone" aria-hidden="true">⌁</span>
-                    <div><h2>Anomalias detectadas</h2><output id="kpiAnomalias">—</output><p>Comportamentos fora do padrão</p></div>
+                    <div><h2>Anomalias do conjunto</h2><output id="kpiAnomalias">—</output><p id="descricaoAnomalias">Eventos individuais detectados</p></div>
                 </article>
                 <article class="investigacao-kpi investigacao-kpi--desvio">
                     <span class="investigacao-kpi__icone" aria-hidden="true">⤴</span>
-                    <div><h2>Maior desvio da regressão</h2><output id="kpiMaiorDesvio">—</output><p>Diferença entre valor real e estimado</p></div>
+                    <div><h2>Maior desvio da regressão</h2><output id="kpiMaiorDesvio">—</output><p id="escopoMaiorDesvio">Relação em exibição</p></div>
                 </article>
-                <article class="investigacao-kpi investigacao-kpi--cobertura">
+                <article class="investigacao-kpi investigacao-kpi--cobertura" id="cardCobertura" data-estado="sem-dados">
                     <span class="investigacao-kpi__icone" aria-hidden="true">▤</span>
-                    <div><h2>Cobertura dos dados</h2><output id="kpiCobertura">—</output><p id="descricaoCobertura">Capturas válidas no período disponível</p></div>
+                    <!-- (Cláudia - M) Identifica a faixa operacional da cobertura ao lado do valor calculado. -->
+                    <div><h2>Cobertura dos dados</h2><small class="investigacao-cobertura__estado" id="estadoCoberturaLabel">Sem dados</small><output id="kpiCobertura">—</output><p id="descricaoCobertura">Capturas válidas no período disponível</p></div>
                 </article>
                 <article class="investigacao-kpi investigacao-kpi--critico">
                     <span class="investigacao-kpi__icone" aria-hidden="true">◷</span>
@@ -194,46 +200,55 @@
             <section class="investigacao-relacoes" aria-label="Análises de relação entre métricas">
                 <article class="investigacao-painel investigacao-painel--pearson" aria-labelledby="tituloPearson">
                     <header class="investigacao-painel__cabecalho">
-                        <div><h2 id="tituloPearson">Correlação de Pearson</h2><p>Resume a direção e a intensidade da relação linear.</p></div>
+                        <div><h2 id="tituloPearson">Correlação cruzada de Pearson</h2><p>Mediana dos pares direcionados selecionados.</p></div>
                         <button class="investigacao-ajuda" type="button" aria-label="Sobre a correlação de Pearson" aria-describedby="ajudaPearson">i</button>
                     </header>
                     <p class="investigacao-ajuda__texto" id="ajudaPearson">Correlação mede associação linear e não confirma causalidade.</p>
                     <div class="investigacao-pearson">
-                        <div class="investigacao-pearson__resultado" aria-label="Coeficiente de correlação">
-                            <output id="coeficientePearson">r = —</output>
-                            <span id="classificacaoPearson">Aguardando amostras alinhadas</span>
+                        <!-- (Cláudia - M) O anel mostra a intensidade absoluta; sinal e resumo continuam explícitos ao lado. -->
+                        <div class="investigacao-pearson__resultado" aria-label="Resumo mediano de Pearson">
+                            <div class="investigacao-pearson__anel" id="anelPearson" role="img" aria-label="Correlação mediana aguardando dados">
+                                <div><span>mediana r</span><output id="coeficientePearson">—</output></div>
+                            </div>
+                            <span class="investigacao-pearson__direcao" id="classificacaoPearson">Aguardando pares direcionados</span>
+                            <span class="investigacao-pearson__sinal" id="sinalPearson">Sinal —</span>
                         </div>
-                        <div class="investigacao-pearson__legenda" aria-label="Escala de interpretação do coeficiente">
-                            <span><i class="ponto-legenda ponto-legenda--forte" aria-hidden="true"></i>0,7 a 1,0 · Forte</span>
-                            <span><i class="ponto-legenda ponto-legenda--moderada" aria-hidden="true"></i>0,4 a 0,6 · Moderada</span>
-                            <span><i class="ponto-legenda ponto-legenda--fraca" aria-hidden="true"></i>0,1 a 0,3 · Fraca</span>
-                            <span><i class="ponto-legenda ponto-legenda--negativa" aria-hidden="true"></i>−1,0 a 0 · Negativa</span>
-                        </div>
-                        <div class="investigacao-leitura-tecnica">
-                            <h3>Leitura técnica</h3>
-                            <dl>
-                                <div><dt>Direção</dt><dd id="direcaoPearson">—</dd></div>
-                                <div><dt>Intensidade</dt><dd id="intensidadePearson">—</dd></div>
-                                <div><dt>Amostras alinhadas</dt><dd id="amostrasPearson">—</dd></div>
-                            </dl>
-                            <p>Considera os servidores selecionados no filtro inicial.</p>
+                        <div class="investigacao-pearson__legenda" aria-label="Distribuição dos pares correlacionados">
+                            <span><i class="ponto-legenda ponto-legenda--positivo" aria-hidden="true"></i>Positivas <b id="pearsonPositivas">0</b></span>
+                            <span><i class="ponto-legenda ponto-legenda--negativa" aria-hidden="true"></i>Negativas <b id="pearsonNegativas">0</b></span>
+                            <span><i class="ponto-legenda ponto-legenda--forte" aria-hidden="true"></i>Fortes <b id="pearsonFortes">0</b></span>
+                            <span><i class="ponto-legenda ponto-legenda--moderada-fraca" aria-hidden="true"></i>Moderadas / fracas <b id="pearsonOutras">0</b></span>
+                            <small id="amostrasPearson">0 relações válidas</small>
+                            <small>O anel representa |r|. Positivo e negativo são direções, não avaliação de saúde.</small>
+                            <details class="investigacao-pares-detalhes">
+                                <summary>Ver relações direcionadas</summary>
+                                <ul id="listaRelacoesPearson"></ul>
+                            </details>
                         </div>
                     </div>
                 </article>
 
                 <article class="investigacao-painel investigacao-painel--regressao" aria-labelledby="tituloRegressao">
                     <header class="investigacao-painel__cabecalho">
-                        <div><h2 id="tituloRegressao">Regressão Linear</h2><p>Analisa a relação matemática e os valores afastados do comportamento estimado.</p></div>
+                        <div><h2 id="tituloRegressao">Regressão Linear</h2><p>Uma única reta ajustada sobre os pares válidos do conjunto selecionado.</p></div>
                         <button class="investigacao-ajuda" type="button" aria-label="Sobre a regressão linear" aria-describedby="ajudaRegressao">i</button>
                     </header>
                     <p class="investigacao-ajuda__texto" id="ajudaRegressao">A reta resume a relação observada nas amostras; não é uma previsão futura.</p>
                     <div class="investigacao-regressao">
                         <div class="investigacao-regressao__resumo">
-                            <div><span>Variável dependente (Y)</span><strong id="regressaoMetricaY">RAM</strong></div>
-                            <div><span>Variável independente (X)</span><strong id="regressaoMetricaX">CPU</strong></div>
-                            <div><span>Equação da reta</span><strong id="equacaoRegressao">Aguardando cálculo</strong></div>
-                            <div><span>R² (ajuste do modelo)</span><strong id="r2Regressao">—</strong></div>
-                            <p id="interpretacaoR2">Ajuste calculado com os dados dos servidores selecionados no filtro inicial.</p>
+                            <!-- (Cláudia - M) Mantém os parâmetros da única relação em foco compactos e identificáveis. -->
+                            <label for="seletorRelacaoRegressao">Relação em foco</label>
+                            <select id="seletorRelacaoRegressao" disabled aria-label="Selecionar relação cruzada para a regressão"></select>
+                            <div class="investigacao-regressao__metricas">
+                                <div><span>X · independente</span><strong id="regressaoMetricaX">CPU</strong></div>
+                                <div><span>Y · dependente</span><strong id="regressaoMetricaY">RAM</strong></div>
+                                <div><span>Inclinação</span><strong id="coeficienteAngular">—</strong></div>
+                                <div><span>Intercepto</span><strong id="interceptoRegressao">—</strong></div>
+                                <div><span>R²</span><strong id="r2Regressao">—</strong></div>
+                                <div><span>Amostras alinhadas</span><strong id="amostrasRegressao">—</strong></div>
+                                <div class="investigacao-regressao__equacao"><span>Equação</span><strong id="equacaoRegressao">Aguardando cálculo</strong></div>
+                                <div class="investigacao-regressao__desvio"><span>Maior desvio</span><strong id="desvioRegressaoDetalhe">—</strong></div>
+                            </div>
                         </div>
                         <figure class="investigacao-grafico investigacao-grafico--dispersao">
                             <figcaption id="tituloGraficoRegressao">Regressão Linear: CPU × RAM</figcaption>
@@ -251,58 +266,54 @@
             <section class="investigacao-comportamento" aria-label="Análises de comportamento das métricas">
                 <article class="investigacao-painel investigacao-painel--anomalias" aria-labelledby="tituloAnomalias">
                     <header class="investigacao-painel__cabecalho">
-                        <div><h2 id="tituloAnomalias">Anomalias</h2><p>Identifica comportamentos fora do padrão; anomalia estatística não significa falha confirmada.</p></div>
+                        <div><h2 id="tituloAnomalias">Anomalias</h2><p>Z-score é estatístico; a cor indica somente limites operacionais cadastrados.</p></div>
                         <button class="investigacao-ajuda" type="button" aria-label="Sobre a detecção de anomalias" aria-describedby="ajudaAnomalias">i</button>
                     </header>
-                    <p class="investigacao-ajuda__texto" id="ajudaAnomalias">A classificação estatística é diferente da ultrapassagem de um limite crítico.</p>
+                    <!-- (Cláudia - M) Explica que a cor representa limites operacionais, enquanto a anomalia vem do Z-score. -->
+                    <p class="investigacao-ajuda__texto" id="ajudaAnomalias">O ponto indica uma anomalia estatística. Verde: abaixo dos limites; amarelo: atenção; vermelho: crítico; azul: sem limite configurado. Roxo identifica um grupo simultâneo. Anomalia e simultaneidade não indicam causalidade.</p>
                     <div class="investigacao-anomalias">
                         <figure class="investigacao-grafico investigacao-grafico--temporal">
-                            <figcaption>Métricas ao longo do tempo</figcaption>
+                            <figcaption id="tituloGraficoAnomalias">Média temporal do conjunto · métricas selecionadas</figcaption>
                             <canvas id="graficoAnomalias" role="img" aria-label="Evolução temporal das duas métricas selecionadas e marcações de anomalia"></canvas>
                             <ul class="investigacao-legenda" aria-label="Legenda do gráfico temporal">
                                 <li><i class="ponto-legenda ponto-legenda--cpu" aria-hidden="true"></i><span id="legendaMetricaPrimaria">CPU</span></li>
                                 <li><i class="ponto-legenda ponto-legenda--ram" aria-hidden="true"></i><span id="legendaMetricaComparada">RAM</span></li>
-                                <li><i class="ponto-legenda ponto-legenda--anomalia" aria-hidden="true"></i>Anomalia</li>
-                                <li><i class="linha-legenda linha-legenda--limite" aria-hidden="true"></i>Limite crítico</li>
+                                <li><i class="ponto-legenda ponto-legenda--anomalia" aria-hidden="true"></i>Anomalia estatística</li>
+                                <li><i class="ponto-legenda ponto-legenda--simultaneo" aria-hidden="true"></i>Grupo simultâneo</li>
+                                <li id="legendaLimiteCritico"><i class="linha-legenda linha-legenda--limite" aria-hidden="true"></i>Limite crítico comum</li>
                             </ul>
                         </figure>
+                        <!-- (Cláudia - M) A tabela preserva servidor, horário e Z-score em uma área rolável própria. -->
                         <section class="investigacao-lista-anomalias" aria-labelledby="tituloListaAnomalias">
                             <h3 id="tituloListaAnomalias">Anomalias detectadas</h3>
+                            <p class="investigacao-lista-anomalias__nota" id="resumoAnomaliasServidor">Eventos individuais e grupos simultâneos.</p>
                             <p class="investigacao-lista-anomalias__vazia" id="anomaliasVazio">Aguardando a análise das capturas disponíveis.</p>
-                            <ul id="listaAnomalias" aria-live="polite"></ul>
+                            <div class="investigacao-tabela-anomalias__rolagem" id="rolagemTabelaAnomalias" hidden>
+                                <table class="investigacao-tabela-anomalias">
+                                    <thead><tr><th scope="col">Horário</th><th scope="col">Servidor</th><th scope="col">Métrica</th><th scope="col">Valor</th><th scope="col">Z-score</th></tr></thead>
+                                    <tbody id="listaAnomalias" aria-live="polite"></tbody>
+                                </table>
+                            </div>
                         </section>
                     </div>
                 </article>
 
                 <article class="investigacao-painel investigacao-painel--boxplot" aria-labelledby="tituloBoxplot">
                     <header class="investigacao-painel__cabecalho">
-                        <div><h2 id="tituloBoxplot">Boxplot — Distribuição por Servidor</h2><p>Compara a distribuição da métrica selecionada entre os servidores.</p></div>
+                        <div><h2 id="tituloBoxplot">Boxplot — Distribuição por servidor</h2><p>Compara os servidores selecionados usando todos os valores válidos.</p></div>
                         <button class="investigacao-ajuda" type="button" aria-label="Como interpretar o boxplot" aria-describedby="ajudaBoxplot">i</button>
                     </header>
-                    <p class="investigacao-ajuda__texto" id="ajudaBoxplot">Os pontos além dos bigodes são possíveis outliers estatísticos, não necessariamente falhas.</p>
+                    <p class="investigacao-ajuda__texto" id="ajudaBoxplot">A caixa vai de Q1 a Q3; a linha central é a mediana. Bigodes chegam a 1,5 × IQR e os pontos externos são possíveis outliers, não falhas confirmadas.</p>
                     <div class="investigacao-boxplot__corpo">
                         <label for="metricaBoxplot">Métrica</label>
                         <select id="metricaBoxplot" name="metricaBoxplot">
-                            <option value="cpu" selected>CPU</option>
-                            <option value="ram">RAM</option>
-                            <option value="disco">Disco</option>
-                            <option value="rede">Rede</option>
+                            <option value="cpu" selected>Métrica 1 · CPU</option>
+                            <option value="ram">Métrica 2 · RAM</option>
                         </select>
                         <figure class="investigacao-grafico investigacao-grafico--boxplot">
-                            <figcaption class="visually-hidden">Distribuição da métrica por servidor selecionado</figcaption>
-                            <canvas id="graficoBoxplot" role="img" aria-label="Diagramas de caixa comparando a distribuição da métrica entre os servidores selecionados"></canvas>
+                            <figcaption class="visually-hidden">Distribuição da métrica no conjunto de servidores selecionados</figcaption>
+                            <canvas id="graficoBoxplot" role="img" aria-label="Diagrama de caixa comparando a distribuição da métrica entre os servidores selecionados"></canvas>
                         </figure>
-                        <aside class="investigacao-boxplot__legenda" aria-label="Como ler o boxplot">
-                            <h3>Como ler o boxplot</h3>
-                            <dl>
-                                <div><dt>Máximo</dt><dd>Bigode superior</dd></div>
-                                <div><dt>Q3</dt><dd>Terceiro quartil</dd></div>
-                                <div><dt>Mediana</dt><dd>Valor central</dd></div>
-                                <div><dt>Q1</dt><dd>Primeiro quartil</dd></div>
-                                <div><dt>Mínimo</dt><dd>Bigode inferior</dd></div>
-                            </dl>
-                            <p><i class="ponto-legenda ponto-legenda--desvio" aria-hidden="true"></i> Outlier estatístico</p>
-                        </aside>
                     </div>
                 </article>
             </section>

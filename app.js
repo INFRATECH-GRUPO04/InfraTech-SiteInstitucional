@@ -33,6 +33,7 @@ var cadastroEmpresaRouter = require("./src/routes/cadastroEmpresa");
 var gerenciarEmpresaRouter = require("./src/routes/gerenciarEmpresa");
 var gerenciarFuncionarioRouter = require("./src/routes/gerenciarFuncionario");
 var agenteRouter = require("./src/routes/agente");
+var investigacaoRouter = require("./src/routes/investigacao");
 
 var cryptoRouter = require("./src/routes/crypto");
 var autorizacao = require("./src/seguranca/autorizacao");
@@ -82,6 +83,7 @@ app.use("/", indexRouter);
 app.use("/login_cadastro", loginCadastroRouter);
 app.use("/crypto", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), cryptoRouter);
 app.use("/servidor", autorizacao.autenticar, servidorRouter);
+app.use("/investigacao", autorizacao.autenticar, investigacaoRouter); //rota da claudia 
 app.use("/cadastro_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), cadastroEmpresaRouter);
 app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);

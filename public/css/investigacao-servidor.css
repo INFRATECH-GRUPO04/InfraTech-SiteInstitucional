@@ -8,9 +8,9 @@
   --investigacao-texto-secundario: var(--texto-card-suave, #a6b7c7);
   --investigacao-ciano: #00d2df;
   --investigacao-roxo: #a855f7;
-  --investigacao-verde: #22d3a6;
-  --investigacao-amarelo: #fbbf24;
-  --investigacao-vermelho: #fb5360;
+  --investigacao-verde: #20C997;
+  --investigacao-amarelo: #F5B82E;
+  --investigacao-vermelho: #F05262;
   --investigacao-raio: var(--dashboard-raio-card, 12px);
   color: var(--investigacao-texto);
   background: var(--investigacao-fundo);
@@ -113,7 +113,9 @@
   cursor: pointer;
 }
 
+/* (Cláudia - M) Mantém o foco visível nos controles dos filtros, painéis e chips de servidores. */
 .investigacao-filtro :is(select, button):focus-visible,
+.investigacao-servidor-chip__remover:focus-visible,
 .investigacao-lista-servidores button:focus-visible,
 .investigacao-lista-servidores input:focus-visible,
 .investigacao-painel :is(button, select):focus-visible {
@@ -220,14 +222,6 @@
   background: #1a2c3a;
 }
 
-.investigacao-filtro :is(select, button):focus-visible,
-.investigacao-servidor-chip__remover:focus-visible,
-.investigacao-lista-servidores button:focus-visible,
-.investigacao-lista-servidores input:focus-visible,
-.investigacao-painel :is(button, select):focus-visible {
-  outline: 2px solid var(--investigacao-ciano);
-  outline-offset: 2px;
-}
 
 .investigacao-filtro__controle-servidores {
   position: relative;
@@ -517,10 +511,21 @@
   line-height: 1.3;
 }
 
-.investigacao-kpi--anomalias .investigacao-kpi__icone { color: var(--investigacao-amarelo); background: #302818; }
+.investigacao-kpi--anomalias .investigacao-kpi__icone { color: var(--investigacao-ciano); background: #122733; }
 .investigacao-kpi--desvio .investigacao-kpi__icone { color: var(--investigacao-roxo); background: #251934; }
 .investigacao-kpi--cobertura .investigacao-kpi__icone { color: var(--investigacao-ciano); background: #122733; }
 .investigacao-kpi--critico .investigacao-kpi__icone { color: var(--investigacao-vermelho); background: #321e25; }
+.investigacao-kpi--critico output { color: var(--investigacao-vermelho); }
+
+/* (Cláudia - M) Usa estados operacionais apenas na cobertura e mantém o tempo crítico vermelho. */
+.investigacao-kpi--cobertura { --cobertura-estado: #8293a3; }
+.investigacao-kpi--cobertura[data-estado="normal"] { --cobertura-estado: var(--investigacao-verde); }
+.investigacao-kpi--cobertura[data-estado="atencao"] { --cobertura-estado: var(--investigacao-amarelo); }
+.investigacao-kpi--cobertura[data-estado="critico"] { --cobertura-estado: var(--investigacao-vermelho); }
+.investigacao-kpi--cobertura .investigacao-kpi__icone,
+.investigacao-kpi--cobertura output { color: var(--cobertura-estado); }
+.investigacao-kpi--cobertura .investigacao-kpi__icone { background: #122733; }
+.investigacao-kpi--cobertura[data-estado="sem-dados"] output { color: var(--investigacao-texto-secundario); }
 
 /* Coloca as análises de relação em painéis proporcionais, com a regressão mais larga. */
 .investigacao-relacoes,
@@ -630,7 +635,7 @@
   display: grid;
   min-height: 0;
   flex: 1;
-  grid-template-columns: minmax(102px, 0.8fr) minmax(118px, 0.95fr) minmax(170px, 1.35fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   align-items: center;
   gap: 10px;
   padding-top: 8px;
@@ -638,28 +643,29 @@
 
 .investigacao-pearson__resultado {
   display: flex;
-  width: min(100%, 124px);
-  aspect-ratio: 1;
+  width: auto;
+  min-width: 0;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  justify-self: center;
-  gap: 5px;
-  border: 5px solid #22d3a6;
-  border-radius: 50%;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid #2b554c;
+  border-left: 3px solid var(--investigacao-verde);
+  border-radius: 8px;
   color: var(--investigacao-verde);
-  background: #10242a;
-  text-align: center;
+  background: var(--investigacao-superficie-interna);
+  text-align: left;
 }
 
 .investigacao-pearson__resultado output {
-  font-size: clamp(1rem, 1.3vw, 1.35rem);
+  font-size: clamp(1.05rem, 1.35vw, 1.35rem);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 
 .investigacao-pearson__resultado span {
-  max-width: 90%;
+  max-width: 100%;
   color: #b8cbd5;
   font-size: 0.58rem;
   line-height: 1.25;
@@ -667,9 +673,30 @@
 
 .investigacao-pearson__legenda {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   color: #c3d0da;
   font-size: 0.63rem;
+}
+
+.investigacao-pares-detalhes {
+  min-width: 0;
+  grid-column: 1 / -1;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.6rem;
+}
+
+.investigacao-pares-detalhes summary {
+  width: fit-content;
+  color: var(--investigacao-ciano);
+  cursor: pointer;
+}
+
+.investigacao-pares-detalhes ul {
+  max-height: 104px;
+  overflow: auto;
+  margin: 5px 0 0;
+  padding-left: 16px;
 }
 
 .investigacao-pearson__legenda span,
@@ -689,9 +716,11 @@
   background: var(--investigacao-ciano);
 }
 
+.ponto-legenda--positivo,
 .ponto-legenda--forte { background: var(--investigacao-verde); }
 .ponto-legenda--moderada { background: var(--investigacao-amarelo); }
 .ponto-legenda--fraca { background: var(--investigacao-vermelho); }
+.ponto-legenda--moderada-fraca { background: linear-gradient(90deg, var(--investigacao-amarelo) 50%, var(--investigacao-vermelho) 50%); }
 .ponto-legenda--negativa { background: var(--investigacao-roxo); }
 .ponto-legenda--observacao { background: var(--investigacao-roxo); }
 .ponto-legenda--desvio,
@@ -783,6 +812,20 @@
   flex-direction: column;
   justify-content: center;
   gap: 5px;
+}
+
+.investigacao-regressao__resumo > select {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  box-sizing: border-box;
+  padding: 5px 8px;
+  border: 1px solid #34485a;
+  border-radius: 6px;
+  color: var(--investigacao-texto);
+  background: var(--investigacao-superficie-interna);
+  font: inherit;
+  font-size: 0.66rem;
 }
 
 .investigacao-regressao__resumo > div {
@@ -971,6 +1014,318 @@
   clip-path: inset(50%);
 }
 
+/* (Cláudia - M) Reapresenta o Pearson mediano em um anel; a direção usa cor e texto próprios. */
+.investigacao-pearson__resultado {
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+}
+
+.investigacao-pearson__anel {
+  --pearson-arco: 0deg;
+  --pearson-cor: #718096;
+  position: relative;
+  display: grid;
+  width: clamp(104px, 10vw, 134px);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--pearson-cor) 0deg var(--pearson-arco), #293746 var(--pearson-arco) 360deg);
+}
+
+.investigacao-pearson__anel::before {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid #304253;
+  border-radius: inherit;
+  background: var(--investigacao-superficie);
+  content: "";
+}
+
+.investigacao-pearson__anel > div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+
+.investigacao-pearson__anel > div span {
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.62rem;
+}
+
+.investigacao-pearson__anel output {
+  color: var(--pearson-cor);
+  font-size: clamp(1.15rem, 1.55vw, 1.55rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.investigacao-pearson__anel[data-faixa="forte"] { --pearson-cor: var(--investigacao-verde); }
+.investigacao-pearson__anel[data-faixa="moderada"] { --pearson-cor: var(--investigacao-amarelo); }
+.investigacao-pearson__anel[data-faixa="fraca"] { --pearson-cor: var(--investigacao-vermelho); }
+.investigacao-pearson__anel[data-faixa="sem-dados"] { --pearson-cor: #8293a3; }
+
+.investigacao-pearson__resultado .investigacao-pearson__direcao {
+  color: #e3edf4;
+  font-size: 0.67rem;
+  font-weight: 650;
+}
+
+.investigacao-pearson__resultado > p {
+  max-width: 220px;
+  margin: 1px 0 0;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.59rem;
+  line-height: 1.35;
+}
+
+.investigacao-pearson__legenda small {
+  grid-column: 1 / -1;
+  color: #8293a3;
+  font-size: 0.54rem;
+  line-height: 1.3;
+}
+
+.investigacao-pearson__legenda b {
+  margin-left: auto;
+  color: #f2f6fa;
+  font-variant-numeric: tabular-nums;
+}
+
+/* (Cláudia - M) Resume inclinação, intercepto, R² e desvio ao lado do scatter plot. */
+.investigacao-regressao {
+  grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.7fr);
+}
+
+.investigacao-regressao__resumo {
+  display: grid;
+  align-content: start;
+  grid-template-columns: minmax(92px, 0.55fr) minmax(0, 1fr);
+  gap: 5px;
+}
+
+.investigacao-regressao__resumo > p {
+  grid-column: 1 / -1;
+}
+
+.investigacao-regressao__resumo > label {
+  grid-column: 1;
+  align-self: center;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.62rem;
+}
+
+.investigacao-regressao__resumo > select {
+  grid-column: 2;
+  min-height: 31px;
+}
+
+.investigacao-regressao__metricas {
+  display: grid;
+  min-width: 0;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.investigacao-regressao__metricas > div {
+  min-width: 0;
+  padding: 5px 7px;
+  border: 1px solid #2c4254;
+  border-radius: 6px;
+  background: var(--investigacao-superficie-interna);
+}
+
+.investigacao-regressao__metricas > div span {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.58rem;
+}
+
+.investigacao-regressao__metricas > div strong {
+  display: block;
+  min-width: 0;
+  color: #e8f0f5;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.investigacao-regressao__metricas > .investigacao-regressao__equacao {
+  grid-column: 1 / -1;
+}
+
+.investigacao-regressao__metricas > .investigacao-regressao__desvio {
+  grid-column: 1 / -1;
+}
+
+.investigacao-regressao__metricas > .investigacao-regressao__equacao strong {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.investigacao-regressao__resumo > p {
+  overflow: hidden;
+  font-size: 0.54rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* (Cláudia - M) Mantém a tabela de ocorrências compacta e limita a rolagem ao corpo de eventos. */
+.investigacao-lista-anomalias {
+  padding-left: 8px;
+}
+
+.investigacao-lista-anomalias h3 {
+  flex: 0 0 auto;
+  margin-bottom: 5px;
+}
+
+.investigacao-lista-anomalias__nota {
+  flex: 0 0 auto;
+  margin: 0 0 4px;
+  color: var(--investigacao-texto-secundario);
+  font-size: 0.53rem;
+  line-height: 1.3;
+}
+
+.investigacao-tabela-anomalias__rolagem {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  border: 1px solid #2c4254;
+  border-radius: 7px;
+  scrollbar-color: #496376 #111c27;
+  scrollbar-width: thin;
+}
+
+.investigacao-tabela-anomalias__rolagem[hidden] { display: none; }
+
+.investigacao-tabela-anomalias {
+  width: 100%;
+  border-collapse: collapse;
+  color: #dce7ef;
+  font-size: 0.58rem;
+  text-align: left;
+}
+
+.investigacao-tabela-anomalias th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 6px 5px;
+  color: #a6b7c7;
+  background: #111c27;
+  font-size: 0.55rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.investigacao-tabela-anomalias td {
+  padding: 4px 5px;
+  border-top: 1px solid #263746;
+  line-height: 1.25;
+}
+
+.investigacao-tabela-anomalias tr:hover td { background: #1b2a36; }
+.investigacao-tabela-anomalias tr.selecionada td { background: #263746; }
+.investigacao-tabela-anomalias td:nth-child(2) { overflow-wrap: anywhere; }
+.investigacao-tabela-anomalias td:nth-child(4) { white-space: nowrap; }
+
+.investigacao-severidade {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 5px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: #758597;
+}
+
+.investigacao-severidade--normal { background: var(--investigacao-verde); }
+.investigacao-severidade--atencao { background: var(--investigacao-amarelo); }
+.investigacao-severidade--critico { background: var(--investigacao-vermelho); }
+
+.investigacao-evento__simultaneo {
+  display: block;
+  color: #a6b7c7;
+  font-size: 0.5rem;
+}
+
+.investigacao-anomalia__selecionar {
+  padding: 0;
+  border: 0;
+  color: var(--investigacao-ciano);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.investigacao-anomalia__selecionar:hover { text-decoration: underline; }
+.investigacao-anomalia__selecionar:focus-visible { outline: 2px solid var(--investigacao-ciano); outline-offset: 2px; }
+
+/* (Cláudia - M) Evita o texto duplicado: o botão já contém “Sair” no HTML. */
+.pagina-investigacao .btn-logout::after { content: none; }
+
+.investigacao-conteudo[aria-busy="true"] .investigacao-painel,
+.investigacao-conteudo[data-estado="erro"] .investigacao-painel {
+  opacity: 0.72;
+}
+
+.investigacao-conteudo[data-estado="sem-dados"] .investigacao-painel {
+  opacity: 0.9;
+}
+
+/* (Cláudia - M) Distribui a investigação em duas linhas de análises na área útil da tela desktop. */
+@media (min-width: 1101px) and (min-height: 760px) {
+  .pagina-investigacao .container-dash {
+    height: 100dvh;
+    min-height: 0;
+  }
+
+  .pagina-investigacao .investigacao-conteudo {
+    display: grid;
+    min-height: 0;
+    grid-template-rows: auto auto auto minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    padding: 7px 14px 10px;
+    overflow: hidden;
+  }
+
+  .pagina-investigacao .dashboard-welcome {
+    min-height: 46px;
+    padding: 8px 14px;
+    margin-bottom: 0;
+  }
+
+  .investigacao-relacoes,
+  .investigacao-comportamento {
+    min-height: 0;
+    grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.45fr);
+  }
+
+  .investigacao-comportamento { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+
+  .investigacao-relacoes .investigacao-painel,
+  .investigacao-comportamento .investigacao-painel {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
 /* Em telas médias, empilha os painéis e mantém filtros e indicadores legíveis. */
 @media (max-width: 1100px) {
   .pagina-investigacao .investigacao-conteudo {
@@ -995,6 +1350,8 @@
   .investigacao-comportamento .investigacao-painel {
     height: 300px;
   }
+
+  .investigacao-conteudo { overflow: visible; }
 }
 
 @media (max-width: 760px) {
@@ -1055,6 +1412,15 @@
     border-top: 1px solid #304556;
     border-left: 0;
   }
+
+  .investigacao-regressao__resumo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .investigacao-tabela-anomalias { min-width: 440px; }
+}
+
+@media (max-width: 520px) {
+  .investigacao-regressao__metricas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .investigacao-regressao__metricas > .investigacao-regressao__desvio,
+  .investigacao-regressao__metricas > .investigacao-regressao__equacao { grid-column: 1 / -1; }
 }
 
 @media (max-width: 520px) {
@@ -1117,4 +1483,189 @@
   .investigacao-boxplot__legenda dl {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* (Cláudia - M) Amplia o anel e separa intensidade estatística de direção da correlação. */
+.investigacao-pearson {
+  grid-template-columns: minmax(158px, 0.78fr) minmax(0, 1.22fr);
+  gap: 14px;
+}
+
+.investigacao-pearson__resultado {
+  justify-self: center;
+  gap: 6px;
+}
+
+.investigacao-pearson__anel {
+  width: clamp(148px, 12vw, 172px);
+}
+
+.investigacao-pearson__anel::before { inset: 9px; }
+.investigacao-pearson__anel output { font-size: clamp(1.45rem, 1.8vw, 1.8rem); }
+.investigacao-pearson__anel[data-faixa="nula"] { --pearson-cor: #8293a3; }
+.investigacao-pearson__resultado .investigacao-pearson__sinal {
+  color: #aebdca;
+  font-size: 0.68rem;
+}
+
+.investigacao-pearson__legenda {
+  align-content: center;
+  gap: 7px;
+  font-size: 0.7rem;
+}
+
+.investigacao-pearson__legenda > span {
+  min-height: 30px;
+  padding: 5px 7px;
+  border: 1px solid #293b4b;
+  border-radius: 6px;
+  background: var(--investigacao-superficie-interna);
+}
+
+.ponto-legenda--positivo { background: var(--investigacao-ciano); }
+.ponto-legenda--anomalia { background: #77A9C7; }
+.ponto-legenda--simultaneo { background: var(--investigacao-roxo); }
+.investigacao-pearson__legenda small { font-size: 0.62rem; }
+
+/* (Cláudia - M) Reserva mais largura aos resultados sem tirar prioridade do scatter plot. */
+.investigacao-regressao {
+  grid-template-columns: minmax(330px, 0.92fr) minmax(0, 1.48fr);
+  gap: 12px;
+}
+
+.investigacao-regressao__resumo { gap: 7px; }
+.investigacao-regressao__resumo > label { font-size: 0.68rem; }
+.investigacao-regressao__resumo > select { min-height: 34px; font-size: 0.7rem; }
+.investigacao-regressao__metricas { gap: 6px; }
+.investigacao-regressao__metricas > div { padding: 6px 8px; }
+.investigacao-regressao__metricas > div span { font-size: 0.63rem; }
+.investigacao-regressao__metricas > div strong { font-size: 0.74rem; }
+.investigacao-regressao__metricas > .investigacao-regressao__equacao { grid-column: span 2; }
+.investigacao-regressao__metricas > .investigacao-regressao__desvio { grid-column: auto; }
+.investigacao-regressao__metricas > .investigacao-regressao__desvio strong { color: var(--investigacao-ciano); }
+
+/* (Cláudia - M) Dá espaço à tabela e mantém a rolagem limitada aos registros. */
+.investigacao-anomalias {
+  grid-template-columns: minmax(0, 1.28fr) minmax(320px, 0.92fr);
+  gap: 12px;
+}
+
+.investigacao-lista-anomalias { padding-left: 11px; }
+.investigacao-lista-anomalias__nota { font-size: 0.62rem; }
+.investigacao-tabela-anomalias { table-layout: fixed; font-size: 0.68rem; }
+.investigacao-tabela-anomalias th { padding: 7px 6px; font-size: 0.63rem; }
+.investigacao-tabela-anomalias td {
+  overflow: hidden;
+  padding: 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.investigacao-tabela-anomalias th:nth-child(1) { width: 27%; }
+.investigacao-tabela-anomalias th:nth-child(2) { width: 28%; }
+.investigacao-tabela-anomalias th:nth-child(3) { width: 12%; }
+.investigacao-tabela-anomalias th:nth-child(4) { width: 17%; }
+.investigacao-tabela-anomalias th:nth-child(5) { width: 16%; }
+.investigacao-tabela-anomalias td:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.investigacao-tabela-anomalias td:nth-child(4) { font-variant-numeric: tabular-nums; }
+.investigacao-evento__simultaneo { overflow: hidden; color: #c4a5fd; text-overflow: ellipsis; }
+.investigacao-severidade--grupo { background: var(--investigacao-roxo); }
+.investigacao-anomalia__selecionar { font-size: 0.67rem; }
+
+/* (Cláudia - M) Usa toda a largura do painel para comparar os boxplots selecionados. */
+.investigacao-boxplot__corpo {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px 10px;
+}
+.investigacao-boxplot__corpo > label { grid-column: 1; grid-row: 1; }
+.investigacao-boxplot__corpo > select { grid-column: 2; grid-row: 1; min-width: 150px; }
+.investigacao-grafico--boxplot { grid-column: 1 / -1; grid-row: 2; }
+.investigacao-boxplot__legenda { display: none; }
+
+/* (Cláudia - M) Mostra a faixa da cobertura como estado operacional, sem colorir relações estatísticas. */
+.investigacao-cobertura__estado {
+  width: fit-content;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--cobertura-estado);
+  background: color-mix(in srgb, var(--cobertura-estado) 13%, transparent);
+  font-size: 0.56rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+@media (min-width: 1101px) and (min-height: 760px) {
+  .investigacao-relacoes { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); }
+  .investigacao-comportamento { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+}
+
+@media (max-width: 1100px) {
+  .investigacao-regressao { grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr); }
+  .investigacao-anomalias { grid-template-columns: minmax(0, 1fr) minmax(290px, 0.9fr); }
+}
+
+@media (max-width: 760px) {
+  .investigacao-pearson { grid-template-columns: minmax(140px, 0.7fr) minmax(0, 1.3fr); }
+  .investigacao-pearson__anel { width: clamp(132px, 34vw, 158px); }
+  .investigacao-regressao,
+  .investigacao-anomalias { grid-template-columns: minmax(0, 1fr); }
+  .investigacao-regressao__metricas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .investigacao-regressao__metricas > .investigacao-regressao__equacao { grid-column: 1 / -1; }
+  .investigacao-regressao__metricas > .investigacao-regressao__desvio { grid-column: auto; }
+  .investigacao-tabela-anomalias { min-width: 560px; }
+  .investigacao-boxplot__corpo {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(190px, 1fr);
+  }
+  .investigacao-grafico--boxplot { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* (Cláudia - M) Deixa visível a procedência reportada pela resposta da API sem aumentar a altura do cabeçalho. */
+.investigacao-introducao__linha {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.investigacao-introducao__linha p {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.investigacao-origem {
+  display: inline-flex;
+  max-width: 52%;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  padding: 4px 8px;
+  border: 1px solid #34485a;
+  border-radius: 999px;
+  color: #c7d3dc;
+  background: var(--investigacao-superficie);
+  font-size: 0.62rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.investigacao-origem::before {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: #8293a3;
+  content: "";
+}
+
+.investigacao-origem[data-estado="confirmada"]::before { background: var(--investigacao-verde); }
+.investigacao-origem[data-estado="ausente"]::before { background: var(--investigacao-amarelo); }
+.investigacao-origem[data-estado="erro"]::before { background: var(--investigacao-vermelho); }
+
+@media (max-width: 760px) {
+  .investigacao-introducao__linha { align-items: flex-start; flex-direction: column; }
+  .investigacao-origem { max-width: 100%; }
 }
