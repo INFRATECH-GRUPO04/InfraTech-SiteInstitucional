@@ -28,7 +28,9 @@ function formatarMes(data) {
 function montarResposta(plano, servidores, historico, gestor) {
     var primeiro = (plano && plano[0]) || {};
     var nomeGestor = '';
-    if (gestor && gestor[0]) {
+    if (primeiro.nome_gestor) {
+        nomeGestor = primeiro.nome_gestor;
+    } else if (gestor && gestor[0]) {
         nomeGestor = gestor[0].nome;
     }
     var custoInfraTech = servidores
@@ -155,7 +157,7 @@ function atualizar(req, res) {
         return res.status(400).json({ erro: erro });
     }
 
-    planejamentoModel.atualizarPremissas(idEmpresa, req.body)
+    planejamentoModel.atualizarPremissas(idEmpresa, req.body, req.usuario.id)
         .then(function (resultado) {
             if (resultado && resultado.affectedRows === 0) {
                 return null;

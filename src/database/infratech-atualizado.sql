@@ -198,6 +198,7 @@ CREATE TABLE IF NOT EXISTS limite_alerta_global (
 CREATE TABLE planejamento_financeiro (
     id_planejamento INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
+    fk_gestor INT NULL,
     plano VARCHAR(60) NOT NULL,
     jogadores INT NOT NULL DEFAULT 0,
     ticket_medio DECIMAL(10,2) NOT NULL DEFAULT 0,
@@ -216,7 +217,12 @@ CREATE TABLE planejamento_financeiro (
 
     CONSTRAINT fk_planejamento_empresa
         FOREIGN KEY (fk_empresa)
-        REFERENCES empresa(id_empresa)
+        REFERENCES empresa(id_empresa),
+
+    CONSTRAINT fk_planejamento_gestor
+        FOREIGN KEY (fk_gestor)
+        REFERENCES funcionario(id_funcionario)
+        ON DELETE SET NULL
 );
 
 -- =====================================================
@@ -444,6 +450,7 @@ UPDATE servidor SET custo_mensal = 0.00 WHERE fk_empresa = 2 AND status_sistema 
 
 INSERT INTO planejamento_financeiro (
     fk_empresa,
+    fk_gestor,
     plano,
     jogadores,
     ticket_medio,
@@ -459,6 +466,7 @@ INSERT INTO planejamento_financeiro (
     economia_infra_propria
 ) VALUES (
     2,
+    3,
     'Profissional',
     10000,
     3.20,

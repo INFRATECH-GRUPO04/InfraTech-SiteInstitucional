@@ -9,24 +9,27 @@ var database = require("../database/config")
 function buscarPlanejamento(idEmpresa) {
     var instrucaoSql = `
         SELECT
-            id_planejamento,
-            fk_empresa,
-            plano,
-            jogadores,
-            ticket_medio,
-            orcamento_mensal,
-            meta_uso,
-            limite_subutilizado,
-            crescimento_mensal,
-            meses_provisionamento,
-            capacidade_por_servidor,
-            capacidade_novo_servidor,
-            custo_novo_servidor,
-            custo_implantacao,
-            economia_infra_propria,
-            dt_atualizacao
-        FROM planejamento_financeiro
-        WHERE fk_empresa = ?;
+            pf.id_planejamento,
+            pf.fk_empresa,
+            pf.fk_gestor,
+            f.nome AS nome_gestor,
+            pf.plano,
+            pf.jogadores,
+            pf.ticket_medio,
+            pf.orcamento_mensal,
+            pf.meta_uso,
+            pf.limite_subutilizado,
+            pf.crescimento_mensal,
+            pf.meses_provisionamento,
+            pf.capacidade_por_servidor,
+            pf.capacidade_novo_servidor,
+            pf.custo_novo_servidor,
+            pf.custo_implantacao,
+            pf.economia_infra_propria,
+            pf.dt_atualizacao
+        FROM planejamento_financeiro pf
+        LEFT JOIN funcionario f ON f.id_funcionario = pf.fk_gestor
+        WHERE pf.fk_empresa = ?;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql, [Number(idEmpresa)]);
@@ -72,10 +75,11 @@ function buscarGestor(idEmpresa) {
 }
 
 /* Atualiza as premissas de planejamento financeiro da empresa. */
-function atualizarPremissas(idEmpresa, dados) {
+function atualizarPremissas(idEmpresa, dados, idGestor) {
     var instrucaoSql = `
         UPDATE planejamento_financeiro
         SET
+            fk_gestor = ?,
             capacidade_por_servidor = ?,
             capacidade_novo_servidor = ?,
             crescimento_mensal = ?,
@@ -87,8 +91,13 @@ function atualizarPremissas(idEmpresa, dados) {
             custo_implantacao = ?
         WHERE fk_empresa = ?;
     `;
+    var gestorResponsavel = null;
+    if (Number.isInteger(Number(idGestor)) && Number(idGestor) > 0) {
+        gestorResponsavel = Number(idGestor);
+    }
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql, [
+        gestorResponsavel,
         Number(dados.capacidadeAtual),
         Number(dados.capacidadeNova),
         Number(dados.crescimento),
