@@ -50,6 +50,8 @@ var planejamento = {
 
 var graficoCusto = null;
 var toastTimer = null;
+var filtroServidorAtual = 'alertas';
+var termoBuscaServidor = '';
 var nomesMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 var USOS_ILUSTRATIVOS = [
   { uso: 78, pico: 96 },
@@ -180,9 +182,31 @@ function dadosBilling() {
 }
 
 function situacaoServidor(uso) {
-  if (uso >= planejamento.metaUso) return { classe: 'saturado', texto: 'Saturado' };
-  if (uso < planejamento.limiteSubutilizado) return { classe: 'subutilizado', texto: 'Subutilizado' };
-  return { classe: 'normal', texto: 'Normal' };
+  if (uso >= planejamento.metaUso) {
+    return {
+      classe: 'saturado',
+      texto: 'Saturado',
+      prioridade: 1,
+      nivel: '1 · Crítico',
+      classePrioridade: 'critico'
+    };
+  }
+  if (uso < planejamento.limiteSubutilizado) {
+    return {
+      classe: 'subutilizado',
+      texto: 'Subutilizado',
+      prioridade: 2,
+      nivel: '2 · Alerta',
+      classePrioridade: 'alerta'
+    };
+  }
+  return {
+    classe: 'normal',
+    texto: 'Normal',
+    prioridade: 3,
+    nivel: '3 · Saudável',
+    classePrioridade: 'saudavel'
+  };
 }
 
 function runwayMeses(capacidade) {
@@ -294,33 +318,149 @@ function renderCards() {
   document.getElementById('fisicos-online').textContent = planejamento.servidores.length;
 }
 
-function renderServidores() {
-  var corpo = document.getElementById('corpo-servidores');
-  var totais = totaisServidores();
-  var html = '';
-
-  planejamento.servidores.forEach(function (servidor) {
+function prepararServidoresPriorizados() {
+  var lista = planejamento.servidores.map(function (servidor) {
     var uso = Number(servidor.uso) || 0;
     var ocioso = custoOcioso(servidor);
     var situacao = situacaoServidor(uso);
-    var classeOcioso = 'plan-tabela__zero';
-    if (ocioso > 0) {
-      classeOcioso = 'plan-tabela__destaque';
-    }
-
-    html += '<tr>' +
-      '<td><strong>' + servidor.nome + '</strong></td>' +
-      '<td class="plan-tabela__valor">' + formatarMoeda(servidor.custo) + '</td>' +
-      '<td class="plan-tabela__valor">' + uso + '%</td>' +
-      '<td class="' + classeOcioso + '">' +
-        formatarMoeda(ocioso) +
-      '</td>' +
-      '<td><span class="plan-situacao plan-situacao--' + situacao.classe + '">' + situacao.texto + '</span></td>' +
-      '</tr>';
+    return {
+      nome: servidor.nome,
+      local: servidor.local || '-',
+      custo: Number(servidor.custo) || 0,
+      uso: uso,
+      ocioso: ocioso,
+      situacao: situacao
+    };
   });
 
+  lista.sort(function (a, b) {
+    if (a.situacao.prioridade !== b.situacao.prioridade) {
+      return a.situacao.prioridade - b.situacao.prioridade;
+    }
+    if (a.situacao.prioridade === 2 && b.ocioso !== a.ocioso) {
+      return b.ocioso - a.ocioso;
+    }
+    if (b.uso !== a.uso) {
+      return b.uso - a.uso;
+    }
+    return String(a.nome).localeCompare(String(b.nome));
+  });
+
+  return lista;
+}
+
+function correspondeFiltroServidor(item, filtro) {
+  if (filtro === 'alertas') {
+    return item.situacao.prioridade === 1 || item.situacao.prioridade === 2;
+  }
+  if (filtro === 'criticos') {
+    return item.situacao.prioridade === 1;
+  }
+  if (filtro === 'subutilizados') {
+    return item.situacao.prioridade === 2;
+  }
+  if (filtro === 'normais') {
+    return item.situacao.prioridade === 3;
+  }
+  return true;
+}
+
+function correspondeBuscaServidor(item, termo) {
+  if (!termo) return true;
+  var busca = termo.toLowerCase();
+  var nome = String(item.nome || '').toLowerCase();
+  var local = String(item.local || '').toLowerCase();
+  return nome.indexOf(busca) !== -1 || local.indexOf(busca) !== -1;
+}
+
+function atualizarContadoresFiltros(lista) {
+  var contadores = {
+    alertas: 0,
+    criticos: 0,
+    subutilizados: 0,
+    normais: 0,
+    todos: lista.length
+  };
+
+  lista.forEach(function (item) {
+    if (item.situacao.prioridade === 1) {
+      contadores.criticos += 1;
+      contadores.alertas += 1;
+    } else if (item.situacao.prioridade === 2) {
+      contadores.subutilizados += 1;
+      contadores.alertas += 1;
+    } else {
+      contadores.normais += 1;
+    }
+  });
+
+  var mapaIds = {
+    alertas: 'cont-filtro-alertas',
+    criticos: 'cont-filtro-criticos',
+    subutilizados: 'cont-filtro-subutilizados',
+    normais: 'cont-filtro-normais',
+    todos: 'cont-filtro-todos'
+  };
+
+  Object.keys(mapaIds).forEach(function (chave) {
+    var el = document.getElementById(mapaIds[chave]);
+    if (el) el.textContent = contadores[chave];
+  });
+}
+
+function selecionarFiltroServidor(filtro) {
+  filtroServidorAtual = filtro;
+  document.querySelectorAll('[data-filtro-servidor]').forEach(function (botao) {
+    var ativo = botao.getAttribute('data-filtro-servidor') === filtro;
+    botao.classList.toggle('plan-filtro-botao--ativo', ativo);
+    botao.setAttribute('aria-pressed', String(ativo));
+  });
+  renderServidores();
+}
+
+function renderServidores() {
+  var corpo = document.getElementById('corpo-servidores');
+  var totais = totaisServidores();
+  var priorizados = prepararServidoresPriorizados();
+  atualizarContadoresFiltros(priorizados);
+
+  var visiveis = priorizados.filter(function (item) {
+    return correspondeFiltroServidor(item, filtroServidorAtual) && correspondeBuscaServidor(item, termoBuscaServidor);
+  });
+
+  var html = '';
+
+  if (visiveis.length === 0) {
+    html += '<tr><td colspan="6" class="plan-tabela__vazio">' +
+      'Nenhum servidor encontrado para o filtro atual.' +
+      '<button type="button" class="plan-atalho" id="btn-ver-todos-servidores">Ver todos os servidores</button>' +
+      '</td></tr>';
+  } else {
+    visiveis.forEach(function (item) {
+      var classeOcioso = 'plan-tabela__zero';
+      if (item.ocioso > 0) {
+        classeOcioso = 'plan-tabela__destaque';
+      }
+
+      html += '<tr>' +
+        '<td><span class="plan-prioridade plan-prioridade--' + item.situacao.classePrioridade + '">' + item.situacao.nivel + '</span></td>' +
+        '<td><strong>' + escaparTexto(item.nome) + '</strong><span class="plan-servidor-local">' + escaparTexto(item.local) + '</span></td>' +
+        '<td class="plan-tabela__valor">' + formatarMoeda(item.custo) + '</td>' +
+        '<td class="plan-tabela__valor">' + item.uso + '%</td>' +
+        '<td class="' + classeOcioso + '">' + formatarMoeda(item.ocioso) + '</td>' +
+        '<td><span class="plan-situacao plan-situacao--' + item.situacao.classe + '">' + item.situacao.texto + '</span></td>' +
+        '</tr>';
+    });
+  }
+
+  var rotuloTotal = 'Total da frota (' + priorizados.length + ')';
+  if (visiveis.length !== priorizados.length) {
+    rotuloTotal = 'Total da frota (' + visiveis.length + ' de ' + priorizados.length + ' exibidos)';
+  }
+
   html += '<tr class="plan-tabela__total">' +
-    '<td>Total</td>' +
+    '<td>—</td>' +
+    '<td>' + rotuloTotal + '</td>' +
     '<td>' + formatarMoeda(totais.custoTotal) + '</td>' +
     '<td>' + formatarPercentual(totais.usoMedio) + '</td>' +
     '<td>' + formatarMoeda(totais.ociosoTotal) + ' (' + formatarPercentual(totais.percentualOcioso) + ')</td>' +
@@ -563,8 +703,23 @@ function aplicarDadosServidor(dados) {
   }
 }
 
-function carregarPlanejamentoBackend() {
+function atualizarAvisoOrigem(conectadoAoBanco) {
   var aviso = document.getElementById('aviso-ilustrativo');
+  if (!aviso) return;
+  aviso.hidden = false;
+  if (conectadoAoBanco) {
+    aviso.classList.add('plan-aviso--banco');
+    aviso.innerHTML = '<strong>Origem dos dados:</strong> custos dos servidores, histórico e premissas vêm do ' +
+      '<strong>banco de dados</strong>; quantidade de jogadores, uso médio/pico dos servidores e projeções ' +
+      'utilizam <strong>dados simulados/ilustrativos</strong>.';
+  } else {
+    aviso.classList.remove('plan-aviso--banco');
+    aviso.innerHTML = '<strong>Modo ilustrativo (offline):</strong> exibindo dados locais de demonstração. ' +
+      'As premissas podem ser alteradas no botão <strong>Premissas</strong>.';
+  }
+}
+
+function carregarPlanejamentoBackend() {
   return fetch('/planejamento', { credentials: 'same-origin', cache: 'no-store' })
     .then(function (resposta) {
       if (!resposta.ok) throw new Error('Falha ao carregar planejamento');
@@ -572,11 +727,11 @@ function carregarPlanejamentoBackend() {
     })
     .then(function (dados) {
       aplicarDadosServidor(dados);
-      if (aviso) aviso.hidden = true;
+      atualizarAvisoOrigem(true);
       renderTudo();
     })
     .catch(function () {
-      if (aviso) aviso.hidden = false;
+      atualizarAvisoOrigem(false);
     });
 }
 
@@ -697,8 +852,7 @@ function aplicarPremissas(evento) {
       if (resposta.ok) {
         return resposta.json().then(function (dados) {
           aplicarDadosServidor(dados);
-          var aviso = document.getElementById('aviso-ilustrativo');
-          if (aviso) aviso.hidden = true;
+          atualizarAvisoOrigem(true);
           renderTudo();
           fecharPremissas();
           mostrarToast('Premissas salvas e valores recalculados.', false);
@@ -1026,6 +1180,28 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('btn-regerar-relatorio').addEventListener('click', gerarRelatorioIA);
   document.getElementById('btn-imprimir-relatorio').addEventListener('click', imprimirRelatorioPDF);
   document.getElementById('btn-fechar-relatorio').addEventListener('click', fecharModalRelatorio);
+
+  var campoPesquisa = document.getElementById('pesquisa-servidor');
+  if (campoPesquisa) {
+    campoPesquisa.addEventListener('input', function (evento) {
+      termoBuscaServidor = evento.target.value.trim();
+      renderServidores();
+    });
+  }
+
+  document.querySelectorAll('[data-filtro-servidor]').forEach(function (botao) {
+    botao.addEventListener('click', function () {
+      selecionarFiltroServidor(botao.getAttribute('data-filtro-servidor'));
+    });
+  });
+
+  document.getElementById('corpo-servidores').addEventListener('click', function (evento) {
+    if (evento.target && evento.target.id === 'btn-ver-todos-servidores') {
+      termoBuscaServidor = '';
+      if (campoPesquisa) campoPesquisa.value = '';
+      selecionarFiltroServidor('todos');
+    }
+  });
 
   document.querySelector('[data-fechar-premissas]').addEventListener('click', fecharPremissas);
   document.querySelector('[data-fechar-relatorio]').addEventListener('click', fecharModalRelatorio);
