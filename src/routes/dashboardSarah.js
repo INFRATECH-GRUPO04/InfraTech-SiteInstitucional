@@ -7,7 +7,7 @@ router.get("/buscarNomeEmpresa/:id", function (req, res) {
   dashboardSarahController.buscarNomeEmpresa(req, res);
 });
 
-router.get("/buscarServidoresPorEmpresa/:idEmpresa/:idUsuario", function (req, res) {
+router.get("/buscarServidoresPorEmpresa/:idEmpresa/:idFuncionario", function (req, res) {
   dashboardSarahController.buscarServidoresPorEmpresa(req, res);
 });
 

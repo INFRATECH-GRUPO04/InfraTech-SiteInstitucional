@@ -70,13 +70,17 @@
                 <div class="box-filtro">
                     <span class="label-filtro">Servidor</span>
                     <select class="filtro" name="servidores" id="filtro_servidor">
-                        
+                        <!-- <option value="Selecione">Selecione</option> -->
                     </select>
                 </div>
                 <div class="box-filtro">
                     <span class="label-filtro">Componente</span>
                     <select class="filtro" name="componentes" id="filtro_componentes">
                         <option value="Todos">Todos</option>
+                        <option value="Todos">CPU</option>
+                        <option value="Todos">RAM</option>
+                        <option value="Todos">Disco</option>
+                        <option value="Todos">Rede</option>
                     </select>
                 </div>
                 <div class="box-filtro">
@@ -342,17 +346,12 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 
 
     <script>
-        plotarGraficoUsoRecursos();
 
-        console.log(filtro_data_inicio.value)
-    
         var idEmpresa = sessionStorage.ID_EMPRESA;
         var idUsuario = sessionStorage.ID_USUARIO;
 
@@ -363,13 +362,21 @@
                         for (var i = 0; i < resposta.length; i++) {
                             if (resposta[i].temAcesso == 1) {
                                 filtro_servidor.innerHTML += `
-                                <option value="${resposta[i].nome}">${resposta[i].nome}</option>
-                                `
+                            <option value="${resposta[i].id_servidor}">${resposta[i].nome}</option>
+                        `;
                             }
+                        }
+
+                        // Agora o select já tem opções: o value existe
+                        if (filtro_servidor.options.length > 0) {
+                            filtro_servidor.selectedIndex = 0;   // garante o primeiro
+                            carregarServidor(filtro_servidor.value);
+                        } else {
+                            mostrarSemServidor();                // nenhum servidor com acesso
                         }
                     });
                 } else {
-                    console.log("Não funfou")
+                    console.log("Não funfou");
                 }
             })
             .catch(function (error) {
@@ -379,33 +386,71 @@
         var filtroServidor = document.getElementById('filtro_servidor');
         var corpoDashboard = document.getElementById('corpo_dashboard');
 
-        
+        var servidorEscolhido = "";
 
-        limite_atencao = 0;
-        limite_critico = 0;
+        function carregarServidor(idServidor) {
+            servidorEscolhido = idServidor;
+
+            plotarDashboardEspecifica();
+            var limite_alerta_cpu = null;
+            var limite_critico_cpu = null;
+            var limite_alerta_ram = null;
+            var limite_critico_ram = null;
+            var limite_alerta_disco = null;
+            var limite_critico_disco = null;
+            var limite_alerta_rede = null;
+            var limite_critico_rede = null;
+
+            fetch(`/servidor/listarComponentes/${idServidor}`, { cache: 'no-store' })
+            .then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (resposta) {
+                        for(let i = 0; i < resposta.length; i++){
+                            if(resposta[i].tipo == "cpu"){
+                                limite_alerta_cpu = resposta[i].limite_atencao;
+                                limite_critico_cpu = resposta[i].limite_critico;
+                            } else if(resposta[i].tipo == "ram"){
+                                limite_alerta_ram = resposta[i].limite_atencao;
+                                limite_critico_ram = resposta[i].limite_critico;
+                            } else if(resposta[i].tipo == "disco"){
+                                limite_alerta_disco = resposta[i].limite_atencao;
+                                limite_critico_disco = resposta[i].limite_critico;
+                            } else if(resposta[i].tipo == "rede"){
+                                limite_alerta_rede = resposta[i].limite_atencao;
+                                limite_critico_rede = resposta[i].limite_critico;
+                            }
+                        }    
+                        
+                        console.log(limite_alerta_cpu)
+                        console.log(limite_critico_cpu)
+                        console.log(limite_alerta_ram)
+                        console.log(limite_critico_ram)
+                        console.log(limite_alerta_disco)
+                        console.log(limite_critico_disco)
+                        console.log(limite_alerta_rede)
+                        console.log(limite_critico_rede)
+
+                    });
+                } else {
+                    console.log("Não funfou");
+                }
+            })
+            .catch(function (error) {
+                console.error("Erro na obtenção de dados", error);
+            });
+        }
+
+        function mostrarSemServidor() {
+            corpoDashboard.innerHTML = `
+        <div class="cards" style="margin:1vw; text-align:center;">
+            <div class="titulo-card">Nenhum servidor disponível</div>
+            <div class="subtitulo-ocorrencias">Você não tem acesso a nenhum servidor desta empresa.</div>
+        </div>
+    `;
+        }
+
         filtroServidor.addEventListener('change', function () {
-            if (filtroServidor.value != "Todos") {
-                plotarDashboardEspecifica()
-                servidorEscolhido = filtroServidor.value
-                //         corpoDashboard.innerHTML = `
-                //     <div>hello world! ${servidorEscolhido}</div>
-                // `;
-
-                // fetch(`/dashboardSarah/buscarLimites/${idEmpresa}/${servidorEscolhido}`, { cache: 'no-store' })
-                //     .then(function (response) {
-                //         if (response.ok) {
-                //             response.json().then(function (resposta) {
-
-                //             });
-                //         } else {
-                //             console.log("Não funfou")
-                //         }
-                //     })
-                //     .catch(function (error) {
-                //         console.error("Erro na obtenção de dados", error);
-                //     });
-
-            }
+            carregarServidor(filtroServidor.value);
         });
 
         function plotarDashboardEspecifica() {
@@ -668,7 +713,6 @@
                 
             `
             plotarGraficoUsoRecursos();
-            plotarGraficoProjecaoDisco();
         }
 
 
@@ -764,75 +808,14 @@
             );
         }
 
+        filtro_data_inicio.addEventListener('change', function () {
+            console.log(filtro_data_inicio.value);
+        });
 
-        // <div class = "dash-parte3">
-        //             <div class = "card-projecaoDisco cards">
-        //                 <div class="titulo-card">Projeção de saturação do Disco</div>
-        //                 <div class="subtitulo-card">Ocupação do disco (%)</div>
-        //                 <div class = "conteudo-projecaoDisco">
-        //                     <div class = "box-grafico-projecaoDisco">
-        //                         <canvas id = "grafico_projecao_disco"></canvas>
-        //                         </div>
-        //                         <div class = "insights-projecao">
+        filtro_data_final.addEventListener('change', function () {
+            console.log(filtro_data_inicio.value);
+        });
 
-        //                             </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        function plotarGraficoProjecaoDisco() {
-            labels = ["1/NOV", "2/NOV", "3/NOV", "4/NOV", "5/NOV", "6/NOV", "7/NOV", "8/NOV", "9/NOV", "10/NOV",]
-            new Chart(
-                document.getElementById('grafico_projecao_disco'),
-                {
-                    type: 'line',
-                    options: {
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: { color: '#e5e9f5' }
-                            },
-                        },
-                        scales: {
-                            x: {
-                                ticks: { color: '#9aa4bf' },
-                                grid: { color: '#232B40' }
-                            },
-                            y: {
-                                min: 0,
-                                max: 100,
-                                ticks: {
-                                    stepSize: 20,
-                                    color: '#9aa4bf'
-                                },
-                                grid: { color: '#232B40' }
-                            }
-                        }
-                    },
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Uso do Disco',
-                                data: [42, 45, 50, 54, 58, 61, 64, 66, 67.6, 89],
-                                borderColor: '#1FC08A',
-                                backgroundColor: '#1FC08A',
-                                borderWidth: 2,
-                                tension: 0.3,
-                                pointRadius: 3
-                            }
-                        ]
-                    }
-                }
-            );
-        }
 
     </script>
 </body>

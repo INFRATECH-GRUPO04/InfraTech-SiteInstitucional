@@ -26,8 +26,8 @@ function buscarServidoresPorEmpresa(idEmpresa, idFuncionario) {
     JOIN empresa e ON e.id_empresa = s.fk_empresa
     LEFT JOIN servidor_funcionario sf
            ON sf.fk_servidor = s.id_servidor
-          AND sf.fk_funcionario = 17
-    WHERE s.fk_empresa = 2
+          AND sf.fk_funcionario = ${idFuncionario}
+    WHERE s.fk_empresa = ${idEmpresa}
     ORDER BY s.nome;`;
   return database.executar(instrucaoSql);
 }
