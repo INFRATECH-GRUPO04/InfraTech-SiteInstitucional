@@ -42,12 +42,15 @@ function listarPorFuncionario(idEmpresa, idFuncionario) {
     var instrucaoSql = `
         SELECT s.id_servidor, s.nome, s.localizacao, s.status_sistema, s.status_sistema AS statusSistema 
         FROM servidor s
-        JOIN servidor_funcionario sf ON sf.fk_servidor = s.id_servidor
-        WHERE s.fk_empresa = ? AND sf.fk_funcionario = ?
+        WHERE s.fk_empresa = ?
+          AND (
+            NOT EXISTS (SELECT 1 FROM servidor_funcionario sf0 WHERE sf0.fk_funcionario = ?)
+            OR EXISTS (SELECT 1 FROM servidor_funcionario sf WHERE sf.fk_funcionario = ? AND sf.fk_servidor = s.id_servidor)
+          )
         ORDER BY s.nome;
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql, [Number(idEmpresa), Number(idFuncionario)]);
+    return database.executar(instrucaoSql, [Number(idEmpresa), Number(idFuncionario), Number(idFuncionario)]);
 }
 
 function listarComponentesPorServidor(idServidor) {

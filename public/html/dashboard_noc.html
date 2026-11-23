@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Dashboard NOC InfraTech: KPIs da frota, triagem de servidores e diagnóstico operacional.">
+  <meta name="description" content="Dashboard NOC InfraTech: Wallboard da frota em tempo real e investigação detalhada por servidor.">
   <meta name="theme-color" content="#001a20">
   <title>Dashboard NOC | InfraTech</title>
   <link rel="icon" href="/assets/icon/logo.png">
@@ -25,15 +25,15 @@
       <symbol id="i-layers" viewBox="0 0 32 32"><path d="m3 10 13-7 13 7-13 7zM3 17l13 7 13-7M3 24l13 7 13-7"/></symbol>
       <symbol id="i-pulse" viewBox="0 0 32 32"><path d="M2 17h6l4-12 5 22 4-16 3 6h6"/></symbol>
       <symbol id="i-analysis" viewBox="0 0 32 32"><path d="M4 3v25h25M9 21l5-7 6 3 7-12"/></symbol>
-      <symbol id="i-database" viewBox="0 0 32 32"><ellipse cx="16" cy="6" rx="11" ry="4"/><path d="M5 6v19c0 5 22 5 22 0V6M5 13c0 5 22 5 22 0M5 20c0 5 22 5 22 0"/></symbol>
       <symbol id="i-arrow" viewBox="0 0 32 32"><path d="M5 27 27 5M9 5h18v18"/></symbol>
       <symbol id="i-alert" viewBox="0 0 32 32"><path d="m16 3 14 25H2zM16 12v7m0 4v.2"/></symbol>
       <symbol id="i-bars" viewBox="0 0 32 32"><path d="M5 28V16m11 12V3m11 25V11" stroke-width="3.5"/></symbol>
       <symbol id="i-info" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M16 14v9m0-14v.2"/></symbol>
-      <symbol id="i-external" viewBox="0 0 32 32"><path d="M17 4h11v11m0-11L14 18M12 6H5v22h22v-8"/></symbol>
       <symbol id="i-file" viewBox="0 0 32 32"><path d="M8 3h12l6 6v21H8zM20 3v7h6M12 16h10m-10 5h10"/></symbol>
       <symbol id="i-search" viewBox="0 0 32 32"><circle cx="14" cy="14" r="9"/><path d="m21 21 7 7"/></symbol>
       <symbol id="i-swap" viewBox="0 0 32 32"><path d="M6 10h20l-5-5M26 22H6l5 5"/></symbol>
+      <symbol id="i-tv" viewBox="0 0 32 32"><rect x="3" y="5" width="26" height="18" rx="2"/><path d="M10 27h12M16 23v4"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 32 32"><path d="M27 16a11 11 0 1 1-3.2-7.8M27 4v7h-7"/></symbol>
     </defs>
   </svg>
 
@@ -61,62 +61,58 @@
       <div class="noc-heading">
         <div>
           <div class="noc-heading-title">
-            <h1>Triagem e Monitoramento Operacional de NOC</h1>
+            <h1>Monitoramento e Triagem NOC</h1>
+            <span class="noc-source-badge" id="data-source-badge">Carregando fonte...</span>
           </div>
-          <p>Acompanhe as KPIs gerais da frota, selecione um servidor na lista e investigue sua telemetria.</p>
+          <p>Visão contínua da frota por servidor. Clique em qualquer servidor para abrir a investigação detalhada.</p>
         </div>
-        <span class="noc-source-badge" id="data-source-badge">Carregando fonte...</span>
+
+        <div class="noc-top-actions">
+          <button type="button" class="noc-live-pill" id="btn-toggle-autorefresh" title="Pausar ou retomar atualização automática">
+            <span class="live-dot" id="live-dot"></span>
+            <span id="autorefresh-label">Atualização automática · 30s</span>
+          </button>
+          <button type="button" class="btn-noc btn-noc--ghost" id="btn-refresh-now" title="Atualizar agora">
+            <svg class="noc-icon" aria-hidden="true"><use href="#i-refresh"/></svg>
+            Atualizar
+          </button>
+          <button type="button" class="btn-noc" id="btn-tv-mode">
+            <svg class="noc-icon" aria-hidden="true"><use href="#i-tv"/></svg>
+            <span id="tv-mode-label">Modo TV</span>
+          </button>
+        </div>
       </div>
 
-      <!-- 1. KPIs GERAIS NO TOPO (cores padronizadas) -->
-      <section class="noc-kpis" aria-label="KPIs gerais da frota">
-        <article class="noc-panel kpi-card kpi-card--warning" id="kpi-alerta-card">
-          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-pulse"/></svg></div>
-          <div class="kpi-body">
-            <h2>Frota em alerta</h2>
-            <div class="kpi-value" id="kpi-alerta-val">—</div>
-            <p class="kpi-sub" id="kpi-alerta-sub">Carregando...</p>
-          </div>
-        </article>
+      <!-- 1. DESTAQUES ACIONÁVEIS (sem agregações genéricas) -->
+      <section class="noc-highlights" aria-label="Destaques operacionais da frota">
+        <button type="button" class="noc-panel highlight-card highlight-card--critical" id="hl-critical-card">
+          <div class="highlight-label"><span class="badge-dot"></span> Crítico agora</div>
+          <div class="highlight-value" id="hl-critical-val">Nenhum servidor crítico</div>
+          <div class="highlight-sub" id="hl-critical-sub">Todos dentro do limite crítico</div>
+        </button>
 
-        <article class="noc-panel kpi-card kpi-card--purple" id="kpi-sem-telemetria-card">
-          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-analysis"/></svg></div>
-          <div class="kpi-body">
-            <h2>Sem telemetria</h2>
-            <div class="kpi-value" id="kpi-telemetria-val">—</div>
-            <p class="kpi-sub" id="kpi-telemetria-sub">Ausência de coleta S3</p>
-          </div>
-        </article>
+        <button type="button" class="noc-panel highlight-card highlight-card--purple" id="hl-offline-card">
+          <div class="highlight-label"><span class="badge-dot"></span> Sem telemetria</div>
+          <div class="highlight-value" id="hl-offline-val">Coleta S3 operacional</div>
+          <div class="highlight-sub" id="hl-offline-sub">Todos os agentes enviando</div>
+        </button>
 
-        <article class="noc-panel kpi-card kpi-card--cyan" id="kpi-trafego-card">
-          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-database"/></svg></div>
-          <div class="kpi-body">
-            <h2>Tráfego total</h2>
-            <div class="kpi-value" id="kpi-trafego-val">—</div>
-            <p class="kpi-sub" id="kpi-trafego-sub">Download · Upload</p>
-          </div>
-        </article>
-
-        <article class="noc-panel kpi-card kpi-card--critical" id="kpi-critico-card">
-          <div class="kpi-icon-wrap"><svg class="noc-icon" aria-hidden="true"><use href="#i-clock"/></svg></div>
-          <div class="kpi-body">
-            <h2>Maior tempo crítico</h2>
-            <div class="kpi-value" id="kpi-critico-val">—</div>
-            <p class="kpi-sub" id="kpi-critico-sub">Persistência acima do limite</p>
-          </div>
-        </article>
+        <button type="button" class="noc-panel highlight-card highlight-card--warning" id="hl-warning-card">
+          <div class="highlight-label"><span class="badge-dot"></span> Em atenção</div>
+          <div class="highlight-value" id="hl-warning-val">Nenhum em atenção</div>
+          <div class="highlight-sub" id="hl-warning-sub">Uso estável nos componentes</div>
+        </button>
       </section>
 
-      <!-- 2. LISTA DE SERVIDORES (encolhe ao clicar em um servidor) -->
+      <!-- 2. LISTA DA FROTA (Wallboard TV -> encolhe ao inspecionar servidor) -->
       <section class="noc-panel server-list-panel" id="server-list-panel" aria-labelledby="servers-title">
-        <!-- Visão expandida -->
         <div class="server-expanded-view">
           <div class="server-list-header">
             <div class="panel-heading">
               <svg class="noc-icon" aria-hidden="true"><use href="#i-servers"/></svg>
               <div>
-                <h2 id="servers-title">Servidores da Frota</h2>
-                <p id="servers-subtitle">Clique em um servidor para encolher a lista e abrir a Dashboard NOC abaixo.</p>
+                <h2 id="servers-title">Monitoramento da Frota</h2>
+                <p id="servers-subtitle">Ordenado por prioridade operacional. Última leitura: <strong id="last-sync-time">—</strong></p>
               </div>
             </div>
             <span class="noc-source-badge" id="servers-count-badge">0 servidores</span>
@@ -124,7 +120,6 @@
 
           <div class="filter-toolbar" role="region" aria-label="Filtros da lista de servidores">
             <div class="filter-pills" id="status-filter-pills">
-              <span class="filter-label">Estado:</span>
               <button type="button" class="filter-pill is-active" data-status="all">Todos <span class="pill-count" id="cnt-all">0</span></button>
               <button type="button" class="filter-pill" data-status="critical">Crítico <span class="pill-count" id="cnt-critical">0</span></button>
               <button type="button" class="filter-pill" data-status="warning">Atenção <span class="pill-count" id="cnt-warning">0</span></button>
@@ -135,32 +130,31 @@
             <div class="filter-search-group">
               <div class="search-input-wrap">
                 <svg class="noc-icon" aria-hidden="true"><use href="#i-search"/></svg>
-                <input type="search" id="server-search-input" class="noc-input" placeholder="Buscar servidor, região ou chamado..." aria-label="Buscar servidor ou chamado">
+                <input type="search" id="server-search-input" class="noc-input" placeholder="Buscar servidor ou região..." aria-label="Buscar servidor ou região">
               </div>
               <button type="button" class="btn-noc btn-noc--ghost" id="btn-clear-server-filters" hidden>Limpar</button>
             </div>
           </div>
 
-          <div class="table-scroll">
-            <table class="noc-table">
-              <thead>
-                <tr>
-                  <th scope="col">Prioridade</th>
-                  <th scope="col">Servidor</th>
-                  <th scope="col">Estado</th>
-                  <th scope="col">Motivo</th>
-                  <th scope="col">Duração</th>
-                  <th scope="col">Último envio</th>
-                  <th scope="col">Chamado</th>
-                  <th scope="col">Ação</th>
-                </tr>
-              </thead>
-              <tbody id="servers-table-body"></tbody>
-            </table>
+          <!-- Cabeçalho e legenda da barra de histórico recente (lotes) -->
+          <div class="fleet-legend-bar" aria-label="Legenda do histórico recente de lotes">
+            <div class="fleet-col-server">Servidor / Estado</div>
+            <div class="fleet-col-heartbeat">
+              <span>Histórico recente (últimos lotes)</span>
+              <span class="fleet-time-dir">mais antigo → agora</span>
+            </div>
+            <div class="fleet-col-legend">
+              <span class="legend-chip"><i class="dot-healthy"></i> Saudável</span>
+              <span class="legend-chip"><i class="dot-warning"></i> Atenção</span>
+              <span class="legend-chip"><i class="dot-critical"></i> Crítico</span>
+              <span class="legend-chip"><i class="dot-neutral"></i> Sem coleta</span>
+            </div>
           </div>
+
+          <div class="fleet-rows" id="fleet-rows"></div>
         </div>
 
-        <!-- Visão encolhida (apenas o servidor escolhido) -->
+        <!-- Visão encolhida ao investigar um servidor -->
         <div class="collapsed-server-bar" id="collapsed-server-bar">
           <div class="collapsed-info">
             <svg class="noc-icon" style="color:var(--noc-cyan)" aria-hidden="true"><use href="#i-inspect"/></svg>
@@ -170,27 +164,20 @@
             </div>
             <span id="collapsed-status-badge" class="badge-status neutral"><span class="badge-dot"></span>—</span>
             <div class="collapsed-meta">
-              <span>Motivo: <strong id="collapsed-reason">—</strong></span>
+              <span>Diagnóstico: <strong id="collapsed-reason">—</strong></span>
               <span>Duração: <strong id="collapsed-duration">—</strong></span>
               <span>Último envio: <strong id="collapsed-last">—</strong></span>
-              <span>Chamado: <strong id="collapsed-ticket">—</strong></span>
             </div>
           </div>
           <button type="button" class="btn-noc" id="btn-expand-servers">
             <svg class="noc-icon" aria-hidden="true"><use href="#i-swap"/></svg>
-            Trocar servidor
+            Voltar para Frota
           </button>
         </div>
       </section>
 
-      <!-- Aviso antes de escolher servidor -->
-      <div class="select-prompt" id="select-prompt">
-        Selecione qualquer servidor na lista acima para encolher a tabela e carregar a <strong>Dashboard NOC</strong> detalhada.
-      </div>
-
-      <!-- 3. DASHBOARD DE NOC (aparece abaixo da lista encolhida) -->
-      <section class="noc-detail-section" id="noc-detail-section" hidden aria-label="Dashboard NOC do servidor selecionado">
-        <!-- Barra de contexto e filtros intuitivos -->
+      <!-- 3. INVESTIGAÇÃO DO SERVIDOR (Drill-down estilo Grafana) -->
+      <section class="noc-detail-section" id="noc-detail-section" hidden aria-label="Investigação do servidor selecionado">
         <div class="noc-panel context-bar">
           <div class="context-group">
             <div class="context-chip">
@@ -262,29 +249,28 @@
           <div class="chart-scroll" id="network-chart-container"></div>
           <div class="chart-notes">
             <span>Descartes da interface: sem coleta no agente atual</span>
-            <em>Leitura de telemetria simulada em JSON (padrão S3 Gold)</em>
+            <em id="network-source-note">Telemetria S3 Gold (03-gold/noc.json)</em>
           </div>
         </section>
 
-        <!-- Painéis inferiores: Incidentes e Recursos/Processos -->
+        <!-- Painéis inferiores: Alertas/Diagnóstico e Recursos/Processos -->
         <div class="bottom-panels">
           <section class="noc-panel bottom-panel">
             <div class="panel-heading">
               <svg class="noc-icon" aria-hidden="true"><use href="#i-alert"/></svg>
               <div>
-                <h2 id="incidents-title">Incidentes — —</h2>
-                <p>Eventos e chamados do servidor selecionado</p>
+                <h2 id="incidents-title">Alertas e diagnóstico — —</h2>
+                <p>Violações de limites configurados e disponibilidade de coleta</p>
               </div>
             </div>
             <div class="table-scroll">
               <table class="noc-table incident-table">
                 <thead>
                   <tr>
-                    <th scope="col">Chamado</th>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Responsável</th>
-                    <th scope="col">Atualização</th>
+                    <th scope="col">Componente</th>
+                    <th scope="col">Ocorrência</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Duração</th>
                   </tr>
                 </thead>
                 <tbody id="incidents-tbody"></tbody>
@@ -295,10 +281,6 @@
                 <svg class="noc-icon" aria-hidden="true"><use href="#i-info"/></svg>
                 <em id="incident-note">Aguardando seleção</em>
               </div>
-              <button type="button" class="btn-noc" id="btn-open-jira">
-                <svg class="noc-icon" aria-hidden="true"><use href="#i-external"/></svg>
-                Abrir Jira
-              </button>
               <button type="button" class="btn-noc" id="btn-open-procedure">
                 <svg class="noc-icon" aria-hidden="true"><use href="#i-file"/></svg>
                 Ver procedimento
@@ -332,7 +314,6 @@
     </div>
   </main>
 
-  <!-- Modal dinâmico para Jira / Procedimento -->
   <div class="noc-modal" id="noc-modal" role="dialog" aria-modal="true" aria-labelledby="noc-modal-title">
     <div class="noc-modal-card">
       <h2 id="noc-modal-title">—</h2>

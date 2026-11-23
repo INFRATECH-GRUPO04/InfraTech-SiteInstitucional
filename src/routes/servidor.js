@@ -41,4 +41,6 @@ router.post("/atualizar-chave/:idServidor", permitir('administrar'), function (r
     servidorController.atualizarChave(req, res);
 });
 
+router.get("/noc/telemetria", permitir('monitorar'), servidorController.obterTelemetriaNoc);
+
 module.exports = router;

@@ -2,7 +2,12 @@
  * Este arquivo: Valida operações de servidores e seus componentes, aplica os limites recebidos e prepara respostas para as rotas de monitoramento.
  */
 var crypto = require("crypto");
+var fs = require("fs");
+var path = require("path");
+var clientS3 = require("@aws-sdk/client-s3");
 var servidorModel = require("../models/servidorModel");
+
+var s3 = new clientS3.S3Client({ region: process.env.AWS_REGION || "us-east-1" });
 
 
 /* Valida o nome e a empresa da sessão antes de solicitar ao model a criação
@@ -304,6 +309,75 @@ function atualizarChave(req, res) {
         });
 }
 
+function lerJsonNocS3(chave) {
+    if (process.env.S3_BUCKET) {
+        return s3.send(new clientS3.GetObjectCommand({
+            Bucket: process.env.S3_BUCKET,
+            Key: chave
+        })).then(function (resposta) {
+            return resposta.Body.transformToString("utf-8").then(JSON.parse);
+        });
+    }
+    var caminhoLocal = path.join(process.cwd(), chave);
+    if (!fs.existsSync(caminhoLocal)) {
+        var erro = new Error("Arquivo local não encontrado");
+        erro.name = "NoSuchKey";
+        return Promise.reject(erro);
+    }
+    return Promise.resolve(JSON.parse(fs.readFileSync(caminhoLocal, "utf-8")));
+}
+
+/* Lê o JSON Gold (noc.json) da empresa autenticada, filtrando pelos servidores
+ * que o usuário tem permissão de visualizar.
+ */
+function obterTelemetriaNoc(req, res) {
+    var idEmpresa = Number(req.usuario.empresa);
+    if (!Number.isInteger(idEmpresa) || idEmpresa <= 0) {
+        return res.status(400).json({ erro: "Empresa da sessão inválida." });
+    }
+
+    var goldPrefix = (process.env.S3_GOLD_PREFIX || "03-gold/").replace(/\/+$/, "") + "/";
+    var chave = goldPrefix + "empresa-" + idEmpresa + "/noc.json";
+    var cargo = String(req.usuario.cargo || "").toUpperCase();
+    var ehGestao = ["GESTOR", "ADMIN", "INFRATECH"].includes(cargo);
+
+    var permitidosPromise = ehGestao
+        ? Promise.resolve(null)
+        : servidorModel.listarPorFuncionario(idEmpresa, req.usuario.id).then(function (rows) {
+            return new Set((rows || []).map(function (r) { return Number(r.id_servidor); }));
+        });
+
+    Promise.all([lerJsonNocS3(chave), permitidosPromise])
+        .then(function (resultados) {
+            var dados = resultados[0] || {};
+            var permitidos = resultados[1];
+            var lista = Array.isArray(dados.servidores) ? dados.servidores : [];
+            if (permitidos) {
+                lista = lista.filter(function (s) { return permitidos.has(Number(s.id_servidor)); });
+            }
+            return res.status(200).json({
+                disponivel: true,
+                fonte: process.env.S3_BUCKET ? "s3-gold" : "local-gold",
+                id_empresa: dados.id_empresa || idEmpresa,
+                gerado_em: dados.gerado_em || null,
+                offline_timeout_segundos: dados.offline_timeout_segundos || 900,
+                servidores: lista
+            });
+        })
+        .catch(function (erro) {
+            var codigo = erro && (erro.name || erro.Code || (erro.$metadata && erro.$metadata.httpStatusCode));
+            if (codigo === "NoSuchKey" || codigo === 404) {
+                return res.status(200).json({
+                    disponivel: false,
+                    motivo: process.env.S3_BUCKET ? "noc.json ainda não gerado no S3" : "S3_BUCKET não configurado",
+                    servidores: []
+                });
+            }
+            console.log("Erro ao buscar telemetria NOC no S3:", erro);
+            return res.status(500).json({ erro: "Falha ao carregar telemetria da camada Gold." });
+        });
+}
+
 module.exports = {
     cadastrar,
     cadastrarComponente,
@@ -315,5 +389,6 @@ module.exports = {
     atualizar,
     atualizarComponente,
     excluir,
-    atualizarChave
+    atualizarChave,
+    obterTelemetriaNoc
 };
