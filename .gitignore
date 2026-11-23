@@ -1,9 +1,11 @@
 # A linha abaixo determina que o diretório node_modules não será enviado ao repositório remoto
 node_modules
 package-lock.json
-docs
 
 .github
+
+# Saída local do ETL (JSON gold gerado)
+03-gold/
 
 .env
 .env.dev

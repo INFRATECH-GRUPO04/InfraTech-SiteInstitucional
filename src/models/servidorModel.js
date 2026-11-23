@@ -153,22 +153,44 @@ function componentePertenceEmpresa(idComponente, idEmpresa) {
     return database.executar('SELECT c.id_componente FROM componente c JOIN servidor s ON s.id_servidor = c.fk_servidor WHERE c.id_componente = ? AND s.fk_empresa = ?', [Number(idComponente), Number(idEmpresa)]);
 }
 
-/* Retorna os limites padrão de cada recurso configurados para a empresa. */
+/* Retorna os limites padrão derivados das métricas da empresa. O schema final
+ * não tem tabela própria para limites globais: a faixa de cada recurso é o menor
+ * limite cadastrado entre as métricas uso_percentual dos servidores ativos.
+ */
 function listarLimitesGlobais(idEmpresa) {
-    var sql = `SELECT tipo, limite_atencao, limite_critico FROM limite_alerta_global WHERE fk_empresa = ${Number(idEmpresa)};`;
-    return database.executar(sql);
+    var sql = `
+        SELECT c.tipo AS tipo,
+               MIN(m.limite_atencao) AS limite_atencao,
+               MIN(m.limite_critico) AS limite_critico
+        FROM metrica m
+        JOIN componente c ON c.id_componente = m.fk_componente
+        JOIN servidor s ON s.id_servidor = c.fk_servidor
+        WHERE s.fk_empresa = ? AND m.nome = 'uso_percentual'
+        GROUP BY c.tipo;
+    `;
+    return database.executar(sql, [Number(idEmpresa)]);
 }
 
-/* Grava ou atualiza as quatro faixas da empresa. A chave única por empresa e
- * recurso permite que a mesma operação crie ou substitua o valor existente.
+/* Aplica a faixa global a todas as métricas uso_percentual da empresa. Cada
+ * recurso é atualizado em uma instrução parametrizada; servidores sem métrica
+ * cadastrada continuam usando o fallback de cada dashboard.
  */
 function salvarLimitesGlobais(idEmpresa, limites) {
     var empresa = Number(idEmpresa);
     var recursos = ['cpu', 'ram', 'disco', 'rede'];
-    var valores = recursos.map(function (tipo) {
-        return `(${empresa}, '${tipo}', ${Number(limites[tipo].atencao)}, ${Number(limites[tipo].critico)})`;
-    }).join(',');
-    return database.executar(`INSERT INTO limite_alerta_global (fk_empresa, tipo, limite_atencao, limite_critico) VALUES ${valores} ON DUPLICATE KEY UPDATE limite_atencao = VALUES(limite_atencao), limite_critico = VALUES(limite_critico);`);
+    var sql = `
+        UPDATE metrica m
+        JOIN componente c ON c.id_componente = m.fk_componente
+        JOIN servidor s ON s.id_servidor = c.fk_servidor
+        SET m.limite_atencao = ?, m.limite_critico = ?
+        WHERE s.fk_empresa = ? AND c.tipo = ? AND m.nome = 'uso_percentual';
+    `;
+    return recursos.reduce(function (promessa, tipo) {
+        return promessa.then(function () {
+            var faixa = limites[tipo] || {};
+            return database.executar(sql, [Number(faixa.atencao), Number(faixa.critico), empresa, tipo]);
+        });
+    }, Promise.resolve());
 }
 
 /* Atualiza uma métrica individual somente quando o componente pertence a um
