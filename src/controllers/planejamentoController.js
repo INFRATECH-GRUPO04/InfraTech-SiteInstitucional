@@ -486,13 +486,8 @@ function extrairTextoGemini(resposta) {
     return '';
 }
 
-/* Consulta o Google AI Studio (Gemini 3.8 Flash) via Interactions API. */
-function consultarGeminiRelatorio(dados, metricas) {
-    var chave = String(process.env.GEMINI_API_KEY || '').trim();
-    if (!chave || chave === 'sua_chave_google_ai_studio') {
-        return Promise.reject(new Error('GEMINI_API_KEY não configurada'));
-    }
-
+/* Envia uma requisição para um modelo específico do Google Gemini via Interactions API. */
+function chamarModeloGemini(chave, modelo, dados, metricas) {
     var instrucaoSistema = [
         'Você é um consultor executivo sênior de FinOps e infraestrutura física de servidores de jogos online (InfraTech).',
         'Escreva em português do Brasil, de forma realista, direta, transparente e acionável para o gestor.',
@@ -501,12 +496,15 @@ function consultarGeminiRelatorio(dados, metricas) {
     ].join(' ');
 
     var payload = JSON.stringify({
-        model: 'gemini-3.8-flash',
+        model: modelo,
         system_instruction: instrucaoSistema,
         input: JSON.stringify({
             empresaDados: dados,
             metricasCalculadas: metricas
         }),
+        generation_config: {
+            max_output_tokens: 1800
+        },
         response_format: {
             type: 'text',
             mime_type: 'application/json',
@@ -525,7 +523,7 @@ function consultarGeminiRelatorio(dados, metricas) {
                 'Api-Revision': '2026-05-20',
                 'Content-Length': Buffer.byteLength(payload)
             },
-            timeout: 25000
+            timeout: 45000
         };
 
         var req = https.request(opcoes, function (res) {
@@ -533,13 +531,15 @@ function consultarGeminiRelatorio(dados, metricas) {
             res.on('data', function (chunk) { corpo += chunk; });
             res.on('end', function () {
                 if (res.statusCode < 200 || res.statusCode >= 300) {
-                    return reject(new Error('Gemini HTTP ' + res.statusCode + ': ' + corpo));
+                    var errHttp = new Error('Gemini HTTP ' + res.statusCode + ': ' + corpo);
+                    errHttp.statusCode = res.statusCode;
+                    return reject(errHttp);
                 }
                 try {
                     var respostaJson = JSON.parse(corpo);
                     var texto = extrairTextoGemini(respostaJson);
                     var analise = JSON.parse(texto);
-                    resolve(analise);
+                    resolve({ modelo: modelo, analise: analise });
                 } catch (err) {
                     reject(err);
                 }
@@ -555,6 +555,76 @@ function consultarGeminiRelatorio(dados, metricas) {
     });
 }
 
+/* Consulta o Google AI Studio (tenta gemini-3.8-flash e, em pico 503/429, tenta gemini-3.5-flash-lite). */
+function consultarGeminiRelatorio(dados, metricas) {
+    var chave = String(process.env.GEMINI_API_KEY || '').trim();
+    if (!chave || chave === 'sua_chave_google_ai_studio') {
+        return Promise.reject(new Error('GEMINI_API_KEY não configurada'));
+    }
+
+    return chamarModeloGemini(chave, 'gemini-3.8-flash', dados, metricas)
+        .catch(function (erroPrincipal) {
+            if (erroPrincipal && (erroPrincipal.statusCode === 503 || erroPrincipal.statusCode === 429)) {
+                console.log('Modelo gemini-3.8-flash indisponível (' + erroPrincipal.statusCode + '), tentando gemini-3.5-flash-lite...');
+                return chamarModeloGemini(chave, 'gemini-3.5-flash-lite', dados, metricas);
+            }
+            throw erroPrincipal;
+        });
+}
+
+/* Reconstrói os dados do planejamento a partir do corpo enviado pelo front quando o banco não possuir registro. */
+function normalizarDadosFallback(corpoRequisicao) {
+    var base = {};
+    if (corpoRequisicao && corpoRequisicao.dados && typeof corpoRequisicao.dados === 'object') {
+        base = corpoRequisicao.dados;
+    }
+
+    var servidores = [];
+    if (Array.isArray(base.servidores)) {
+        servidores = base.servidores.map(function (s) {
+            return {
+                nome: (s && s.nome) || 'SRV',
+                local: (s && s.local) || '-',
+                custo: Number(s && s.custo) || 0
+            };
+        });
+    } else if (corpoRequisicao && Array.isArray(corpoRequisicao.servidores)) {
+        servidores = corpoRequisicao.servidores.map(function (s) {
+            return {
+                nome: (s && s.nome) || 'SRV',
+                local: (s && s.local) || '-',
+                custo: Number(s && s.custo) || 0
+            };
+        });
+    }
+
+    var historico = [];
+    if (Array.isArray(base.historico)) {
+        historico = base.historico;
+    }
+
+    return {
+        gestor: base.gestor || 'Gestor',
+        data: base.data || formatarData(new Date()),
+        plano: base.plano || 'Profissional',
+        jogadores: Number(base.jogadores) || 0,
+        ticketMedio: Number(base.ticketMedio) || 0,
+        custoInfraTech: Number(base.custoInfraTech) || 0,
+        economiaInfraPropria: Number(base.economiaInfraPropria) || 0,
+        orcamento: Number(base.orcamento) || 0,
+        metaUso: Number(base.metaUso) || 75,
+        limiteSubutilizado: Number(base.limiteSubutilizado) || 40,
+        crescimento: Number(base.crescimento) || 0,
+        provisionamento: Number(base.provisionamento) || 0,
+        capacidadeAtual: Number(base.capacidadeAtual) || 1,
+        capacidadeNova: Number(base.capacidadeNova) || 1,
+        custoNovoServidor: Number(base.custoNovoServidor) || 0,
+        custoImplantacao: Number(base.custoImplantacao) || 0,
+        servidores: servidores,
+        historico: historico
+    };
+}
+
 /* Gera o relatório executivo consolidado com análise da IA (ou fallback). */
 function gerarRelatorio(req, res) {
     var idEmpresa = req.usuario && req.usuario.empresa;
@@ -562,24 +632,31 @@ function gerarRelatorio(req, res) {
         return res.status(400).json({ erro: 'Empresa da sessão não identificada.' });
     }
 
+    var corpo = req.body || {};
+
     carregarPlanejamento(idEmpresa)
-        .then(function (dados) {
+        .catch(function (erroBanco) {
+            console.log('Banco indisponível ao gerar relatório, usando dados da tela:', erroBanco.message);
+            return null;
+        })
+        .then(function (dadosBanco) {
+            var dados = dadosBanco;
             if (!dados) {
-                return res.status(404).json({ erro: 'Planejamento não configurado para esta empresa.' });
+                dados = normalizarDadosFallback(corpo);
             }
 
-            var metricas = calcularMetricasRelatorio(dados, req.body || {});
+            var metricas = calcularMetricasRelatorio(dados, corpo);
             var emitidoEm = new Date().toLocaleString('pt-BR');
 
             return consultarGeminiRelatorio(dados, metricas)
-                .then(function (analiseIA) {
+                .then(function (resultadoIA) {
                     return res.status(200).json({
                         origem: 'ia',
-                        modelo: 'gemini-3.8-flash',
+                        modelo: resultadoIA.modelo,
                         emitidoEm: emitidoEm,
                         dados: dados,
                         metricas: metricas,
-                        analise: analiseIA
+                        analise: resultadoIA.analise
                     });
                 })
                 .catch(function (erroIA) {
@@ -587,6 +664,7 @@ function gerarRelatorio(req, res) {
                     return res.status(200).json({
                         origem: 'analitico_local',
                         modelo: 'motor-analitico-infratech',
+                        avisoIA: erroIA.message,
                         emitidoEm: emitidoEm,
                         dados: dados,
                         metricas: metricas,

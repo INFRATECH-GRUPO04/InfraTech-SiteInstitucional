@@ -842,7 +842,7 @@ function montarRelatorioLocalFallback() {
     },
     analise: {
       tituloExecutivo: 'Relatório Executivo de Infraestrutura e FinOps — Plano ' + planejamento.plano,
-      vereditoSituacao: 'Análise Executiva Local (servidor indisponível)',
+      vereditoSituacao: 'Operação Analisada pelo Motor Analítico InfraTech',
       resumoExecutivo: 'Operação com ' + servidoresDetalhados.length + ' servidores ativos suportando ' +
         formatarNumero(planejamento.jogadores) + ' jogadores, gerando receita estimada de ' +
         formatarMoeda(billing.receita) + ' e lucro líquido de ' + formatarMoeda(billing.lucro) + '.',
@@ -978,7 +978,7 @@ function gerarRelatorioIA() {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ servidores: planejamento.servidores })
+    body: JSON.stringify({ dados: planejamento, servidores: planejamento.servidores })
   })
     .then(function (resposta) {
       if (!resposta.ok) throw new Error('Falha ao gerar relatório');
@@ -989,6 +989,8 @@ function gerarRelatorioIA() {
       abrirModalRelatorio();
       if (pacote.origem === 'ia') {
         mostrarToast('Relatório gerado com Google Gemini.', false);
+      } else if (pacote.avisoIA) {
+        mostrarToast('Motor local usado (' + pacote.avisoIA + ').', true);
       } else {
         mostrarToast('Relatório gerado com motor analítico local.', false);
       }
