@@ -26,8 +26,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// ----------- Fale Conosco -----------
-function enviarMensagemContato(event) {
+// ----------- Fale Conosco (EmailJS) -----------
+const EMAILJS_PUBLIC_KEY = "D9fz0v6QW3lOWXZS5";
+const EMAILJS_SERVICE_ID = "service_7t4b4j4";
+const EMAILJS_TEMPLATE_ID = "template_ss6qs7s";
+
+if (typeof emailjs !== "undefined") {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+}
+
+let timerMensagemEnviada = null;
+
+function criarElementoFeedback(tag, texto) {
+    const elemento = document.createElement(tag);
+    elemento.textContent = texto;
+    return elemento;
+}
+
+function definirFeedback(feedback, tipo, conteudo) {
+    if (!feedback) return;
+
+    feedback.style.display = "block";
+    feedback.style.color = tipo === "erro"
+        ? "var(--cor-perigo, #dc2626)"
+        : "var(--cor-sucesso, #05df72)";
+
+    if (typeof conteudo === "string") {
+        feedback.textContent = conteudo;
+    } else {
+        feedback.replaceChildren(conteudo);
+    }
+}
+
+async function enviarMensagemContato(event) {
     if (event) event.preventDefault();
 
     const iptNome = document.getElementById("contato_nome") || document.getElementById("nomeContato");
@@ -42,13 +73,19 @@ function enviarMensagemContato(event) {
     const assunto = iptAssunto?.value || "";
     const mensagem = iptMensagem?.value || "";
 
-    if (!nome.trim() || !email.trim() || !mensagem.trim()) {
-        if (feedback) {
-            feedback.style.display = "block";
-            feedback.style.color = "var(--cor-perigo, #dc2626)";
-            feedback.innerText = "Por favor, preencha todos os campos obrigatórios.";
-        }
+    if (!nome.trim() || !email.trim() || !assunto.trim() || !mensagem.trim()) {
+        definirFeedback(feedback, "erro", "Por favor, preencha todos os campos obrigatórios.");
         return false;
+    }
+
+    if (typeof emailjs === "undefined") {
+        definirFeedback(feedback, "erro", "Não foi possível carregar o serviço de e-mail. Recarregue a página e tente novamente.");
+        return false;
+    }
+
+    if (timerMensagemEnviada) {
+        clearTimeout(timerMensagemEnviada);
+        timerMensagemEnviada = null;
     }
 
     if (btnSubmit) {
@@ -56,12 +93,30 @@ function enviarMensagemContato(event) {
         btnSubmit.innerText = "Enviando mensagem...";
     }
 
-    setTimeout(() => {
-        if (feedback) {
-            feedback.style.display = "block";
-            feedback.style.color = "var(--cor-sucesso, #05df72)";
-            feedback.innerHTML = `Obrigado pelo contato, <strong>${nome}</strong>! Sua mensagem sobre "<em>${assunto || 'Atendimento'}</em>" foi enviada com sucesso. Nossa equipe entrará em contato em breve pelo e-mail <em>${email}</em>.`;
-        }
+    try {
+        await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            {
+                nome: nome.trim(),
+                email: email.trim(),
+                assunto: assunto.trim(),
+                mensagem: mensagem.trim(),
+                data_envio: new Date().toLocaleString("pt-BR")
+            }
+        );
+
+        const conteudoSucesso = document.createDocumentFragment();
+        conteudoSucesso.append(
+            "Obrigado pelo contato, ",
+            criarElementoFeedback("strong", nome.trim()),
+            '! Sua mensagem sobre "',
+            criarElementoFeedback("em", assunto.trim()),
+            '" foi enviada com sucesso. Nossa equipe entrará em contato em breve pelo e-mail ',
+            criarElementoFeedback("em", email.trim()),
+            "."
+        );
+        definirFeedback(feedback, "sucesso", conteudoSucesso);
 
         if (iptNome) iptNome.value = "";
         if (iptEmail) iptEmail.value = "";
@@ -69,13 +124,19 @@ function enviarMensagemContato(event) {
         if (iptMensagem) iptMensagem.value = "";
 
         if (btnSubmit) {
-            btnSubmit.disabled = false;
             btnSubmit.innerText = "Mensagem Enviada!";
-            setTimeout(() => {
-                btnSubmit.innerText = "Enviar Mensagem";
+            timerMensagemEnviada = setTimeout(() => {
+                if (btnSubmit) btnSubmit.innerText = "Enviar Mensagem";
+                timerMensagemEnviada = null;
             }, 3000);
         }
-    }, 400);
+    } catch (erro) {
+        console.error("Erro ao enviar mensagem de contato:", erro);
+        definirFeedback(feedback, "erro", "Não foi possível enviar sua mensagem. Tente novamente em instantes.");
+        if (btnSubmit) btnSubmit.innerText = "Enviar Mensagem";
+    } finally {
+        if (btnSubmit) btnSubmit.disabled = false;
+    }
 
     return false;
 }
