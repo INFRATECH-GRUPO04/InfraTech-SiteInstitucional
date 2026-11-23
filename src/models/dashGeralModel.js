@@ -43,9 +43,10 @@ async function lerGold(idEmpresa) {
         }
     }
 
-    var bucket = process.env.S3_GOLD_BUCKET || process.env.S3_BUCKET;
-    if (!bucket) throw new Error('S3_GOLD_BUCKET (ou S3_BUCKET) não configurado.');
+    var bucket = process.env.S3_BUCKET;
+    if (!bucket) throw new Error('S3_BUCKET não configurado.');
 
+    // Caminho final: s3://<S3_BUCKET>/<S3_GOLD_PREFIX>/empresa-{id}/dash-geral.json
     var prefixo = String(process.env.S3_GOLD_PREFIX || '03-gold/').replace(/^\/+/, '');
     if (prefixo && !prefixo.endsWith('/')) prefixo += '/';
     var chave = prefixo + 'empresa-' + idEmpresa + '/dash-geral.json';

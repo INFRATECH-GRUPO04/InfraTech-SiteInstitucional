@@ -66,7 +66,7 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 
 #### B3 — Teste local do gold [RECONSTRUÍDO]
 
-> coloca `DASH_GOLD_LOCAL=1` no `.env.dev` e usa o json que eu te passei em `03-gold/empresa-2/dash-geral.json` só pra testar, mas não versiona esse gold. se eu quiser voltar pro S3 eu troco essa variável e aponto `S3_GOLD_BUCKET`.
+> coloca `DASH_GOLD_LOCAL=1` no `.env.dev` e usa o json que eu te passei em `03-gold/empresa-2/dash-geral.json` só pra testar, mas não versiona esse gold. se eu quiser voltar pro S3 eu troco essa variável e aponto `S3_BUCKET` (com `S3_GOLD_PREFIX=03-gold/`).
 
 **Resultado registrado:** `.env.dev` local configurado; `03-gold/` adicionado ao `.gitignore`; cópia do exemplo usada apenas no teste.
 

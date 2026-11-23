@@ -5,7 +5,7 @@
 Este arquivo é **autossuficiente**: para implementar, basta ler este plano, o `AGENTS.md` da raiz do repo e os arquivos citados. Não é necessário histórico de conversa. As decisões da seção 2 são finais, sem pendências.
 
 - Plano do repo irmão de ETL: `../etl/docs/plano-implementacao.md` (absoluto: `C:\Users\Luiz\Documents\-- SPTech repositories\etl\docs\plano-implementacao.md`). **Os dois documentos têm o mesmo contrato de JSON; se um mudar, o outro muda junto.**
-- Ordem recomendada: backend deste repo → front → ETL. Para testar antes da ETL, coloque `dash-geral.json` manualmente no bucket pessoal e aponte `S3_GOLD_BUCKET`.
+- Ordem recomendada: backend deste repo → front → ETL. Para testar antes da ETL, coloque `dash-geral.json` manualmente no bucket pessoal e aponte `S3_BUCKET` (com `S3_GOLD_PREFIX=03-gold/`).
 - Com `DASH_GOLD_LOCAL=1`, o model lê `03-gold/empresa-{id}/dash-geral.json` a partir da raiz do projeto (cwd do `npm run dev`).
 
 Estado atual do código que este plano altera (conferido em 22/11/2026):
@@ -50,7 +50,7 @@ Regras gerais:
 | Formato do JSON | O formato proposto para o gold, estendido com os campos que a tela lê. O front se adapta a ele. |
 | Jira | `fetch` nativo com `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_TOKEN`, `JIRA_PROJECT`. Sem credenciais, devolve vazio e segue funcionando. |
 | Relatório de IA | Template simples montado no backend com os próprios dados da dash. Depois pode ser trocado por um serviço real sem mudar o JSON. |
-| Leitura do gold | S3 por padrão: `S3_GOLD_BUCKET` (se definido) ou `S3_BUCKET`, com `S3_GOLD_PREFIX` (default `03-gold/`). `DASH_GOLD_LOCAL=1` força leitura de `03-gold/` no disco. Para testar antes da ETL, basta subir `dash-geral.json` manualmente para um bucket pessoal e apontar `S3_GOLD_BUCKET` para ele. |
+| Leitura do gold | S3 por padrão: `S3_BUCKET` com `S3_GOLD_PREFIX` (default `03-gold/`), formando `s3://<S3_BUCKET>/<S3_GOLD_PREFIX>/empresa-{id}/dash-geral.json`. `DASH_GOLD_LOCAL=1` força leitura de `03-gold/` no disco. Para testar antes da ETL, basta subir `dash-geral.json` manualmente para um bucket pessoal e apontar `S3_BUCKET` para ele. |
 | Rota | `GET /dash-geral` **sem ID na URL**. A empresa vem da sessão (`req.usuario.empresa`), nunca do front. |
 | Banco de dados | **Único script válido: `src/database/infratech-atualizado.sql`**. O script `SCRIPT-INFRATECH.sql` foi removido. Tudo que só existe nele (`limite_alerta_global`, `modelo`, `numero_serie`) não faz parte do projeto. |
 | Regras do `AGENTS.md` | Empresa isolada pela sessão; só servidores ativos e visíveis ao cargo; **sem dados mostra "sem dados", nunca zero falso**; Jira é somente leitura nesta entrega (não abre chamados nem notifica). |
@@ -246,7 +246,7 @@ O botão "Atualizar análise" chama novamente a mesma rota e re-renderiza; não 
 | `src/routes/dashGeral.js` (novo) | `GET /` com `exigirPermissao('monitorar')`. ~6 linhas |
 | `app.js` | montar `app.use("/dash-geral", autorizacao.autenticar, dashGeralRouter)` |
 | `src/models/servidorModel.js` | trocar `limite_alerta_global` por consultas em `metrica`/`componente`/`servidor` (GET derivado e PUT em lote) |
-| `.env.example` | adicionar `S3_GOLD_BUCKET`, `S3_GOLD_PREFIX`, `DASH_GOLD_LOCAL`, `JIRA_*` |
+| `.env.example` | adicionar `S3_GOLD_PREFIX`, `DASH_GOLD_LOCAL`, `JIRA_*` (bucket já é `S3_BUCKET`) |
 | `public/js/dash-geral.js` | substituir `MOCK` por um `fetch`, adaptar leitura dos campos, remover relógio duplicado, ligar o botão de IA ao refetch. ~50 linhas alteradas |
 | `.gitignore` | remover a linha `docs` para o plano versionar |
 | `src/database/SCRIPT-INFRATECH.sql` | **removido** (decisão deste plano) |
@@ -289,7 +289,7 @@ Permissão: `exigirPermissao('monitorar')` é concedida a todo cargo que acessa 
 - A convenção de labels do Jira (`empresa-{id}`, `servidor-{id}`) precisa ser confirmada quando as credenciais existirem. Abertura de chamados e notificações Slack/Jira não entram nesta entrega.
 - `serie_24h` e `disponibilidade_pct` nas janelas `7d`/`30d` foram removidos do contrato: a dash-geral não lê esses campos. Se a dash-específica precisar depois, eles voltam em uma rodada futura.
 - `AGENTS.md` é compartilhado entre os três repositórios; não foi alterado. A nota dele sobre `limite_alerta_global` está desatualizada e foi superada pela decisão deste plano.
-- Para o primeiro teste, a ETL pode ser pulada: basta colocar `dash-geral.json` manualmente em `03-gold/` de um bucket pessoal e configurar `S3_GOLD_BUCKET`.
+- Para o primeiro teste, a ETL pode ser pulada: basta colocar `dash-geral.json` manualmente em `03-gold/` de um bucket pessoal e configurar `S3_BUCKET` (com `S3_GOLD_PREFIX=03-gold/`).
 - `infratech-atualizado.sql` usa `CREATE DATABASE infratech;` sem `IF NOT EXISTS` e não é idempotente — manter como está, pois é a fonte da verdade.
 - `AWS_REGION` não está declarado nos `.env`; o SDK assume `us-east-1`.
 - `dashboard-global.css` ancora regras antigas das KPIs da dash-geral (`.kpi-card--rede`, `.kpi-card--problemas`) sem correspondência no HTML atual; limpeza futura, sem impacto funcional.
@@ -302,7 +302,7 @@ Permissão: `exigirPermissao('monitorar')` é concedida a todo cargo que acessa 
 1. Confirmar este documento e ajustar `.gitignore` / remover o script SQL antigo (feito nesta etapa).
 2. Backend: model → controller → rota → `app.js`, ajuste dos limites em `servidorModel.js`, filtro de visibilidade e variáveis de ambiente.
 3. Front: `fetch` único e substituições da seção 7.
-4. Teste com `dash-geral.json` manual no bucket pessoal (`S3_GOLD_BUCKET`) ou em `03-gold/` local (`DASH_GOLD_LOCAL=1`).
+4. Teste com `dash-geral.json` manual no bucket pessoal (`S3_BUCKET` + `S3_GOLD_PREFIX=03-gold/`) ou em `03-gold/` local (`DASH_GOLD_LOCAL=1`).
 5. ETL: executar o plano do repo `etl` (`etl/docs/plano-implementacao.md`), que ajusta `silver2gold.py` para gerar `03-gold/empresa-{id}/dash-geral.json` conforme a seção 5.1. Nenhum código é compartilhado entre os repos; o acoplamento é só esse JSON no S3.
 6. Validação manual final e ajustes.
 
@@ -310,7 +310,7 @@ Permissão: `exigirPermissao('monitorar')` é concedida a todo cargo que acessa 
 
 ## 10. Checklist de validação
 
-1. `npm run dev` com `S3_GOLD_BUCKET` apontando para o bucket pessoal (ou `DASH_GOLD_LOCAL=1` com `03-gold/empresa-2/dash-geral.json`) e um JSON manual de exemplo.
+1. `npm run dev` com `S3_BUCKET` apontando para o bucket pessoal e `S3_GOLD_PREFIX=03-gold/` (ou `DASH_GOLD_LOCAL=1` com `03-gold/empresa-2/dash-geral.json`) e um JSON manual de exemplo.
 2. `GET /dash-geral` com cookie de sessão devolve o JSON da empresa da sessão; sem sessão retorna 401; cargo `ADMIN`/`INFRATECH` retorna 403; sem gold retorna 404.
 3. Abrir `/dashboard/dash-geral.html`: KPIs, gráfico de disponibilidade (24h/7d/30d), gráfico de incidentes (7d/30d), tabela de status, ranking, tabela de incidentes e card de IA preenchidos.
 4. Visibilidade: gestor vê todos os servidores ativos da empresa; funcionário com vínculo vê só os vinculados; sem vínculo vê todos; servidor com `status_sistema = 0` não aparece.
