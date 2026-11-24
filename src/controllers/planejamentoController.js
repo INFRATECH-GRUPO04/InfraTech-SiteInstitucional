@@ -81,47 +81,58 @@ function formatarMes(data) {
 /* Monta o objeto de resposta usado pelo frontend, a partir dos dados do banco. */
 function montarResposta(plano, servidores, historico, gestor) {
     var primeiro = (plano && plano[0]) || {};
-    var nomeGestor = '';
+    var listaServidores = servidores || [];
+    var nomeGestor = 'Gestor';
     if (primeiro.nome_gestor) {
         nomeGestor = primeiro.nome_gestor;
-    } else if (gestor && gestor[0]) {
+    } else if (gestor && gestor[0] && gestor[0].nome) {
         nomeGestor = gestor[0].nome;
     }
-    var custoInfraTech = servidores
+    var custoInfraTech = listaServidores
         .reduce(function (soma, servidor) {
             return soma + (Number(servidor.custo_mensal) || 0);
         }, 0);
 
+    var historicoFormatado = (historico || []).map(function (h) {
+        return {
+            mes: formatarMes(h.mes_referencia),
+            valor: Number(h.valor) || 0
+        };
+    });
+    if (historicoFormatado.length > 0) {
+        historicoFormatado[historicoFormatado.length - 1].valor = custoInfraTech;
+    } else if (custoInfraTech > 0) {
+        historicoFormatado.push({
+            mes: formatarMes(new Date()),
+            valor: custoInfraTech
+        });
+    }
+
     return {
         gestor: nomeGestor,
-        data: formatarData(primeiro.dt_atualizacao),
-        plano: primeiro.plano || '',
+        data: formatarData(primeiro.dt_atualizacao) || formatarData(new Date()),
+        plano: primeiro.plano || 'Padrão',
         jogadores: primeiro.jogadores || 0,
         ticketMedio: Number(primeiro.ticket_medio) || 0,
         custoInfraTech: custoInfraTech,
         economiaInfraPropria: Number(primeiro.economia_infra_propria) || 0,
-        orcamento: Number(primeiro.orcamento_mensal) || 0,
-        metaUso: Number(primeiro.meta_uso) || 0,
-        limiteSubutilizado: Number(primeiro.limite_subutilizado) || 0,
+        orcamento: Number(primeiro.orcamento_mensal) || custoInfraTech,
+        metaUso: Number(primeiro.meta_uso) || 75,
+        limiteSubutilizado: Number(primeiro.limite_subutilizado) || 40,
         crescimento: primeiro.crescimento_mensal || 0,
         provisionamento: primeiro.meses_provisionamento || 0,
-        capacidadeAtual: primeiro.capacidade_por_servidor || 0,
-        capacidadeNova: primeiro.capacidade_novo_servidor || 0,
+        capacidadeAtual: primeiro.capacidade_por_servidor || 2000,
+        capacidadeNova: primeiro.capacidade_novo_servidor || 1250,
         custoNovoServidor: Number(primeiro.custo_novo_servidor) || 0,
         custoImplantacao: Number(primeiro.custo_implantacao) || 0,
-        servidores: servidores.map(function (s) {
+        servidores: listaServidores.map(function (s) {
             return {
                 nome: s.nome,
                 local: s.localizacao || '-',
                 custo: Number(s.custo_mensal) || 0
             };
         }),
-        historico: historico.map(function (h) {
-            return {
-                mes: formatarMes(h.mes_referencia),
-                valor: Number(h.valor) || 0
-            };
-        })
+        historico: historicoFormatado
     };
 }
 
@@ -173,9 +184,7 @@ function carregarPlanejamento(idEmpresa) {
         planejamentoModel.listarHistorico(idEmpresa),
         planejamentoModel.buscarGestor(idEmpresa)
     ]).then(function (resultados) {
-        var plano = resultados[0];
-        if (!plano || plano.length === 0) return null;
-        return montarResposta(plano, resultados[1], resultados[2], resultados[3]);
+        return montarResposta(resultados[0], resultados[1], resultados[2], resultados[3]);
     });
 }
 
@@ -212,16 +221,10 @@ function atualizar(req, res) {
     }
 
     planejamentoModel.atualizarPremissas(idEmpresa, req.body, req.usuario.id)
-        .then(function (resultado) {
-            if (resultado && resultado.affectedRows === 0) {
-                return null;
-            }
+        .then(function () {
             return carregarPlanejamento(idEmpresa);
         })
         .then(function (dados) {
-            if (!dados) {
-                return res.status(404).json({ erro: 'Planejamento não configurado para esta empresa.' });
-            }
             return res.status(200).json(dados);
         })
         .catch(function (erro) {
