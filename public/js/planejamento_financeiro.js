@@ -62,6 +62,50 @@ var USOS_ILUSTRATIVOS = [
   { uso: 18, pico: 18 }
 ];
 
+function el(id) {
+  return document.getElementById(id);
+}
+
+function definirTexto(id, texto) {
+  var elemento = el(id);
+  if (elemento) elemento.textContent = texto;
+}
+
+function servidorComMaiorUso(lista) {
+  var maior = (lista && lista[0]) || null;
+  (lista || []).forEach(function (servidor) {
+    if ((Number(servidor.uso) || 0) > (Number(maior.uso) || 0)) maior = servidor;
+  });
+  return maior;
+}
+
+function atualizarBotaoEstado(id, ativo, textoAtivo, textoNormal) {
+  var botao = el(id);
+  if (!botao) return;
+  botao.disabled = ativo;
+  if (ativo) {
+    botao.textContent = textoAtivo;
+  } else {
+    botao.textContent = textoNormal;
+  }
+}
+
+function alternarModal(id, abrir) {
+  var modal = el(id);
+  if (modal) modal.hidden = !abrir;
+  if (abrir) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+}
+
+function listaHtml(itens) {
+  return (itens || []).map(function (item) {
+    return '<li>' + escaparTexto(item) + '</li>';
+  }).join('');
+}
+
 /* ---------- Formatação ---------- */
 
 function formatarMoeda(valor, casas) {
@@ -229,25 +273,24 @@ function textoRunway(capacidade) {
 function renderBilling() {
   var billing = dadosBilling();
 
-  document.getElementById('kpi-custo').textContent = formatarMoeda(planejamento.custoInfraTech);
-  document.getElementById('kpi-custo-detalhe').textContent =
-    'Plano ' + planejamento.plano + ' · ' + planejamento.servidores.length + ' servidores';
+  definirTexto('kpi-custo', formatarMoeda(planejamento.custoInfraTech));
+  definirTexto('kpi-custo-detalhe', 'Plano ' + planejamento.plano + ' · ' + planejamento.servidores.length + ' servidores');
 
-  document.getElementById('kpi-receita').textContent = formatarMoeda(billing.receita);
-  document.getElementById('kpi-receita-detalhe').textContent =
-    formatarNumero(planejamento.jogadores) + ' jogadores × ' + formatarMoeda(planejamento.ticketMedio, 2);
+  definirTexto('kpi-receita', formatarMoeda(billing.receita));
+  definirTexto('kpi-receita-detalhe', formatarNumero(planejamento.jogadores) + ' jogadores × ' + formatarMoeda(planejamento.ticketMedio, 2));
 
-  var lucro = document.getElementById('kpi-lucro');
-  lucro.textContent = formatarMoeda(billing.lucro);
-  lucro.classList.toggle('plan-kpi__valor--positivo', billing.lucro >= 0);
-  lucro.classList.toggle('plan-kpi__valor--negativo', billing.lucro < 0);
-  document.getElementById('kpi-margem').textContent = 'Margem de ' + formatarPercentual(billing.margem, 2);
+  var lucro = el('kpi-lucro');
+  if (lucro) {
+    lucro.textContent = formatarMoeda(billing.lucro);
+    lucro.classList.toggle('plan-kpi__valor--positivo', billing.lucro >= 0);
+    lucro.classList.toggle('plan-kpi__valor--negativo', billing.lucro < 0);
+  }
+  definirTexto('kpi-margem', 'Margem de ' + formatarPercentual(billing.margem, 2));
 
-  document.getElementById('kpi-roi').textContent = formatarPercentual(billing.roi, 2);
-  document.getElementById('kpi-breakeven').textContent =
-    'Break-even: ' + formatarNumero(billing.breakeven) + ' jogadores';
+  definirTexto('kpi-roi', formatarPercentual(billing.roi, 2));
+  definirTexto('kpi-breakeven', 'Break-even: ' + formatarNumero(billing.breakeven) + ' jogadores');
 
-  document.getElementById('economia-estimada').textContent = formatarMoeda(planejamento.economiaInfraPropria);
+  definirTexto('economia-estimada', formatarMoeda(planejamento.economiaInfraPropria));
 }
 
 function renderCards() {
@@ -264,44 +307,42 @@ function renderCards() {
   } else if (runway > 0) {
     textoRunwayValor = mesesTexto(runway);
   }
-  document.getElementById('runway-valor').textContent = textoRunwayValor;
-  document.getElementById('runway-barra').style.width = Math.min(100, percentual).toFixed(1) + '%';
-  document.getElementById('runway-uso').textContent =
-    formatarNumero(planejamento.jogadores) + ' / ' + formatarNumero(capacidadeTotal) + ' jogadores';
-  document.getElementById('runway-percentual').textContent = formatarPercentual(percentual);
+  definirTexto('runway-valor', textoRunwayValor);
+  var barra = el('runway-barra');
+  if (barra) barra.style.width = Math.min(100, percentual).toFixed(1) + '%';
+  definirTexto('runway-uso', formatarNumero(planejamento.jogadores) + ' / ' + formatarNumero(capacidadeTotal) + ' jogadores');
+  definirTexto('runway-percentual', formatarPercentual(percentual));
 
   if (runway === Infinity) {
-    document.getElementById('runway-detalhe').textContent = 'Sem crescimento cadastrado; o prazo de decisão não se aplica.';
+    definirTexto('runway-detalhe', 'Sem crescimento cadastrado; o prazo de decisão não se aplica.');
   } else {
-    document.getElementById('runway-detalhe').textContent =
+    definirTexto(
+      'runway-detalhe',
       'Prazo útil para decidir: ' + mesesTexto(Math.max(0, runway - planejamento.provisionamento)) +
-      ' (provisionamento: ' + textoUnidade(planejamento.provisionamento, 'mês', 'meses') + ').';
+      ' (provisionamento: ' + textoUnidade(planejamento.provisionamento, 'mês', 'meses') + ').'
+    );
   }
 
-  var maior = planejamento.servidores[0] || null;
-  planejamento.servidores.forEach(function (servidor) {
-    if ((Number(servidor.uso) || 0) > (Number(maior.uso) || 0)) maior = servidor;
-  });
-
-  var usoEl = document.getElementById('expansao-uso');
-  var picoEl = document.getElementById('expansao-pico');
-  var custoEl = document.getElementById('expansao-custo');
-  var notaEl = document.getElementById('expansao-nota');
+  var maior = servidorComMaiorUso(planejamento.servidores);
+  var usoEl = el('expansao-uso');
+  var picoEl = el('expansao-pico');
+  var status = el('expansao-status');
 
   if (maior) {
     var usoMaior = Number(maior.uso) || 0;
     var picoMaior = Number(maior.pico) || usoMaior;
-    document.getElementById('expansao-servidor').textContent = maior.nome;
-    document.getElementById('expansao-local').textContent = maior.local;
+    definirTexto('expansao-servidor', maior.nome);
+    definirTexto('expansao-local', maior.local);
 
     var situacao = situacaoServidor(usoMaior);
-    var status = document.getElementById('expansao-status');
-    if (usoMaior >= planejamento.metaUso) {
-      status.textContent = 'Gargalo local';
-    } else {
-      status.textContent = situacao.texto;
+    if (status) {
+      if (usoMaior >= planejamento.metaUso) {
+        status.textContent = 'Gargalo local';
+      } else {
+        status.textContent = situacao.texto;
+      }
+      status.className = 'plan-situacao plan-situacao--' + situacao.classe;
     }
-    status.className = 'plan-situacao plan-situacao--' + situacao.classe;
 
     if (usoEl) {
       usoEl.textContent = usoMaior + '%';
@@ -311,23 +352,19 @@ function renderCards() {
       picoEl.textContent = picoMaior + '%';
       picoEl.classList.toggle('plan-expansao-metrica__valor--alerta', picoMaior >= planejamento.metaUso);
     }
-    if (custoEl) {
-      custoEl.textContent = formatarMoeda(maior.custo);
-    }
-    if (notaEl) {
-      if (usoMaior >= planejamento.metaUso) {
-        notaEl.textContent = 'Acima da meta de uso (' + planejamento.metaUso + '%) — prioridade de balanceamento ou expansão.';
-      } else {
-        notaEl.textContent = 'Servidor com maior pressão de uso no período analisado (meta: ' + planejamento.metaUso + '%).';
-      }
+    definirTexto('expansao-custo', formatarMoeda(maior.custo));
+    if (usoMaior >= planejamento.metaUso) {
+      definirTexto('expansao-nota', 'Acima da meta de uso (' + planejamento.metaUso + '%) — prioridade de balanceamento ou expansão.');
+    } else {
+      definirTexto('expansao-nota', 'Servidor com maior pressão de uso no período analisado (meta: ' + planejamento.metaUso + '%).');
     }
   } else {
-    document.getElementById('expansao-servidor').textContent = '—';
-    document.getElementById('expansao-local').textContent = 'Sem servidores ativos';
-    var statusVazio = document.getElementById('expansao-status');
-    statusVazio.textContent = 'Sem dados';
-    statusVazio.className = 'plan-situacao';
-
+    definirTexto('expansao-servidor', '—');
+    definirTexto('expansao-local', 'Sem servidores ativos');
+    if (status) {
+      status.textContent = 'Sem dados';
+      status.className = 'plan-situacao';
+    }
     if (usoEl) {
       usoEl.textContent = '—';
       usoEl.classList.remove('plan-expansao-metrica__valor--alerta');
@@ -336,15 +373,11 @@ function renderCards() {
       picoEl.textContent = '—';
       picoEl.classList.remove('plan-expansao-metrica__valor--alerta');
     }
-    if (custoEl) {
-      custoEl.textContent = '—';
-    }
-    if (notaEl) {
-      notaEl.textContent = 'Nenhum servidor ativo cadastrado.';
-    }
+    definirTexto('expansao-custo', '—');
+    definirTexto('expansao-nota', 'Nenhum servidor ativo cadastrado.');
   }
 
-  document.getElementById('fisicos-online').textContent = planejamento.servidores.length;
+  definirTexto('fisicos-online', planejamento.servidores.length);
 }
 
 function prepararServidoresPriorizados() {
@@ -423,17 +456,8 @@ function atualizarContadoresFiltros(lista) {
     }
   });
 
-  var mapaIds = {
-    alertas: 'cont-filtro-alertas',
-    criticos: 'cont-filtro-criticos',
-    subutilizados: 'cont-filtro-subutilizados',
-    normais: 'cont-filtro-normais',
-    todos: 'cont-filtro-todos'
-  };
-
-  Object.keys(mapaIds).forEach(function (chave) {
-    var el = document.getElementById(mapaIds[chave]);
-    if (el) el.textContent = contadores[chave];
+  Object.keys(contadores).forEach(function (chave) {
+    definirTexto('cont-filtro-' + chave, contadores[chave]);
   });
 }
 
@@ -652,20 +676,22 @@ function renderGrafico() {
 }
 
 function renderPremissasResumo() {
-  document.getElementById('nome-gestor').textContent = planejamento.gestor;
-  document.getElementById('data-cadastro').textContent = planejamento.data;
-  document.getElementById('modal-data').textContent = planejamento.data;
+  definirTexto('nome-gestor', planejamento.gestor);
+  definirTexto('data-cadastro', planejamento.data);
+  definirTexto('modal-data', planejamento.data);
 
-  document.getElementById('resumo-premissas').textContent =
+  definirTexto(
+    'resumo-premissas',
     'crescimento ' + formatarNumero(planejamento.crescimento) + ' jogadores/mês · ' +
     formatarNumero(planejamento.capacidadeAtual) + ' jogadores por servidor · provisionamento ' +
     textoUnidade(planejamento.provisionamento, 'mês', 'meses') +
     ' · meta de uso ' + planejamento.metaUso + '% · novo servidor ' +
     formatarMoeda(planejamento.custoNovoServidor) + '/mês + ' +
-    formatarMoeda(planejamento.custoImplantacao) + ' de implantação.';
+    formatarMoeda(planejamento.custoImplantacao) + ' de implantação.'
+  );
 
-  document.getElementById('limite-saturado').textContent = planejamento.metaUso;
-  document.getElementById('limite-normal').textContent = Math.max(0, planejamento.metaUso - 1);
+  definirTexto('limite-saturado', planejamento.metaUso);
+  definirTexto('limite-normal', Math.max(0, planejamento.metaUso - 1));
   document.querySelectorAll('.limite-subutilizado-nota').forEach(function (item) {
     item.textContent = planejamento.limiteSubutilizado;
   });
@@ -813,35 +839,24 @@ function definirErroModal(mensagem) {
 }
 
 function definirSalvandoModal(salvando) {
-  var btnSalvar = document.getElementById('btn-salvar-premissas');
-  var btnCancelar = document.getElementById('btn-cancelar-premissas');
-  if (btnSalvar) {
-    btnSalvar.disabled = salvando;
-    if (salvando) {
-      btnSalvar.textContent = 'Salvando...';
-    } else {
-      btnSalvar.textContent = 'Aplicar e recalcular';
-    }
-  }
-  if (btnCancelar) {
-    btnCancelar.disabled = salvando;
-  }
+  atualizarBotaoEstado('btn-salvar-premissas', salvando, 'Salvando...', 'Aplicar e recalcular');
+  var btnCancelar = el('btn-cancelar-premissas');
+  if (btnCancelar) btnCancelar.disabled = salvando;
 }
 
 function abrirPremissas() {
   preencherFormulario();
   definirErroModal('');
   definirSalvandoModal(false);
-  document.getElementById('modal-premissas').hidden = false;
-  document.body.style.overflow = 'hidden';
-  document.getElementById('premissa-capacidade-atual').focus();
+  alternarModal('modal-premissas', true);
+  var campoInicial = el('premissa-capacidade-atual');
+  if (campoInicial) campoInicial.focus();
 }
 
 function fecharPremissas() {
   definirErroModal('');
   definirSalvandoModal(false);
-  document.getElementById('modal-premissas').hidden = true;
-  document.body.style.overflow = '';
+  alternarModal('modal-premissas', false);
 }
 
 function lerNumero(id, padrao) {
@@ -934,24 +949,8 @@ function escaparTexto(valor) {
 }
 
 function definirCarregandoRelatorio(carregando) {
-  var btnTopo = document.getElementById('btn-gerar-relatorio');
-  var btnRegerar = document.getElementById('btn-regerar-relatorio');
-  if (btnTopo) {
-    btnTopo.disabled = carregando;
-    if (carregando) {
-      btnTopo.textContent = 'Analisando com IA...';
-    } else {
-      btnTopo.textContent = 'Gerar relatório IA';
-    }
-  }
-  if (btnRegerar) {
-    btnRegerar.disabled = carregando;
-    if (carregando) {
-      btnRegerar.textContent = 'Analisando...';
-    } else {
-      btnRegerar.textContent = 'Regerar análise';
-    }
-  }
+  atualizarBotaoEstado('btn-gerar-relatorio', carregando, 'Analisando com IA...', 'Gerar relatório IA');
+  atualizarBotaoEstado('btn-regerar-relatorio', carregando, 'Analisando...', 'Regerar análise');
 }
 
 function montarRelatorioLocalFallback() {
@@ -959,17 +958,9 @@ function montarRelatorioLocalFallback() {
   var totais = totaisServidores();
   var capacidadeTotal = planejamento.servidores.length * planejamento.capacidadeAtual;
   var runway = runwayMeses(capacidadeTotal);
-  var servidoresDetalhados = planejamento.servidores.map(function (srv, indice) {
-    var ref = USOS_ILUSTRATIVOS[indice] || { uso: 0, pico: 0 };
-    var uso = ref.uso;
-    if (srv.uso !== undefined && srv.uso !== null) {
-      uso = Number(srv.uso) || 0;
-    }
-    var pico = ref.pico;
-    if (srv.pico !== undefined && srv.pico !== null) {
-      pico = Number(srv.pico) || uso;
-    }
-    var situacao = situacaoServidor(uso);
+  var servidoresDetalhados = planejamento.servidores.map(function (srv) {
+    var uso = Number(srv.uso) || 0;
+    var pico = Number(srv.pico) || uso;
     return {
       nome: srv.nome,
       local: srv.local || '-',
@@ -977,19 +968,13 @@ function montarRelatorioLocalFallback() {
       uso: uso,
       pico: pico,
       custoOcioso: custoOcioso(srv),
-      situacao: situacao.texto
+      situacao: situacaoServidor(uso).texto
     };
   });
 
-  var maior = servidoresDetalhados[0] || null;
-  servidoresDetalhados.forEach(function (srv) {
-    if (srv.uso > maior.uso) maior = srv;
-  });
-
+  var maior = servidorComMaiorUso(servidoresDetalhados);
   var nomeGargalo = 'Nenhum servidor';
-  if (maior) {
-    nomeGargalo = maior.nome;
-  }
+  if (maior) nomeGargalo = maior.nome;
 
   var projecoes = [1, 3, 6].map(function (meses) {
     var previstos = planejamento.jogadores + planejamento.crescimento * meses;
@@ -1060,24 +1045,21 @@ function renderizarRelatorio(pacote) {
   var metricas = pacote.metricas || {};
   var analise = pacote.analise || {};
 
-  var selo = document.getElementById('relatorio-selo-origem');
-  if (selo) {
-    if (pacote.origem === 'ia') {
-      selo.textContent = 'Gerado com Google Gemini';
-    } else {
-      selo.textContent = 'Análise Analítica Local';
-    }
+  if (pacote.origem === 'ia') {
+    definirTexto('relatorio-selo-origem', 'Gerado com Google Gemini');
+  } else {
+    definirTexto('relatorio-selo-origem', 'Análise Analítica Local');
   }
 
-  document.getElementById('rel-titulo').textContent = analise.tituloExecutivo || 'Relatório Executivo de Infraestrutura';
-  document.getElementById('rel-gestor').textContent = dados.gestor || 'Não informado';
-  document.getElementById('rel-plano').textContent = dados.plano || 'Padrão';
-  document.getElementById('rel-emissao').textContent = pacote.emitidoEm || new Date().toLocaleString('pt-BR');
-  document.getElementById('rel-modelo').textContent = pacote.modelo || 'gemini-3.8-flash';
-  document.getElementById('rel-veredito').textContent = analise.vereditoSituacao || '';
-  document.getElementById('rel-resumo').textContent = analise.resumoExecutivo || '';
-  document.getElementById('rel-financeiro').textContent = analise.analiseFinanceira || '';
-  document.getElementById('rel-frota-analise').textContent = analise.analiseFrotaGargalos || '';
+  definirTexto('rel-titulo', analise.tituloExecutivo || 'Relatório Executivo de Infraestrutura');
+  definirTexto('rel-gestor', dados.gestor || 'Não informado');
+  definirTexto('rel-plano', dados.plano || 'Padrão');
+  definirTexto('rel-emissao', pacote.emitidoEm || new Date().toLocaleString('pt-BR'));
+  definirTexto('rel-modelo', pacote.modelo || 'gemini-3.8-flash');
+  definirTexto('rel-veredito', analise.vereditoSituacao || '');
+  definirTexto('rel-resumo', analise.resumoExecutivo || '');
+  definirTexto('rel-financeiro', analise.analiseFinanceira || '');
+  definirTexto('rel-frota-analise', analise.analiseFrotaGargalos || '');
 
   var textoRunwayRel = 'Sem saturação';
   if (metricas.runwayMeses !== null && metricas.runwayMeses !== undefined && metricas.runwayMeses !== Infinity) {
@@ -1095,16 +1077,12 @@ function renderizarRelatorio(pacote) {
     { rotulo: 'Custo Ocioso', valor: formatarMoeda(metricas.custoOciosoTotal) }
   ];
 
-  var kpisHtml = '';
-  listaKpis.forEach(function (item) {
-    kpisHtml += '<div class="plan-folha__kpi"><span>' + escaparTexto(item.rotulo) + '</span><strong>' + escaparTexto(item.valor) + '</strong></div>';
-  });
-  document.getElementById('rel-kpis').innerHTML = kpisHtml;
+  el('rel-kpis').innerHTML = listaKpis.map(function (item) {
+    return '<div class="plan-folha__kpi"><span>' + escaparTexto(item.rotulo) + '</span><strong>' + escaparTexto(item.valor) + '</strong></div>';
+  }).join('');
 
-  var servidoresRel = metricas.servidoresDetalhados || [];
-  var tabelaHtml = '';
-  servidoresRel.forEach(function (srv) {
-    tabelaHtml += '<tr>' +
+  el('rel-tabela-servidores').innerHTML = (metricas.servidoresDetalhados || []).map(function (srv) {
+    return '<tr>' +
       '<td><strong>' + escaparTexto(srv.nome) + '</strong></td>' +
       '<td>' + escaparTexto(srv.local) + '</td>' +
       '<td>' + escaparTexto(formatarMoeda(srv.custo)) + '</td>' +
@@ -1113,50 +1091,36 @@ function renderizarRelatorio(pacote) {
       '<td>' + escaparTexto(formatarMoeda(srv.custoOcioso)) + '</td>' +
       '<td>' + escaparTexto(srv.situacao) + '</td>' +
       '</tr>';
-  });
-  document.getElementById('rel-tabela-servidores').innerHTML = tabelaHtml;
+  }).join('');
 
-  var previsoesHtml = '';
-  var previsoes = analise.previsoesFuturas || [];
-  previsoes.forEach(function (prev) {
-    previsoesHtml += '<div class="plan-folha__previsao-card">' +
+  el('rel-previsoes').innerHTML = (analise.previsoesFuturas || []).map(function (prev) {
+    return '<div class="plan-folha__previsao-card">' +
       '<strong>' + escaparTexto(prev.horizonte) + '</strong>' +
       '<p>' + escaparTexto(prev.previsao) + '</p>' +
       '<p><em>' + escaparTexto(prev.impactoNegocio) + '</em></p>' +
       '</div>';
-  });
-  document.getElementById('rel-previsoes').innerHTML = previsoesHtml;
+  }).join('');
 
-  document.getElementById('rel-cenario-recomendado').textContent = 'Cenário recomendado: ' + (analise.cenarioRecomendado || '—');
-  document.getElementById('rel-cenario-justificativa').textContent = analise.justificativaRecomendacao || '';
+  definirTexto('rel-cenario-recomendado', 'Cenário recomendado: ' + (analise.cenarioRecomendado || '—'));
+  definirTexto('rel-cenario-justificativa', analise.justificativaRecomendacao || '');
+  el('rel-insights').innerHTML = listaHtml(analise.insightsEstrategicos);
+  el('rel-plano-acao').innerHTML = listaHtml(analise.planoAcaoImediato);
 
-  var insightsHtml = '';
-  (analise.insightsEstrategicos || []).forEach(function (item) {
-    insightsHtml += '<li>' + escaparTexto(item) + '</li>';
-  });
-  document.getElementById('rel-insights').innerHTML = insightsHtml;
-
-  var acoesHtml = '';
-  (analise.planoAcaoImediato || []).forEach(function (item) {
-    acoesHtml += '<li>' + escaparTexto(item) + '</li>';
-  });
-  document.getElementById('rel-plano-acao').innerHTML = acoesHtml;
-
-  document.getElementById('rel-premissas-rodape').textContent =
+  definirTexto(
+    'rel-premissas-rodape',
     'crescimento ' + formatarNumero(dados.crescimento) + ' jog./mês · ' +
     formatarNumero(dados.capacidadeAtual) + ' jog./servidor · provisionamento ' +
     textoUnidade(dados.provisionamento, 'mês', 'meses') + ' · orçamento ' +
-    formatarMoeda(dados.orcamento) + ' · meta ' + dados.metaUso + '% · subutilizado <' + dados.limiteSubutilizado + '%.';
+    formatarMoeda(dados.orcamento) + ' · meta ' + dados.metaUso + '% · subutilizado <' + dados.limiteSubutilizado + '%.'
+  );
 }
 
 function abrirModalRelatorio() {
-  document.getElementById('modal-relatorio').hidden = false;
-  document.body.style.overflow = 'hidden';
+  alternarModal('modal-relatorio', true);
 }
 
 function fecharModalRelatorio() {
-  document.getElementById('modal-relatorio').hidden = true;
-  document.body.style.overflow = '';
+  alternarModal('modal-relatorio', false);
 }
 
 function gerarRelatorioIA() {
@@ -1193,10 +1157,6 @@ function gerarRelatorioIA() {
     });
 }
 
-function imprimirRelatorioPDF() {
-  window.print();
-}
-
 /* ---------- Inicialização ---------- */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -1204,18 +1164,18 @@ document.addEventListener('DOMContentLoaded', function () {
   iniciarRelogio();
   carregarPlanejamentoBackend();
 
-  document.getElementById('btn-premissas-topo').addEventListener('click', abrirPremissas);
-  document.getElementById('btn-editar-premissas').addEventListener('click', abrirPremissas);
-  document.getElementById('btn-fechar-premissas').addEventListener('click', fecharPremissas);
-  document.getElementById('btn-cancelar-premissas').addEventListener('click', fecharPremissas);
-  document.getElementById('form-premissas').addEventListener('submit', aplicarPremissas);
+  el('btn-premissas-topo').addEventListener('click', abrirPremissas);
+  el('btn-editar-premissas').addEventListener('click', abrirPremissas);
+  el('btn-fechar-premissas').addEventListener('click', fecharPremissas);
+  el('btn-cancelar-premissas').addEventListener('click', fecharPremissas);
+  el('form-premissas').addEventListener('submit', aplicarPremissas);
 
-  document.getElementById('btn-gerar-relatorio').addEventListener('click', gerarRelatorioIA);
-  document.getElementById('btn-regerar-relatorio').addEventListener('click', gerarRelatorioIA);
-  document.getElementById('btn-imprimir-relatorio').addEventListener('click', imprimirRelatorioPDF);
-  document.getElementById('btn-fechar-relatorio').addEventListener('click', fecharModalRelatorio);
+  el('btn-gerar-relatorio').addEventListener('click', gerarRelatorioIA);
+  el('btn-regerar-relatorio').addEventListener('click', gerarRelatorioIA);
+  el('btn-imprimir-relatorio').addEventListener('click', function () { window.print(); });
+  el('btn-fechar-relatorio').addEventListener('click', fecharModalRelatorio);
 
-  var campoPesquisa = document.getElementById('pesquisa-servidor');
+  var campoPesquisa = el('pesquisa-servidor');
   if (campoPesquisa) {
     campoPesquisa.addEventListener('input', function (evento) {
       termoBuscaServidor = evento.target.value.trim();
@@ -1229,7 +1189,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  document.getElementById('corpo-servidores').addEventListener('click', function (evento) {
+  el('corpo-servidores').addEventListener('click', function (evento) {
     if (evento.target && evento.target.id === 'btn-ver-todos-servidores') {
       termoBuscaServidor = '';
       if (campoPesquisa) campoPesquisa.value = '';
@@ -1242,12 +1202,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.addEventListener('keydown', function (evento) {
     if (evento.key === 'Escape') {
-      if (!document.getElementById('modal-premissas').hidden) {
-        fecharPremissas();
-      }
-      if (!document.getElementById('modal-relatorio').hidden) {
-        fecharModalRelatorio();
-      }
+      if (!el('modal-premissas').hidden) fecharPremissas();
+      if (!el('modal-relatorio').hidden) fecharModalRelatorio();
     }
   });
 });
