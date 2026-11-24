@@ -85,7 +85,7 @@
     <section class="plan-introducao">
       <h2 class="plan-introducao__titulo">Planejamento Financeiro</h2>
       <p class="plan-introducao__descricao">
-        Dados cadastrados pelo gestor (<strong id="nome-gestor">Alberto Santos</strong>)
+        Última atualização por <strong id="nome-gestor">Alberto Santos</strong>
         em <strong id="data-cadastro">10/11/2026</strong>: custos, capacidade, crescimento,
         orçamento, custo de expansão e meta de uso.
       </p>
@@ -127,6 +127,7 @@
         <article class="plan-kpi">
           <div class="plan-kpi__topo">
             <span class="plan-kpi__rotulo">Lucro líquido/mês</span>
+            <span class="plan-selo-simulado" title="Derivado da receita simulada e do custo cadastrado">Simulado</span>
           </div>
           <p class="plan-kpi__valor plan-kpi__valor--positivo" id="kpi-lucro">R$ 12.800</p>
           <p class="plan-kpi__detalhe" id="kpi-margem">Margem de 40,00%</p>
@@ -135,6 +136,7 @@
         <article class="plan-kpi">
           <div class="plan-kpi__topo">
             <span class="plan-kpi__rotulo">ROI de infraestrutura</span>
+            <span class="plan-selo-simulado" title="Derivado da receita simulada e do custo cadastrado">Simulado</span>
           </div>
           <p class="plan-kpi__valor" id="kpi-roi">66,67%</p>
           <p class="plan-kpi__detalhe" id="kpi-breakeven">Break-even: 6.000 jogadores</p>
@@ -287,9 +289,9 @@
     <!-- Rodapé de transparência -->
     <footer class="plan-rodape">
       <p class="plan-rodape__fontes">
-        <strong>Fontes:</strong> jogadores simultâneos (telemetria do jogo), uso por servidor
-        (script de captura), custo e capacidade por servidor (cadastro do gestor). Custos
-        estimados, não faturados. Projeção linear, sem sazonalidade.
+        <strong>Fontes:</strong> custos dos servidores, histórico e premissas (banco de dados);
+        jogadores simultâneos e uso médio/pico por servidor (dados simulados/ilustrativos nesta versão).
+        Custos estimados, não faturados. Projeção linear, sem sazonalidade.
       </p>
       <div class="plan-rodape__premissas">
         <span><strong>Premissas:</strong> <span id="resumo-premissas">crescimento 375 jogadores/mês · 2.000 jogadores por servidor · provisionamento 2 meses · meta de uso 75% · novo servidor R$ 3.200/mês + R$ 2.000 de implantação.</span></span>
@@ -305,7 +307,7 @@
       <div class="plan-modal__cabecalho">
         <div>
           <h2 id="titulo-premissas">Premissas</h2>
-          <p>Preenchido pelo gestor no cadastro · atualizado em <span id="modal-data">10/11/2026</span></p>
+          <p>Configurado pela gestão/financeiro · atualizado em <span id="modal-data">10/11/2026</span></p>
         </div>
         <button type="button" class="plan-modal__fechar" id="btn-fechar-premissas" aria-label="Fechar premissas">&times;</button>
       </div>
