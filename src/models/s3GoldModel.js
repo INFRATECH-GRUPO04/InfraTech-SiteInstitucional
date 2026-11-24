@@ -4,7 +4,7 @@ var RAIZ = "03-gold/";
 var ARQUIVO = "dashboard_sarah.json";
 
 function prefixo(idEmpresa, idServidor, data) {
-    return RAIZ + "empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/data=" + data + "/";
+    return RAIZ + "metricas"+ "/empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/data=" + data + "/";
 }
 
 async function listar(prefix, delimiter) {

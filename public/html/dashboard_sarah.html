@@ -360,7 +360,7 @@
                 if (response.ok) {
                     response.json().then(function (resposta) {
                         for (var i = 0; i < resposta.length; i++) {
-                            if (resposta[i].temAcesso == 1) {
+                            if (resposta[i].temAcesso == 1 && resposta[i].statusSistema == 1) {
                                 filtro_servidor.innerHTML += `
                                 <option value="${resposta[i].id_servidor}">${resposta[i].nome}</option>
                                 `;
@@ -389,59 +389,47 @@
 
         var servidorEscolhido = "";
 
-        function carregarServidor(idServidor) {
-            servidorEscolhido = idServidor;
+        // 2) Buscar capturas no S3 (via backend)
+        async function buscarCapturas(idServidor, inicio, fim) {
+            var resposta = await fetch(
+                `/dashboardSarah/historico/${idServidor}?inicio=${inicio}&fim=${fim}`,
+                { cache: 'no-store' }
+            );
 
-            plotarDashboardEspecifica();
-            var limite_alerta_cpu = null;
-            var limite_critico_cpu = null;
-            var limite_alerta_ram = null;
-            var limite_critico_ram = null;
-            var limite_alerta_disco = null;
-            var limite_critico_disco = null;
-            var limite_alerta_rede = null;
-            var limite_critico_rede = null;
+            if (resposta.status === 401) { location.href = '/paginas/autenticacao/login/login.html'; return null; }
+            if (resposta.status === 204) return [];
+            if (!resposta.ok) throw new Error(await resposta.text());
 
-            fetch(`/servidor/listarComponentes/${idServidor}`, { cache: 'no-store' })
-                .then(function (response) {
-                    if (response.ok) {
-                        response.json().then(function (resposta) {
-                            for (let i = 0; i < resposta.length; i++) {
-                                if (resposta[i].tipo == "cpu") {
-                                    limite_alerta_cpu = resposta[i].limite_atencao;
-                                    limite_critico_cpu = resposta[i].limite_critico;
-                                } else if (resposta[i].tipo == "ram") {
-                                    limite_alerta_ram = resposta[i].limite_atencao;
-                                    limite_critico_ram = resposta[i].limite_critico;
-                                } else if (resposta[i].tipo == "disco") {
-                                    limite_alerta_disco = resposta[i].limite_atencao;
-                                    limite_critico_disco = resposta[i].limite_critico;
-                                } else if (resposta[i].tipo == "rede") {
-                                    limite_alerta_rede = resposta[i].limite_atencao;
-                                    limite_critico_rede = resposta[i].limite_critico;
-                                }
-                            }
-
-                            console.log(limite_alerta_cpu)
-                            console.log(limite_critico_cpu)
-                            console.log(limite_alerta_ram)
-                            console.log(limite_critico_ram)
-                            console.log(limite_alerta_disco)
-                            console.log(limite_critico_disco)
-                            console.log(limite_alerta_rede)
-                            console.log(limite_critico_rede)
-
-                        });
-                    } else {
-                        console.log("Não funfou");
-                    }
-                })
-                .catch(function (error) {
-                    console.error("Erro na obtenção de dados", error);
-                });
+            return resposta.json();   // array de capturas ordenado por dataHora
         }
 
-        
+        // 3) Usar no carregarServidor
+        async function carregarServidor(idServidor) {
+            servidorEscolhido = idServidor;
+            try {
+                var capturas = await buscarCapturas(
+                    idServidor,
+                    filtro_data_inicio.value,
+                    filtro_data_final.value
+                );
+
+                console.log("Capturas recebidas:", capturas);          // array completo
+                console.log("Quantidade:", capturas ? capturas.length : 0);
+                console.log("Primeira captura:", capturas && capturas[0]);
+
+                if (!capturas || capturas.length === 0) {
+                    mostrarPedidoDatas('Sem dados para o período');
+                    return;
+                }
+
+                plotarDashboardEspecifica();
+            } catch (e) {
+                console.error("Erro ao buscar capturas:", e);
+                mostrarPedidoDatas('Falha ao ler os dados');
+            }
+        }
+
+
         function mostrarSemServidor() {
             corpoDashboard.innerHTML = `
         <div class="cards" style="margin:1vw; text-align:center;">
