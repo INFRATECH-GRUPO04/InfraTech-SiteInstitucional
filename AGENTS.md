@@ -87,3 +87,4 @@ Reduzir o tempo para detectar e diagnosticar falhas, com dashboards por persona,
 - Schema: fonte da verdade é `src/database/infratech-atualizado.sql`; não altere schema sem alinhar. Atenção: o código usa a tabela `limite_alerta_global`, que só existe em `SCRIPT-INFRATECH.sql`.
 
 **ETL:** duas Lambdas Python (bronze→silver, silver→gold), prefixos `01-bronze`, `02-silver`, `03-gold`.
+- **Diário de prompts:** a cada prompt do usuário neste repositório, registre um pequeno relatório em `../etl/diario_sarah.md` com o texto enviado e um resumo curto do resultado. Use entradas `Prompt N - site institucional`; ao mudar o dia, crie uma nova seção `## YYYY-MM-DD` no diário e reinicie a numeração em `Prompt 1 - site institucional`, sem apagar as anteriores.

@@ -817,6 +817,15 @@
         });
 
 
+    fetch("http://98.81.160.41:3333/perfeito-sarah.json")
+    .then(response => response.json())
+    .then(dados => {
+        console.log(dados);
+    })
+    .catch(erro => {
+        console.error("Erro ao buscar dados:", erro);
+    });
+
     </script>
 </body>
 

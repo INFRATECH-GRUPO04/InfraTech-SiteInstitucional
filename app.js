@@ -88,7 +88,7 @@ app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissa
 app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
 app.use("/agente", agenteRouter)
-app.use("/dashboardSarah", dashboardSarahRouter)
+app.use("/dashboardSarah", autorizacao.autenticar, dashboardSarahRouter)
 
 module.exports = app;
 
