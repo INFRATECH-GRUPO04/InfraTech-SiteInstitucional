@@ -3,7 +3,6 @@
  * executiva (Google Gemini com fallback analítico) e prepara respostas para as
  * rotas GET/PUT /planejamento e POST /planejamento/relatorio.
  */
-var https = require("https");
 var planejamentoModel = require("../models/planejamentoModel");
 
 var USOS_REFERENCIA = [
@@ -74,10 +73,9 @@ function formatarData(data) {
 function formatarMes(data) {
     if (!data) return '';
     var d = new Date(data);
-    var nomes = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-    var mes = nomes[d.getUTCMonth()];
+    var nomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
     var ano = String(d.getUTCFullYear()).slice(-2);
-    return mes.charAt(0).toUpperCase() + mes.slice(1) + '/' + ano;
+    return nomes[d.getUTCMonth()] + '/' + ano;
 }
 
 /* Monta o objeto de resposta usado pelo frontend, a partir dos dados do banco. */
@@ -253,10 +251,10 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
         var uso = ref.uso;
         var pico = ref.pico;
 
-        if (correspondente && correspondente.uso !== undefined && correspondente.uso !== null) {
+        if (correspondente && correspondente.uso != null) {
             uso = Number(correspondente.uso) || 0;
         }
-        if (correspondente && correspondente.pico !== undefined && correspondente.pico !== null) {
+        if (correspondente && correspondente.pico != null) {
             pico = Number(correspondente.pico) || uso;
         }
 
@@ -443,8 +441,10 @@ function gerarAnaliseFallback(dados, metricas) {
                     p.excedenteCapacidade.toLocaleString('pt-BR') +
                     ' jogadores (' + p.ocupacaoPrevista + '% de ocupação), exigindo expansão prévia.';
             }
+            var unidade = ' meses';
+            if (p.meses === 1) unidade = ' mês';
             return {
-                horizonte: p.meses + (p.meses === 1 && ' mês' || ' meses'),
+                horizonte: p.meses + unidade,
                 previsao: textoPrev,
                 impactoNegocio: textoImp
             };
@@ -466,27 +466,24 @@ function gerarAnaliseFallback(dados, metricas) {
 
 /* Extrai o texto JSON da resposta da Interactions API do Google Gemini. */
 function extrairTextoGemini(resposta) {
-    if (resposta && typeof resposta.output_text === 'string' && resposta.output_text.trim()) {
+    if (!resposta) return '';
+    if (typeof resposta.output_text === 'string' && resposta.output_text.trim()) {
         return resposta.output_text;
     }
-    if (resposta && Array.isArray(resposta.steps)) {
+    if (Array.isArray(resposta.steps)) {
         for (var i = resposta.steps.length - 1; i >= 0; i--) {
             var passo = resposta.steps[i];
             if (passo && passo.type === 'model_output' && Array.isArray(passo.content)) {
                 var textos = passo.content
                     .filter(function (parte) { return parte && typeof parte.text === 'string'; })
                     .map(function (parte) { return parte.text; });
-                if (textos.length > 0) {
-                    return textos.join('');
-                }
+                if (textos.length > 0) return textos.join('');
             }
         }
     }
-    if (resposta && Array.isArray(resposta.outputs) && resposta.outputs.length > 0) {
+    if (Array.isArray(resposta.outputs) && resposta.outputs.length > 0) {
         var ultimo = resposta.outputs[resposta.outputs.length - 1];
-        if (ultimo && typeof ultimo.text === 'string') {
-            return ultimo.text;
-        }
+        if (ultimo && typeof ultimo.text === 'string') return ultimo.text;
     }
     return '';
 }
@@ -517,46 +514,27 @@ function chamarModeloGemini(chave, modelo, dados, metricas) {
         }
     });
 
-    return new Promise(function (resolve, reject) {
-        var opcoes = {
-            hostname: 'generativelanguage.googleapis.com',
-            path: '/v1beta/interactions',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-goog-api-key': chave,
-                'Api-Revision': '2026-05-20',
-                'Content-Length': Buffer.byteLength(payload)
-            },
-            timeout: 45000
-        };
-
-        var req = https.request(opcoes, function (res) {
-            var corpo = '';
-            res.on('data', function (chunk) { corpo += chunk; });
-            res.on('end', function () {
-                if (res.statusCode < 200 || res.statusCode >= 300) {
-                    var errHttp = new Error('Gemini HTTP ' + res.statusCode + ': ' + corpo);
-                    errHttp.statusCode = res.statusCode;
-                    return reject(errHttp);
-                }
-                try {
-                    var respostaJson = JSON.parse(corpo);
-                    var texto = extrairTextoGemini(respostaJson);
-                    var analise = JSON.parse(texto);
-                    resolve({ modelo: modelo, analise: analise });
-                } catch (err) {
-                    reject(err);
-                }
+    return fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': chave,
+            'Api-Revision': '2026-05-20'
+        },
+        body: payload,
+        signal: AbortSignal.timeout(45000)
+    }).then(function (resposta) {
+        if (!resposta.ok) {
+            return resposta.text().then(function (corpo) {
+                var errHttp = new Error('Gemini HTTP ' + resposta.status + ': ' + corpo);
+                errHttp.statusCode = resposta.status;
+                throw errHttp;
             });
-        });
-
-        req.on('timeout', function () {
-            req.destroy(new Error('Timeout na chamada ao Google Gemini'));
-        });
-        req.on('error', reject);
-        req.write(payload);
-        req.end();
+        }
+        return resposta.json();
+    }).then(function (respostaJson) {
+        var analise = JSON.parse(extrairTextoGemini(respostaJson));
+        return { modelo: modelo, analise: analise };
     });
 }
 
@@ -584,24 +562,20 @@ function normalizarDadosFallback(corpoRequisicao) {
         base = corpoRequisicao.dados;
     }
 
-    var servidores = [];
+    var listaServidores = [];
     if (Array.isArray(base.servidores)) {
-        servidores = base.servidores.map(function (s) {
-            return {
-                nome: (s && s.nome) || 'SRV',
-                local: (s && s.local) || '-',
-                custo: Number(s && s.custo) || 0
-            };
-        });
+        listaServidores = base.servidores;
     } else if (corpoRequisicao && Array.isArray(corpoRequisicao.servidores)) {
-        servidores = corpoRequisicao.servidores.map(function (s) {
-            return {
-                nome: (s && s.nome) || 'SRV',
-                local: (s && s.local) || '-',
-                custo: Number(s && s.custo) || 0
-            };
-        });
+        listaServidores = corpoRequisicao.servidores;
     }
+
+    var servidores = listaServidores.map(function (s) {
+        return {
+            nome: (s && s.nome) || 'SRV',
+            local: (s && s.local) || '-',
+            custo: Number(s && s.custo) || 0
+        };
+    });
 
     var historico = [];
     if (Array.isArray(base.historico)) {
