@@ -51,7 +51,7 @@ CREATE TABLE empresa (
 CREATE TABLE funcionario (
     id_funcionario INT PRIMARY KEY AUTO_INCREMENT,
     fk_empresa INT NOT NULL,
-    tipo_acesso ENUM('INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO','ENGENHEIRO_QA')
+    tipo_acesso ENUM('INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO', 'ENGENHEIRO_QA', 'GERENTE_FINANCEIRO')
         NOT NULL DEFAULT 'FUNCIONARIO',
     nome VARCHAR(45) NULL,
     dt_nascimento DATETIME NULL,
@@ -318,7 +318,8 @@ INSERT INTO funcionario (
 (1, 'ENGENHEIRO_QA', 'Morgana Pereira', '1990-01-20', 'morgana.qa@infratech.demo', '123456', '90100000004', 1),
 (2, 'ENGENHEIRO_QA', 'Lucas Motta', '1992-01-20', 'lucas.qa@gamecloud.com', '123456', '90100000005', 1),
 (3, 'ENGENHEIRO_QA', 'Silvio de Jesus', '1995-01-20', 'silvio@techplay.com', '123456', '90100000006', 1),
-(4, 'ENGENHEIRO_QA', 'Pedro Silva', '1991-01-20', 'pedro@arenanordeste.com.br', '123456', '90100000007', 1);
+(4, 'ENGENHEIRO_QA', 'Pedro Silva', '1991-01-20', 'pedro@arenanordeste.com.br', '123456', '90100000007', 1),
+(2, 'GERENTE_FINANCEIRO', 'Renata Mendes', '1988-03-15', 'renata.financeiro@infratech.demo', '123456', '90100000008', 1);
 
 
 -- =====================================================
