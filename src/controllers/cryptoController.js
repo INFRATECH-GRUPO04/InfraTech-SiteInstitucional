@@ -36,7 +36,7 @@ function gerarCodigo(req, res) {
         return res.status(400).send("ID da empresa inválido.");
     }
 
-    var perfisPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
+    var perfisPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO', 'GERENTE_FINANCEIRO'];
     if (perm_funcionario === 'COMUM') {
         perm_funcionario = 'ANALISTA_DADOS';
     }

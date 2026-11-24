@@ -134,7 +134,7 @@ function cadastrar(req, res) {
             .then(function (convites) {
                 if (!convites.length) return res.status(403).send("Convite inválido ou sem usos disponíveis.");
                 var convite = convites[0];
-                var cargosPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO'];
+                var cargosPermitidos = ['INFRATECH', 'GESTOR', 'ANALISTA_DADOS', 'ANALISTA_NOC', 'ADMIN', 'FUNCIONARIO', 'GERENTE_FINANCEIRO'];
                 if (!cargosPermitidos.includes(String(convite.tipo_acesso).toUpperCase())) return res.status(403).send("O convite possui um cargo inválido.");
                 return loginCadastroModel.cadastrar(convite.idEmpresa ?? convite.fk_empresa, nome, dtNascimento, email, senha, cpf, convite.tipo_acesso)
                     .then(function (resultado) {

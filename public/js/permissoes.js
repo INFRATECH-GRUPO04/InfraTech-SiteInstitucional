@@ -25,9 +25,9 @@
         const tipo = normalizar(cargo);
         const completo = completos.includes(tipo);
         const ids = completo ? ['geral', 'especifica', 'saude'] : tipo === 'ANALISTA_DADOS' ? ['especifica'] : tipo === 'ANALISTA_NOC' ? ['saude'] : [];
-        /* O planejamento financeiro fica restrito a gestão: o funcionário comum
-         * vê as dashboards operacionais, mas não os custos e a rentabilidade. */
-        if (['GESTOR', 'ADMIN'].includes(tipo)) ids.push('planejamento');
+        /* O planejamento financeiro fica restrito a gestão e financeiro: o funcionário
+         * comum vê as dashboards operacionais, mas não os custos e a rentabilidade. */
+        if (['GESTOR', 'ADMIN', 'GERENTE_FINANCEIRO'].includes(tipo)) ids.push('planejamento');
         return {
             dashboards: ids,
             planejamento: ids.includes('planejamento'),
