@@ -4,10 +4,8 @@
 var crypto = require("crypto");
 var fs = require("fs");
 var clientS3 = require("@aws-sdk/client-s3");
+var s3 = require("../database/s3Config");
 var agenteModel = require("../models/agenteModel");
-
-// Na EC2 com perfil de acesso (IAM role), o SDK pega as credenciais sozinho
-var s3 = new clientS3.S3Client({ region: process.env.AWS_REGION || "us-east-1" });
 
 // Primeira linha que cada tipo de CSV precisa ter (é a mesma que o script Python gera)
 var CABECALHOS = {

@@ -1,6 +1,5 @@
 var sdk = require("@aws-sdk/client-s3");
-
-var s3 = new sdk.S3Client({ region: process.env.AWS_REGION || "us-east-1" });
+var s3 = require("../database/s3Config");
 var RAIZ = "03-gold/";
 var ARQUIVO = "dashboard_sarah.json";
 
