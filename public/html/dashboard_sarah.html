@@ -362,17 +362,18 @@
                         for (var i = 0; i < resposta.length; i++) {
                             if (resposta[i].temAcesso == 1) {
                                 filtro_servidor.innerHTML += `
-                            <option value="${resposta[i].id_servidor}">${resposta[i].nome}</option>
-                        `;
+                                <option value="${resposta[i].id_servidor}">${resposta[i].nome}</option>
+                                `;
                             }
                         }
 
                         // Agora o select já tem opções: o value existe
                         if (filtro_servidor.options.length > 0) {
-                            filtro_servidor.selectedIndex = 0;   // garante o primeiro
-                            carregarServidor(filtro_servidor.value);
+                            filtro_servidor.selectedIndex = 0;
+                            atualizarDashboard();        // era carregarServidor(...)
+                            //carregarServidor(filtro_servidor.value);
                         } else {
-                            mostrarSemServidor();                // nenhum servidor com acesso
+                            mostrarSemServidor();
                         }
                     });
                 } else {
@@ -402,44 +403,45 @@
             var limite_critico_rede = null;
 
             fetch(`/servidor/listarComponentes/${idServidor}`, { cache: 'no-store' })
-            .then(function (response) {
-                if (response.ok) {
-                    response.json().then(function (resposta) {
-                        for(let i = 0; i < resposta.length; i++){
-                            if(resposta[i].tipo == "cpu"){
-                                limite_alerta_cpu = resposta[i].limite_atencao;
-                                limite_critico_cpu = resposta[i].limite_critico;
-                            } else if(resposta[i].tipo == "ram"){
-                                limite_alerta_ram = resposta[i].limite_atencao;
-                                limite_critico_ram = resposta[i].limite_critico;
-                            } else if(resposta[i].tipo == "disco"){
-                                limite_alerta_disco = resposta[i].limite_atencao;
-                                limite_critico_disco = resposta[i].limite_critico;
-                            } else if(resposta[i].tipo == "rede"){
-                                limite_alerta_rede = resposta[i].limite_atencao;
-                                limite_critico_rede = resposta[i].limite_critico;
+                .then(function (response) {
+                    if (response.ok) {
+                        response.json().then(function (resposta) {
+                            for (let i = 0; i < resposta.length; i++) {
+                                if (resposta[i].tipo == "cpu") {
+                                    limite_alerta_cpu = resposta[i].limite_atencao;
+                                    limite_critico_cpu = resposta[i].limite_critico;
+                                } else if (resposta[i].tipo == "ram") {
+                                    limite_alerta_ram = resposta[i].limite_atencao;
+                                    limite_critico_ram = resposta[i].limite_critico;
+                                } else if (resposta[i].tipo == "disco") {
+                                    limite_alerta_disco = resposta[i].limite_atencao;
+                                    limite_critico_disco = resposta[i].limite_critico;
+                                } else if (resposta[i].tipo == "rede") {
+                                    limite_alerta_rede = resposta[i].limite_atencao;
+                                    limite_critico_rede = resposta[i].limite_critico;
+                                }
                             }
-                        }    
-                        
-                        console.log(limite_alerta_cpu)
-                        console.log(limite_critico_cpu)
-                        console.log(limite_alerta_ram)
-                        console.log(limite_critico_ram)
-                        console.log(limite_alerta_disco)
-                        console.log(limite_critico_disco)
-                        console.log(limite_alerta_rede)
-                        console.log(limite_critico_rede)
 
-                    });
-                } else {
-                    console.log("Não funfou");
-                }
-            })
-            .catch(function (error) {
-                console.error("Erro na obtenção de dados", error);
-            });
+                            console.log(limite_alerta_cpu)
+                            console.log(limite_critico_cpu)
+                            console.log(limite_alerta_ram)
+                            console.log(limite_critico_ram)
+                            console.log(limite_alerta_disco)
+                            console.log(limite_critico_disco)
+                            console.log(limite_alerta_rede)
+                            console.log(limite_critico_rede)
+
+                        });
+                    } else {
+                        console.log("Não funfou");
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Erro na obtenção de dados", error);
+                });
         }
 
+        
         function mostrarSemServidor() {
             corpoDashboard.innerHTML = `
         <div class="cards" style="margin:1vw; text-align:center;">
@@ -810,21 +812,66 @@
 
         filtro_data_inicio.addEventListener('change', function () {
             console.log(filtro_data_inicio.value);
+            atualizarDashboard();
         });
 
         filtro_data_final.addEventListener('change', function () {
             console.log(filtro_data_inicio.value);
+            atualizarDashboard()
         });
 
+        function validarDatas() {
+            var inicio = filtro_data_inicio.value;
+            var final = filtro_data_final.value;
 
-    fetch("http://98.81.160.41:3333/perfeito-sarah.json")
-    .then(response => response.json())
-    .then(dados => {
-        console.log(dados);
-    })
-    .catch(erro => {
-        console.error("Erro ao buscar dados:", erro);
-    });
+            if (!inicio && !final) return "Selecione a data de início e a data final";
+            if (!inicio) return "Selecione a data de início";
+            if (!final) return "Selecione a data final";
+            if (inicio > final) return "A data de início não pode ser maior que a data final";
+            // limite: início + 3 meses
+            var limite = new Date(inicio + "T00:00:00");
+            limite.setMonth(limite.getMonth() + 3);
+
+            var dataFinal = new Date(final + "T00:00:00");
+
+            if (dataFinal > limite) {
+                return "O intervalo máximo é de 3 meses";
+            }
+            return null;   // tudo certo
+        }
+
+        function mostrarPedidoDatas(mensagem) {
+            corpoDashboard.innerHTML = `
+        <div class="cards" style="margin:1vw; text-align:center;">
+            <div class="titulo-card">${mensagem}</div>
+            <div class="subtitulo-ocorrencias">Use os filtros na barra superior para escolher o período.</div>
+        </div>
+    `;
+        }
+
+        // decide o que mostrar: pedido de datas ou o dashboard
+        function atualizarDashboard() {
+            if (!filtroServidor.value) {
+                mostrarSemServidor();
+                return;
+            }
+            var erro = validarDatas();
+            if (erro) {
+                mostrarPedidoDatas(erro);
+                return;
+            }
+            carregarServidor(filtroServidor.value);
+        }
+
+
+        // const resposta = await fetch(
+        //     `/dashboardSarah/lerServidor/${idEmpresa}/${servidorEscolhido}/${inicio}/${fim}`,
+        //     { cache: 'no-store' }
+        // );
+        // if (resposta.status === 401) return location.href = '/paginas/autenticacao/login/login.html';
+        // if (resposta.status === 204) return mostrarSemDados('Sem dados para o período');
+        // if (!resposta.ok) throw new Error(await resposta.text());
+        // const capturas = await resposta.json();
 
     </script>
 </body>

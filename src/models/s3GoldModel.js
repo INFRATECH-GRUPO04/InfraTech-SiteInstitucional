@@ -91,22 +91,4 @@ async function ultimaLeitura(idEmpresa, idServidor) {
     });
 }
 
-async function lerChave(chave) {
-    var objeto = await s3.send(new sdk.GetObjectCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: chave
-    }));
-    return JSON.parse(await objeto.Body.transformToString());
-}
-
-async function listarRaiz(limite) {
-    var pagina = await s3.send(new sdk.ListObjectsV2Command({
-        Bucket: process.env.S3_BUCKET,
-        MaxKeys: limite || 10
-    }));
-    return (pagina.Contents || []).map(function (objeto) {
-        return { chave: objeto.Key, tamanho: objeto.Size };
-    });
-}
-
-module.exports = { lerServidor, ultimaLeitura, lerChave, listarRaiz };
+module.exports = { lerServidor, ultimaLeitura };

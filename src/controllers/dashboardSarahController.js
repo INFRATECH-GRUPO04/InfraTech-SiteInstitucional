@@ -94,36 +94,10 @@ function resumo(req, res) {
   });
 }
 
-function testeS3(req, res) {
-  s3GoldModel.lerChave('perfeito-sarah.json').then(function (documento) {
-    res.status(200).json({
-      ok: true,
-      bucket: process.env.S3_BUCKET,
-      regiao: process.env.AWS_REGION,
-      chave: 'perfeito-sarah.json',
-      documento: documento
-    });
-  }).catch(function (erro) {
-    console.log(erro);
-    res.status(500).json({ ok: false, bucket: process.env.S3_BUCKET, erro: erro.message || 'Falha ao ler o S3' });
-  });
-}
-
-function testeS3Lista(req, res) {
-  s3GoldModel.listarRaiz(10).then(function (itens) {
-    res.status(200).json({ ok: true, bucket: process.env.S3_BUCKET, itens: itens });
-  }).catch(function (erro) {
-    console.log(erro);
-    res.status(500).json({ ok: false, bucket: process.env.S3_BUCKET, erro: erro.message || 'Falha ao listar o S3' });
-  });
-}
-
 module.exports = {
     buscarNomeEmpresa,
     buscarServidoresPorEmpresa,
     servidores,
     historico,
-    resumo,
-    testeS3,
-    testeS3Lista
+    resumo
 };
