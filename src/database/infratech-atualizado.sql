@@ -319,7 +319,7 @@ INSERT INTO funcionario (
 (2, 'ENGENHEIRO_QA', 'Lucas Motta', '1992-01-20', 'lucas.qa@gamecloud.com', '123456', '90100000005', 1),
 (3, 'ENGENHEIRO_QA', 'Silvio de Jesus', '1995-01-20', 'silvio@techplay.com', '123456', '90100000006', 1),
 (4, 'ENGENHEIRO_QA', 'Pedro Silva', '1991-01-20', 'pedro@arenanordeste.com.br', '123456', '90100000007', 1),
-(2, 'GERENTE_FINANCEIRO', 'Renata Mendes', '1988-03-15', 'renata.financeiro@infratech.demo', '123456', '90100000008', 1);
+(2, 'GERENTE_FINANCEIRO', 'Renata Mendes', '1988-03-15', 'renata.financeiro@gamecloud.com', '123456', '90100000008', 1);
 
 
 -- =====================================================

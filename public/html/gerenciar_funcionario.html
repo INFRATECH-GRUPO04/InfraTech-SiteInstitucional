@@ -126,6 +126,8 @@
             if (func.tipo_acesso == "GESTOR") {
                 tipoAcesso = "cargo-admin";
                 acesso = "GESTOR";
+            } else if (func.tipo_acesso == "GERENTE_FINANCEIRO") {
+                tipoAcesso = "cargo-admin";
             } else if (func.tipo_acesso == "FUNCIONARIO") {
                 tipoAcesso = "cargo-usuario";
                 acesso = "COMUM";
@@ -206,6 +208,8 @@
                         if (func.tipo_acesso == "GESTOR") {
                             tipoAcesso = "cargo-admin";
                             acesso = "GESTOR";
+                        } else if (func.tipo_acesso == "GERENTE_FINANCEIRO") {
+                            tipoAcesso = "cargo-admin";
                         } else if (func.tipo_acesso == "FUNCIONARIO") {
                             tipoAcesso = "cargo-usuario";
                             acesso = "COMUM";

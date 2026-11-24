@@ -25,7 +25,7 @@ function validarSessao() {
 }
 
 function rotuloCargo(cargo) {
-    return ({ ANALISTA_DADOS: "ENGENHEIRO DE TELEMETRIA", ANALISTA_NOC: "ANALISTA DE NOC", GESTOR: "GESTOR", FUNCIONARIO: "FUNCIONÁRIO", ADMIN: "ADMINISTRADOR", INFRATECH: "ADMINISTRADOR INFRATECH" })[String(cargo || "").toUpperCase()] || "";
+    return ({ ANALISTA_DADOS: "ENGENHEIRO DE TELEMETRIA", ANALISTA_NOC: "ANALISTA DE NOC", GERENTE_FINANCEIRO: "GERENTE ADMINISTRATIVO-FINANCEIRO", GESTOR: "GESTOR", FUNCIONARIO: "FUNCIONÁRIO", ADMIN: "ADMINISTRADOR", INFRATECH: "ADMINISTRADOR INFRATECH" })[String(cargo || "").toUpperCase()] || "";
 }
 
 /* Consulta o backend, que valida o cookie e devolve os dados atuais do usuário.

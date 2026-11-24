@@ -43,8 +43,8 @@ var planejamento = {
   cenarios: [
     { nome: 'Manter frota', detalhe: 'Sem expansão', adicionais: 0, capacidadeExtra: 0, prazo: '—' },
     { nome: 'Otimizar frota', detalhe: 'Realocar carga, sem comprar', adicionais: 0, capacidadeExtra: 500, prazo: 'Imediato' },
-    { nome: 'Crescimento esperado', detalhe: 'Adicionar 2 servidores físicos', adicionais: 2, capacidadeExtra: 0, prazo: '2 meses', destaque: true },
-    { nome: 'Expansão agressiva', detalhe: 'Adicionar 5 servidores físicos', adicionais: 5, capacidadeExtra: 0, prazo: '2 meses' }
+    { nome: 'Crescimento esperado', detalhe: 'Adicionar 2 servidores físicos', adicionais: 2, capacidadeExtra: 0, destaque: true },
+    { nome: 'Expansão agressiva', detalhe: 'Adicionar 5 servidores físicos', adicionais: 5, capacidadeExtra: 0 }
   ]
 };
 
@@ -559,13 +559,22 @@ function renderCenarios() {
       custoMensalTexto = '+ ' + formatarMoeda(custoMensal) + '/mês';
     }
 
+    var prazoTexto = cenario.prazo;
+    if (cenario.adicionais > 0) {
+      if (planejamento.provisionamento > 0) {
+        prazoTexto = textoUnidade(planejamento.provisionamento, 'mês', 'meses');
+      } else {
+        prazoTexto = 'Imediato';
+      }
+    }
+
     html += '<tr class="' + classe + '">' +
       '<td>' + nome + '<small>' + cenario.detalhe + '</small></td>' +
       '<td class="plan-tabela__valor">' + servidoresTexto + '</td>' +
       '<td class="plan-tabela__valor">' + capacidadeTexto + '</td>' +
       '<td class="plan-tabela__valor">' + custoMensalTexto + '</td>' +
       '<td class="plan-tabela__valor">' + formatarMoeda(implantacao) + '</td>' +
-      '<td>' + cenario.prazo + '</td>' +
+      '<td>' + prazoTexto + '</td>' +
       '<td>' + textoRunway(capacidade) + '</td>' +
       '</tr>';
   });
