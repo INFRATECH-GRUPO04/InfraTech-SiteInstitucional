@@ -621,37 +621,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   font-variant-numeric: tabular-nums;
 }
 
-.plan-tabela--cenarios td {
-  white-space: normal;
-  line-height: 1.45;
-}
-
-.plan-tabela--cenarios th:first-child,
-.plan-tabela--cenarios td:first-child {
-  min-width: 170px;
-  color: #e8f2f9;
-}
-
-.plan-tabela--cenarios td:first-child small {
-  display: block;
-  color: var(--plan-texto-mudo);
-  font-size: 10.5px;
-}
-
-.plan-tabela__linha--destaque {
-  background: rgb(0 207 255 / 0.08);
-  box-shadow: inset 3px 0 0 var(--plan-ciano);
-}
-
-.plan-tabela__linha--destaque:hover {
-  background: rgb(0 207 255 / 0.12);
-}
-
-.plan-tabela__cenario-nome {
-  color: var(--plan-ciano);
-  font-weight: 700;
-}
-
 .plan-projecao {
   margin-bottom: 10px;
   padding: 8px 11px;
@@ -674,12 +643,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   width: 100%;
   height: 250px;
   min-width: 0;
-}
-
-/* ---------- Cenários ---------- */
-
-.plan-cartao--cenarios {
-  margin-bottom: 16px;
 }
 
 /* ---------- Rodapé ---------- */
@@ -1191,6 +1154,24 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   background: #f1f5f9;
   color: #334155;
   font-weight: 700;
+}
+
+.plan-folha__tabela--cenarios {
+  margin-bottom: 12px;
+}
+
+.plan-folha__tabela--cenarios td small {
+  display: block;
+  color: #64748b;
+  font-size: 9.5px;
+}
+
+.plan-folha__linha--destaque {
+  background: #f0f9ff;
+}
+
+.plan-folha__linha--destaque td:first-child strong {
+  color: #0369a1;
 }
 
 .plan-folha__previsoes {

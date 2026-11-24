@@ -258,34 +258,6 @@
       </article>
     </section>
 
-    <!-- Cenários -->
-    <section class="plan-cartao plan-cartao--cenarios">
-      <div class="plan-cartao__cabecalho">
-        <div>
-          <h3 class="plan-cartao__titulo">Simulação de cenários de investimento</h3>
-          <p class="plan-cartao__subtitulo">Decisões para o próximo trimestre e ano · capacidade em jogadores simultâneos.</p>
-        </div>
-      </div>
-
-      <div class="plan-tabela-container">
-        <table class="plan-tabela plan-tabela--cenarios">
-          <thead>
-            <tr>
-              <th>Cenário</th>
-              <th>Servidores físicos</th>
-              <th>Capacidade total (jogadores)</th>
-              <th>Custo mensal adicional</th>
-              <th>Implantação (única)</th>
-              <th>Prazo de entrega</th>
-              <th>Runway / saturação</th>
-            </tr>
-          </thead>
-          <tbody id="corpo-cenarios"></tbody>
-        </table>
-      </div>
-      <p class="plan-cartao__nota">Custos de expansão e capacidade dos servidores novos conforme premissas cadastradas pelo gestor.</p>
-    </section>
-
     <!-- Rodapé de transparência -->
     <footer class="plan-rodape">
       <p class="plan-rodape__fontes">
@@ -296,6 +268,7 @@
       <div class="plan-rodape__premissas">
         <span><strong>Premissas:</strong> <span id="resumo-premissas">crescimento 375 jogadores/mês · 2.000 jogadores por servidor · provisionamento 2 meses · meta de uso 75% · novo servidor R$ 3.200/mês + R$ 2.000 de implantação.</span></span>
         <button type="button" class="plan-atalho" id="btn-editar-premissas">Editar premissas</button>
+        <button type="button" class="plan-atalho" id="btn-relatorio-rodape">Simular cenários no Relatório IA</button>
       </div>
     </footer>
   </main>
@@ -331,7 +304,7 @@
                 <input type="number" id="premissa-capacidade-nova" min="1" step="1" value="1250">
                 <span>jogadores</span>
               </div>
-              <small>Usada na simulação dos cenários de expansão.</small>
+              <small>Usada na simulação de cenários do Relatório Executivo IA.</small>
             </div>
           </fieldset>
 
@@ -391,7 +364,7 @@
                 <input type="number" id="premissa-custo-servidor" min="0" step="100" value="3200">
                 <span>R$/mês</span>
               </div>
-              <small>Usado no custo mensal adicional dos cenários.</small>
+              <small>Usado na simulação de cenários do Relatório Executivo IA.</small>
             </div>
             <div class="plan-campo">
               <label for="premissa-custo-implantacao">Custo de implantação por servidor novo</label>
@@ -399,7 +372,7 @@
                 <input type="number" id="premissa-custo-implantacao" min="0" step="100" value="2000">
                 <span>R$ · único</span>
               </div>
-              <small>Usado na implantação dos cenários.</small>
+              <small>Usado na simulação de cenários do Relatório Executivo IA.</small>
             </div>
           </fieldset>
 
@@ -482,7 +455,21 @@
           </section>
 
           <section class="plan-folha__secao">
-            <h2>4. Recomendação Estratégica e Plano de Ação</h2>
+            <h2>4. Simulação de Cenários, Recomendação e Plano de Ação</h2>
+            <table class="plan-folha__tabela plan-folha__tabela--cenarios">
+              <thead>
+                <tr>
+                  <th>Cenário</th>
+                  <th>Servidores</th>
+                  <th>Capacidade</th>
+                  <th>Custo Adicional</th>
+                  <th>Implantação</th>
+                  <th>Prazo</th>
+                  <th>Runway</th>
+                </tr>
+              </thead>
+              <tbody id="rel-tabela-cenarios"></tbody>
+            </table>
             <div class="plan-folha__recomendacao">
               <strong id="rel-cenario-recomendado">—</strong>
               <p id="rel-cenario-justificativa"></p>
