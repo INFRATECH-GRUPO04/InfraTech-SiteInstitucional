@@ -166,31 +166,30 @@
         <p class="plan-cartao__nota" id="runway-detalhe">Prazo útil para decidir: 3 meses e 1 semana (provisionamento: 2 meses).</p>
       </article>
 
-      <article class="plan-cartao">
+      <article class="plan-cartao plan-cartao--expansao">
         <div class="plan-cartao__cabecalho">
           <h3 class="plan-cartao__titulo">Maior necessidade de expansão</h3>
-        </div>
-        <p class="plan-destaque" id="expansao-servidor">SRV-SP-01</p>
-        <div class="plan-linha">
-          <span class="plan-texto-suave" id="expansao-local">São Paulo - Paulista</span>
           <span class="plan-situacao plan-situacao--saturado" id="expansao-status">Gargalo local</span>
         </div>
-        <p class="plan-cartao__nota">Servidor com maior pressão de uso no período analisado.</p>
-      </article>
-
-      <article class="plan-cartao">
-        <div class="plan-cartao__cabecalho">
-          <h3 class="plan-cartao__titulo">Projeção de jogadores bloqueados</h3>
-          <span class="plan-selo-simulado" title="Baseado em jogadores e crescimento simulados">Simulado</span>
+        <div class="plan-expansao-identidade">
+          <p class="plan-destaque" id="expansao-servidor">SRV-SP-01</p>
+          <span class="plan-texto-suave" id="expansao-local">São Paulo - Paulista</span>
         </div>
-        <div class="plan-bloqueados">
-          <div><span class="plan-bloqueados__rotulo">1 mês</span><strong id="bloqueados-1">0</strong></div>
-          <div><span class="plan-bloqueados__rotulo">3 meses</span><strong id="bloqueados-3">0</strong></div>
-          <div><span class="plan-bloqueados__rotulo">6 meses</span><strong id="bloqueados-6">250</strong></div>
+        <div class="plan-expansao-metricas">
+          <div class="plan-expansao-metrica">
+            <span class="plan-expansao-metrica__rotulo">Uso médio</span>
+            <strong class="plan-expansao-metrica__valor" id="expansao-uso">78%</strong>
+          </div>
+          <div class="plan-expansao-metrica">
+            <span class="plan-expansao-metrica__rotulo">Pico no período</span>
+            <strong class="plan-expansao-metrica__valor" id="expansao-pico">96%</strong>
+          </div>
+          <div class="plan-expansao-metrica">
+            <span class="plan-expansao-metrica__rotulo">Custo mensal</span>
+            <strong class="plan-expansao-metrica__valor" id="expansao-custo">R$ 3.200</strong>
+          </div>
         </div>
-        <p class="plan-alerta" id="bloqueados-risco">
-          Risco local: SRV-SP-01 a 96% de CPU pode gerar fila antes do teto global.
-        </p>
+        <p class="plan-cartao__nota" id="expansao-nota">Servidor com maior pressão de uso no período analisado.</p>
       </article>
     </section>
 
@@ -342,7 +341,7 @@
                 <input type="number" id="premissa-crescimento" min="0" step="1" value="375">
                 <span>jogadores/mês</span>
               </div>
-              <small>Usado na projeção de demanda e de jogadores bloqueados.</small>
+              <small>Usado na projeção de demanda e no cálculo do runway.</small>
             </div>
             <div class="plan-campo">
               <label for="premissa-provisionamento">Prazo de provisionamento</label>

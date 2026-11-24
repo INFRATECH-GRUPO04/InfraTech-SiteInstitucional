@@ -283,8 +283,14 @@ function renderCards() {
     if ((Number(servidor.uso) || 0) > (Number(maior.uso) || 0)) maior = servidor;
   });
 
+  var usoEl = document.getElementById('expansao-uso');
+  var picoEl = document.getElementById('expansao-pico');
+  var custoEl = document.getElementById('expansao-custo');
+  var notaEl = document.getElementById('expansao-nota');
+
   if (maior) {
     var usoMaior = Number(maior.uso) || 0;
+    var picoMaior = Number(maior.pico) || usoMaior;
     document.getElementById('expansao-servidor').textContent = maior.nome;
     document.getElementById('expansao-local').textContent = maior.local;
 
@@ -297,23 +303,46 @@ function renderCards() {
     }
     status.className = 'plan-situacao plan-situacao--' + situacao.classe;
 
-    document.getElementById('bloqueados-risco').textContent =
-      'Risco local: ' + maior.nome + ' a ' + (maior.pico || usoMaior) +
-      '% de uso pode gerar fila antes do teto global.';
+    if (usoEl) {
+      usoEl.textContent = usoMaior + '%';
+      usoEl.classList.toggle('plan-expansao-metrica__valor--alerta', usoMaior >= planejamento.metaUso);
+    }
+    if (picoEl) {
+      picoEl.textContent = picoMaior + '%';
+      picoEl.classList.toggle('plan-expansao-metrica__valor--alerta', picoMaior >= planejamento.metaUso);
+    }
+    if (custoEl) {
+      custoEl.textContent = formatarMoeda(maior.custo);
+    }
+    if (notaEl) {
+      if (usoMaior >= planejamento.metaUso) {
+        notaEl.textContent = 'Acima da meta de uso (' + planejamento.metaUso + '%) — prioridade de balanceamento ou expansão.';
+      } else {
+        notaEl.textContent = 'Servidor com maior pressão de uso no período analisado (meta: ' + planejamento.metaUso + '%).';
+      }
+    }
   } else {
     document.getElementById('expansao-servidor').textContent = '—';
     document.getElementById('expansao-local').textContent = 'Sem servidores ativos';
     var statusVazio = document.getElementById('expansao-status');
     statusVazio.textContent = 'Sem dados';
     statusVazio.className = 'plan-situacao';
-    document.getElementById('bloqueados-risco').textContent = 'Nenhum servidor ativo cadastrado.';
-  }
 
-  [1, 3, 6].forEach(function (mes) {
-    var previstos = planejamento.jogadores + planejamento.crescimento * mes;
-    var bloqueados = Math.max(0, previstos - capacidadeTotal);
-    document.getElementById('bloqueados-' + mes).textContent = formatarNumero(bloqueados);
-  });
+    if (usoEl) {
+      usoEl.textContent = '—';
+      usoEl.classList.remove('plan-expansao-metrica__valor--alerta');
+    }
+    if (picoEl) {
+      picoEl.textContent = '—';
+      picoEl.classList.remove('plan-expansao-metrica__valor--alerta');
+    }
+    if (custoEl) {
+      custoEl.textContent = '—';
+    }
+    if (notaEl) {
+      notaEl.textContent = 'Nenhum servidor ativo cadastrado.';
+    }
+  }
 
   document.getElementById('fisicos-online').textContent = planejamento.servidores.length;
 }
@@ -964,12 +993,17 @@ function montarRelatorioLocalFallback() {
 
   var projecoes = [1, 3, 6].map(function (meses) {
     var previstos = planejamento.jogadores + planejamento.crescimento * meses;
-    var bloqueados = Math.max(0, previstos - capacidadeTotal);
+    var ocupacaoPrevista = 0;
+    if (capacidadeTotal > 0) {
+      ocupacaoPrevista = (previstos / capacidadeTotal) * 100;
+    }
+    var excedenteCapacidade = Math.max(0, previstos - capacidadeTotal);
     var unidadeMes = ' meses';
     if (meses === 1) unidadeMes = ' mês';
     var impacto = 'Capacidade global suficiente, monitorando picos em ' + nomeGargalo + '.';
-    if (bloqueados > 0) {
-      impacto = 'Risco de bloquear ' + formatarNumero(bloqueados) + ' jogadores (' + formatarMoeda(bloqueados * planejamento.ticketMedio) + '/mês).';
+    if (excedenteCapacidade > 0) {
+      impacto = 'Demanda prevista supera a capacidade atual em ' + formatarNumero(excedenteCapacidade) +
+        ' jogadores (' + ocupacaoPrevista.toFixed(1) + '% de ocupação), exigindo expansão prévia.';
     }
     return {
       horizonte: meses + unidadeMes,
@@ -1012,7 +1046,7 @@ function montarRelatorioLocalFallback() {
       ],
       cenarioRecomendado: 'Crescimento esperado (+2 servidores físicos)',
       justificativaRecomendacao: 'Considerando o provisionamento de ' + textoUnidade(planejamento.provisionamento, 'mês', 'meses') +
-        ', a antecipação evita bloqueios nos próximos meses.',
+        ', a antecipação evita saturação da capacidade nos próximos meses.',
       planoAcaoImediato: [
         'Revisar distribuição de jogadores em ' + nomeGargalo + '.',
         'Validar orçamento de expansão antes do prazo crítico de decisão.'

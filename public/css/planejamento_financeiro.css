@@ -293,9 +293,19 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-grade-resumo {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 16px;
+}
+
+.plan-grade-resumo .plan-cartao {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-grade-resumo .plan-cartao__nota {
+  margin-top: auto;
+  padding-top: 12px;
 }
 
 .plan-cartao {
@@ -392,41 +402,51 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   background: rgb(245 158 11 / 0.16);
 }
 
-.plan-bloqueados {
+.plan-expansao-identidade {
   display: flex;
-  gap: 18px;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
   margin-bottom: 12px;
 }
 
-.plan-bloqueados > div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.plan-expansao-identidade .plan-destaque {
+  margin-bottom: 0;
 }
 
-.plan-bloqueados__rotulo {
+.plan-expansao-metricas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plan-expansao-metrica {
+  padding: 9px 11px;
+  border: 1px solid #263746;
+  border-radius: 8px;
+  background: var(--plan-cartao-alt);
+}
+
+.plan-expansao-metrica__rotulo {
+  display: block;
+  margin-bottom: 3px;
   color: var(--plan-texto-mudo);
   font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
 }
 
-.plan-bloqueados strong {
-  color: var(--plan-ambar);
-  font-size: 1.55rem;
-  line-height: 1.1;
+.plan-expansao-metrica__valor {
+  color: #eef4f8;
+  font-size: 1rem;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.plan-alerta {
-  margin: 0;
-  padding: 9px 11px;
-  border-left: 3px solid var(--plan-ambar);
-  border-radius: 6px;
-  background: rgb(245 158 11 / 0.1);
-  color: #f0d097;
-  font-size: 11px;
-  line-height: 1.5;
+.plan-expansao-metrica__valor--alerta {
+  color: var(--plan-vermelho);
 }
 
 /* ---------- Custo x uso + gráfico ---------- */
@@ -962,8 +982,9 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
     flex-direction: column;
   }
 
-  .plan-bloqueados {
-    gap: 12px;
+  .plan-expansao-metricas {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
   }
 
   .plan-grafico-container {

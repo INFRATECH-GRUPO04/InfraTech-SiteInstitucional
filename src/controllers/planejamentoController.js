@@ -338,12 +338,16 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
 
     var projecoes = [1, 3, 6].map(function (meses) {
         var previstos = dados.jogadores + dados.crescimento * meses;
-        var bloqueados = Math.max(0, previstos - capacidadeTotal);
+        var ocupacaoPrevista = 0;
+        if (capacidadeTotal > 0) {
+            ocupacaoPrevista = (previstos / capacidadeTotal) * 100;
+        }
+        var excedenteCapacidade = Math.max(0, previstos - capacidadeTotal);
         return {
             meses: meses,
             jogadoresPrevistos: previstos,
-            jogadoresBloqueados: bloqueados,
-            receitaPerdidaEstimada: Number((bloqueados * dados.ticketMedio).toFixed(2))
+            ocupacaoPrevista: Number(ocupacaoPrevista.toFixed(1)),
+            excedenteCapacidade: excedenteCapacidade
         };
     });
 
@@ -393,8 +397,8 @@ function gerarAnaliseFallback(dados, metricas) {
     var projecao6m = metricas.projecoes[2];
     var cenarioRecomendado = 'Crescimento esperado (+2 servidores físicos)';
     var justificativa = 'Com crescimento de ' + dados.crescimento + ' jogadores/mês e provisionamento físico de ' +
-        dados.provisionamento + ' meses, aguardar até o teto global expõe a operação a bloqueio de ' +
-        projecao6m.jogadoresBloqueados + ' jogadores no 6º mês.';
+        dados.provisionamento + ' meses, aguardar até o teto global leva a ocupação prevista a ' +
+        projecao6m.ocupacaoPrevista + '% no 6º mês.';
 
     if (metricas.servidoresSubutilizados.length > 0 && dados.crescimento === 0) {
         cenarioRecomendado = 'Otimizar frota (realocar carga sem compra imediata)';
@@ -434,9 +438,10 @@ function gerarAnaliseFallback(dados, metricas) {
         previsoesFuturas: metricas.projecoes.map(function (p) {
             var textoPrev = 'Demanda estimada em ' + p.jogadoresPrevistos.toLocaleString('pt-BR') + ' jogadores simultâneos.';
             var textoImp = 'Capacidade global suficiente, monitorando picos locais em ' + nomeGargalo + '.';
-            if (p.jogadoresBloqueados > 0) {
-                textoImp = 'Risco de bloquear ' + p.jogadoresBloqueados.toLocaleString('pt-BR') +
-                    ' jogadores, com perda potencial de ' + formatarReais(p.receitaPerdidaEstimada) + '/mês.';
+            if (p.excedenteCapacidade > 0) {
+                textoImp = 'Demanda prevista supera a capacidade atual em ' +
+                    p.excedenteCapacidade.toLocaleString('pt-BR') +
+                    ' jogadores (' + p.ocupacaoPrevista + '% de ocupação), exigindo expansão prévia.';
             }
             return {
                 horizonte: p.meses + (p.meses === 1 && ' mês' || ' meses'),
@@ -492,7 +497,7 @@ function chamarModeloGemini(chave, modelo, dados, metricas) {
         'Você é um consultor executivo sênior de FinOps e infraestrutura física de servidores de jogos online (InfraTech).',
         'Escreva em português do Brasil, de forma realista, direta, transparente e acionável para o gestor.',
         'Baseie-se exclusivamente nos números reais fornecidos no JSON de entrada. Não invente servidores nem métricas.',
-        'Aponte riscos reais de gargalos locais, desperdício com ociosidade, impacto financeiro de jogadores bloqueados e justifique o cenário de expansão ideal considerando o prazo de provisionamento.'
+        'Aponte riscos reais de gargalos locais, desperdício com ociosidade, pressão sobre a capacidade global e justifique o cenário de expansão ideal considerando o prazo de provisionamento.'
     ].join(' ');
 
     var payload = JSON.stringify({
