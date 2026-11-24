@@ -74,22 +74,34 @@ function buscarGestor(idEmpresa) {
     return database.executar(instrucaoSql, [Number(idEmpresa)]);
 }
 
-/* Atualiza as premissas de planejamento financeiro da empresa. */
+/* Salva ou atualiza as premissas de planejamento financeiro da empresa. */
 function atualizarPremissas(idEmpresa, dados, idGestor) {
     var instrucaoSql = `
-        UPDATE planejamento_financeiro
-        SET
-            fk_gestor = ?,
-            capacidade_por_servidor = ?,
-            capacidade_novo_servidor = ?,
-            crescimento_mensal = ?,
-            meses_provisionamento = ?,
-            orcamento_mensal = ?,
-            meta_uso = ?,
-            limite_subutilizado = ?,
-            custo_novo_servidor = ?,
-            custo_implantacao = ?
-        WHERE fk_empresa = ?;
+        INSERT INTO planejamento_financeiro (
+            fk_empresa,
+            fk_gestor,
+            plano,
+            capacidade_por_servidor,
+            capacidade_novo_servidor,
+            crescimento_mensal,
+            meses_provisionamento,
+            orcamento_mensal,
+            meta_uso,
+            limite_subutilizado,
+            custo_novo_servidor,
+            custo_implantacao
+        ) VALUES (?, ?, 'Padrão', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            fk_gestor = VALUES(fk_gestor),
+            capacidade_por_servidor = VALUES(capacidade_por_servidor),
+            capacidade_novo_servidor = VALUES(capacidade_novo_servidor),
+            crescimento_mensal = VALUES(crescimento_mensal),
+            meses_provisionamento = VALUES(meses_provisionamento),
+            orcamento_mensal = VALUES(orcamento_mensal),
+            meta_uso = VALUES(meta_uso),
+            limite_subutilizado = VALUES(limite_subutilizado),
+            custo_novo_servidor = VALUES(custo_novo_servidor),
+            custo_implantacao = VALUES(custo_implantacao);
     `;
     var gestorResponsavel = null;
     if (Number.isInteger(Number(idGestor)) && Number(idGestor) > 0) {
@@ -97,6 +109,7 @@ function atualizarPremissas(idEmpresa, dados, idGestor) {
     }
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql, [
+        Number(idEmpresa),
         gestorResponsavel,
         Number(dados.capacidadeAtual),
         Number(dados.capacidadeNova),
@@ -106,8 +119,7 @@ function atualizarPremissas(idEmpresa, dados, idGestor) {
         Number(dados.metaUso),
         Number(dados.limiteSubutilizado),
         Number(dados.custoNovoServidor),
-        Number(dados.custoImplantacao),
-        Number(idEmpresa)
+        Number(dados.custoImplantacao)
     ]);
 }
 
