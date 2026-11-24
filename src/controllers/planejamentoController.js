@@ -14,6 +14,13 @@ var USOS_REFERENCIA = [
     { uso: 18, pico: 18 }
 ];
 
+var CENARIOS_BASE = [
+    { nome: 'Manter frota', detalhe: 'Sem expansão', adicionais: 0, capacidadeExtra: 0, prazoFixo: '—' },
+    { nome: 'Otimizar frota', detalhe: 'Realocar carga, sem comprar', adicionais: 0, capacidadeExtra: 500, prazoFixo: 'Imediato' },
+    { nome: 'Crescimento esperado', detalhe: 'Adicionar 2 servidores físicos', adicionais: 2, capacidadeExtra: 0 },
+    { nome: 'Expansão agressiva', detalhe: 'Adicionar 5 servidores físicos', adicionais: 5, capacidadeExtra: 0 }
+];
+
 var ESQUEMA_RELATORIO_IA = {
     type: "object",
     properties: {
@@ -352,6 +359,38 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
         };
     });
 
+    var baseServidores = servidoresDetalhados.length;
+    var cenarios = CENARIOS_BASE.map(function (c) {
+        var capacidadeAdicional = c.adicionais * dados.capacidadeNova + c.capacidadeExtra;
+        var capacidadeCenario = baseServidores * dados.capacidadeAtual + capacidadeAdicional;
+        var prazoEntrega = c.prazoFixo || 'Imediato';
+        if (c.adicionais > 0) {
+            if (dados.provisionamento > 0) {
+                var unidadePrazo = ' meses';
+                if (dados.provisionamento === 1) unidadePrazo = ' mês';
+                prazoEntrega = dados.provisionamento + unidadePrazo;
+            } else {
+                prazoEntrega = 'Imediato';
+            }
+        }
+        var runwayCenario = null;
+        if (dados.crescimento > 0) {
+            runwayCenario = Number(Math.max(0, (capacidadeCenario - dados.jogadores) / dados.crescimento).toFixed(1));
+        }
+        return {
+            nome: c.nome,
+            detalhe: c.detalhe,
+            adicionais: c.adicionais,
+            servidoresTotais: baseServidores + c.adicionais,
+            capacidadeTotal: capacidadeCenario,
+            capacidadeAdicional: capacidadeAdicional,
+            custoMensalAdicional: Number((c.adicionais * dados.custoNovoServidor).toFixed(2)),
+            custoImplantacao: Number((c.adicionais * dados.custoImplantacao).toFixed(2)),
+            prazoEntrega: prazoEntrega,
+            runwayMeses: runwayCenario
+        };
+    });
+
     return {
         receita: Number(receita.toFixed(2)),
         lucro: Number(lucro.toFixed(2)),
@@ -368,7 +407,8 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
         servidoresSaturados: servidoresSaturados,
         servidoresSubutilizados: servidoresSubutilizados,
         servidoresDetalhados: servidoresDetalhados,
-        projecoes: projecoes
+        projecoes: projecoes,
+        cenarios: cenarios
     };
 }
 
@@ -497,7 +537,7 @@ function chamarModeloGemini(chave, modelo, dados, metricas) {
         'Você é um consultor executivo sênior de FinOps e infraestrutura física de servidores de jogos online (InfraTech).',
         'Escreva em português do Brasil, de forma realista, direta, transparente e acionável para o gestor.',
         'Baseie-se exclusivamente nos números reais fornecidos no JSON de entrada. Não invente servidores nem métricas.',
-        'Aponte riscos reais de gargalos locais, desperdício com ociosidade, pressão sobre a capacidade global e justifique o cenário de expansão ideal considerando o prazo de provisionamento.'
+        'Aponte riscos reais de gargalos locais, desperdício com ociosidade, pressão sobre a capacidade global e compare os cenários de investimento de metricasCalculadas.cenarios ao justificar o cenarioRecomendado considerando o prazo de provisionamento.'
     ].join(' ');
 
     var payload = JSON.stringify({
