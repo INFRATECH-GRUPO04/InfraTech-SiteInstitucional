@@ -390,39 +390,33 @@
         var servidorEscolhido = "";
 
         // 2) Buscar capturas no S3 (via backend)
+        var ultimosDados = null;
+
         async function buscarCapturas(idServidor, inicio, fim) {
             var resposta = await fetch(
                 `/dashboardSarah/historico/${idServidor}?inicio=${inicio}&fim=${fim}`,
                 { cache: 'no-store' }
             );
-
             if (resposta.status === 401) { location.href = '/paginas/autenticacao/login/login.html'; return null; }
-            if (resposta.status === 204) return [];
+            if (resposta.status === 204) return null;
             if (!resposta.ok) throw new Error(await resposta.text());
-
-            return resposta.json();   // array de capturas ordenado por dataHora
+            return resposta.json();   // { nomeServidor, medias, dias, capturas }
         }
 
-        // 3) Usar no carregarServidor
         async function carregarServidor(idServidor) {
             servidorEscolhido = idServidor;
             try {
-                var capturas = await buscarCapturas(
-                    idServidor,
-                    filtro_data_inicio.value,
-                    filtro_data_final.value
-                );
+                var dados = await buscarCapturas(idServidor, filtro_data_inicio.value, filtro_data_final.value);
+                console.log("Dados recebidos:", dados);
 
-                console.log("Capturas recebidas:", capturas);          // array completo
-                console.log("Quantidade:", capturas ? capturas.length : 0);
-                console.log("Primeira captura:", capturas && capturas[0]);
-
-                if (!capturas || capturas.length === 0) {
+                if (!dados || dados.capturas.length === 0) {
                     mostrarPedidoDatas('Sem dados para o período');
                     return;
                 }
 
-                plotarDashboardEspecifica();
+                await carregarLimites(idServidor);
+                ultimosDados = dados;
+                plotarDashboardEspecifica(dados.capturas, dados);
             } catch (e) {
                 console.error("Erro ao buscar capturas:", e);
                 mostrarPedidoDatas('Falha ao ler os dados');
@@ -443,7 +437,11 @@
             carregarServidor(filtroServidor.value);
         });
 
-        function plotarDashboardEspecifica() {
+        filtro_componentes.addEventListener('change', function () {
+            if (ultimosDados) plotarDashboardEspecifica(ultimosDados.capturas, ultimosDados);
+        });
+
+        function plotarDashboardEspecifica(capturas, dados) {
             corpoDashboard.innerHTML = `
             <div class="kpis">
                 <div class="kpi cards">

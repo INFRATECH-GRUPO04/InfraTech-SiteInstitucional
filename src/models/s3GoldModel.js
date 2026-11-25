@@ -1,10 +1,10 @@
 var sdk = require("@aws-sdk/client-s3");
 var s3 = require("../database/s3Config");
-var RAIZ = "03-gold/";
+var RAIZ = "03-gold/metricas/";
 var ARQUIVO = "perfeito-sarah.json";
 
 function prefixo(idEmpresa, idServidor, data) {
-    return RAIZ + "metricas"+ "/empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/data=" + data + "/";
+    return RAIZ + "empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/data=" + data + "/";
 }
 
 async function listar(prefix, delimiter) {
@@ -43,13 +43,35 @@ async function lerObjeto(chave) {
     return JSON.parse(await objeto.Body.transformToString());
 }
 
+function horarios(documento) {
+    if (Array.isArray(documento.horarios)) return documento.horarios;
+    if (Array.isArray(documento.capturas)) {
+        return [{ lote: documento.lote || null, medias: documento.medias || null, capturas: documento.capturas }];
+    }
+    return [];
+}
+
 function capturas(documento, idServidor) {
-    var lista = Array.isArray(documento.capturas) ? documento.capturas : [];
-    return lista.map(function (captura) {
-        return Object.assign({}, captura, {
-            idServidor: Number(documento.id_servidor || idServidor)
+    var lista = [];
+    horarios(documento).forEach(function (h) {
+        (h.capturas || []).forEach(function (c) {
+            lista.push(Object.assign({}, c, { idServidor: Number(idServidor), lote: h.lote || null }));
         });
     });
+    return lista;
+}
+
+function mediasDe(lista) {
+    var saida = {};
+    ['cpu', 'ram', 'disco', 'rede'].forEach(function (campo) {
+        var v = lista.map(function (x) { return x[campo]; })
+            .filter(function (x) { return x !== null && x !== undefined; })
+            .map(Number);
+        saida[campo] = v.length
+            ? Math.round(v.reduce(function (a, b) { return a + b; }, 0) / v.length * 10) / 10
+            : null;
+    });
+    return saida;
 }
 
 async function lerServidor(idEmpresa, idServidor, inicio, fim) {
@@ -60,17 +82,39 @@ async function lerServidor(idEmpresa, idServidor, inicio, fim) {
             if (chave.endsWith("/" + ARQUIVO)) chaves.push(chave);
         });
     }
-    if (!chaves.length) return [];
-    var documentos = await Promise.all(chaves.sort().map(lerObjeto));
-    return documentos.reduce(function (todas, documento) {
-        return todas.concat(capturas(documento, idServidor));
+    if (!chaves.length) return null;
+    chaves.sort();
+
+    var documentos = await Promise.all(chaves.map(lerObjeto));
+
+    var listaDias = documentos.map(function (doc, i) {
+        var m = chaves[i].match(/data=(\d{4}-\d{2}-\d{2})\//);
+        return {
+            data: doc.data || (m ? m[1] : null),
+            nomeServidor: doc.nome_servidor || null,
+            geradoEm: doc.gerado_em || null,
+            medias: doc.medias || null,
+            horarios: horarios(doc)
+        };
+    });
+
+    var todas = documentos.reduce(function (acc, doc) {
+        return acc.concat(capturas(doc, idServidor));
     }, []).sort(function (a, b) {
         return String(a.dataHora).localeCompare(String(b.dataHora));
     });
+
+    return {
+        idServidor: Number(idServidor),
+        nomeServidor: listaDias.length ? listaDias[listaDias.length - 1].nomeServidor : null,
+        medias: mediasDe(todas),   // média do período inteiro
+        dias: listaDias,           // cada dia com seus horários e médias
+        capturas: todas            // lista plana, para o gráfico
+    };
 }
 
 async function ultimaLeitura(idEmpresa, idServidor) {
-    var pastas = await listar(RAIZ + "metricas/empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/", "/");
+    var pastas = await listar(RAIZ + "empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/", "/");
     var data = pastas.map(function (pasta) {
         var parte = pasta.match(/data=(\d{4}-\d{2}-\d{2})\//);
         return parte ? parte[1] : null;
@@ -84,10 +128,13 @@ async function ultimaLeitura(idEmpresa, idServidor) {
     var lista = capturas(documento, idServidor);
     var ultima = lista[lista.length - 1];
     if (!ultima) return null;
+        var hs = horarios(documento);
+    var ultimoHorario = hs[hs.length - 1] || {};
     return Object.assign({}, ultima, {
         nomeServidor: documento.nome_servidor || null,
-        medias: documento.medias || null,
-        lote: documento.lote || null
+        medias: ultimoHorario.medias || documento.medias || null,
+        mediasDia: documento.medias || null,
+        lote: ultimoHorario.lote || documento.lote || null
     });
 }
 

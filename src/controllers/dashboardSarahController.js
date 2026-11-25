@@ -65,9 +65,11 @@ function historico(req, res) {
     var encontrado = permitidos.some(function (servidor) { return Number(servidor.id_servidor) === idServidor; });
     if (!encontrado) return res.status(403).json({ erro: 'Servidor fora da sua empresa ou do seu vínculo.' });
     return s3GoldModel.lerServidor(req.usuario.empresa, idServidor, inicio, fim);
-  }).then(function (serie) {
-    if (!Array.isArray(serie)) return;
-    return serie.length ? res.status(200).json(serie) : res.status(204).send();
+  }).then(function (resultado) {
+    if (res.headersSent) return;   // já respondeu 403
+    return resultado && resultado.capturas.length
+      ? res.status(200).json(resultado)
+      : res.status(204).send();
   }).catch(function (erro) {
     console.log(erro);
     res.status(500).json({ erro: 'Falha ao ler o data lake.' });
