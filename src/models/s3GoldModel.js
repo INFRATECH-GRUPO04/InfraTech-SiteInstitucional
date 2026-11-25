@@ -70,7 +70,7 @@ async function lerServidor(idEmpresa, idServidor, inicio, fim) {
 }
 
 async function ultimaLeitura(idEmpresa, idServidor) {
-    var pastas = await listar(RAIZ + "empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/", "/");
+    var pastas = await listar(RAIZ + "metricas/empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/", "/");
     var data = pastas.map(function (pasta) {
         var parte = pasta.match(/data=(\d{4}-\d{2}-\d{2})\//);
         return parte ? parte[1] : null;
