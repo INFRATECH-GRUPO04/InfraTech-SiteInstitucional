@@ -3,16 +3,7 @@
 Registro dos pedidos feitos no OpenCode, separados por **feat** e por **modo** (Plan / Build).
 Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/2026.
 
-> **Atualização de 25/11/2026:** o contrato da Dashboard Geral foi revisado (ver
-> `docs/plano-implementacao.md`). O JSON principal não traz `servidores[]`,
-> `incidentes` nem `relatorio_ia`: o backend devolve `saude_frota` e
-> `ranking_problematicos`, e incidentes/IA vêm de rotas complementares hoje
-> vazias. O topo perdeu o botão "Produção" e a meta de SLA, passando a exibir
-> `gerado_em` como "Dados gerados em DD/MM/AAAA HH:mm". A disponibilidade usa
-> dias de calendário com séries de 7 e 30 pontos rotulados `dd/mm` e valores
-> ponderados por capturas recebidas ÷ esperadas. Esta sessão executou o plano
-> (Feat 6) e registrou seus prompts em Feat 7; as demais seções abaixo registram
-> o histórico da versão anterior.
+> **Atualização de 25/11/2026:** esta sessão planejou a integração dos **cards relacionados ao Jira** na `dash-geral` (Incidentes Ativos, tabela de incidentes, Incidentes por Dia, MTTR e Ranking Problemáticos 30d). O plano anterior da v2 revisada foi substituído por um plano autossuficiente em `docs/plano-implementacao.md`, focado na leitura read-only da API Jira Cloud pelo Node, mantendo o contrato já consumido pelo front. **Relatório com IA permanece fora do escopo desta tarefa.**
 
 ## Legenda
 
@@ -32,7 +23,9 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 | 4 | Limites globais sem tabela própria | Plan / Build | P5, B6 | RECONSTRUÍDO |
 | 5 | Script de captura (somente contexto) | Plan | P6 | RECONSTRUÍDO |
 | 6 | Dashboard Geral v2 revisada | Build | **B7, B8** | **REAL** |
-| 7 | Roteiro de prompts (esta sessão) | Build | **B9** | **REAL** |
+| 7 | Roteiro de prompts (sessão anterior) | Build | **B9** | **REAL** |
+| 8 | Cards Jira na Dashboard Geral | Plan | **B10, B11, B12, B13** | **REAL** |
+| 9 | Plano autossuficiente + roteiro (esta sessão) | Build | **B14** | **REAL** |
 
 ---
 
@@ -238,6 +231,67 @@ a v2 revisada, mantendo os prompts históricos intactos.
 **Como foi executado:** índice acrescido das feats 6 e 7, bloco do topo ajustado
 para apontar a sessão atual e novas seções inseridas antes de “Padrão observado
 nos prompts”, com os prompts `B7`, `B8` e `B9` marcados como `[REAL]`.
+
+---
+
+## Feat 8 — Cards Jira na Dashboard Geral (planejamento)
+
+**Objetivo.** Planejar a implementação dos cards relacionados ao Jira na `dash-geral`, mantendo o contrato já consumido pelo front e deixando Relatório com IA fora do escopo.
+
+**Contexto usado.** `AGENTS.md`, `docs/plano-implementacao.md` (versão anterior), `public/html/dash-geral.html`, `public/js/dash-geral.js`, `src/models/dashGeralModel.js`, `src/models/dashComplementosModel.js`, `src/controllers/dashComplementosController.js`, `src/routes/dashGeral.js`, `.env.example`.
+
+### Modo Plan
+
+#### B10 — Pedido inicial de planejamento [REAL]
+
+> agora preciso continuar preenchendo os campos da dash-geral, gostaria de começar o planejamento para os cards que tem relação com o Jira, faça perguntas para começarmos o planejamento em tudo em relação a como tudo vai ser implementado (Relatórios com IA) não entra no escopo da tarefa de agora
+
+#### B11 — Solicitação de formato das perguntas [REAL]
+
+> faça as perguntas em formato de múltiplas escolhas no terminal aqui
+
+#### B12 — Confirmação de envio das perguntas [REAL]
+
+> cade?
+
+#### B13 — Respostas e decisões de planejamento [REAL]
+
+> 1. Sim, confirmado
+> 2. Sim pode fazer dos 60d, Issues abertas a mais de 60d devem aparecer na lista de Incidentes abertos na dash-geral
+> 3. Ok
+> 4. normal
+> 5. Conta todas a issues sim, e o dia é esse mesmo (America/Sao_Paulo)
+> 6. Sim, exatamente isso
+
+**Decisões fechadas nesta rodada:**
+- Fonte: API Jira Cloud direta pelo Node (read-only), com `JIRA_*` do `.env.example`.
+- Escopo: somente `InfraTech-SiteInstitucional`; Java/logs como dependência externa já definida.
+- Cards no escopo: Incidentes Ativos (KPI+chip), tabela Incidentes (Jira), Incidentes por Dia, MTTR, Ranking Servidores Mais Problemáticos (30d). Relatório com IA fora.
+- Mapeamento: padrão existente no Jira, ex. summary `[EMP-2][SRV-3] [CRÍTICO] ...` e descrição com `Empresa: id 2` / `Servidor: ... (id 3)`.
+- Abertos: tudo que não está em Done/fechado (statusCategory != done ou nomes equivalentes).
+- Prioridade: Highest/High=>critico, Medium=>atencao, Low/Lowest=>normal; default normal.
+- MTTR: média `(resolved-created)` dos resolvidos nos últimos 30d; `anterior_minutos` na janela de 30d anterior.
+- Incidentes por dia: todas as issues criadas por dia no período, calendário BRT (`America/Sao_Paulo`), 7d/30d.
+- Ranking 30d: issues criadas nos últimos 30d por servidor, preenchendo `ranking_problematicos[]` no `GET /dash-geral`.
+- Falha/sem credencial: stub vazio + `console.warn`; dash principal não quebra.
+- Validação: Jira real/teste, sem mock local nesta entrega.
+- JQL: janela de 60d suficiente, mas issues abertas há mais de 60d devem aparecer na lista de abertos.
+
+---
+
+## Feat 9 — Plano autossuficiente + roteiro (esta sessão)
+
+**Objetivo.** Registrar o plano Jira de forma autossuficiente para outra sessão e atualizar este roteiro com os prompts reais desta conversa.
+
+### Modo Build
+
+#### B14 — Documentação do plano e do roteiro [REAL]
+
+> coloque esse plano de forma completamente autosuficiente em @docs/plano-implementacao.md para poder ser feito por outra sessão. Também preencha @docs/roteiro-prompt.md de acordo com essa sessão
+
+**Como foi executado:**
+- `docs/plano-implementacao.md` foi reescrito como plano autossuficiente para os cards Jira da `dash-geral`, com contexto, estado atual, decisões fechadas, contratos, regras de mapeamento/cálculo, JQL/paginação/cache, arquivos-alvo, ordem de implementação, checklist de validação e definition of done.
+- `docs/roteiro-prompt.md` foi atualizado com o bloco de topo desta sessão, índice estendido (Feats 8 e 9) e registro literal dos prompts `B10`–`B14`.
 
 ---
 

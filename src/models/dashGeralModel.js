@@ -2,14 +2,16 @@
  * Dashboard Geral: lê o JSON gold, cruza com os limites do MySQL e devolve o
  * contrato agregado consumido por public/js/dash-geral.js.
  *
- * O JSON principal não lista servidores nem traz Jira/IA: o front recebe apenas
- * os agregados de saúde, a série de disponibilidade e o ranking (vazio enquanto
- * não houver incidentes). As rotas complementares ficam em dashComplementosModel.
+ * O JSON principal não lista servidores nem traz IA: o front recebe apenas os
+ * agregados de saúde, a série de disponibilidade e o ranking de incidentes
+ * Jira dos últimos 30d (vazio se o Jira estiver indisponível). As rotas
+ * complementares ficam em dashComplementosModel.
  */
 var fs = require('fs/promises');
 var path = require('path');
 var database = require('../database/config');
 var servidorModel = require('./servidorModel');
+var jiraDashGeral = require('../services/jiraDashGeral');
 
 var LIMITES_PADRAO = {
     cpu: { atencao: 70, critico: 85 },
@@ -188,16 +190,39 @@ async function montar(usuario) {
     );
 
     var saude = { total: 0, normais: 0, atencao: 0, critico: 0, offline: 0, pct_saudavel: null };
+    var situacaoPorServidor = new Map();
     servidoresBanco.forEach(function (servidor) {
         var id = Number(servidor.id_servidor);
         var limites = Object.assign({}, LIMITES_PADRAO, limitesEmpresa, limitesPorServidor[id] || {});
         var situacao = classificarServidor(goldPorServidor.get(id), limites);
 
+        situacaoPorServidor.set(id, situacao);
         saude.total += 1;
         if (situacao === 'normal') saude.normais += 1;
         else saude[situacao] += 1;
     });
     saude.pct_saudavel = saude.total ? Math.round((saude.normais / saude.total) * 100) : null;
+
+    // Reaproveita nome/situação já calculados acima; incidentes e filtro de
+    // empresa/servidores vêm do serviço Jira compartilhado com /incidentes.
+    var ranking = [];
+    try {
+        var servidoresParaRanking = servidoresBanco.map(function (servidor) {
+            var id = Number(servidor.id_servidor);
+            return {
+                id_servidor: id,
+                nome: servidor.nome,
+                situacao: situacaoPorServidor.get(id) || 'normal'
+            };
+        });
+        var dadosJira = await jiraDashGeral.obterDadosJiraEmpresa({
+            idEmpresa: idEmpresa,
+            servidoresVisiveis: servidoresParaRanking
+        });
+        ranking = Array.isArray(dadosJira.ranking_problematicos) ? dadosJira.ranking_problematicos : [];
+    } catch (erro) {
+        console.warn('[dash-geral] falha ao carregar ranking do Jira; mantendo ranking vazio', erro && erro.name);
+    }
 
     return {
         versao: 2,
@@ -205,8 +230,8 @@ async function montar(usuario) {
         gerado_em: gold.gerado_em || null,
         saude_frota: saude,
         disponibilidade_frota: normalizarDisponibilidade(gold.disponibilidade_frota),
-        ranking_problematicos: []
+        ranking_problematicos: ranking
     };
 }
 
-module.exports = { montar, lerGold };
+module.exports = { montar, lerGold, buscarServidoresPermitidos };

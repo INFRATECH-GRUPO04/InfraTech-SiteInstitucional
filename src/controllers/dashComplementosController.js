@@ -1,8 +1,11 @@
 /*
  * Controller das rotas complementares da Dashboard Geral. Mantém a mesma regra
- * de empresa da sessão do controller principal; hoje responde estruturas vazias.
+ * de empresa da sessão do controller principal. Incidentes usam os servidores
+ * visíveis da sessão para filtrar o Jira; IA continua respondendo stub vazio.
  */
+
 var dashComplementosModel = require("../models/dashComplementosModel");
+var dashGeralModel = require("../models/dashGeralModel");
 
 var CARGOS_INTERNOS = ['ADMIN', 'INFRATECH'];
 
@@ -22,9 +25,23 @@ function empresaDaSessao(req, res) {
     return idEmpresa;
 }
 
-function incidentes(req, res) {
-    if (empresaDaSessao(req, res) == null) return;
-    return res.status(200).json(dashComplementosModel.incidentes());
+async function incidentes(req, res) {
+    var idEmpresa = empresaDaSessao(req, res);
+    if (idEmpresa == null) return;
+
+    try {
+        // A visibilidade é a mesma já usada pelo dashboard principal; nunca
+        // aceitamos empresa/servidores vindos da URL ou do corpo da requisição.
+        var servidores = await dashGeralModel.buscarServidoresPermitidos(req.usuario || {});
+        var dados = await dashComplementosModel.incidentes({
+            idEmpresa: idEmpresa,
+            servidoresVisiveis: servidores
+        });
+        return res.status(200).json(dados);
+    } catch (erro) {
+        console.warn('[dash-geral] falha ao carregar servidores para incidentes; retornando stub vazio', erro && erro.name);
+        return res.status(200).json(dashComplementosModel.incidentesVazios());
+    }
 }
 
 function relatorioIA(req, res) {

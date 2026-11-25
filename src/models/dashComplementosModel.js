@@ -1,18 +1,32 @@
 /*
- * Estruturas vazias das rotas complementares da Dashboard Geral (incidentes e
- * relatório de IA). São o ponto único para trocar por Jira/IA quando essas
- * integrações forem implementadas, sem alterar o contrato consumido pelo front.
+ * Rotas complementares da Dashboard Geral: incidentes passam a vir do Jira
+ * (via serviço compartilhado com /dash-geral); o relatório de IA continua stub.
+ * O contrato do front não muda, inclusive quando o Jira falha.
  */
 
-function incidentes() {
+var jiraDashGeral = require('../services/jiraDashGeral');
+
+function incidentesVazios() {
+    var vazio = jiraDashGeral.stub();
     return {
-        abertos: [],
-        por_dia: {
-            '7d': { rotulos: [], valores: [] },
-            '30d': { rotulos: [], valores: [] }
-        },
-        mttr: { minutos: null, periodo: '(últimos 30d)', anterior_minutos: null }
+        abertos: vazio.abertos,
+        por_dia: vazio.por_dia,
+        mttr: vazio.mttr
     };
+}
+
+async function incidentes(contexto) {
+    try {
+        var dados = await jiraDashGeral.obterDadosJiraEmpresa(contexto);
+        return {
+            abertos: Array.isArray(dados.abertos) ? dados.abertos : [],
+            por_dia: dados.por_dia || incidentesVazios().por_dia,
+            mttr: dados.mttr || incidentesVazios().mttr
+        };
+    } catch (erro) {
+        console.warn('[dash-geral] não foi possível carregar incidentes do Jira; retornando stub vazio', erro && erro.name);
+        return incidentesVazios();
+    }
 }
 
 function relatorioIA() {
@@ -23,4 +37,4 @@ function relatorioIA() {
     };
 }
 
-module.exports = { incidentes, relatorioIA };
+module.exports = { incidentes, incidentesVazios, relatorioIA };
