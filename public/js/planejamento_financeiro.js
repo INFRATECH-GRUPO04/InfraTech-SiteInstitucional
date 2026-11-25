@@ -21,6 +21,8 @@ var planejamento = {
   capacidadeNova: 1250,
   custoNovoServidor: 3200,
   custoImplantacao: 2000,
+  origemTelemetria: 'simulado',
+  telemetriaGeradaEm: null,
 
   servidores: [
     { nome: 'SRV-SP-01', local: 'São Paulo - Paulista', custo: 3200, uso: 78, pico: 96 },
@@ -72,9 +74,12 @@ function definirTexto(id, texto) {
 }
 
 function servidorComMaiorUso(lista) {
-  var maior = (lista && lista[0]) || null;
+  var maior = null;
   (lista || []).forEach(function (servidor) {
-    if ((Number(servidor.uso) || 0) > (Number(maior.uso) || 0)) maior = servidor;
+    if (servidor.semTelemetria || servidor.uso == null) return;
+    if (!maior || Number(servidor.uso) > Number(maior.uso)) {
+      maior = servidor;
+    }
   });
   return maior;
 }
@@ -165,7 +170,8 @@ function mesAno(mesesAdiante) {
 /* ---------- Cálculos ---------- */
 
 function custoOcioso(servidor) {
-  var uso = Number(servidor.uso) || 0;
+  if (!servidor || servidor.semTelemetria || servidor.uso == null) return 0;
+  var uso = Number(servidor.uso);
   if (uso >= planejamento.metaUso) return 0;
   return (Number(servidor.custo) || 0) * (planejamento.metaUso - uso) / 100;
 }
@@ -174,16 +180,20 @@ function totaisServidores() {
   var custoTotal = 0;
   var ociosoTotal = 0;
   var somaUso = 0;
+  var qtdComTelemetria = 0;
 
   planejamento.servidores.forEach(function (servidor) {
     custoTotal += Number(servidor.custo) || 0;
     ociosoTotal += custoOcioso(servidor);
-    somaUso += Number(servidor.uso) || 0;
+    if (!servidor.semTelemetria && servidor.uso != null) {
+      somaUso += Number(servidor.uso);
+      qtdComTelemetria += 1;
+    }
   });
 
-  var usoMedio = 0;
-  if (planejamento.servidores.length > 0) {
-    usoMedio = somaUso / planejamento.servidores.length;
+  var usoMedio = null;
+  if (qtdComTelemetria > 0) {
+    usoMedio = somaUso / qtdComTelemetria;
   }
 
   var percentualOcioso = 0;
@@ -226,6 +236,15 @@ function dadosBilling() {
 }
 
 function situacaoServidor(uso) {
+  if (uso == null) {
+    return {
+      classe: 'sem-dados',
+      texto: 'Sem dados',
+      prioridade: 4,
+      nivel: '4 · Sem dados',
+      classePrioridade: 'sem-dados'
+    };
+  }
   if (uso >= planejamento.metaUso) {
     return {
       classe: 'saturado',
@@ -377,12 +396,23 @@ function renderCards() {
     definirTexto('expansao-nota', 'Nenhum servidor ativo cadastrado.');
   }
 
-  definirTexto('fisicos-online', planejamento.servidores.length);
+  if (planejamento.origemTelemetria === 's3_gold') {
+    var onlineCount = planejamento.servidores.filter(function (s) {
+      return s.conexao === 'online';
+    }).length;
+    definirTexto('fisicos-online', onlineCount + '/' + planejamento.servidores.length);
+  } else {
+    definirTexto('fisicos-online', planejamento.servidores.length);
+  }
 }
 
 function prepararServidoresPriorizados() {
   var lista = planejamento.servidores.map(function (servidor) {
-    var uso = Number(servidor.uso) || 0;
+    var semTelemetria = Boolean(servidor.semTelemetria) || servidor.uso == null;
+    var uso = null;
+    if (!semTelemetria) {
+      uso = Number(servidor.uso);
+    }
     var ocioso = custoOcioso(servidor);
     var situacao = situacaoServidor(uso);
     return {
@@ -390,6 +420,7 @@ function prepararServidoresPriorizados() {
       local: servidor.local || '-',
       custo: Number(servidor.custo) || 0,
       uso: uso,
+      semTelemetria: semTelemetria,
       ocioso: ocioso,
       situacao: situacao
     };
@@ -402,8 +433,12 @@ function prepararServidoresPriorizados() {
     if (a.situacao.prioridade === 2 && b.ocioso !== a.ocioso) {
       return b.ocioso - a.ocioso;
     }
-    if (b.uso !== a.uso) {
-      return b.uso - a.uso;
+    var usoA = -1;
+    if (a.uso != null) usoA = a.uso;
+    var usoB = -1;
+    if (b.uso != null) usoB = b.uso;
+    if (usoB !== usoA) {
+      return usoB - usoA;
     }
     return String(a.nome).localeCompare(String(b.nome));
   });
@@ -495,12 +530,19 @@ function renderServidores() {
         classeOcioso = 'plan-tabela__destaque';
       }
 
+      var usoCelula = 'Sem dados';
+      var ociosoCelula = '—';
+      if (!item.semTelemetria && item.uso != null) {
+        usoCelula = item.uso + '%';
+        ociosoCelula = formatarMoeda(item.ocioso);
+      }
+
       html += '<tr>' +
         '<td><span class="plan-prioridade plan-prioridade--' + item.situacao.classePrioridade + '">' + item.situacao.nivel + '</span></td>' +
         '<td><strong>' + escaparTexto(item.nome) + '</strong><span class="plan-servidor-local">' + escaparTexto(item.local) + '</span></td>' +
         '<td class="plan-tabela__valor">' + formatarMoeda(item.custo) + '</td>' +
-        '<td class="plan-tabela__valor">' + item.uso + '%</td>' +
-        '<td class="' + classeOcioso + '">' + formatarMoeda(item.ocioso) + '</td>' +
+        '<td class="plan-tabela__valor">' + usoCelula + '</td>' +
+        '<td class="' + classeOcioso + '">' + ociosoCelula + '</td>' +
         '<td><span class="plan-situacao plan-situacao--' + item.situacao.classe + '">' + item.situacao.texto + '</span></td>' +
         '</tr>';
     });
@@ -511,11 +553,16 @@ function renderServidores() {
     rotuloTotal = 'Total da frota (' + visiveis.length + ' de ' + priorizados.length + ' exibidos)';
   }
 
+  var usoMedioTexto = 'Sem dados';
+  if (totais.usoMedio != null) {
+    usoMedioTexto = formatarPercentual(totais.usoMedio);
+  }
+
   html += '<tr class="plan-tabela__total">' +
     '<td>—</td>' +
     '<td>' + rotuloTotal + '</td>' +
     '<td>' + formatarMoeda(totais.custoTotal) + '</td>' +
-    '<td>' + formatarPercentual(totais.usoMedio) + '</td>' +
+    '<td>' + usoMedioTexto + '</td>' +
     '<td>' + formatarMoeda(totais.ociosoTotal) + ' (' + formatarPercentual(totais.percentualOcioso) + ')</td>' +
     '<td>—</td>' +
     '</tr>';
@@ -721,23 +768,49 @@ function aplicarDadosServidor(dados) {
   planejamento.capacidadeNova = Number(dados.capacidadeNova) || 0;
   planejamento.custoNovoServidor = Number(dados.custoNovoServidor) || 0;
   planejamento.custoImplantacao = Number(dados.custoImplantacao) || 0;
+  planejamento.origemTelemetria = dados.origemTelemetria || 'simulado';
+  planejamento.telemetriaGeradaEm = dados.telemetriaGeradaEm || null;
+
+  var usandoGold = planejamento.origemTelemetria === 's3_gold';
 
   planejamento.servidores = servidoresRecebidos.map(function (servidor, indice) {
-    var referencia = USOS_ILUSTRATIVOS[indice] || { uso: 0, pico: 0 };
-    var uso = referencia.uso;
-    if (servidor.uso != null) {
-      uso = Number(servidor.uso);
+    var semTelemetria = Boolean(servidor.semTelemetria);
+    var uso = null;
+    var pico = null;
+
+    if (usandoGold) {
+      if (!semTelemetria && servidor.uso != null) {
+        uso = Number(servidor.uso);
+        pico = uso;
+        if (servidor.pico != null) {
+          pico = Number(servidor.pico);
+        }
+      } else {
+        semTelemetria = true;
+      }
+    } else {
+      var referencia = USOS_ILUSTRATIVOS[indice] || { uso: 0, pico: 0 };
+      uso = referencia.uso;
+      if (servidor.uso != null) {
+        uso = Number(servidor.uso);
+      }
+      pico = referencia.pico;
+      if (servidor.pico != null) {
+        pico = Number(servidor.pico);
+      }
     }
-    var pico = referencia.pico;
-    if (servidor.pico != null) {
-      pico = Number(servidor.pico);
-    }
+
     return {
+      idServidor: servidor.idServidor || null,
       nome: servidor.nome,
       local: servidor.local || '-',
       custo: Number(servidor.custo) || 0,
       uso: uso,
-      pico: pico
+      pico: pico,
+      ramMedia: servidor.ramMedia,
+      discoMedio: servidor.discoMedio,
+      conexao: servidor.conexao || 'simulado',
+      semTelemetria: semTelemetria
     };
   });
 
@@ -750,9 +823,37 @@ function aplicarDadosServidor(dados) {
 
 function atualizarAvisoOrigem(conectadoAoBanco) {
   var aviso = document.getElementById('aviso-ilustrativo');
+  var seloUso = el('selo-uso-servidores');
+  var subtituloServidores = el('subtitulo-servidores');
+  var usandoGold = conectadoAoBanco && planejamento.origemTelemetria === 's3_gold';
+
+  if (seloUso) {
+    seloUso.classList.toggle('plan-selo-simulado--gold', usandoGold);
+    if (usandoGold) {
+      seloUso.textContent = 'Telemetria S3 · 30d';
+      seloUso.title = 'Uso médio e pico calculados a partir da camada Gold (03-gold/)';
+    } else {
+      seloUso.textContent = 'Uso simulado';
+      seloUso.title = 'Métricas de uso e pico são simuladas até a integração com 03-gold';
+    }
+  }
+
+  if (subtituloServidores) {
+    if (usandoGold) {
+      subtituloServidores.textContent = 'Custo mensal (banco) · uso médio real de CPU (S3 Gold · 30 dias) · ordenado por prioridade.';
+    } else {
+      subtituloServidores.textContent = 'Custo mensal (cadastro do gestor) · uso médio simulado (30 dias) · ordenado por prioridade.';
+    }
+  }
+
   if (!aviso) return;
   aviso.hidden = false;
-  if (conectadoAoBanco) {
+  if (usandoGold) {
+    aviso.classList.add('plan-aviso--banco');
+    aviso.innerHTML = '<strong>Origem dos dados:</strong> custos, histórico e premissas vêm do ' +
+      '<strong>banco de dados</strong>; uso médio e pico (30 dias) vêm da <strong>telemetria S3 (camada Gold)</strong>; ' +
+      'quantidade de jogadores e receita estimada utilizam <strong>dados simulados</strong>.';
+  } else if (conectadoAoBanco) {
     aviso.classList.add('plan-aviso--banco');
     aviso.innerHTML = '<strong>Origem dos dados:</strong> custos dos servidores, histórico e premissas vêm do ' +
       '<strong>banco de dados</strong>; quantidade de jogadores, uso médio/pico dos servidores e projeções ' +
@@ -949,14 +1050,24 @@ function montarRelatorioLocalFallback() {
   var capacidadeTotal = planejamento.servidores.length * planejamento.capacidadeAtual;
   var runway = runwayMeses(capacidadeTotal);
   var servidoresDetalhados = planejamento.servidores.map(function (srv) {
-    var uso = Number(srv.uso) || 0;
-    var pico = Number(srv.pico) || uso;
+    var semTelemetria = Boolean(srv.semTelemetria) || srv.uso == null;
+    var uso = null;
+    var pico = null;
+    if (!semTelemetria) {
+      uso = Number(srv.uso);
+      pico = uso;
+      if (srv.pico != null) {
+        pico = Number(srv.pico);
+      }
+    }
     return {
+      idServidor: srv.idServidor || null,
       nome: srv.nome,
       local: srv.local || '-',
       custo: Number(srv.custo) || 0,
       uso: uso,
       pico: pico,
+      semTelemetria: semTelemetria,
       custoOcioso: custoOcioso(srv),
       situacao: situacaoServidor(uso).texto
     };
@@ -1073,13 +1184,26 @@ function renderizarRelatorio(pacote) {
   }).join('');
 
   el('rel-tabela-servidores').innerHTML = (metricas.servidoresDetalhados || []).map(function (srv) {
+    var usoRel = 'Sem dados';
+    var picoRel = 'Sem dados';
+    var ociosoRel = '—';
+    if (!srv.semTelemetria && srv.uso != null) {
+      usoRel = escaparTexto(srv.uso) + '%';
+      if (srv.pico != null) {
+        picoRel = escaparTexto(srv.pico) + '%';
+      } else {
+        picoRel = usoRel;
+      }
+      ociosoRel = escaparTexto(formatarMoeda(srv.custoOcioso));
+    }
+
     return '<tr>' +
       '<td><strong>' + escaparTexto(srv.nome) + '</strong></td>' +
       '<td>' + escaparTexto(srv.local) + '</td>' +
       '<td>' + escaparTexto(formatarMoeda(srv.custo)) + '</td>' +
-      '<td>' + escaparTexto(srv.uso) + '%</td>' +
-      '<td>' + escaparTexto(srv.pico) + '%</td>' +
-      '<td>' + escaparTexto(formatarMoeda(srv.custoOcioso)) + '</td>' +
+      '<td>' + usoRel + '</td>' +
+      '<td>' + picoRel + '</td>' +
+      '<td>' + ociosoRel + '</td>' +
       '<td>' + escaparTexto(srv.situacao) + '</td>' +
       '</tr>';
   }).join('');

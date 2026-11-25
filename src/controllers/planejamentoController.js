@@ -85,8 +85,8 @@ function formatarMes(data) {
     return nomes[d.getUTCMonth()] + '/' + ano;
 }
 
-/* Monta o objeto de resposta usado pelo frontend, a partir dos dados do banco. */
-function montarResposta(plano, servidores, historico, gestor) {
+/* Monta o objeto de resposta usado pelo frontend, a partir dos dados do banco e do Gold S3. */
+function montarResposta(plano, servidores, historico, gestor, telemetriaGold) {
     var primeiro = (plano && plano[0]) || {};
     var listaServidores = servidores || [];
     var nomeGestor = 'Gestor';
@@ -115,6 +115,23 @@ function montarResposta(plano, servidores, historico, gestor) {
         });
     }
 
+    var temGold = Boolean(telemetriaGold && Array.isArray(telemetriaGold.servidores));
+    var mapaGold = {};
+    if (temGold) {
+        telemetriaGold.servidores.forEach(function (item) {
+            if (item && item.id_servidor != null) {
+                mapaGold[Number(item.id_servidor)] = item;
+            }
+        });
+    }
+
+    var origemTelemetria = 'simulado';
+    var telemetriaGeradaEm = null;
+    if (temGold) {
+        origemTelemetria = 's3_gold';
+        telemetriaGeradaEm = telemetriaGold.gerado_em || null;
+    }
+
     return {
         gestor: nomeGestor,
         data: formatarData(primeiro.dt_atualizacao) || formatarData(new Date()),
@@ -132,11 +149,56 @@ function montarResposta(plano, servidores, historico, gestor) {
         capacidadeNova: primeiro.capacidade_novo_servidor || 1250,
         custoNovoServidor: Number(primeiro.custo_novo_servidor) || 0,
         custoImplantacao: Number(primeiro.custo_implantacao) || 0,
-        servidores: listaServidores.map(function (s) {
+        origemTelemetria: origemTelemetria,
+        telemetriaGeradaEm: telemetriaGeradaEm,
+        servidores: listaServidores.map(function (s, indice) {
+            var idServidor = Number(s.id_servidor);
+            var uso = null;
+            var pico = null;
+            var ramMedia = null;
+            var discoMedio = null;
+            var conexao = 'simulado';
+            var semTelemetria = false;
+
+            if (temGold) {
+                var itemGold = mapaGold[idServidor];
+                if (itemGold && itemGold.uso_medio_30d != null) {
+                    uso = Number(itemGold.uso_medio_30d);
+                    pico = uso;
+                    if (itemGold.pico_30d != null) {
+                        pico = Number(itemGold.pico_30d);
+                    }
+                    if (itemGold.ram_media_30d != null) {
+                        ramMedia = Number(itemGold.ram_media_30d);
+                    }
+                    if (itemGold.disco_medio_30d != null) {
+                        discoMedio = Number(itemGold.disco_medio_30d);
+                    }
+                    conexao = itemGold.conexao || 'online';
+                } else {
+                    semTelemetria = true;
+                    conexao = 'sem_dados';
+                    if (itemGold && itemGold.conexao) {
+                        conexao = itemGold.conexao;
+                    }
+                }
+            } else {
+                var ref = USOS_REFERENCIA[indice] || { uso: 0, pico: 0 };
+                uso = ref.uso;
+                pico = ref.pico;
+            }
+
             return {
+                idServidor: idServidor,
                 nome: s.nome,
                 local: s.localizacao || '-',
-                custo: Number(s.custo_mensal) || 0
+                custo: Number(s.custo_mensal) || 0,
+                uso: uso,
+                pico: pico,
+                ramMedia: ramMedia,
+                discoMedio: discoMedio,
+                conexao: conexao,
+                semTelemetria: semTelemetria
             };
         }),
         historico: historicoFormatado
@@ -183,15 +245,16 @@ function validarPremissas(dados) {
     return null;
 }
 
-/* Carrega em paralelo todas as informações do planejamento de uma empresa. */
+/* Carrega em paralelo todas as informações do planejamento e da telemetria Gold de uma empresa. */
 function carregarPlanejamento(idEmpresa) {
     return Promise.all([
         planejamentoModel.buscarPlanejamento(idEmpresa),
         planejamentoModel.listarServidoresAtivos(idEmpresa),
         planejamentoModel.listarHistorico(idEmpresa),
-        planejamentoModel.buscarGestor(idEmpresa)
+        planejamentoModel.buscarGestor(idEmpresa),
+        planejamentoModel.lerTelemetriaGold(idEmpresa)
     ]).then(function (resultados) {
-        return montarResposta(resultados[0], resultados[1], resultados[2], resultados[3]);
+        return montarResposta(resultados[0], resultados[1], resultados[2], resultados[3], resultados[4]);
     });
 }
 
@@ -255,37 +318,81 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
 
     var servidoresDetalhados = dados.servidores.map(function (srv, indice) {
         var correspondente = listaRecebida.find(function (item) {
-            return item && item.nome === srv.nome;
+            if (!item) return false;
+            if (srv.idServidor && item.idServidor) {
+                return Number(item.idServidor) === Number(srv.idServidor);
+            }
+            return item.nome === srv.nome;
         });
-        var ref = USOS_REFERENCIA[indice] || { uso: 0, pico: 0 };
-        var uso = ref.uso;
-        var pico = ref.pico;
 
-        if (correspondente && correspondente.uso != null) {
-            uso = Number(correspondente.uso) || 0;
-        }
-        if (correspondente && correspondente.pico != null) {
-            pico = Number(correspondente.pico) || uso;
+        var uso = null;
+        var pico = null;
+        var semTelemetria = Boolean(srv.semTelemetria);
+
+        if (dados.origemTelemetria === 's3_gold') {
+            if (!semTelemetria && srv.uso != null) {
+                uso = Number(srv.uso);
+                pico = uso;
+                if (srv.pico != null) {
+                    pico = Number(srv.pico);
+                }
+            } else {
+                semTelemetria = true;
+            }
+        } else if (srv.uso != null) {
+            uso = Number(srv.uso);
+            pico = uso;
+            if (srv.pico != null) {
+                pico = Number(srv.pico);
+            }
+        } else if (!semTelemetria) {
+            var ref = USOS_REFERENCIA[indice] || { uso: 0, pico: 0 };
+            uso = ref.uso;
+            pico = ref.pico;
+            if (correspondente && correspondente.uso != null) {
+                uso = Number(correspondente.uso) || 0;
+            }
+            if (correspondente && correspondente.pico != null) {
+                pico = Number(correspondente.pico) || uso;
+            }
         }
 
         var custoOcioso = 0;
-        if (uso < dados.metaUso) {
-            custoOcioso = srv.custo * (dados.metaUso - uso) / 100;
+        var situacao = 'Sem dados';
+
+        if (!semTelemetria && uso != null) {
+            if (uso < dados.metaUso) {
+                custoOcioso = srv.custo * (dados.metaUso - uso) / 100;
+            }
+
+            situacao = 'Normal';
+            if (uso >= dados.metaUso) {
+                situacao = 'Saturado';
+            } else if (uso < dados.limiteSubutilizado) {
+                situacao = 'Subutilizado';
+            }
         }
 
-        var situacao = 'Normal';
-        if (uso >= dados.metaUso) {
-            situacao = 'Saturado';
-        } else if (uso < dados.limiteSubutilizado) {
-            situacao = 'Subutilizado';
+        var ramMedia = null;
+        if (srv.ramMedia != null) {
+            ramMedia = Number(srv.ramMedia);
+        }
+        var discoMedio = null;
+        if (srv.discoMedio != null) {
+            discoMedio = Number(srv.discoMedio);
         }
 
         return {
+            idServidor: srv.idServidor || null,
             nome: srv.nome,
             local: srv.local,
             custo: srv.custo,
             uso: uso,
             pico: pico,
+            ramMedia: ramMedia,
+            discoMedio: discoMedio,
+            conexao: srv.conexao || 'simulado',
+            semTelemetria: semTelemetria,
             custoOcioso: Number(custoOcioso.toFixed(2)),
             situacao: situacao
         };
@@ -321,15 +428,19 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
 
     var custoOciosoTotal = 0;
     var somaUso = 0;
+    var qtdComTelemetria = 0;
     var servidorGargalo = null;
     var servidoresSaturados = [];
     var servidoresSubutilizados = [];
 
     servidoresDetalhados.forEach(function (srv) {
         custoOciosoTotal += srv.custoOcioso;
-        somaUso += srv.uso;
-        if (!servidorGargalo || srv.uso > servidorGargalo.uso) {
-            servidorGargalo = srv;
+        if (!srv.semTelemetria && srv.uso != null) {
+            somaUso += srv.uso;
+            qtdComTelemetria += 1;
+            if (!servidorGargalo || srv.uso > servidorGargalo.uso) {
+                servidorGargalo = srv;
+            }
         }
         if (srv.situacao === 'Saturado') {
             servidoresSaturados.push(srv.nome);
@@ -340,8 +451,8 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
     });
 
     var usoMedioFrota = 0;
-    if (servidoresDetalhados.length > 0) {
-        usoMedioFrota = somaUso / servidoresDetalhados.length;
+    if (qtdComTelemetria > 0) {
+        usoMedioFrota = somaUso / qtdComTelemetria;
     }
 
     var projecoes = [1, 3, 6].map(function (meses) {
@@ -613,10 +724,23 @@ function normalizarDadosFallback(corpoRequisicao) {
     }
 
     var servidores = listaServidores.map(function (s) {
+        var uso = null;
+        if (s && s.uso != null) {
+            uso = Number(s.uso);
+        }
+        var pico = uso;
+        if (s && s.pico != null) {
+            pico = Number(s.pico);
+        }
         return {
+            idServidor: (s && s.idServidor) || null,
             nome: (s && s.nome) || 'SRV',
             local: (s && s.local) || '-',
-            custo: Number(s && s.custo) || 0
+            custo: Number(s && s.custo) || 0,
+            uso: uso,
+            pico: pico,
+            conexao: (s && s.conexao) || 'simulado',
+            semTelemetria: Boolean(s && s.semTelemetria)
         };
     });
 
@@ -642,6 +766,7 @@ function normalizarDadosFallback(corpoRequisicao) {
         capacidadeNova: Number(base.capacidadeNova) || 1,
         custoNovoServidor: Number(base.custoNovoServidor) || 0,
         custoImplantacao: Number(base.custoImplantacao) || 0,
+        origemTelemetria: base.origemTelemetria || 'simulado',
         servidores: servidores,
         historico: historico
     };

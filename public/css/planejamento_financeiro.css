@@ -166,6 +166,12 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   white-space: nowrap;
 }
 
+.plan-selo-simulado--gold {
+  border-color: rgb(34 197 94 / 0.32);
+  background: rgb(34 197 94 / 0.12);
+  color: var(--plan-verde);
+}
+
 /* ---------- Cabeçalho de seção ---------- */
 
 .plan-secao__cabecalho,
@@ -393,6 +399,11 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   background: rgb(245 158 11 / 0.16);
 }
 
+.plan-situacao--sem-dados {
+  color: var(--plan-texto-mudo);
+  background: rgb(141 161 179 / 0.14);
+}
+
 .plan-expansao-identidade {
   display: flex;
   align-items: baseline;
@@ -550,6 +561,12 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   color: var(--plan-verde);
   background: rgb(34 197 94 / 0.12);
   border: 1px solid rgb(34 197 94 / 0.28);
+}
+
+.plan-prioridade--sem-dados {
+  color: var(--plan-texto-mudo);
+  background: rgb(141 161 179 / 0.12);
+  border: 1px solid rgb(141 161 179 / 0.28);
 }
 
 .plan-tabela__vazio {
