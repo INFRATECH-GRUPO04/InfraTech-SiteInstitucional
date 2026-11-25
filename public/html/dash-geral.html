@@ -74,15 +74,12 @@
 
       <!-- Topo: título, ambiente, resumo da frota e relógio -->
       <header class="fr-topo">
-        <div class="fr-topo__texto">
-          <h1 class="fr-topo__titulo">Monitoramento da Frota</h1>
-          <p class="fr-topo__descricao">Acompanhe a disponibilidade, incidentes e desempenho dos servidores.</p>
-        </div>
+        <h1 class="fr-topo__titulo">Monitoramento da Frota</h1>
 
         <div class="fr-topo__meta">
           <button type="button" class="fr-ambiente" aria-label="Selecionar ambiente">
             <span class="fr-ambiente__ponto" aria-hidden="true"></span>
-            <span id="ambiente-nome">Produção</span>
+            <span id="ambiente-nome">—</span>
             <span aria-hidden="true">▾</span>
           </button>
 
@@ -96,144 +93,75 @@
         </div>
       </header>
 
-      <!-- KPIs -->
-      <section class="fr-kpis" aria-label="Indicadores da frota">
+      <!-- Indicadores: saúde, SLA, incidentes ativos e MTTR -->
+      <section class="fr-linha fr-linha--indicadores" aria-label="Indicadores da frota">
 
-        <article class="fr-kpi fr-kpi--ok">
-          <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01M6 17h.01"/></svg>
-          <p class="fr-kpi__valor" id="kpi-normais">—</p>
-          <p class="fr-kpi__rotulo">Servidores Normais</p>
+        <article class="fr-card fr-saude" id="card-saude" aria-labelledby="titulo-saude">
+          <h2 class="fr-card__titulo" id="titulo-saude">Saúde da Frota</h2>
+          <div class="fr-saude__corpo">
+            <div class="fr-saude__texto">
+              <p class="fr-saude__valor">
+                <span id="saude-pct">—</span>
+                <span class="fr-saude__rotulo" id="saude-rotulo">Saudável</span>
+              </p>
+              <div class="fr-saude__barra" aria-hidden="true"><span id="saude-barra"></span></div>
+            </div>
+            <div class="fr-donut" role="img" aria-label="Distribuição dos servidores entre online, alerta e offline">
+              <canvas id="grafico-saude"></canvas>
+              <div class="fr-donut__centro">
+                <strong id="donut-numero">—</strong>
+                <span>Online</span>
+              </div>
+            </div>
+          </div>
+          <ul class="fr-saude__legenda">
+            <li class="fr-legenda fr-legenda--ok" id="leg-online">— Online</li>
+            <li class="fr-legenda fr-legenda--atencao" id="leg-alerta">— Alerta</li>
+            <li class="fr-legenda fr-legenda--critico" id="leg-offline">— Offline</li>
+          </ul>
         </article>
-
-        <article class="fr-kpi fr-kpi--atencao">
-          <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          <p class="fr-kpi__valor" id="kpi-alerta">—</p>
-          <p class="fr-kpi__rotulo">Servidores em Alerta</p>
-        </article>
-
-        <article class="fr-kpi fr-kpi--critico">
-          <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-          <p class="fr-kpi__valor" id="kpi-offline">—</p>
-          <p class="fr-kpi__rotulo">Servidores Offline</p>
-        </article>
-
-        <article class="fr-kpi fr-kpi--info">
-          <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5h.01"/></svg>
-          <p class="fr-kpi__valor" id="kpi-incidentes">—</p>
-          <p class="fr-kpi__rotulo">Incidentes Abertos</p>
-        </article>
-
-        <article class="fr-kpi fr-kpi--roxo">
-          <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12M6 22h12M7 2v4a5 5 0 0 0 2 4l3 2-3 2a5 5 0 0 0-2 4v4M17 2v4a5 5 0 0 1-2 4l-3 2 3 2a5 5 0 0 1 2 4v4"/></svg>
-          <p class="fr-kpi__valor" id="kpi-mttr">—</p>
-          <p class="fr-kpi__rotulo">Tempo Médio de Resolução <span id="kpi-mttr-periodo">(últimos 30d)</span></p>
-        </article>
-
-      </section>
-
-      <!-- Disponibilidade e incidentes por dia -->
-      <section class="fr-linha fr-linha--graficos">
 
         <article class="fr-card" aria-labelledby="titulo-disp">
           <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo" id="titulo-disp">
-              <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
-              Disponibilidade dos Servidores
-            </h2>
+            <h2 class="fr-card__titulo" id="titulo-disp">SLA / Disponibilidade (7d)</h2>
             <div class="fr-filtro" role="group" aria-label="Período da disponibilidade" id="filtro-disp">
-              <button type="button" data-periodo="24h" aria-pressed="false">24h</button>
-              <button type="button" data-periodo="7d" aria-pressed="true" class="ativo">7 dias</button>
-              <button type="button" data-periodo="30d" aria-pressed="false">30 dias</button>
+              <button type="button" data-periodo="7d" aria-pressed="true" class="ativo">7d</button>
+              <button type="button" data-periodo="30d" aria-pressed="false">30d</button>
             </div>
           </header>
-
-          <div class="fr-grafico-bloco">
-            <div class="fr-destaque">
-              <p class="fr-destaque__valor" id="disp-valor">—</p>
-              <p class="fr-destaque__delta" id="disp-delta">—</p>
+          <div class="fr-sla">
+            <div class="fr-sla__valor">
+              <p class="fr-grande fr-grande--ciano" id="disp-valor">—</p>
+              <p class="fr-sla__meta" id="disp-meta">Meta —</p>
             </div>
-            <div class="fr-grafico">
-              <canvas id="grafico-disp" role="img" aria-label="Gráfico de linha da disponibilidade média da frota no período"></canvas>
+            <div class="fr-grafico fr-grafico--sla">
+              <canvas id="grafico-disp" role="img" aria-label="Disponibilidade média da frota no período, com a linha da meta de SLA"></canvas>
             </div>
           </div>
         </article>
 
-        <article class="fr-card" aria-labelledby="titulo-inc-dia">
-          <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo" id="titulo-inc-dia">
-              <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11M12 21V4M19 21v-7"/></svg>
-              Incidentes por Dia
-            </h2>
-            <div class="fr-filtro" role="group" aria-label="Período dos incidentes" id="filtro-inc">
-              <button type="button" data-periodo="7d" aria-pressed="true" class="ativo">7 dias</button>
-              <button type="button" data-periodo="30d" aria-pressed="false">30 dias</button>
-            </div>
-          </header>
+        <article class="fr-card" aria-labelledby="titulo-ativos">
+          <h2 class="fr-card__titulo" id="titulo-ativos">Incidentes Ativos</h2>
+          <p class="fr-grande fr-grande--ciano"><span id="kpi-incidentes">—</span> <span class="fr-grande__rotulo">Abertos</span></p>
+          <p class="fr-chip fr-chip--atencao" id="kpi-chip" hidden></p>
+        </article>
 
-          <div class="fr-grafico-bloco">
-            <div class="fr-destaque">
-              <p class="fr-destaque__valor" id="inc-valor">—</p>
-              <p class="fr-destaque__delta" id="inc-delta">—</p>
-            </div>
-            <div class="fr-grafico">
-              <canvas id="grafico-inc" role="img" aria-label="Gráfico de barras com a quantidade de incidentes por dia"></canvas>
-            </div>
-          </div>
+        <article class="fr-card fr-card--roxo" aria-labelledby="titulo-mttr">
+          <h2 class="fr-card__titulo" id="titulo-mttr">MTTR</h2>
+          <p class="fr-grande fr-grande--roxo" id="kpi-mttr">—</p>
+          <p class="fr-mttr__delta" id="mttr-delta">—</p>
         </article>
 
       </section>
 
-      <!-- Status dos servidores e mais problemáticos -->
-      <section class="fr-linha fr-linha--tabela">
+      <!-- Incidentes do Jira e coluna de análises -->
+      <section class="fr-linha fr-linha--principal">
 
-        <article class="fr-card" aria-labelledby="titulo-status">
+        <article class="fr-card fr-card--lista" aria-labelledby="titulo-abertos">
           <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo" id="titulo-status">
-              <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><path d="M6 7h.01M6 17h.01"/></svg>
-              Status dos Servidores
-            </h2>
-          </header>
-
-          <div class="fr-tabela-wrap">
-            <table class="fr-tabela">
-              <thead>
-                <tr>
-                  <th scope="col">Servidor</th>
-                  <th scope="col">Localidade</th>
-                  <th scope="col">Situação</th>
-                  <th scope="col">CPU</th>
-                  <th scope="col">RAM</th>
-                  <th scope="col">Disco</th>
-                  <th scope="col">Disponibilidade</th>
-                  <th scope="col">Tempo no estado</th>
-                </tr>
-              </thead>
-              <tbody id="corpo-status"></tbody>
-            </table>
-          </div>
-        </article>
-
-        <article class="fr-card" aria-labelledby="titulo-problematicos">
-          <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo" id="titulo-problematicos">
-              <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11M12 21V4M19 21v-7"/></svg>
-              Servidores Mais Problemáticos
-            </h2>
-          </header>
-          <p class="fr-card__nota">Incidentes nos últimos 7 dias</p>
-          <ol class="fr-ranking" id="lista-problematicos"></ol>
-        </article>
-
-      </section>
-
-      <!-- Incidentes abertos e relatório com IA -->
-      <section class="fr-linha fr-linha--rodape">
-
-        <article class="fr-card" aria-labelledby="titulo-abertos">
-          <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo fr-card__titulo--critico" id="titulo-abertos">
-              <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-              Incidentes Abertos
+            <h2 class="fr-card__titulo" id="titulo-abertos">
+              <svg class="fr-ico fr-ico--critico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+              Incidentes (Jira)
             </h2>
           </header>
 
@@ -245,6 +173,7 @@
                   <th scope="col">Servidor</th>
                   <th scope="col">Prioridade</th>
                   <th scope="col">Aberto há</th>
+                  <th scope="col">Responsável</th>
                   <th scope="col"><span class="sr-only">Abrir detalhes</span></th>
                 </tr>
               </thead>
@@ -253,43 +182,69 @@
           </div>
         </article>
 
-        <article class="fr-card fr-card--ia" aria-labelledby="titulo-ia">
-          <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo" id="titulo-ia">
-              <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>
-              Relatório com IA
-            </h2>
-            <div class="fr-ia__acoes">
-              <span class="fr-ia__gerado" id="ia-gerado" role="status">Gerado por IA • hoje --:--</span>
-              <button type="button" class="fr-botao-ia" id="ia-atualizar">
-                <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-                <span>Atualizar análise</span>
-              </button>
+        <div class="fr-coluna">
+
+          <article class="fr-card" aria-labelledby="titulo-inc-dia">
+            <header class="fr-card__cabecalho">
+              <h2 class="fr-card__titulo" id="titulo-inc-dia">
+                <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11M12 21V4M19 21v-7"/></svg>
+                Incidentes por Dia
+              </h2>
+              <div class="fr-filtro" role="group" aria-label="Período dos incidentes" id="filtro-inc">
+                <button type="button" data-periodo="7d" aria-pressed="true" class="ativo">7d</button>
+                <button type="button" data-periodo="30d" aria-pressed="false">30d</button>
+              </div>
+            </header>
+            <div class="fr-grafico fr-grafico--barras">
+              <canvas id="grafico-inc" role="img" aria-label="Gráfico de barras com a quantidade de incidentes por dia"></canvas>
             </div>
-          </header>
+            <p class="fr-vazio" id="inc-vazio" hidden>Sem incidentes no período.</p>
+          </article>
 
-          <div class="fr-ia__corpo">
-            <section>
-              <h3>Resumo</h3>
-              <p id="ia-resumo"></p>
-            </section>
-            <section>
-              <h3>Pontos de atenção</h3>
-              <ul class="fr-ia__lista fr-ia__lista--atencao" id="ia-pontos"></ul>
-            </section>
-            <section>
-              <h3>Recomendações</h3>
-              <ol class="fr-ia__lista" id="ia-recomendacoes"></ol>
-            </section>
-          </div>
-        </article>
+          <article class="fr-card" aria-labelledby="titulo-problematicos">
+            <header class="fr-card__cabecalho">
+              <h2 class="fr-card__titulo" id="titulo-problematicos">
+                <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11M12 21V4M19 21v-7"/></svg>
+                Servidores Mais Problemáticos (30d)
+              </h2>
+            </header>
+            <p class="fr-card__nota">Top 3 servidores com mais incidentes no período</p>
+            <ol class="fr-ranking" id="lista-problematicos"></ol>
+          </article>
 
+          <article class="fr-card fr-card--ia" aria-labelledby="titulo-ia">
+            <header class="fr-card__cabecalho">
+              <h2 class="fr-card__titulo" id="titulo-ia">
+                <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>
+                Relatório Executivo (IA)
+              </h2>
+              <div class="fr-ia__acoes">
+                <span class="fr-ia__gerado" id="ia-gerado" role="status">Gerado por IA • —</span>
+                <button type="button" class="fr-botao-ia" id="ia-atualizar">
+                  <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+                  <span>Atualizar análise</span>
+                </button>
+              </div>
+            </header>
+
+            <div class="fr-ia__corpo">
+              <section>
+                <h3>Resumo</h3>
+                <p id="ia-resumo"></p>
+              </section>
+              <section>
+                <h3>Recomendações</h3>
+                <ol class="fr-ia__lista" id="ia-recomendacoes"></ol>
+              </section>
+            </div>
+          </article>
+
+        </div>
       </section>
 
     </main>
 
     <!-- Script principal da dashboard -->
-    <script src="/js/dashboard-data.js"></script>
     <script src="/js/dash-geral.js"></script>
 
   </body>
