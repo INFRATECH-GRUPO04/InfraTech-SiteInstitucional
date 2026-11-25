@@ -505,34 +505,28 @@
 
     // Gráfico 1: Recursos (CPU e RAM)
     if (tel.semTelemetria || series.length < 2) {
+      destruirGrafico('resource-chart-container');
       $('resource-chart-container').innerHTML = `<div class="telemetry-empty"><strong>Sem telemetria suficiente na janela selecionada</strong><p style="margin:6px 0 0;font-size:13px;">Último envio às ${esc(tel.ultimoEnvio)}. Verifique o agente em ${esc(srv.nome)}.</p></div>`;
     } else {
-      const ult = series.at(-1);
-      renderizarGraficoSVG({
+      renderizarGraficoChart({
         containerId: 'resource-chart-container',
-        tooltipId: 'res-tooltip',
         series,
         maxVal: 100,
         unit: '%',
-        padL: 62,
-        padR: 65,
-        seriesCfg: [
-          { key: 'cpu', color: 'var(--noc-cyan)', endYOffset: 4 },
-          { key: 'ram', color: 'var(--noc-purple)', endYOffset: 14 }
+        datasets: [
+          { label: 'CPU', key: 'cpu', color: '#00d2df', fill: false },
+          { label: 'RAM', key: 'ram', color: '#a855f7', fill: false }
         ],
-        extras: (yFor, w, padL, padR) => `
-          <line class="warn-line" x1="${padL}" y1="${yFor(lim.cpu.atencao)}" x2="${w - padR}" y2="${yFor(lim.cpu.atencao)}"/>
-          <line class="limit-line" x1="${padL}" y1="${yFor(lim.cpu.critico)}" x2="${w - padR}" y2="${yFor(lim.cpu.critico)}"/>
-          <text class="limit-label" x="${padL + 8}" y="${yFor(lim.cpu.critico) - 6}">Limite crítico CPU ${lim.cpu.critico}%</text>`,
-        endLabels: (yFor, w, padR) => `
-          <text class="end-value" fill="var(--noc-cyan)" x="${w - padR + 8}" y="${yFor(ult.cpu) + 4}">${ult.cpu}%</text>
-          <text class="end-value" fill="var(--noc-purple)" x="${w - padR + 8}" y="${yFor(ult.ram) + 14}">${ult.ram}%</text>`,
-        formatTooltip: (pt) => `<strong>${pt.hora}</strong><br>CPU: ${pt.cpu}% · RAM: ${pt.ram}%`
+        limitLines: [
+          { value: lim.cpu.atencao, color: '#F5B82E', dash: [4, 4], width: 1.4 },
+          { value: lim.cpu.critico, color: '#F05262', dash: [7, 5], width: 1.8, label: `Limite crítico CPU ${lim.cpu.critico}%` }
+        ]
       });
     }
 
     // Gráfico 2: Rede
     if (tel.semTelemetria || series.length < 2) {
+      destruirGrafico('network-chart-container');
       $('network-legend').innerHTML = '<span class="legend-item">Sem leitura de interface</span>';
       $('network-chart-container').innerHTML = '<div class="telemetry-empty"><strong>Tráfego de rede indisponível</strong><p style="margin:6px 0 0;font-size:13px;">Aguardando restabelecimento da coleta S3.</p></div>';
     } else {
@@ -542,25 +536,15 @@
         <span class="legend-item"><i class="legend-dot" style="background:var(--noc-cyan)"></i>Download ${ult.down} Mbps</span>
         <span class="legend-item"><i class="legend-dot" style="background:var(--noc-purple)"></i>Upload ${ult.up} Mbps</span>`;
 
-      renderizarGraficoSVG({
+      renderizarGraficoChart({
         containerId: 'network-chart-container',
-        tooltipId: 'net-tooltip',
         series,
         maxVal: maxNet,
         unit: ' Mbps',
-        padL: 72,
-        padR: 40,
-        areaFill: true,
-        seriesCfg: [
-          { key: 'down', color: 'var(--noc-cyan)', grad: 'dlFill' },
-          { key: 'up', color: 'var(--noc-purple)', grad: 'ulFill' }
-        ],
-        defs: `
-          <defs>
-            <linearGradient id="dlFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00e2ef" stop-opacity=".22"/><stop offset="1" stop-color="#00e2ef" stop-opacity=".02"/></linearGradient>
-            <linearGradient id="ulFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bc5ce5" stop-opacity=".26"/><stop offset="1" stop-color="#bc5ce5" stop-opacity=".03"/></linearGradient>
-          </defs>`,
-        formatTooltip: (pt) => `<strong>${pt.hora}</strong><br>Download: ${pt.down} Mbps · Upload: ${pt.up} Mbps`
+        datasets: [
+          { label: 'Download', key: 'down', color: '#00d2df', fill: true, gradTop: 'rgba(0, 210, 223, 0.24)', gradBottom: 'rgba(0, 210, 223, 0.02)' },
+          { label: 'Upload', key: 'up', color: '#a855f7', fill: true, gradTop: 'rgba(168, 85, 247, 0.26)', gradBottom: 'rgba(168, 85, 247, 0.02)' }
+        ]
       });
     }
 
@@ -613,53 +597,121 @@
     }
   }
 
-  function renderizarGraficoSVG({ containerId, tooltipId, series, maxVal, unit, padL, padR, seriesCfg, areaFill, defs = '', extras, endLabels, formatTooltip }) {
-    const container = $(containerId);
-    const w = 1200, h = 230, padT = 20, padB = 34;
-    const plotW = w - padL - padR, plotH = h - padT - padB;
-    const xFor = (i) => padL + (plotW * i) / (series.length - 1);
-    const yFor = (v) => Number((padT + plotH * (1 - v / maxVal)).toFixed(1));
+  const chartInstances = {};
 
-    const grid = [0, 0.25, 0.5, 0.75, 1].map((f) => {
-      const val = Math.round(maxVal * f), y = yFor(val);
-      return `<line class="grid" x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}"/><text x="${padL - 10}" y="${y + 4}" text-anchor="end">${val}${unit}</text>`;
-    }).join('');
+  function destruirGrafico(containerId) {
+    if (chartInstances[containerId]) {
+      chartInstances[containerId].destroy();
+      delete chartInstances[containerId];
+    }
+  }
 
-    const step = Math.max(1, Math.floor(series.length / 6));
-    const xLabels = series.map((pt, i) => (i % step && i !== series.length - 1) ? '' :
-      `<line class="grid" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${padT + plotH}"/><text x="${xFor(i).toFixed(1)}" y="${h - 8}" text-anchor="middle">${pt.hora}</text>`
-    ).join('');
+  function criarGradiente(ctx, topColor, bottomColor) {
+    const grad = ctx.createLinearGradient(0, 0, 0, 220);
+    grad.addColorStop(0, topColor);
+    grad.addColorStop(1, bottomColor);
+    return grad;
+  }
 
-    const shapes = seriesCfg.map((cfg) => {
-      const pts = series.map((pt, i) => `${xFor(i).toFixed(1)},${yFor(pt[cfg.key])}`).join(' ');
-      const area = areaFill ? `<polygon points="${padL},${padT + plotH} ${pts} ${w - padR},${padT + plotH}" fill="url(#${cfg.grad})"/>` : '';
-      const dots = series.map((pt, i) => `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(pt[cfg.key])}" r="4" fill="${cfg.color}" data-idx="${i}"/>`).join('');
-      return `${area}<polyline class="series" stroke="${cfg.color}" points="${pts}"/>${dots}`;
-    }).join('');
+  const pluginLinhasLimite = {
+    id: 'nocLimites',
+    afterDatasetsDraw(chart) {
+      const linhas = chart.options.plugins?.nocLimites?.lines;
+      if (!Array.isArray(linhas) || !linhas.length) return;
+      const { ctx, chartArea, scales } = chart;
+      const yScale = scales.y;
+      if (!chartArea || !yScale) return;
 
-    container.innerHTML = `
-      <svg class="noc-svg-chart" viewBox="0 0 ${w} ${h}" role="img">
-        ${defs}${grid}${xLabels}
-        <path class="axis" fill="none" d="M${padL} ${padT}V${padT + plotH}H${w - padR}"/>
-        ${extras ? extras(yFor, w, padL, padR) : ''}
-        ${shapes}
-        ${endLabels ? endLabels(yFor, w, padR) : ''}
-      </svg>
-      <div class="chart-tooltip" id="${tooltipId}"></div>`;
+      ctx.save();
+      linhas.forEach((ln) => {
+        const y = yScale.getPixelForValue(ln.value);
+        if (y < chartArea.top || y > chartArea.bottom) return;
+        ctx.beginPath();
+        ctx.setLineDash(ln.dash || [6, 4]);
+        ctx.lineWidth = ln.width || 1.5;
+        ctx.strokeStyle = ln.color;
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
 
-    const tooltip = $(tooltipId);
-    container.querySelectorAll('circle[data-idx]').forEach((circle) => {
-      circle.style.cursor = 'pointer';
-      circle.addEventListener('mouseenter', (e) => {
-        const pt = series[Number(circle.dataset.idx)];
-        if (!pt) return;
-        tooltip.innerHTML = formatTooltip(pt);
-        tooltip.style.display = 'block';
-        const rect = container.getBoundingClientRect();
-        tooltip.style.left = `${Math.min(rect.width - 170, Math.max(8, e.clientX - rect.left + 12))}px`;
-        tooltip.style.top = `${Math.max(8, e.clientY - rect.top - 36)}px`;
+        if (ln.label) {
+          ctx.setLineDash([]);
+          ctx.fillStyle = ln.color;
+          ctx.font = 'bold 12px Inter, Arial, sans-serif';
+          ctx.fillText(ln.label, chartArea.left + 8, Math.max(chartArea.top + 12, y - 6));
+        }
       });
-      circle.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+      ctx.restore();
+    }
+  };
+
+  function renderizarGraficoChart({ containerId, series, maxVal, unit, datasets, limitLines = [] }) {
+    destruirGrafico(containerId);
+    const container = $(containerId);
+    if (typeof Chart === 'undefined') {
+      container.innerHTML = '<div class="telemetry-empty"><strong>Chart.js não carregado</strong><p style="margin:6px 0 0;font-size:13px;">Verifique a conexão ou o script do Chart.js.</p></div>';
+      return;
+    }
+
+    container.innerHTML = '<div class="noc-chart-wrap"><canvas></canvas></div>';
+    const canvas = container.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+
+    chartInstances[containerId] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: series.map((pt) => pt.hora),
+        datasets: datasets.map((ds) => ({
+          label: ds.label,
+          data: series.map((pt) => pt[ds.key]),
+          borderColor: ds.color,
+          backgroundColor: ds.fill ? criarGradiente(ctx, ds.gradTop, ds.gradBottom) : ds.color,
+          fill: Boolean(ds.fill),
+          borderWidth: 2.5,
+          tension: 0.25,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          pointBackgroundColor: ds.color
+        }))
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(16, 25, 35, 0.96)',
+            borderColor: '#00d2df',
+            borderWidth: 1,
+            titleColor: '#f2f6fa',
+            bodyColor: '#f2f6fa',
+            padding: 10,
+            callbacks: {
+              label: (item) => ` ${item.dataset.label}: ${item.parsed.y}${unit}`
+            }
+          },
+          nocLimites: { lines: limitLines }
+        },
+        scales: {
+          x: {
+            grid: { color: '#293746' },
+            ticks: { color: '#a6b7c7', maxTicksLimit: 7 }
+          },
+          y: {
+            min: 0,
+            max: maxVal,
+            grid: { color: '#293746' },
+            ticks: {
+              color: '#a6b7c7',
+              stepSize: maxVal / 4,
+              callback: (v) => `${Math.round(v)}${unit}`
+            }
+          }
+        }
+      },
+      plugins: [pluginLinhasLimite]
     });
   }
 

@@ -1,17 +1,17 @@
 :root {
   color-scheme: dark;
-  --noc-bg: #001a20;
-  --noc-panel: #031d24;
-  --noc-panel-alt: #04252e;
-  --noc-border: #3f7d8d;
-  --noc-line: #31535c;
-  --noc-text: #f1f5f7;
-  --noc-muted: #b8c9d1;
-  --noc-cyan: #00e2ef;
-  --noc-purple: #bc5ce5;
-  --noc-red: #ff5b64;
-  --noc-yellow: #f6c72e;
-  --noc-green: #16e298;
+  --noc-bg: var(--dashboard-fundo, #0b1119);
+  --noc-panel: var(--fundo-card, #151e29);
+  --noc-panel-alt: var(--fundo-card-alt, #101923);
+  --noc-border: var(--borda-card, #293746);
+  --noc-line: #293746;
+  --noc-text: var(--texto-card-titulo, #f2f6fa);
+  --noc-muted: var(--texto-card-suave, #a6b7c7);
+  --noc-cyan: #00d2df;
+  --noc-purple: #a855f7;
+  --noc-red: #F05262;
+  --noc-yellow: #F5B82E;
+  --noc-green: #20C997;
 }
 
 * { box-sizing: border-box; }
@@ -20,7 +20,7 @@ body.pagina-painel.pagina-noc {
   margin: 0;
   background: var(--noc-bg);
   color: var(--noc-text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: inherit;
   font-size: 15px;
   line-height: 1.4;
 }
@@ -82,11 +82,11 @@ body.pagina-noc .conteudo-painel {
   letter-spacing: 0.4px;
   text-transform: uppercase;
   white-space: nowrap;
-  background: #002730;
+  background: rgba(0, 210, 223, 0.10);
 }
 
 .noc-panel {
-  background: linear-gradient(110deg, #042029cc, #001920aa);
+  background: var(--noc-panel);
   border: 1px solid var(--noc-border);
   border-radius: 12px;
   overflow: hidden;
@@ -225,7 +225,7 @@ body.pagina-noc .conteudo-painel {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 12px;
-  background: #02161c;
+  background: #101923;
   border: 1px solid var(--noc-line);
   border-radius: 10px;
   margin-bottom: 14px;
@@ -254,7 +254,7 @@ body.pagina-noc .conteudo-painel {
   padding: 6px 12px;
   border-radius: 999px;
   border: 1px solid var(--noc-line);
-  background: #042129;
+  background: #151e29;
   color: var(--noc-muted);
   font-size: 13px;
   font-weight: 600;
@@ -265,18 +265,18 @@ body.pagina-noc .conteudo-painel {
 .filter-pill:hover {
   border-color: var(--noc-cyan);
   color: var(--noc-text);
-  background: #07333f;
+  background: #1c2836;
 }
 
 .filter-pill.is-active {
   border-color: var(--noc-cyan);
-  background: #004e59;
+  background: rgba(0, 210, 223, 0.16);
   color: #ffffff;
   box-shadow: 0 0 0 1px var(--noc-cyan);
 }
 
 .filter-pill .pill-count {
-  background: #001a20;
+  background: #0b1119;
   padding: 1px 7px;
   border-radius: 999px;
   font-size: 11px;
@@ -313,7 +313,7 @@ body.pagina-noc .conteudo-painel {
   padding: 7px 12px 7px 34px;
   border-radius: 8px;
   border: 1px solid var(--noc-border);
-  background: #00171d;
+  background: #101923;
   color: var(--noc-text);
   font-size: 13px;
   outline: none;
@@ -321,7 +321,7 @@ body.pagina-noc .conteudo-painel {
 
 .noc-input:focus {
   border-color: var(--noc-cyan);
-  box-shadow: 0 0 0 2px #00e2ef33;
+  box-shadow: 0 0 0 2px #00d2df33;
 }
 
 .btn-noc {
@@ -332,7 +332,7 @@ body.pagina-noc .conteudo-painel {
   padding: 7px 14px;
   border-radius: 8px;
   border: 1px solid var(--noc-cyan);
-  background: #002833;
+  background: #101923;
   color: var(--noc-text);
   font-size: 13px;
   font-weight: 600;
@@ -341,7 +341,7 @@ body.pagina-noc .conteudo-painel {
   transition: background 0.15s ease, transform 0.1s ease;
 }
 
-.btn-noc:hover { background: #074f5c; }
+.btn-noc:hover { background: #1f2d3d; }
 .btn-noc:active { transform: translateY(1px); }
 .btn-noc--ghost {
   border-color: var(--noc-line);
@@ -351,7 +351,7 @@ body.pagina-noc .conteudo-painel {
 .btn-noc--ghost:hover {
   border-color: var(--noc-cyan);
   color: var(--noc-text);
-  background: #04252e;
+  background: #101923;
 }
 .btn-noc .noc-icon { width: 16px; height: 16px; color: var(--noc-cyan); }
 
@@ -388,11 +388,11 @@ body.pagina-noc .conteudo-painel {
 }
 
 .server-row:hover {
-  background: #05343f;
+  background: #1a2634;
 }
 
 .server-row.is-selected {
-  background: #034048a3;
+  background: rgba(21, 30, 41, 0.92);
   box-shadow: inset 5px 0 0 var(--noc-cyan);
 }
 
@@ -453,7 +453,7 @@ body.pagina-noc .conteudo-painel {
   justify-content: space-between;
   gap: 14px;
   padding: 12px 16px;
-  background: #03333d;
+  background: #1c2836;
   border: 1px solid var(--noc-cyan);
   border-radius: 10px;
 }
@@ -486,7 +486,7 @@ body.pagina-noc .conteudo-painel {
   color: var(--noc-muted);
   border: 1px dashed var(--noc-border);
   border-radius: 12px;
-  background: #02181e;
+  background: #101923;
 }
 
 .select-prompt strong { color: var(--noc-cyan); }
@@ -525,7 +525,7 @@ body.pagina-noc .conteudo-painel {
 .segmented-filter {
   display: inline-flex;
   align-items: center;
-  background: #00171d;
+  background: #101923;
   border: 1px solid var(--noc-border);
   border-radius: 8px;
   padding: 3px;
@@ -544,10 +544,10 @@ body.pagina-noc .conteudo-painel {
   transition: all 0.15s ease;
 }
 
-.seg-btn:hover { color: var(--noc-text); background: #052b34; }
+.seg-btn:hover { color: var(--noc-text); background: #1a2634; }
 .seg-btn.is-active {
   background: var(--noc-cyan);
-  color: #001a20;
+  color: #0b1119;
 }
 
 /* Gráficos SVG */
@@ -594,6 +594,13 @@ body.pagina-noc .conteudo-painel {
   overflow-x: auto;
 }
 
+.noc-chart-wrap {
+  position: relative;
+  width: 100%;
+  min-width: 620px;
+  height: 240px;
+}
+
 .noc-svg-chart {
   display: block;
   width: 100%;
@@ -603,7 +610,7 @@ body.pagina-noc .conteudo-painel {
 }
 
 .noc-svg-chart text { fill: var(--noc-muted); font: 13px Arial, Helvetica, sans-serif; }
-.noc-svg-chart .grid { stroke: #29464e; stroke-width: 1; }
+.noc-svg-chart .grid { stroke: #293746; stroke-width: 1; }
 .noc-svg-chart .axis { stroke: #7f9aa3; stroke-width: 1.2; }
 .noc-svg-chart .series { fill: none; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
 .noc-svg-chart .limit-line { stroke: var(--noc-red); stroke-dasharray: 7 5; stroke-width: 1.8; }
@@ -614,7 +621,7 @@ body.pagina-noc .conteudo-painel {
 .chart-tooltip {
   position: absolute;
   pointer-events: none;
-  background: #011318f2;
+  background: rgba(16, 25, 35, 0.96);
   border: 1px solid var(--noc-cyan);
   border-radius: 8px;
   padding: 8px 11px;
@@ -742,7 +749,7 @@ body.pagina-noc .conteudo-painel {
   font-size: 14px;
   padding: 6px 10px;
   border-radius: 6px;
-  background: #02161c;
+  background: #101923;
   border: 1px solid #1e3b43;
 }
 
@@ -812,7 +819,7 @@ body.pagina-noc .conteudo-painel {
   padding: 7px 14px;
   border-radius: 999px;
   border: 1px solid var(--noc-line);
-  background: #02181e;
+  background: #101923;
   color: var(--noc-text);
   font-size: 13px;
   font-weight: 600;
@@ -975,13 +982,13 @@ body.pagina-noc.is-tv-mode .noc-shell {
   border-radius: 10px;
   border: 1px solid var(--noc-line);
   border-left: 4px solid var(--noc-green);
-  background: #02181f;
+  background: #101923;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.fleet-row:hover { background: #042c36; border-color: var(--noc-cyan); }
-.fleet-row.is-selected { box-shadow: 0 0 0 1px var(--noc-cyan); background: #04323d; }
+.fleet-row:hover { background: #1a2634; border-color: var(--noc-cyan); }
+.fleet-row.is-selected { box-shadow: 0 0 0 1px var(--noc-cyan); background: #1c2a3a; }
 .fleet-row--critical { border-left-color: var(--noc-red); }
 .fleet-row--warning { border-left-color: var(--noc-yellow); }
 .fleet-row--neutral { border-left-color: var(--noc-purple); }
