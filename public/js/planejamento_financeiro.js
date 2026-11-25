@@ -523,63 +523,45 @@ function renderServidores() {
   corpo.innerHTML = html;
 }
 
-function renderCenarios() {
-  var corpo = document.getElementById('corpo-cenarios');
-  var baseServidores = planejamento.servidores.length;
-  var html = '';
+function calcularCenarios(dados) {
+  var base = dados || planejamento;
+  var listaServidores = base.servidores || [];
+  var baseServidores = listaServidores.length;
 
-  planejamento.cenarios.forEach(function (cenario) {
-    var servidores = baseServidores + cenario.adicionais;
-    var capacidade = baseServidores * planejamento.capacidadeAtual +
-      cenario.adicionais * planejamento.capacidadeNova +
-      cenario.capacidadeExtra;
-    var adicionalCapacidade = cenario.adicionais * planejamento.capacidadeNova + cenario.capacidadeExtra;
-    var custoMensal = cenario.adicionais * planejamento.custoNovoServidor;
-    var implantacao = cenario.adicionais * planejamento.custoImplantacao;
+  return planejamento.cenarios.map(function (cenario) {
+    var servidoresTotais = baseServidores + cenario.adicionais;
+    var capacidadeAdicional = cenario.adicionais * base.capacidadeNova + cenario.capacidadeExtra;
+    var capacidadeTotal = baseServidores * base.capacidadeAtual + capacidadeAdicional;
+    var custoMensalAdicional = cenario.adicionais * base.custoNovoServidor;
+    var custoImplantacao = cenario.adicionais * base.custoImplantacao;
 
-    var classe = '';
-    var nome = cenario.nome;
-    if (cenario.destaque) {
-      classe = 'plan-tabela__linha--destaque';
-      nome = '<span class="plan-tabela__cenario-nome">' + cenario.nome + '</span>';
-    }
-
-    var servidoresTexto = formatarNumero(servidores);
+    var prazoEntrega = cenario.prazo;
     if (cenario.adicionais > 0) {
-      servidoresTexto = servidores + ' (+' + cenario.adicionais + ')';
-    }
-
-    var capacidadeTexto = formatarNumero(capacidade);
-    if (adicionalCapacidade > 0) {
-      capacidadeTexto += ' (+' + formatarNumero(adicionalCapacidade) + ')';
-    }
-
-    var custoMensalTexto = 'R$ 0/mês';
-    if (custoMensal > 0) {
-      custoMensalTexto = '+ ' + formatarMoeda(custoMensal) + '/mês';
-    }
-
-    var prazoTexto = cenario.prazo;
-    if (cenario.adicionais > 0) {
-      if (planejamento.provisionamento > 0) {
-        prazoTexto = textoUnidade(planejamento.provisionamento, 'mês', 'meses');
+      if (base.provisionamento > 0) {
+        prazoEntrega = textoUnidade(base.provisionamento, 'mês', 'meses');
       } else {
-        prazoTexto = 'Imediato';
+        prazoEntrega = 'Imediato';
       }
     }
 
-    html += '<tr class="' + classe + '">' +
-      '<td>' + nome + '<small>' + cenario.detalhe + '</small></td>' +
-      '<td class="plan-tabela__valor">' + servidoresTexto + '</td>' +
-      '<td class="plan-tabela__valor">' + capacidadeTexto + '</td>' +
-      '<td class="plan-tabela__valor">' + custoMensalTexto + '</td>' +
-      '<td class="plan-tabela__valor">' + formatarMoeda(implantacao) + '</td>' +
-      '<td>' + prazoTexto + '</td>' +
-      '<td>' + textoRunway(capacidade) + '</td>' +
-      '</tr>';
-  });
+    var runway = null;
+    if (base.crescimento > 0) {
+      runway = Number(Math.max(0, (capacidadeTotal - base.jogadores) / base.crescimento).toFixed(1));
+    }
 
-  corpo.innerHTML = html;
+    return {
+      nome: cenario.nome,
+      detalhe: cenario.detalhe,
+      adicionais: cenario.adicionais,
+      servidoresTotais: servidoresTotais,
+      capacidadeTotal: capacidadeTotal,
+      capacidadeAdicional: capacidadeAdicional,
+      custoMensalAdicional: custoMensalAdicional,
+      custoImplantacao: custoImplantacao,
+      prazoEntrega: prazoEntrega,
+      runwayMeses: runway
+    };
+  });
 }
 
 function renderGrafico() {
@@ -710,7 +692,6 @@ function renderTudo() {
   renderBilling();
   renderCards();
   renderServidores();
-  renderCenarios();
   renderGrafico();
   renderPremissasResumo();
 }
@@ -1020,7 +1001,8 @@ function montarRelatorioLocalFallback() {
       capacidadeTotal: capacidadeTotal,
       runwayMeses: runway,
       custoOciosoTotal: totais.ociosoTotal,
-      servidoresDetalhados: servidoresDetalhados
+      servidoresDetalhados: servidoresDetalhados,
+      cenarios: calcularCenarios(planejamento)
     },
     analise: {
       tituloExecutivo: 'Relatório Executivo de Infraestrutura e FinOps — Plano ' + planejamento.plano,
@@ -1110,6 +1092,55 @@ function renderizarRelatorio(pacote) {
       '</div>';
   }).join('');
 
+  var cenariosRel = metricas.cenarios;
+  if (!Array.isArray(cenariosRel) || cenariosRel.length === 0) {
+    cenariosRel = calcularCenarios(dados);
+  }
+  var recomendadoTexto = String(analise.cenarioRecomendado || '').toLowerCase();
+  var tabelaCenarios = el('rel-tabela-cenarios');
+  if (tabelaCenarios) {
+    tabelaCenarios.innerHTML = cenariosRel.map(function (cenario) {
+      var classeLinha = '';
+      if (recomendadoTexto && recomendadoTexto.indexOf(String(cenario.nome || '').toLowerCase()) !== -1) {
+        classeLinha = ' class="plan-folha__linha--destaque"';
+      }
+
+      var servidoresTexto = formatarNumero(cenario.servidoresTotais);
+      if (cenario.adicionais > 0) {
+        servidoresTexto = cenario.servidoresTotais + ' (+' + cenario.adicionais + ')';
+      }
+
+      var capacidadeTexto = formatarNumero(cenario.capacidadeTotal);
+      if (cenario.capacidadeAdicional > 0) {
+        capacidadeTexto += ' (+' + formatarNumero(cenario.capacidadeAdicional) + ')';
+      }
+
+      var custoAdicionalTexto = 'R$ 0/mês';
+      if (cenario.custoMensalAdicional > 0) {
+        custoAdicionalTexto = '+ ' + formatarMoeda(cenario.custoMensalAdicional) + '/mês';
+      }
+
+      var runwayCenarioTexto = 'Sem saturação prevista';
+      if (cenario.runwayMeses !== null && cenario.runwayMeses !== undefined) {
+        if (Number(cenario.runwayMeses) <= 0) {
+          runwayCenarioTexto = 'Capacidade esgotada';
+        } else {
+          runwayCenarioTexto = mesesTexto(Number(cenario.runwayMeses));
+        }
+      }
+
+      return '<tr' + classeLinha + '>' +
+        '<td><strong>' + escaparTexto(cenario.nome) + '</strong><small>' + escaparTexto(cenario.detalhe) + '</small></td>' +
+        '<td>' + escaparTexto(servidoresTexto) + '</td>' +
+        '<td>' + escaparTexto(capacidadeTexto) + '</td>' +
+        '<td>' + escaparTexto(custoAdicionalTexto) + '</td>' +
+        '<td>' + escaparTexto(formatarMoeda(cenario.custoImplantacao)) + '</td>' +
+        '<td>' + escaparTexto(cenario.prazoEntrega) + '</td>' +
+        '<td>' + escaparTexto(runwayCenarioTexto) + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
   definirTexto('rel-cenario-recomendado', 'Cenário recomendado: ' + (analise.cenarioRecomendado || '—'));
   definirTexto('rel-cenario-justificativa', analise.justificativaRecomendacao || '');
   el('rel-insights').innerHTML = listaHtml(analise.insightsEstrategicos);
@@ -1180,6 +1211,8 @@ document.addEventListener('DOMContentLoaded', function () {
   el('form-premissas').addEventListener('submit', aplicarPremissas);
 
   el('btn-gerar-relatorio').addEventListener('click', gerarRelatorioIA);
+  var btnRelatorioRodape = el('btn-relatorio-rodape');
+  if (btnRelatorioRodape) btnRelatorioRodape.addEventListener('click', gerarRelatorioIA);
   el('btn-regerar-relatorio').addEventListener('click', gerarRelatorioIA);
   el('btn-imprimir-relatorio').addEventListener('click', function () { window.print(); });
   el('btn-fechar-relatorio').addEventListener('click', fecharModalRelatorio);
