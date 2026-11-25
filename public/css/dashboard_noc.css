@@ -1014,11 +1014,11 @@ body.pagina-noc.is-tv-mode .noc-shell {
   color: var(--noc-muted);
 }
 
-/* Barra de heartbeat (20 lotes) */
+/* Barra de heartbeat (60 lotes = 1h em granularidade de 1 min) */
 .heartbeat-strip {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   height: 28px;
   padding: 0 4px;
 }
@@ -1026,9 +1026,9 @@ body.pagina-noc.is-tv-mode .noc-shell {
 .hb-tick {
   flex: 1 1 0;
   height: 22px;
-  max-width: 12px;
-  min-width: 6px;
-  border-radius: 4px;
+  max-width: 8px;
+  min-width: 2px;
+  border-radius: 2px;
   transition: transform 0.1s ease;
 }
 

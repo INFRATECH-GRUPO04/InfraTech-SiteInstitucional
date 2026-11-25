@@ -311,7 +311,7 @@
   }
 
   function montarTicksHeartbeat(srv) {
-    const qtd = 20;
+    const qtd = 60;
     const series = srv.telemetria.series24h || [];
     const lim = srv.limites || state.limitesGlobais;
 
@@ -319,7 +319,7 @@
       return Array.from({ length: qtd }, () => `<span class="hb-tick hb-tick--neutral" title="Sem coleta"></span>`).join('');
     }
 
-    // Pega os últimos 20 pontos espaçados (ou últimos lotes)
+    // Pega os últimos 60 pontos (1h com granularidade de 1 min)
     const janela = series.slice(-qtd);
     const ticks = [];
     for (let i = 0; i < qtd - janela.length; i++) {
