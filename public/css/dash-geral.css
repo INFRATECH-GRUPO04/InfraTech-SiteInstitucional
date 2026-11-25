@@ -103,28 +103,6 @@ body.pagina-dash-geral .conteudo-principal h3 {
   gap: 10px 18px;
 }
 
-.fr-ambiente {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  border: 1px solid var(--fr-linha);
-  border-radius: 6px;
-  color: var(--fr-ciano);
-  background: rgb(0 207 255 / 0.08);
-  font: 600 0.8rem/1.4 inherit;
-  cursor: pointer;
-}
-
-.fr-ambiente:hover { background: rgb(0 207 255 / 0.14); }
-
-.fr-ambiente__ponto {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--fr-ok);
-}
-
 .fr-resumo-topo {
   display: flex;
   align-items: center;
@@ -154,9 +132,10 @@ body.pagina-dash-geral .conteudo-principal h3 {
 
 .fr-resumo-topo__item--ok { color: var(--fr-ok); }
 .fr-resumo-topo__item--atencao { color: var(--fr-atencao); }
-.fr-resumo-topo__item--offline { color: var(--fr-critico); }
+.fr-resumo-topo__item--critico { color: var(--fr-critico); }
+.fr-resumo-topo__item--offline { color: var(--fr-offline); }
 
-.fr-relogio {
+.fr-gerado-em {
   color: var(--fr-texto-suave);
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
@@ -266,7 +245,6 @@ body.pagina-dash-geral .conteudo-principal h3 {
 
 .fr-filtro button:focus-visible,
 .fr-botao-ia:focus-visible,
-.fr-ambiente:focus-visible,
 .fr-seta:focus-visible,
 .fr-link-servidor:focus-visible {
   outline: 2px solid var(--fr-ciano);
@@ -375,29 +353,15 @@ body.pagina-dash-geral .conteudo-principal h3 {
 .fr-legenda--ok { --cor: var(--fr-ok); }
 .fr-legenda--atencao { --cor: var(--fr-atencao); }
 .fr-legenda--critico { --cor: var(--fr-critico); }
+.fr-legenda--offline { --cor: var(--fr-offline); }
 
-/* ---------- SLA / disponibilidade ---------- */
+/* ---------- Disponibilidade ---------- */
 .fr-sla {
   display: grid;
   grid-template-columns: minmax(110px, 0.36fr) minmax(0, 1fr);
   align-items: center;
   gap: 12px;
   flex: 1;
-}
-
-.fr-sla__meta {
-  margin-top: 6px !important;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--fr-texto-suave);
-  font-size: 0.74rem;
-}
-
-.fr-sla__meta::before {
-  content: "";
-  width: 14px;
-  border-top: 2px dashed var(--fr-critico);
 }
 
 .fr-grafico {

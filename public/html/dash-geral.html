@@ -72,28 +72,23 @@
     <!-- Conteúdo principal -->
     <main class="conteudo-principal">
 
-      <!-- Topo: título, ambiente, resumo da frota e relógio -->
+      <!-- Topo: título, data de geração e resumo da frota -->
       <header class="fr-topo">
         <h1 class="fr-topo__titulo">Monitoramento da Frota</h1>
 
         <div class="fr-topo__meta">
-          <button type="button" class="fr-ambiente" aria-label="Selecionar ambiente">
-            <span class="fr-ambiente__ponto" aria-hidden="true"></span>
-            <span id="ambiente-nome">—</span>
-            <span aria-hidden="true">▾</span>
-          </button>
-
           <ul class="fr-resumo-topo" aria-label="Resumo da frota">
-            <li class="fr-resumo-topo__item fr-resumo-topo__item--ok" id="topo-online">— online</li>
+            <li class="fr-resumo-topo__item fr-resumo-topo__item--ok" id="topo-normais">— normais</li>
             <li class="fr-resumo-topo__item fr-resumo-topo__item--atencao" id="topo-atencao">— atenção</li>
+            <li class="fr-resumo-topo__item fr-resumo-topo__item--critico" id="topo-critico">— crítico</li>
             <li class="fr-resumo-topo__item fr-resumo-topo__item--offline" id="topo-offline">— offline</li>
           </ul>
 
-          <time class="fr-relogio" id="relogio">--/--/---- --:--</time>
+          <time class="fr-gerado-em" id="dados-gerados">Dados gerados em —</time>
         </div>
       </header>
 
-      <!-- Indicadores: saúde, SLA, incidentes ativos e MTTR -->
+      <!-- Indicadores: saúde, disponibilidade, incidentes ativos e MTTR -->
       <section class="fr-linha fr-linha--indicadores" aria-label="Indicadores da frota">
 
         <article class="fr-card fr-saude" id="card-saude" aria-labelledby="titulo-saude">
@@ -106,24 +101,25 @@
               </p>
               <div class="fr-saude__barra" aria-hidden="true"><span id="saude-barra"></span></div>
             </div>
-            <div class="fr-donut" role="img" aria-label="Distribuição dos servidores entre online, alerta e offline">
+            <div class="fr-donut" role="img" aria-label="Distribuição dos servidores entre normal, atenção, crítico e offline">
               <canvas id="grafico-saude"></canvas>
               <div class="fr-donut__centro">
                 <strong id="donut-numero">—</strong>
-                <span>Online</span>
+                <span>Normais</span>
               </div>
             </div>
           </div>
           <ul class="fr-saude__legenda">
-            <li class="fr-legenda fr-legenda--ok" id="leg-online">— Online</li>
-            <li class="fr-legenda fr-legenda--atencao" id="leg-alerta">— Alerta</li>
-            <li class="fr-legenda fr-legenda--critico" id="leg-offline">— Offline</li>
+            <li class="fr-legenda fr-legenda--ok" id="leg-normais">— Normais</li>
+            <li class="fr-legenda fr-legenda--atencao" id="leg-atencao">— Atenção</li>
+            <li class="fr-legenda fr-legenda--critico" id="leg-critico">— Crítico</li>
+            <li class="fr-legenda fr-legenda--offline" id="leg-offline">— Offline</li>
           </ul>
         </article>
 
         <article class="fr-card" aria-labelledby="titulo-disp">
           <header class="fr-card__cabecalho">
-            <h2 class="fr-card__titulo" id="titulo-disp">SLA / Disponibilidade (7d)</h2>
+            <h2 class="fr-card__titulo" id="titulo-disp">Disponibilidade (7d)</h2>
             <div class="fr-filtro" role="group" aria-label="Período da disponibilidade" id="filtro-disp">
               <button type="button" data-periodo="7d" aria-pressed="true" class="ativo">7d</button>
               <button type="button" data-periodo="30d" aria-pressed="false">30d</button>
@@ -132,10 +128,9 @@
           <div class="fr-sla">
             <div class="fr-sla__valor">
               <p class="fr-grande fr-grande--ciano" id="disp-valor">—</p>
-              <p class="fr-sla__meta" id="disp-meta">Meta —</p>
             </div>
             <div class="fr-grafico fr-grafico--sla">
-              <canvas id="grafico-disp" role="img" aria-label="Disponibilidade média da frota no período, com a linha da meta de SLA"></canvas>
+              <canvas id="grafico-disp" role="img" aria-label="Disponibilidade média da frota no período"></canvas>
             </div>
           </div>
         </article>

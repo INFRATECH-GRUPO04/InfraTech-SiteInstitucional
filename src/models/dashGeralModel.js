@@ -203,8 +203,6 @@ async function montar(usuario) {
         versao: 2,
         id_empresa: idEmpresa,
         gerado_em: gold.gerado_em || null,
-        ambiente: 'Produção',
-        meta_sla: Number(process.env.META_SLA) || 99,
         saude_frota: saude,
         disponibilidade_frota: normalizarDisponibilidade(gold.disponibilidade_frota),
         ranking_problematicos: []

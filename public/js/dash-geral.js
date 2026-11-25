@@ -6,7 +6,7 @@
  *   GET /dash-geral/relatorio-ia relatório executivo (stub vazio por enquanto)
  *
  * Campos do dashboard principal:
- *   ambiente, gerado_em, meta_sla
+ *   gerado_em, saude_frota, disponibilidade_frota, ranking_problematicos
  *   saude_frota             { total, normais, atencao, critico, offline, pct_saudavel }
  *   disponibilidade_frota   { "7d" | "30d": { rotulos, valores } }
  *   ranking_problematicos[] { id_servidor, nome, situacao, incidentes }
@@ -25,9 +25,11 @@
   const URL_DADOS = '/dash-geral';
   const URL_INCIDENTES = '/dash-geral/incidentes';
   const URL_RELATORIO_IA = '/dash-geral/relatorio-ia';
-  const META_SLA_PADRAO = 99.0;
+
+  const INTERVALO_ATUALIZACAO_MS = 5 * 60 * 1000;
 
   let dados = null;
+  let carregando = false;
 
   const fmt1 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const ROTULO_PRIORIDADE = { normal: 'Normal', atencao: 'Atenção', critico: 'Crítico', offline: 'Offline' };
@@ -37,6 +39,7 @@
   const VERDE = '#22c55e';
   const AMARELO = '#fbbf24';
   const VERMELHO = '#ef4444';
+  const CINZA = '#8b98a5';
   const COR_TEXTO = '#9db4c6';
   const COR_GRADE = 'rgb(145 165 183 / 0.14)';
 
@@ -88,10 +91,28 @@
     return String(nome).trim().split(/\s+/).slice(0, 2).map((parte) => parte.charAt(0)).join('').toUpperCase();
   }
 
-  function atualizarRelogio() {
-    const agora = new Date();
-    const dois = (n) => String(n).padStart(2, '0');
-    definirTexto('relogio', dois(agora.getDate()) + '/' + dois(agora.getMonth() + 1) + '/' + agora.getFullYear() + ' ' + horaAgora(agora));
+  const fmtGerado = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
+
+  function formatarGeradoEm(valor) {
+    if (!valor) return '—';
+    const data = new Date(valor);
+    if (Number.isNaN(data.getTime())) return '—';
+    const partes = Object.fromEntries(fmtGerado.formatToParts(data).map((p) => [p.type, p.value]));
+    const hora = partes.hour === '24' ? '00' : partes.hour;
+    return `${partes.day}/${partes.month}/${partes.year} ${hora}:${partes.minute}`;
+  }
+
+  function renderizarGeradoEm() {
+    const no = document.getElementById('dados-gerados');
+    if (!no) return;
+    no.textContent = 'Dados gerados em ' + formatarGeradoEm(dados && dados.gerado_em);
+    const data = dados && dados.gerado_em ? new Date(dados.gerado_em) : null;
+    if (data && !Number.isNaN(data.getTime())) no.dateTime = data.toISOString();
+    else no.removeAttribute('datetime');
   }
 
   /* ---------- Carregamento ---------- */
@@ -144,17 +165,20 @@
     else console.warn('[dash-geral] não foi possível carregar o relatório de IA:', relatorio.reason);
   }
 
-  async function carregarDados() {
-    mostrarCarregando();
+  async function carregarDados(silent = false) {
+    if (carregando) return;
+    carregando = true;
+    if (!silent) mostrarCarregando();
     try {
       dados = await buscarJSON(URL_DADOS);
+      await carregarComplementos();
+      renderizarTudo();
     } catch (erro) {
       console.error('[dash-geral] falha ao carregar dados:', erro);
-      mostrarErro(erro.message || 'Não foi possível carregar os dados.');
-      return;
+      if (!silent) mostrarErro(erro.message || 'Não foi possível carregar os dados.');
+    } finally {
+      carregando = false;
     }
-    await carregarComplementos();
-    renderizarTudo();
   }
 
   /* ---------- Topo e saúde da frota ---------- */
@@ -162,12 +186,13 @@
     const saude = dados.saude_frota || {};
     const total = numeroOuNull(saude.total) || 0;
     const normais = numeroOuNull(saude.normais) || 0;
-    const alerta = (numeroOuNull(saude.atencao) || 0) + (numeroOuNull(saude.critico) || 0);
+    const atencao = numeroOuNull(saude.atencao) || 0;
+    const critico = numeroOuNull(saude.critico) || 0;
     const offline = numeroOuNull(saude.offline) || 0;
 
-    definirTexto('ambiente-nome', dados.ambiente || '—');
-    definirTexto('topo-online', total ? normais + ' online' : '— online');
-    definirTexto('topo-atencao', total ? alerta + ' atenção' : '— atenção');
+    definirTexto('topo-normais', total ? normais + ' normais' : '— normais');
+    definirTexto('topo-atencao', total ? atencao + ' atenção' : '— atenção');
+    definirTexto('topo-critico', total ? critico + ' crítico' : '— crítico');
     definirTexto('topo-offline', total ? offline + ' offline' : '— offline');
 
     const pct = numeroOuNull(saude.pct_saudavel);
@@ -181,13 +206,14 @@
     if (barra) barra.style.width = (pct == null ? 0 : pct) + '%';
 
     definirTexto('donut-numero', total ? normais + '/' + total : '—');
-    definirTexto('leg-online', total ? normais + '/' + total + ' Online' : '— Online');
-    definirTexto('leg-alerta', alerta + ' Alerta');
+    definirTexto('leg-normais', total ? normais + ' Normais' : '— Normais');
+    definirTexto('leg-atencao', atencao + ' Atenção');
+    definirTexto('leg-critico', critico + ' Crítico');
     definirTexto('leg-offline', offline + ' Offline');
 
     if (graficos.saude) {
-      graficos.saude.data.datasets[0].data = total ? [normais, alerta, offline] : [1, 0, 0];
-      graficos.saude.data.datasets[0].backgroundColor = total ? [VERDE, AMARELO, VERMELHO] : ['rgb(255 255 255 / 0.1)'];
+      graficos.saude.data.datasets[0].data = total ? [normais, atencao, critico, offline] : [1, 0, 0, 0];
+      graficos.saude.data.datasets[0].backgroundColor = total ? [VERDE, AMARELO, VERMELHO, CINZA] : ['rgb(255 255 255 / 0.1)'];
       graficos.saude.update();
     }
   }
@@ -198,8 +224,8 @@
     graficos.saude = new Chart(canvas, {
       type: 'doughnut',
       data: {
-        labels: ['Online', 'Alerta', 'Offline'],
-        datasets: [{ data: [0, 0, 0], backgroundColor: [VERDE, AMARELO, VERMELHO], borderWidth: 0 }]
+        labels: ['Normais', 'Atenção', 'Crítico', 'Offline'],
+        datasets: [{ data: [0, 0, 0, 0], backgroundColor: [VERDE, AMARELO, VERMELHO, CINZA], borderWidth: 0 }]
       },
       options: {
         responsive: true,
@@ -210,12 +236,7 @@
     });
   }
 
-  /* ---------- SLA / disponibilidade ---------- */
-  function metaSla() {
-    const meta = numeroOuNull(dados && dados.meta_sla);
-    return meta == null ? META_SLA_PADRAO : meta;
-  }
-
+  /* ---------- Disponibilidade ---------- */
   function criarGraficoDisp() {
     const canvas = document.getElementById('grafico-disp');
     if (!canvas || !window.Chart) return;
@@ -237,16 +258,6 @@
             pointBorderColor: CIANO,
             pointBorderWidth: 1.5,
             spanGaps: false
-          },
-          {
-            label: 'Meta de SLA',
-            data: [],
-            borderColor: VERMELHO,
-            borderWidth: 1.5,
-            borderDash: [5, 4],
-            pointRadius: 0,
-            pointHoverRadius: 0,
-            fill: false
           }
         ]
       },
@@ -260,7 +271,7 @@
           tooltip: {
             callbacks: {
               label: (ctx) => ctx.parsed.y == null ? ' Sem dados'
-                : (ctx.datasetIndex === 1 ? ' Meta de SLA: ' : ' Disponibilidade: ') + fmt1.format(ctx.parsed.y) + '%'
+                : ' Disponibilidade: ' + fmt1.format(ctx.parsed.y) + '%'
             }
           }
         },
@@ -281,26 +292,28 @@
     });
   }
 
+  function ajustarEixoDisp(validos) {
+    const menor = validos.length ? Math.min(...validos) : null;
+    const min = menor == null ? 90 : Math.max(0, Math.floor((menor - 0.001) / 5) * 5);
+    graficos.disp.options.scales.y.min = min;
+    graficos.disp.options.scales.y.max = 100;
+  }
+
   function atualizarDisponibilidade() {
     const frota = dados.disponibilidade_frota || {};
     const serie = frota[periodo.disp] || { rotulos: [], valores: [] };
     const valores = Array.isArray(serie.valores) ? serie.valores : [];
     const validos = valores.map(numeroOuNull).filter((v) => v != null);
     const atual = media(validos);
-    const meta = metaSla();
 
-    definirTexto('titulo-disp', 'SLA / Disponibilidade (' + periodo.disp + ')');
+    definirTexto('titulo-disp', 'Disponibilidade (' + periodo.disp + ')');
     definirTexto('disp-valor', atual == null ? 'sem dados' : fmt1.format(atual) + '%');
-    definirTexto('disp-meta', 'Meta ' + fmt1.format(meta) + '%');
 
     if (!graficos.disp) return;
     const rotulos = Array.isArray(serie.rotulos) ? serie.rotulos : [];
     graficos.disp.data.labels = rotulos;
     graficos.disp.data.datasets[0].data = valores;
-    graficos.disp.data.datasets[1].data = rotulos.map(() => meta);
-    // O eixo acompanha os dados (inclui a meta); quedas reais a 0% também cabem.
-    const menor = Math.min(meta, ...(validos.length ? validos : [meta]));
-    graficos.disp.options.scales.y.min = Math.max(0, Math.floor(menor / 5) * 5);
+    ajustarEixoDisp(validos);
     graficos.disp.update();
   }
 
@@ -582,6 +595,7 @@
   /* ---------- Inicialização ---------- */
   function renderizarTudo() {
     if (!dados) return;
+    renderizarGeradoEm();
     renderizarSaude();
     renderizarIndicadoresIncidentes();
     renderizarIncidentesAbertos();
@@ -592,9 +606,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    atualizarRelogio();
-    setInterval(atualizarRelogio, 30000);
-
     criarGraficoSaude();
     criarGraficoDisp();
     criarGraficoIncidentes();
@@ -602,5 +613,8 @@
     configurarFiltro('filtro-inc', 'inc', atualizarIncidentes);
     configurarAtualizacaoIA();
     carregarDados();
+    setInterval(() => {
+      if (!document.hidden) carregarDados(true);
+    }, INTERVALO_ATUALIZACAO_MS);
   });
 })();

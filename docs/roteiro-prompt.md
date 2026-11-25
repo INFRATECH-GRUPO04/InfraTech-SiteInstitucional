@@ -7,7 +7,12 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 > `docs/plano-implementacao.md`). O JSON principal não traz `servidores[]`,
 > `incidentes` nem `relatorio_ia`: o backend devolve `saude_frota` e
 > `ranking_problematicos`, e incidentes/IA vêm de rotas complementares hoje
-> vazias. As seções abaixo registram o histórico da versão anterior.
+> vazias. O topo perdeu o botão "Produção" e a meta de SLA, passando a exibir
+> `gerado_em` como "Dados gerados em DD/MM/AAAA HH:mm". A disponibilidade usa
+> dias de calendário com séries de 7 e 30 pontos rotulados `dd/mm` e valores
+> ponderados por capturas recebidas ÷ esperadas. Esta sessão executou o plano
+> (Feat 6) e registrou seus prompts em Feat 7; as demais seções abaixo registram
+> o histórico da versão anterior.
 
 ## Legenda
 
@@ -26,6 +31,8 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 | 3 | ETL `silver2gold.py` | Plan / Build | P4, B5 | RECONSTRUÍDO |
 | 4 | Limites globais sem tabela própria | Plan / Build | P5, B6 | RECONSTRUÍDO |
 | 5 | Script de captura (somente contexto) | Plan | P6 | RECONSTRUÍDO |
+| 6 | Dashboard Geral v2 revisada | Build | **B7, B8** | **REAL** |
+| 7 | Roteiro de prompts (esta sessão) | Build | **B9** | **REAL** |
 
 ---
 
@@ -152,6 +159,88 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 
 ---
 
+## Feat 6 — Dashboard Geral v2 revisada (25/11/2026)
+
+**Objetivo.** Executar o plano fechado em `docs/plano-implementacao.md` nos dois
+repositórios (Site e ETL), sem commit e sem push, deixando tudo no working tree.
+
+**Contexto usado.** O plano vem anexado à própria mensagem e é a única fonte da
+rodada. Não houve modo Plan: decisões, contratos e checklist já estavam fechados
+no documento. Estado inicial conferido: branches `feat/dash-luiz` nos dois repos,
+Site com apenas o plano modificado e ETL limpo.
+
+### Modo Build
+
+#### B7 — Execução do plano [REAL]
+
+> execute o plano @docs/plano-implementacao.md
+
+(com o conteúdo integral do plano anexado à mensagem)
+
+**Como foi executado:**
+- Site: `ambiente`/`meta_sla` removidos de `dashGeralModel.js`; `.env.example`,
+  `.env.dev` e o bloco do topo de `docs/roteiro-prompt.md` ajustados.
+- Site: `dash-geral.html`, `dash-geral.css` e `dash-geral.js` revisados — sem
+  botão “Produção”, sem relógio ao vivo e sem meta de SLA; `gerado_em` formatado
+  no navegador em `America/Sao_Paulo`; 4 contadores e donut de 4 fatias;
+  disponibilidade com um dataset só, eixo adaptativo e auto-refresh silencioso
+  de 5 min, pausado com a aba oculta.
+- ETL: `silver2gold.py` passou a calcular dias de calendário (30 pontos no `30d`,
+  `7d` recortado dele), hoje proporcional até `agora`, `null` antes da primeira
+  captura, `0` depois, frota ponderada por `recebidas ÷ esperadas` e rótulos
+  `dd/mm`; `DIAS_SEMANA` e os lambdas de dia da semana removidos. `README.md`
+  atualizado com o contrato 4.1 e as regras; `.env.example` conferido.
+- Fora de escopo preservado: `app.js`, `global.css`, `servidorModel.js`,
+  complementos, schema, `bronze2silver.py`, `script_python/` e `logs/` intactos.
+
+**Validação registrada:**
+- MySQL `infratech-mysql` iniciado; fixture da seção 4.1 em
+  `03-gold/empresa-2/dash-geral.json` (ignorado pelo Git); servidores ativos 3 e 4.
+- Site no ar em `:3333`: 401 sem sessão, 200 com o contrato exato 4.2 (sem
+  `ambiente`, `meta_sla`, `servidores`, `incidentes` ou `relatorio_ia`), 403 para
+  ADMIN e 404 para empresa sem gold; incidentes/IA vazios como na seção 4.3.
+- Front executado num DOM mínimo via `vm` em `/tmp/opencode/site-test/validar_front.js`:
+  `Dados gerados em 25/11/2026 14:30`, contadores `0/0/1/1`, centro `0/2`, donut
+  `[0, 0, 1, 1]`, `99,5%` no 7d e `99,8%` no 30d, eixo 95–100, refresh sem
+  sobreposição e sem requisições com aba oculta.
+- ETL validada com `boto3` falsificado em `/tmp/opencode/etl-test/validar_etl.py`:
+  objeto com `data=` antiga ignorado sem `GetObject`, gold só com as chaves da
+  seção 4.1, 7/30 rótulos `dd/mm`, sequência `null → 100.0 → 0.0` e ponto da
+  frota `865/870 + 828/870 = 97,3`.
+- Servidor Node encerrado após os testes; nenhum commit e nenhum push.
+
+#### B8 — Continuação e conferência final [REAL]
+
+> continue o plano @docs/plano-implementacao.md
+
+(com o mesmo plano anexado)
+
+**Resultado registrado:** as etapas já estavam concluídas; conferido o
+`git status --short --branch` nos dois repos, com as alterações das seções 6 e 7
+apenas no working tree e os HEADs inalterados (`dde9ca7` no Site, `e1f51ed` na
+ETL). Nada foi commitado nem enviado.
+
+---
+
+## Feat 7 — Roteiro de prompts (atualização desta sessão)
+
+**Objetivo.** Registrar neste arquivo os pedidos literais da sessão que executou
+a v2 revisada, mantendo os prompts históricos intactos.
+
+### Modo Build
+
+#### B9 — Atualização do roteiro [REAL]
+
+> preencha de acordo com essa sessão a @docs/roteiro-prompt.md
+
+(com o conteúdo deste arquivo anexado à mensagem)
+
+**Como foi executado:** índice acrescido das feats 6 e 7, bloco do topo ajustado
+para apontar a sessão atual e novas seções inseridas antes de “Padrão observado
+nos prompts”, com os prompts `B7`, `B8` e `B9` marcados como `[REAL]`.
+
+---
+
 ## Padrão observado nos prompts
 
 - Referências a arquivos com `@caminho` e aspas quando o caminho tem espaço ou é argumento direto.
@@ -159,3 +248,4 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 - Contexto de negócio vem primeiro: sessão define empresa, isolamento por `fk_empresa`, exclusão lógica e “sem dados” em vez de zero falso.
 - Escopo explícito para evitar invenções: fora de escopo não entra sem pedido; Jira somente leitura; IA é template; ETL e site se encontram só no JSON gold.
 - Validação sempre manual: login, curl com cookie, perfis diferentes, estados 401/403/404 e conferência visual da dash.
+- Com o plano já fechado e anexado, o pedido encurta para “execute” / “continue”: não reformular decisões, não commitar, validar antes de encerrar e só depois registrar o que foi pedido.
