@@ -5,7 +5,7 @@
  */
 
 body.pagina-planejamento-financeiro {
-  --plan-fundo: #0b1119;
+  --plan-fundo: #050b16;
   --plan-cartao: #151e29;
   --plan-cartao-alt: #101923;
   --plan-borda: #293746;
@@ -79,6 +79,12 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   cursor: not-allowed;
 }
 
+.plan-botao:focus-visible,
+.plan-filtro-botao:focus-visible {
+  outline: 2px solid var(--plan-ciano);
+  outline-offset: 2px;
+}
+
 .plan-selo {
   display: inline-flex;
   align-items: center;
@@ -108,9 +114,25 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-introducao {
   display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 2px 0 14px;
+}
+
+.plan-introducao__texto {
+  display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 2px 0 16px;
+  min-width: 0;
+}
+
+.plan-introducao__acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .plan-introducao__titulo {
@@ -135,14 +157,14 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 }
 
 .plan-aviso {
-  margin-bottom: 16px;
-  padding: 10px 14px;
+  margin-bottom: 14px;
+  padding: 7px 12px;
   border-left: 3px solid var(--plan-ambar);
   border-radius: 8px;
   background: rgb(245 158 11 / 0.1);
   color: #f5d491;
-  font-size: 12.5px;
-  line-height: 1.45;
+  font-size: 11.5px;
+  line-height: 1.4;
 }
 
 .plan-aviso--banco {
@@ -237,6 +259,11 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   border: 1px solid #263746;
   border-radius: 10px;
   background: var(--plan-cartao-alt);
+  transition: border-color 0.2s ease;
+}
+
+.plan-kpi:hover {
+  border-color: #365066;
 }
 
 .plan-kpi__topo {
@@ -256,12 +283,16 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-kpi__valor {
   margin: 0 0 5px;
-  color: var(--plan-ciano);
+  color: #f4f9fd;
   font-size: clamp(1.35rem, 1.9vw, 1.75rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
+}
+
+.plan-kpi__valor--destaque {
+  color: var(--plan-ciano);
 }
 
 .plan-kpi__valor--positivo {
@@ -281,8 +312,9 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-faixa-economia {
   margin-top: 12px;
-  padding: 11px 14px;
-  border: 1px dashed rgb(0 207 255 / 0.35);
+  padding: 10px 14px;
+  border: 1px solid rgb(0 207 255 / 0.18);
+  border-left: 3px solid var(--plan-ciano);
   border-radius: 8px;
   background: rgb(0 207 255 / 0.05);
   color: #b8d6e6;
@@ -348,6 +380,17 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   border-radius: inherit;
   background: linear-gradient(90deg, #00cfff, #33d4ff);
   box-shadow: 0 0 10px rgb(0 207 255 / 0.35);
+  transition: width 0.3s ease;
+}
+
+.plan-progresso__preenchimento--alerta {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  box-shadow: 0 0 10px rgb(251 191 36 / 0.35);
+}
+
+.plan-progresso__preenchimento--critico {
+  background: linear-gradient(90deg, #ef4444, #fda4af);
+  box-shadow: 0 0 10px rgb(253 164 175 / 0.35);
 }
 
 .plan-progresso__legenda {
@@ -455,7 +498,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-paineis {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
   gap: 12px;
   margin-bottom: 16px;
 }
@@ -594,7 +637,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 }
 
 .plan-tabela th {
-  padding: 9px 10px;
+  padding: 8px 9px;
   border-bottom: 1px solid var(--plan-borda);
   color: var(--plan-texto-mudo);
   font-size: 10px;
@@ -605,11 +648,43 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 }
 
 .plan-tabela td {
-  padding: 10px;
+  padding: 8px 9px;
   border-bottom: 1px solid rgb(41 55 70 / 0.65);
   color: #cbd8e3;
   vertical-align: middle;
   white-space: nowrap;
+}
+
+.plan-uso-celula {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-uso-barra {
+  width: 52px;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #263746;
+}
+
+.plan-uso-barra__preenchimento {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.plan-uso-barra__preenchimento--saturado {
+  background: var(--plan-vermelho);
+}
+
+.plan-uso-barra__preenchimento--subutilizado {
+  background: var(--plan-ambar);
+}
+
+.plan-uso-barra__preenchimento--normal {
+  background: var(--plan-verde);
 }
 
 .plan-tabela tbody tr:hover {
@@ -946,8 +1021,15 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   }
 
   .plan-secao__cabecalho,
-  .plan-cartao__cabecalho {
+  .plan-cartao__cabecalho,
+  .plan-introducao {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .plan-introducao__acoes {
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   .plan-expansao-metricas {
