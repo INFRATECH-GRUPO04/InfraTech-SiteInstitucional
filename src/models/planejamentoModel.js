@@ -2,7 +2,10 @@
  * Concentra as consultas de planejamento financeiro: premissas da empresa,
  * servidores ativos com custo, histórico mensal e gestor responsável.
  */
-var database = require("../database/config")
+var fs = require("fs");
+var path = require("path");
+var clientS3 = require("@aws-sdk/client-s3");
+var database = require("../database/config");
 
 /* Busca as premissas financeiras da empresa, incluindo o responsável quando
  * houver um gestor vinculado. */
@@ -123,10 +126,54 @@ function atualizarPremissas(idEmpresa, dados, idGestor) {
     ]);
 }
 
+/* Normaliza o prefixo da camada Gold garantindo barra final e sem barra inicial. */
+function obterPrefixoGold() {
+    var prefixo = String(process.env.S3_GOLD_PREFIX || "03-gold/").replace(/^\/+/, "");
+    if (prefixo && !prefixo.endsWith("/")) {
+        prefixo += "/";
+    }
+    return prefixo;
+}
+
+/* Lê o JSON consolidado da camada Gold (S3 ou pasta local em dev).
+ * Retorna null quando não encontrado ou indisponível para manter o fallback da tela. */
+function lerTelemetriaGold(idEmpresa) {
+    var chave = obterPrefixoGold() + "empresa-" + Number(idEmpresa) + "/planejamento.json";
+    var bucket = String(process.env.S3_GOLD_BUCKET || process.env.S3_BUCKET || "").trim();
+
+    if (bucket && bucket !== "nome_bucket") {
+        var s3 = new clientS3.S3Client({ region: process.env.AWS_REGION || "us-east-1" });
+        return s3.send(new clientS3.GetObjectCommand({ Bucket: bucket, Key: chave }))
+            .then(function (resposta) {
+                return resposta.Body.transformToString();
+            })
+            .then(function (texto) {
+                return JSON.parse(texto);
+            })
+            .catch(function (erro) {
+                console.log("Telemetria Gold S3 indisponível (" + chave + "):", erro.message);
+                return null;
+            });
+    }
+
+    var caminhoLocal = path.join(process.cwd(), chave);
+    return fs.promises.readFile(caminhoLocal, "utf-8")
+        .then(function (texto) {
+            return JSON.parse(texto);
+        })
+        .catch(function (erro) {
+            if (erro.code !== "ENOENT") {
+                console.log("Falha ao ler telemetria Gold local (" + caminhoLocal + "):", erro.message);
+            }
+            return null;
+        });
+}
+
 module.exports = {
     buscarPlanejamento,
     listarServidoresAtivos,
     listarHistorico,
     buscarGestor,
-    atualizarPremissas
+    atualizarPremissas,
+    lerTelemetriaGold
 };
