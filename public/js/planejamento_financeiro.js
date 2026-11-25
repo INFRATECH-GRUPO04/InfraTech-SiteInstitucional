@@ -52,7 +52,7 @@ var planejamento = {
 
 var graficoCusto = null;
 var toastTimer = null;
-var filtroServidorAtual = 'alertas';
+var filtroServidorAtual = 'todos';
 var termoBuscaServidor = '';
 var nomesMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 var USOS_ILUSTRATIVOS = [
@@ -328,7 +328,11 @@ function renderCards() {
   }
   definirTexto('runway-valor', textoRunwayValor);
   var barra = el('runway-barra');
-  if (barra) barra.style.width = Math.min(100, percentual).toFixed(1) + '%';
+  if (barra) {
+    barra.style.width = Math.min(100, percentual).toFixed(1) + '%';
+    barra.classList.toggle('plan-progresso__preenchimento--critico', percentual >= 90);
+    barra.classList.toggle('plan-progresso__preenchimento--alerta', percentual >= 75 && percentual < 90);
+  }
   definirTexto('runway-uso', formatarNumero(planejamento.jogadores) + ' / ' + formatarNumero(capacidadeTotal) + ' jogadores');
   definirTexto('runway-percentual', formatarPercentual(percentual));
 
@@ -533,7 +537,12 @@ function renderServidores() {
       var usoCelula = 'Sem dados';
       var ociosoCelula = '—';
       if (!item.semTelemetria && item.uso != null) {
-        usoCelula = item.uso + '%';
+        var larguraUso = Math.max(0, Math.min(100, Number(item.uso) || 0));
+        usoCelula = '<span class="plan-uso-celula">' +
+          '<span>' + item.uso + '%</span>' +
+          '<span class="plan-uso-barra" aria-hidden="true">' +
+          '<span class="plan-uso-barra__preenchimento plan-uso-barra__preenchimento--' + item.situacao.classe + '" style="width: ' + larguraUso + '%"></span>' +
+          '</span></span>';
         ociosoCelula = formatarMoeda(item.ocioso);
       }
 
@@ -548,9 +557,9 @@ function renderServidores() {
     });
   }
 
-  var rotuloTotal = 'Total da frota (' + priorizados.length + ')';
+  var rotuloTotal = 'Total da frota ativa (' + priorizados.length + ')';
   if (visiveis.length !== priorizados.length) {
-    rotuloTotal = 'Total da frota (' + visiveis.length + ' de ' + priorizados.length + ' exibidos)';
+    rotuloTotal = 'Total da frota completa (' + priorizados.length + ' servidores · ' + visiveis.length + ' exibidos)';
   }
 
   var usoMedioTexto = 'Sem dados';
@@ -635,6 +644,16 @@ function renderGrafico() {
     return 'rgba(0, 207, 255, 0.85)';
   });
 
+  var bordas = valores.map(function (valor, indice) {
+    if (indice !== valores.length - 1) {
+      return 'transparent';
+    }
+    if (valor > planejamento.orcamento) {
+      return '#fda4af';
+    }
+    return '#00cfff';
+  });
+
   if (graficoCusto) graficoCusto.destroy();
 
   graficoCusto = new Chart(canvas, {
@@ -646,6 +665,8 @@ function renderGrafico() {
           label: 'Custo estimado',
           data: valores,
           backgroundColor: cores,
+          borderColor: bordas,
+          borderWidth: 1.5,
           borderRadius: 4,
           maxBarThickness: 46
         },
