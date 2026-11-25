@@ -1,7 +1,7 @@
 var sdk = require("@aws-sdk/client-s3");
 var s3 = require("../database/s3Config");
 var RAIZ = "03-gold/";
-var ARQUIVO = "dashboard_sarah.json";
+var ARQUIVO = "perfeito-sarah.json";
 
 function prefixo(idEmpresa, idServidor, data) {
     return RAIZ + "metricas"+ "/empresa_id=" + idEmpresa + "/servidor_id=" + idServidor + "/data=" + data + "/";
