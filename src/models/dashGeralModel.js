@@ -1,6 +1,10 @@
 /*
- * Dashboard Geral: lê o JSON gold, cruza com o MySQL e o Jira e devolve o
- * contrato único consumido por public/js/dash-geral.js.
+ * Dashboard Geral: lê o JSON gold, cruza com os limites do MySQL e devolve o
+ * contrato agregado consumido por public/js/dash-geral.js.
+ *
+ * O JSON principal não lista servidores nem traz Jira/IA: o front recebe apenas
+ * os agregados de saúde, a série de disponibilidade e o ranking (vazio enquanto
+ * não houver incidentes). As rotas complementares ficam em dashComplementosModel.
  */
 var fs = require('fs/promises');
 var path = require('path');
@@ -13,9 +17,6 @@ var LIMITES_PADRAO = {
     disco: { atencao: 80, critico: 90 }
 };
 var ORDEM_SITUACAO = { critico: 0, offline: 1, atencao: 2, normal: 3 };
-var SITUACAO_TEXTO = { normal: 'Normal', atencao: 'Atenção', critico: 'Crítico', offline: 'Offline' };
-var DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-var CAMPOS_JIRA = 'key,summary,status,priority,created,resolutiondate,labels';
 
 function numeroOuNull(valor) {
     if (valor === null || valor === undefined || valor === '') return null;
@@ -124,307 +125,45 @@ function classificarValor(valor, faixa) {
     return 'normal';
 }
 
-function processarServidores(servidoresGold, servidoresBanco, limitesPorServidor, limitesEmpresa, inc7dPorServidor) {
-    var agora = Date.now();
-    var porId = new Map(servidoresBanco.map(function (servidor) {
-        return [Number(servidor.id_servidor), servidor];
-    }));
+/* Sem entrada no gold (ou já marcado offline pela ETL) o servidor conta como
+ * offline. Caso contrário, a pior situação entre cpu/ram/disco define o estado.
+ */
+function classificarServidor(servidorGold, limites) {
+    if (!servidorGold || servidorGold.conexao === 'offline') return 'offline';
 
-    return (Array.isArray(servidoresGold) ? servidoresGold : []).map(function (servidor) {
-        var id = Number(servidor.id_servidor);
-        var cadastro = porId.get(id);
-        if (!cadastro) return null;
-
-        var atual = servidor.atual || {};
-        var limites = Object.assign({}, LIMITES_PADRAO, limitesEmpresa, limitesPorServidor[id] || {});
-        var situacao = 'normal';
-        var tempoMin = null;
-
-        if (servidor.conexao === 'offline') {
-            situacao = 'offline';
-            var ultima = new Date(servidor.ultima_leitura).getTime();
-            if (Number.isFinite(ultima)) tempoMin = Math.max(0, Math.round((agora - ultima) / 60000));
-        } else {
-            ['cpu', 'ram', 'disco'].forEach(function (recurso) {
-                var estado = classificarValor(atual[recurso], limites[recurso]);
-                if (estado && ORDEM_SITUACAO[estado] < ORDEM_SITUACAO[situacao]) situacao = estado;
-            });
-        }
-
-        return Object.assign({}, servidor, {
-            nome: cadastro.nome || servidor.nome || null,
-            cidade: cadastro.localizacao || servidor.cidade || null,
-            tempo_min: tempoMin,
-            situacao: situacao,
-            inc7d: Number(inc7dPorServidor[id] || 0),
-            atual: {
-                cpu: numeroOuNull(atual.cpu),
-                ram: numeroOuNull(atual.ram),
-                disco: numeroOuNull(atual.disco)
-            },
-            disponibilidade_pct: Object.assign({}, servidor.disponibilidade_pct || {}, {
-                '24h': numeroOuNull(servidor.disponibilidade_pct && servidor.disponibilidade_pct['24h'])
-            })
-        });
-    }).filter(Boolean).sort(function (a, b) {
-        return ORDEM_SITUACAO[a.situacao] - ORDEM_SITUACAO[b.situacao]
-            || String(a.nome || a.id_servidor).localeCompare(String(b.nome || b.id_servidor));
+    var atual = servidorGold.atual || {};
+    var situacao = 'normal';
+    ['cpu', 'ram', 'disco'].forEach(function (recurso) {
+        var estado = classificarValor(atual[recurso], limites[recurso]);
+        if (estado && ORDEM_SITUACAO[estado] < ORDEM_SITUACAO[situacao]) situacao = estado;
     });
-}
-
-/* ---------- Jira (somente leitura) ---------- */
-
-function textoJql(valor) {
-    return '"' + String(valor).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
-}
-
-function dataIssue(valor) {
-    var tempo = new Date(valor).getTime();
-    return Number.isFinite(tempo) ? tempo : null;
-}
-
-function servidorDaIssue(issue) {
-    var labels = (issue.fields && issue.fields.labels) || [];
-    var label = labels.find(function (item) { return /^servidor-\d+$/.test(String(item)); });
-    return label ? Number(String(label).slice('servidor-'.length)) : null;
-}
-
-function chaveDia(data) {
-    return data.getFullYear() + '-' + String(data.getMonth() + 1).padStart(2, '0')
-        + '-' + String(data.getDate()).padStart(2, '0');
-}
-
-function janela(dias, deslocamento, agora) {
-    var fim = new Date(agora);
-    fim.setHours(24, 0, 0, 0);
-    fim.setDate(fim.getDate() - deslocamento);
-    var inicio = new Date(fim);
-    inicio.setDate(inicio.getDate() - dias);
-    return { inicio: inicio.getTime(), fim: fim.getTime() };
-}
-
-function seriePorDia(issues, dias, deslocamento, agora) {
-    var atual = janela(dias, deslocamento, agora);
-    var anterior = janela(dias, deslocamento + dias, agora);
-    var rotulos = [];
-    var chaves = [];
-    var valores = [];
-
-    for (var i = dias - 1; i >= 0; i--) {
-        var dia = new Date(agora);
-        dia.setHours(12, 0, 0, 0);
-        dia.setDate(dia.getDate() - i);
-        rotulos.push(dias === 7 ? DIAS_SEMANA[dia.getDay()]
-            : String(dia.getDate()).padStart(2, '0') + '/' + String(dia.getMonth() + 1).padStart(2, '0'));
-        chaves.push(chaveDia(dia));
-        valores.push(0);
-    }
-
-    var indicePorDia = new Map(chaves.map(function (chave, indice) { return [chave, indice]; }));
-    var anteriorTotal = 0;
-    issues.forEach(function (issue) {
-        var criada = dataIssue(issue.fields && issue.fields.created);
-        if (criada == null) return;
-        if (criada >= atual.inicio && criada < atual.fim) {
-            var indice = indicePorDia.get(chaveDia(new Date(criada)));
-            if (indice !== undefined) valores[indice] += 1;
-        } else if (criada >= anterior.inicio && criada < anterior.fim) {
-            anteriorTotal += 1;
-        }
-    });
-
-    return { rotulos: rotulos, valores: valores, anterior: anteriorTotal };
-}
-
-async function buscarIssues(jql) {
-    var base = process.env.JIRA_BASE_URL;
-    var email = process.env.JIRA_EMAIL;
-    var token = process.env.JIRA_TOKEN;
-    if (!base || !email || !token) return [];
-
-    var caminho = String(process.env.JIRA_API_PATH || '/rest/api/3/search/jql').replace(/^\//, '');
-    var url = new URL(String(base).replace(/\/+$/, '') + '/' + caminho);
-    var parametros = new URLSearchParams({ jql: jql, fields: CAMPOS_JIRA, maxResults: '100' });
-    var autorizacao = 'Basic ' + Buffer.from(email + ':' + token).toString('base64');
-    var timeout = Number(process.env.JIRA_TIMEOUT_MS) || 5000;
-    var issues = [];
-    var proximo = null;
-
-    for (var pagina = 0; pagina < 5; pagina++) {
-        if (proximo) parametros.set('nextPageToken', proximo);
-        try {
-            var resposta = await fetch(url.toString() + '?' + parametros.toString(), {
-                headers: { Authorization: autorizacao, Accept: 'application/json' },
-                signal: AbortSignal.timeout(timeout)
-            });
-            if (!resposta.ok) {
-                console.warn('[dash-geral] Jira respondeu', resposta.status, 'para', jql);
-                return [];
-            }
-            var corpo = await resposta.json();
-            if (!Array.isArray(corpo.issues)) return [];
-            issues = issues.concat(corpo.issues);
-            proximo = corpo.nextPageToken;
-            if (!proximo) break;
-        } catch (erro) {
-            console.warn('[dash-geral] falha ao consultar Jira:', erro.message);
-            return [];
-        }
-    }
-    return issues;
-}
-
-function prioridadeIssue(issue) {
-    var nome = String(((issue.fields || {}).priority || {}).name || '').toLowerCase();
-    if (['highest', 'critical', 'blocker'].includes(nome)) return 'critico';
-    if (nome === 'high') return 'atencao';
-    return 'normal';
-}
-
-function incidentesVazios() {
-    return {
-        abertos: [],
-        por_dia: {
-            '7d': { rotulos: [], valores: [], anterior: null },
-            '30d': { rotulos: [], valores: [], anterior: null }
-        },
-        mttr: { minutos: null, periodo: '(últimos 30d)' },
-        inc7dPorServidor: {}
-    };
-}
-
-async function buscarIncidentes(idEmpresa, servidoresBanco, agora) {
-    var vazio = incidentesVazios();
-    var projeto = process.env.JIRA_PROJECT;
-    if (!projeto) return vazio;
-
-    var filtro = 'project = ' + textoJql(projeto) + ' AND labels = ' + textoJql('empresa-' + idEmpresa);
-    var [abertos, criadas, resolvidas] = await Promise.all([
-        buscarIssues(filtro + ' AND statusCategory != Done ORDER BY created DESC'),
-        buscarIssues(filtro + ' AND created >= -60d ORDER BY created DESC'),
-        buscarIssues(filtro + ' AND statusCategory = Done AND resolutiondate >= -30d ORDER BY resolutiondate DESC')
-    ]);
-
-    var nomesPorId = new Map(servidoresBanco.map(function (servidor) {
-        return [Number(servidor.id_servidor), servidor.nome || ''];
-    }));
-    var janela7d = janela(7, 0, agora);
-    var inc7dPorServidor = {};
-
-    criadas.forEach(function (issue) {
-        var id = servidorDaIssue(issue);
-        var criada = dataIssue(issue.fields && issue.fields.created);
-        if (!nomesPorId.has(id) || criada == null) return;
-        if (criada >= janela7d.inicio && criada < janela7d.fim) {
-            inc7dPorServidor[id] = (inc7dPorServidor[id] || 0) + 1;
-        }
-    });
-
-    var minutosAbertos = abertos.map(function (issue) {
-        var criada = dataIssue(issue.fields && issue.fields.created);
-        return criada == null ? null : Math.max(0, Math.round((agora.getTime() - criada) / 60000));
-    }).filter(function (minutos) { return minutos != null; });
-    var tempoMedio = minutosAbertos.length
-        ? Math.round(minutosAbertos.reduce(function (soma, minutos) { return soma + minutos; }, 0) / minutosAbertos.length)
-        : null;
-
-    var minutosResolucao = resolvidas.map(function (issue) {
-        var criada = dataIssue(issue.fields && issue.fields.created);
-        var resolvida = dataIssue(issue.fields && issue.fields.resolutiondate);
-        return criada != null && resolvida != null && resolvida >= criada ? (resolvida - criada) / 60000 : null;
-    }).filter(function (minutos) { return minutos != null; });
-    var mttr = minutosResolucao.length
-        ? Math.round(minutosResolucao.reduce(function (soma, minutos) { return soma + minutos; }, 0) / minutosResolucao.length)
-        : null;
-
-    return {
-        abertos: abertos.map(function (issue) {
-            var id = servidorDaIssue(issue);
-            var criada = dataIssue(issue.fields && issue.fields.created);
-            return {
-                id: issue.key,
-                servidor: nomesPorId.has(id) ? nomesPorId.get(id) : '',
-                prioridade: prioridadeIssue(issue),
-                minutos: criada == null ? null : Math.max(0, Math.round((agora.getTime() - criada) / 60000))
-            };
-        }),
-        por_dia: {
-            '7d': seriePorDia(criadas, 7, 0, agora),
-            '30d': seriePorDia(criadas, 30, 0, agora)
-        },
-        mttr: { minutos: mttr, periodo: '(últimos 30d)' },
-        inc7dPorServidor: inc7dPorServidor
-    };
-}
-
-/* ---------- Relatório template (sem serviço externo) ---------- */
-
-function piorRecurso(servidor) {
-    return ['cpu', 'ram', 'disco'].map(function (recurso) {
-        return { recurso: recurso, valor: numeroOuNull(servidor.atual && servidor.atual[recurso]) };
-    }).filter(function (item) { return item.valor != null; })
-        .sort(function (a, b) { return b.valor - a.valor; })[0] || null;
-}
-
-function montarIA(servidores, abertos) {
-    var relatorio = {
-        gerado_em: new Date().toISOString(),
-        resumo: '',
-        pontos: [],
-        recomendacoes: []
-    };
-    if (!servidores.length) {
-        relatorio.resumo = 'Sem dados para análise';
-        return relatorio;
-    }
-
-    var contar = function (situacao) {
-        return servidores.filter(function (servidor) { return servidor.situacao === situacao; }).length;
-    };
-    var normais = contar('normal');
-    var atencao = contar('atencao');
-    var criticos = contar('critico');
-    var offline = contar('offline');
-    relatorio.resumo = 'Frota com ' + servidores.length + ' servidor(es): ' + normais + ' normal(is), '
-        + atencao + ' em atenção, ' + criticos + ' crítico(s) e ' + offline + ' offline. '
-        + abertos.length + ' incidente(s) aberto(s).';
-
-    var pontos = servidores.filter(function (servidor) { return servidor.situacao !== 'normal'; })
-        .sort(function (a, b) {
-            return ORDEM_SITUACAO[a.situacao] - ORDEM_SITUACAO[b.situacao]
-                || (numeroOuNull(a.disponibilidade_pct['24h']) ?? 101) - (numeroOuNull(b.disponibilidade_pct['24h']) ?? 101);
-        })
-        .slice(0, 3);
-
-    relatorio.pontos = pontos.map(function (servidor) {
-        var nome = servidor.nome || ('Servidor ' + servidor.id_servidor);
-        var disponibilidade = numeroOuNull(servidor.disponibilidade_pct['24h']);
-        var detalhe = SITUACAO_TEXTO[servidor.situacao] || servidor.situacao;
-        if (disponibilidade != null) detalhe += ' · disponibilidade ' + disponibilidade.toFixed(1) + '%';
-        if (servidor.tempo_min != null) detalhe += ' · ' + servidor.tempo_min + ' min no estado';
-        return nome + ' — ' + detalhe;
-    });
-
-    relatorio.recomendacoes = pontos.map(function (servidor) {
-        var nome = servidor.nome || ('Servidor ' + servidor.id_servidor);
-        var pior = piorRecurso(servidor);
-        if (pior) return 'Verificar ' + pior.recurso.toUpperCase() + ' de ' + nome + ', em ' + pior.valor.toFixed(1) + '%.';
-        return 'Investigar ' + nome + ', classificado como ' + (SITUACAO_TEXTO[servidor.situacao] || servidor.situacao) + '.';
-    });
-
-    return relatorio;
+    return situacao;
 }
 
 function seriesVazias() {
-    var vazia = function () { return { rotulos: [], valores: [], media: null, anterior: null }; };
-    return { '24h': vazia(), '7d': vazia(), '30d': vazia() };
+    var vazia = function () { return { rotulos: [], valores: [] }; };
+    return { '7d': vazia(), '30d': vazia() };
 }
 
-/* Monta a resposta final mantendo o formato recebido do gold. */
+function normalizarDisponibilidade(frota) {
+    var series = seriesVazias();
+    if (!frota || typeof frota !== 'object') return series;
+    ['7d', '30d'].forEach(function (janela) {
+        var serie = frota[janela] || {};
+        series[janela] = {
+            rotulos: Array.isArray(serie.rotulos) ? serie.rotulos : [],
+            valores: Array.isArray(serie.valores) ? serie.valores.map(numeroOuNull) : []
+        };
+    });
+    return series;
+}
+
+/* Monta a resposta final: empresa sempre vem da sessão, saúde é calculada com
+ * todos os servidores ativos visíveis e o gold só fornece leituras/série.
+ */
 async function montar(usuario) {
     var idEmpresa = Number(usuario.empresa);
     var gold = await lerGold(idEmpresa);
-    var agora = new Date();
 
     var [servidoresBanco, limitesPorServidor, limitesLinhas] = await Promise.all([
         buscarServidoresPermitidos(usuario),
@@ -442,24 +181,34 @@ async function montar(usuario) {
         };
     });
 
-    var incidentes = await buscarIncidentes(idEmpresa, servidoresBanco, agora);
-    var servidores = processarServidores(
-        gold.servidores, servidoresBanco, limitesPorServidor, limitesEmpresa, incidentes.inc7dPorServidor
+    var goldPorServidor = new Map(
+        (Array.isArray(gold.servidores) ? gold.servidores : []).map(function (servidor) {
+            return [Number(servidor.id_servidor), servidor];
+        })
     );
 
-    return Object.assign({}, gold, {
-        versao: 1,
-        id_empresa: idEmpresa,
-        ambiente: 'Produção',
-        servidores: servidores,
-        disponibilidade_frota: gold.disponibilidade_frota || seriesVazias(),
-        incidentes: {
-            abertos: incidentes.abertos,
-            por_dia: incidentes.por_dia,
-            mttr: incidentes.mttr
-        },
-        relatorio_ia: montarIA(servidores, incidentes.abertos)
+    var saude = { total: 0, normais: 0, atencao: 0, critico: 0, offline: 0, pct_saudavel: null };
+    servidoresBanco.forEach(function (servidor) {
+        var id = Number(servidor.id_servidor);
+        var limites = Object.assign({}, LIMITES_PADRAO, limitesEmpresa, limitesPorServidor[id] || {});
+        var situacao = classificarServidor(goldPorServidor.get(id), limites);
+
+        saude.total += 1;
+        if (situacao === 'normal') saude.normais += 1;
+        else saude[situacao] += 1;
     });
+    saude.pct_saudavel = saude.total ? Math.round((saude.normais / saude.total) * 100) : null;
+
+    return {
+        versao: 2,
+        id_empresa: idEmpresa,
+        gerado_em: gold.gerado_em || null,
+        ambiente: 'Produção',
+        meta_sla: Number(process.env.META_SLA) || 99,
+        saude_frota: saude,
+        disponibilidade_frota: normalizarDisponibilidade(gold.disponibilidade_frota),
+        ranking_problematicos: []
+    };
 }
 
 module.exports = { montar, lerGold };

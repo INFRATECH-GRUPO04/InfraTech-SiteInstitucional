@@ -1,25 +1,30 @@
 /*
  * Dashboard Geral (gestor) — "Monitoramento da Frota".
- * Todos os dados vêm de GET /dash-geral (JSON do gold já enriquecido pelo backend
- * com banco e Jira). Aqui só há apresentação: nenhuma regra de limite é
- * calculada no navegador.
+ * O front consome três rotas:
+ *   GET /dash-geral              agregados de saúde, série e ranking
+ *   GET /dash-geral/incidentes   incidentes/MTTR (stub vazio por enquanto)
+ *   GET /dash-geral/relatorio-ia relatório executivo (stub vazio por enquanto)
  *
- * Campos que a tela usa:
- *   ambiente
- *   servidores[]            { id_servidor, nome, situacao, inc7d, inc30d }
- *   disponibilidade_frota   { "7d" | "30d": { rotulos, valores, anterior } }
- *   incidentes.abertos[]    { id, servidor, prioridade, minutos, responsavel }
- *   incidentes.por_dia      { "7d" | "30d": { rotulos, valores, anterior } }
+ * Campos do dashboard principal:
+ *   ambiente, gerado_em, meta_sla
+ *   saude_frota             { total, normais, atencao, critico, offline, pct_saudavel }
+ *   disponibilidade_frota   { "7d" | "30d": { rotulos, valores } }
+ *   ranking_problematicos[] { id_servidor, nome, situacao, incidentes }
+ *
+ * Campos complementares (vazios até Jira/IA entrarem):
+ *   incidentes.abertos[]    { id, id_servidor, servidor, prioridade, minutos, responsavel }
+ *   incidentes.por_dia      { "7d" | "30d": { rotulos, valores } }
  *   incidentes.mttr         { minutos, periodo, anterior_minutos }
  *   relatorio_ia            { gerado_em, resumo, recomendacoes }
- *   meta_sla (opcional)     meta de disponibilidade em %, padrão 99,0
- * `responsavel`, `anterior_minutos`, `inc30d` e `meta_sla` são novos: se o backend
- * ainda não enviar, a tela mostra "—" ou usa o padrão, sem quebrar.
+ *
+ * Nenhuma regra de limite é calculada no navegador: aqui só há apresentação.
  */
 (function () {
   'use strict';
 
   const URL_DADOS = '/dash-geral';
+  const URL_INCIDENTES = '/dash-geral/incidentes';
+  const URL_RELATORIO_IA = '/dash-geral/relatorio-ia';
   const META_SLA_PADRAO = 99.0;
 
   let dados = null;
@@ -117,37 +122,55 @@
     if (recomendacoes) recomendacoes.replaceChildren();
   }
 
+  async function buscarJSON(url) {
+    const resposta = await fetch(url, { cache: 'no-store' });
+    if (!resposta.ok) {
+      let detalhe = '';
+      try { detalhe = (await resposta.json()).erro || ''; } catch (_) { /* resposta sem JSON */ }
+      throw new Error(detalhe || 'Falha ao carregar ' + url + ' (' + resposta.status + ').');
+    }
+    return resposta.json();
+  }
+
+  // Complementos são independentes: se um falhar, o dashboard principal segue.
+  async function carregarComplementos() {
+    const [incidentes, relatorio] = await Promise.allSettled([
+      buscarJSON(URL_INCIDENTES),
+      buscarJSON(URL_RELATORIO_IA)
+    ]);
+    if (incidentes.status === 'fulfilled') dados.incidentes = incidentes.value;
+    else console.warn('[dash-geral] não foi possível carregar os incidentes:', incidentes.reason);
+    if (relatorio.status === 'fulfilled') dados.relatorio_ia = relatorio.value;
+    else console.warn('[dash-geral] não foi possível carregar o relatório de IA:', relatorio.reason);
+  }
+
   async function carregarDados() {
     mostrarCarregando();
     try {
-      const resposta = await fetch(URL_DADOS, { cache: 'no-store' });
-      if (!resposta.ok) {
-        let detalhe = '';
-        try { detalhe = (await resposta.json()).erro || ''; } catch (_) { /* resposta sem JSON */ }
-        throw new Error(detalhe || 'Falha ao carregar a dashboard (' + resposta.status + ').');
-      }
-      dados = await resposta.json();
-      renderizarTudo();
+      dados = await buscarJSON(URL_DADOS);
     } catch (erro) {
       console.error('[dash-geral] falha ao carregar dados:', erro);
       mostrarErro(erro.message || 'Não foi possível carregar os dados.');
+      return;
     }
+    await carregarComplementos();
+    renderizarTudo();
   }
 
   /* ---------- Topo e saúde da frota ---------- */
   function renderizarSaude() {
-    const servidores = dados.servidores || [];
-    const total = servidores.length;
-    const normais = servidores.filter((s) => s.situacao === 'normal').length;
-    const alerta = servidores.filter((s) => s.situacao === 'atencao' || s.situacao === 'critico').length;
-    const offline = servidores.filter((s) => s.situacao === 'offline').length;
+    const saude = dados.saude_frota || {};
+    const total = numeroOuNull(saude.total) || 0;
+    const normais = numeroOuNull(saude.normais) || 0;
+    const alerta = (numeroOuNull(saude.atencao) || 0) + (numeroOuNull(saude.critico) || 0);
+    const offline = numeroOuNull(saude.offline) || 0;
 
     definirTexto('ambiente-nome', dados.ambiente || '—');
     definirTexto('topo-online', total ? normais + ' online' : '— online');
     definirTexto('topo-atencao', total ? alerta + ' atenção' : '— atenção');
     definirTexto('topo-offline', total ? offline + ' offline' : '— offline');
 
-    const pct = total ? Math.round((normais / total) * 100) : null;
+    const pct = numeroOuNull(saude.pct_saudavel);
     const tom = pct == null || pct >= 70 ? '' : pct >= 40 ? 'fr-saude--atencao' : 'fr-saude--critico';
     const card = document.getElementById('card-saude');
     if (card) card.className = 'fr-card fr-saude' + (tom ? ' ' + tom : '');
@@ -416,9 +439,9 @@
   }
 
   function linkIncidente(incidente) {
-    const encontrado = (dados.servidores || []).find((servidor) =>
-      servidor.nome === incidente.servidor || String(servidor.id_servidor) === String(incidente.servidor));
-    return linkServidor(encontrado ? encontrado.id_servidor : incidente.servidor, incidente.servidor || '—');
+    // Quando o Jira entrar, cada chamado já trará id_servidor para o link direto.
+    const id = incidente.id_servidor != null ? incidente.id_servidor : incidente.servidor;
+    return linkServidor(id, incidente.servidor || '—');
   }
 
   function celulaResponsavel(incidente) {
@@ -477,14 +500,12 @@
   function renderizarProblematicos() {
     const lista = document.getElementById('lista-problematicos');
     if (!lista) return;
-    const servidores = dados.servidores || [];
-    // Prefere a contagem de 30 dias; se o backend só enviar a de 7 dias, o título acompanha.
-    const campo = servidores.some((s) => numeroOuNull(s.inc30d) != null) ? 'inc30d' : 'inc7d';
-    definirTexto('titulo-problematicos', 'Servidores Mais Problemáticos (' + (campo === 'inc30d' ? '30d' : '7d') + ')');
+    definirTexto('titulo-problematicos', 'Servidores Mais Problemáticos (30d)');
 
-    const top = servidores
-      .filter((s) => numeroOuNull(s[campo]) > 0)
-      .sort((a, b) => b[campo] - a[campo])
+    const ranking = Array.isArray(dados.ranking_problematicos) ? dados.ranking_problematicos : [];
+    const top = ranking
+      .filter((servidor) => numeroOuNull(servidor.incidentes) > 0)
+      .sort((a, b) => numeroOuNull(b.incidentes) - numeroOuNull(a.incidentes))
       .slice(0, 3);
 
     if (!top.length) {
@@ -492,18 +513,20 @@
       return;
     }
 
-    const maior = top[0][campo];
+    const maior = numeroOuNull(top[0].incidentes) || 1;
     lista.replaceChildren(...top.map((servidor, indice) => {
-      const trilho = el('span', 'fr-ranking__trilho fr-ranking__trilho--' + servidor.situacao);
+      const situacao = ROTULO_PRIORIDADE[servidor.situacao] ? servidor.situacao : 'normal';
+      const incidentes = numeroOuNull(servidor.incidentes) || 0;
+      const trilho = el('span', 'fr-ranking__trilho fr-ranking__trilho--' + situacao);
       const preenchimento = el('span');
-      preenchimento.style.width = Math.round((servidor[campo] / maior) * 100) + '%';
+      preenchimento.style.width = Math.round((incidentes / maior) * 100) + '%';
       trilho.append(preenchimento);
       const item = el('li', 'fr-ranking__item');
       item.append(
         el('span', 'fr-ranking__pos', (indice + 1) + '.'),
         linkServidor(servidor.id_servidor, servidor.nome),
         trilho,
-        el('span', 'fr-ranking__qtd', servidor[campo] + (servidor[campo] === 1 ? ' incidente' : ' incidentes'))
+        el('span', 'fr-ranking__qtd', incidentes + (incidentes === 1 ? ' incidente' : ' incidentes'))
       );
       return item;
     }));
@@ -528,6 +551,13 @@
     }
   }
 
+  async function carregarRelatorioIA() {
+    const relatorio = await buscarJSON(URL_RELATORIO_IA);
+    dados = dados || {};
+    dados.relatorio_ia = relatorio;
+    renderizarRelatorioIA();
+  }
+
   function configurarAtualizacaoIA() {
     const botao = document.getElementById('ia-atualizar');
     if (!botao) return;
@@ -538,7 +568,9 @@
       botao.classList.add('carregando');
       if (rotulo) rotulo.textContent = 'Analisando…';
       try {
-        await carregarDados();
+        await carregarRelatorioIA();
+      } catch (erro) {
+        console.warn('[dash-geral] falha ao atualizar o relatório de IA:', erro);
       } finally {
         botao.disabled = false;
         botao.classList.remove('carregando');

@@ -3,6 +3,12 @@
 Registro dos pedidos feitos no OpenCode, separados por **feat** e por **modo** (Plan / Build).
 Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/2026.
 
+> **Atualização de 25/11/2026:** o contrato da Dashboard Geral foi revisado (ver
+> `docs/plano-implementacao.md`). O JSON principal não traz `servidores[]`,
+> `incidentes` nem `relatorio_ia`: o backend devolve `saude_frota` e
+> `ranking_problematicos`, e incidentes/IA vêm de rotas complementares hoje
+> vazias. As seções abaixo registram o histórico da versão anterior.
+
 ## Legenda
 
 - **[REAL]** — transcrição literal de mensagem enviada neste chat.
