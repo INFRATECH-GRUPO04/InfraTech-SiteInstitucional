@@ -77,18 +77,22 @@
       <div class="dashboard-welcome__meta">
         <span class="plan-selo plan-selo--online"><span class="plan-selo__ponto"></span><span id="fisicos-online">6</span> físicos online</span>
         <time class="dashboard-welcome__hora" id="relogio"></time>
-        <button type="button" class="plan-botao plan-botao--contorno" id="btn-premissas-topo">Premissas</button>
-        <button type="button" class="plan-botao plan-botao--principal" id="btn-gerar-relatorio">Gerar relatório IA</button>
       </div>
     </header>
 
     <section class="plan-introducao">
-      <h2 class="plan-introducao__titulo">Planejamento Financeiro</h2>
-      <p class="plan-introducao__descricao">
-        Última atualização por <strong id="nome-gestor">Alberto Santos</strong>
-        em <strong id="data-cadastro">10/11/2026</strong>: custos, capacidade, crescimento,
-        orçamento, custo de expansão e meta de uso.
-      </p>
+      <div class="plan-introducao__texto">
+        <h2 class="plan-introducao__titulo">Planejamento Financeiro</h2>
+        <p class="plan-introducao__descricao">
+          Última atualização por <strong id="nome-gestor">Alberto Santos</strong>
+          em <strong id="data-cadastro">10/11/2026</strong>: custos, capacidade, crescimento,
+          orçamento, custo de expansão e meta de uso.
+        </p>
+      </div>
+      <div class="plan-introducao__acoes">
+        <button type="button" class="plan-botao plan-botao--contorno" id="btn-premissas-topo">Premissas</button>
+        <button type="button" class="plan-botao plan-botao--principal" id="btn-gerar-relatorio">Gerar relatório IA</button>
+      </div>
     </section>
 
     <div class="plan-aviso" id="aviso-ilustrativo">
@@ -138,7 +142,7 @@
             <span class="plan-kpi__rotulo">ROI de infraestrutura</span>
             <span class="plan-selo-simulado" title="Derivado da receita simulada e do custo cadastrado">Simulado</span>
           </div>
-          <p class="plan-kpi__valor" id="kpi-roi">66,67%</p>
+          <p class="plan-kpi__valor plan-kpi__valor--destaque" id="kpi-roi">66,67%</p>
           <p class="plan-kpi__detalhe" id="kpi-breakeven">Break-even: 6.000 jogadores</p>
         </article>
       </div>
@@ -211,11 +215,11 @@
             <input type="search" id="pesquisa-servidor" placeholder="Buscar servidor ou localidade..." aria-label="Buscar servidor ou localidade">
           </label>
           <div class="plan-filtros-grupo" role="group" aria-label="Filtrar servidores por prioridade">
-            <button type="button" class="plan-filtro-botao plan-filtro-botao--ativo" data-filtro-servidor="alertas" aria-pressed="true">Alertas e críticos (<span id="cont-filtro-alertas">0</span>)</button>
+            <button type="button" class="plan-filtro-botao" data-filtro-servidor="alertas" aria-pressed="false">Alertas e críticos (<span id="cont-filtro-alertas">0</span>)</button>
             <button type="button" class="plan-filtro-botao" data-filtro-servidor="criticos" aria-pressed="false">Críticos (<span id="cont-filtro-criticos">0</span>)</button>
             <button type="button" class="plan-filtro-botao" data-filtro-servidor="subutilizados" aria-pressed="false">Subutilizados (<span id="cont-filtro-subutilizados">0</span>)</button>
             <button type="button" class="plan-filtro-botao" data-filtro-servidor="normais" aria-pressed="false">Normais (<span id="cont-filtro-normais">0</span>)</button>
-            <button type="button" class="plan-filtro-botao" data-filtro-servidor="todos" aria-pressed="false">Todos (<span id="cont-filtro-todos">0</span>)</button>
+            <button type="button" class="plan-filtro-botao plan-filtro-botao--ativo" data-filtro-servidor="todos" aria-pressed="true">Todos (<span id="cont-filtro-todos">0</span>)</button>
           </div>
         </div>
 
