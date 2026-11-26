@@ -580,7 +580,7 @@
         if (!quantidadeValidas) {
             fraseTendencia = 'Não há dados suficientes para resumir a tendência entre as métricas.';
         } else if (document.getElementById('classificacaoPearson').textContent === 'Praticamente nula') {
-            fraseTendencia = `A relação entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')} é praticamente nula.`;
+            fraseTendencia = `A mediana das correlações entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')} é praticamente nula; os pares podem ter tendências diferentes.`;
         } else if (crescentes > decrescentes) {
             fraseTendencia = `Predominam relações crescentes entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')}.`;
         } else if (decrescentes > crescentes) {
@@ -603,12 +603,12 @@
             interpretacao = 'Não há dados suficientes para resumir a tendência. A variação explicada não está disponível neste período.';
         } else if (r2ArredondadoParaZero) {
             var percentualProximoDeZero = r2VisualmenteZero ? 'aproximadamente 0%' : '0%';
-            interpretacao = `Os modelos lineares explicam ${percentualProximoDeZero} da variação observada ${descricaoMetricaY}. Recomenda-se investigar outros fatores associados ao seu comportamento.`;
+            interpretacao = `A mediana da variação explicada pelos modelos ${descricaoMetricaY} é ${percentualProximoDeZero}. Recomenda-se investigar outros fatores associados ao seu comportamento.`;
         } else if (!Number.isFinite(r2Percentual)) {
             interpretacao = `${fraseTendencia} A variação explicada não está disponível neste período.`;
         } else {
             var percentualInterpretacao = formatarNumero(r2Percentual, 1);
-            interpretacao = `${fraseTendencia} A mediana do R² indica que os modelos explicam ${percentualInterpretacao}% da variação observada ${descricaoMetricaY}.`;
+            interpretacao = `${fraseTendencia} A mediana da variação explicada pelos modelos ${descricaoMetricaY} é ${percentualInterpretacao}%.`;
         }
         document.getElementById('interpretacaoRegressao').textContent = interpretacao;
 
@@ -926,7 +926,6 @@
     function renderizarAnalise(documento) {
         var resumo = documento.pearson.resumo || {};
         var distribuicao = resumo.distribuicao || {};
-        var relacoes = documento.pearson.porRelacao || [];
         var valorPearson = resumo.medianaCoeficiente;
         var anelPearson = document.getElementById('anelPearson');
         var medianaPearson = document.getElementById('medianaPearson');
@@ -951,10 +950,10 @@
         anelPearson.setAttribute('aria-label', valorPearson == null
             ? 'Correlação mediana: dados insuficientes' : `Correlação mediana ${formatarNumero(valorPearson, 3)}, força ${rotulosFaixa[faixa]}, direção ${sinal}`);
         classificacao.textContent = rotulosFaixa[faixa];
-        var totalRelacoes = relacoes.length;
+        var totalRelacoes = Number(resumo.quantidadeRelacoesValidas) || 0;
         // mostra as contagens por intensidade
         var contagensForca = {
-            fracasNulas: Number(distribuicao.fracas || 0) + Number(distribuicao.nulas || 0),
+            fracasNulas: Number(distribuicao.fracas || 0),
             moderadas: Number(distribuicao.moderadas || 0),
             fortes: Number(distribuicao.fortes || 0)
         };
