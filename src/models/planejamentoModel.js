@@ -7,6 +7,8 @@ var path = require("path");
 var clientS3 = require("@aws-sdk/client-s3");
 var database = require("../database/config");
 
+var s3 = new clientS3.S3Client({ region: process.env.AWS_REGION || "us-east-1" });
+
 /* Busca as premissas financeiras da empresa, incluindo o responsável quando
  * houver um gestor vinculado. */
 function buscarPlanejamento(idEmpresa) {
@@ -135,14 +137,9 @@ function obterPrefixoGold() {
     return prefixo;
 }
 
-/* Lê o JSON consolidado da camada Gold (S3 ou pasta local em dev).
- * Retorna null quando não encontrado ou indisponível para manter o fallback da tela. */
-function lerTelemetriaGold(idEmpresa) {
-    var chave = obterPrefixoGold() + "empresa-" + Number(idEmpresa) + "/planejamento.json";
-    var bucket = String(process.env.S3_GOLD_BUCKET || process.env.S3_BUCKET || "").trim();
-
+/* Lê um arquivo JSON específico da camada Gold (bucket único S3 ou pasta local em dev). */
+function lerArquivoGold(bucket, chave) {
     if (bucket && bucket !== "nome_bucket") {
-        var s3 = new clientS3.S3Client({ region: process.env.AWS_REGION || "us-east-1" });
         return s3.send(new clientS3.GetObjectCommand({ Bucket: bucket, Key: chave }))
             .then(function (resposta) {
                 return resposta.Body.transformToString();
@@ -166,6 +163,19 @@ function lerTelemetriaGold(idEmpresa) {
                 console.log("Falha ao ler telemetria Gold local (" + caminhoLocal + "):", erro.message);
             }
             return null;
+        });
+}
+
+/* Lê o JSON consolidado da camada Gold (dash-capacidade.json com fallback para planejamento.json).
+ * Retorna null quando não encontrado ou indisponível para manter o fallback da tela. */
+function lerTelemetriaGold(idEmpresa) {
+    var base = obterPrefixoGold() + "empresa-" + Number(idEmpresa) + "/";
+    var bucket = String(process.env.S3_BUCKET || "").trim();
+
+    return lerArquivoGold(bucket, base + "dash-capacidade.json")
+        .then(function (dados) {
+            if (dados) return dados;
+            return lerArquivoGold(bucket, base + "planejamento.json");
         });
 }
 
