@@ -52,6 +52,7 @@ function historico(req, res) {
   var idServidor = Number(req.params.idServidor);
   var inicio = String(req.query.inicio || '');
   var fim = String(req.query.fim || '');
+  console.log("historico -> empresa:", req.usuario.empresa, "servidor:", idServidor, "inicio:", inicio, "fim:", fim);
   var dataValida = function (valor) {
     return /^\d{4}-\d{2}-\d{2}$/.test(valor) && !isNaN(Date.parse(valor));
   };

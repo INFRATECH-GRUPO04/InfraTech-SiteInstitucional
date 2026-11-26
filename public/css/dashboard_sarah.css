@@ -51,6 +51,11 @@
     width: 100%;
 }
 
+.dash-main{
+    width: 100%;
+    height: 100%;
+}
+
 .cards{
     background-color: #171D2B;
     border: #232B40 solid 1px;
