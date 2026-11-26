@@ -332,8 +332,7 @@
                         // Agora o select já tem opções: o value existe
                         if (filtro_servidor.options.length > 0) {
                             filtro_servidor.selectedIndex = 0;
-                            // atualizarDashboard();       //  era 
-                            carregarServidor(filtro_servidor.value)
+                            atualizarDashboard();       //  era carregarServidor(filtro_servidor.value)
 
                         } else {
                             mostrarSemServidor();
