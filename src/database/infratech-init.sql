@@ -2,7 +2,7 @@
 -- CRIACAO E SELECAO DO BANCO DE DADOS
 -- =====================================================
 
-CREATE DATABASE infratech;
+CREATE DATABASE IF NOT EXISTS infratech;
 
 USE infratech;
 

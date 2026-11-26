@@ -1,0 +1,36 @@
+# Compose usado no dev e copiado para /opt/infratech na EC2.
+# O arquivo de ambiente fica sempre ao lado deste compose (infratech.env).
+# Troque "seuusuario" pelo seu namespace antes de publicar as imagens.
+
+services:
+  mysql:
+    image: mysql:8.4
+    env_file: ./infratech.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # O entrypoint oficial executa este SQL apenas no primeiro start com volume vazio.
+      - ../src/database/infratech-init.sql:/docker-entrypoint-initdb.d/01-infratech.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  site:
+    image: seuusuario/infratech-site:1.0
+    env_file: ./infratech.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  alertas:
+    image: seuusuario/infratech-alertas:1.0
+    env_file: ./infratech.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

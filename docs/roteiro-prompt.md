@@ -126,7 +126,7 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 
 #### P5 — Origem dos limites [RECONSTRUÍDO]
 
-> o site ainda usa `limite_alerta_global`, mas essa tabela não existe no `infratech-atualizado.sql`. tira essa dependência sem criar tabela nova: o global pode ser derivado do menor limite `uso_percentual` por tipo de componente da empresa. as rotas `/servidor/alertas/globais/:idEmpresa` e o contrato `tipo`, `limite_atencao`, `limite_critico` continuam iguais, que as outras dash consomem. se não tiver métrica, cai no padrão do `dashboard-data.js`.
+> o site ainda usa `limite_alerta_global`, mas essa tabela não existe no `infratech-init.sql`. tira essa dependência sem criar tabela nova: o global pode ser derivado do menor limite `uso_percentual` por tipo de componente da empresa. as rotas `/servidor/alertas/globais/:idEmpresa` e o contrato `tipo`, `limite_atencao`, `limite_critico` continuam iguais, que as outras dash consomem. se não tiver métrica, cai no padrão do `dashboard-data.js`.
 
 ### Modo Build
 
