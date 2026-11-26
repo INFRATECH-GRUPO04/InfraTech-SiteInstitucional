@@ -85,6 +85,20 @@ function formatarMes(data) {
     return nomes[d.getUTCMonth()] + '/' + ano;
 }
 
+/* Converte para número finito ou retorna null quando ausente/inválido. */
+function numeroOuNulo(valor) {
+    if (valor === null || valor === undefined || valor === '') return null;
+    var numero = Number(valor);
+    if (!Number.isFinite(numero)) return null;
+    return numero;
+}
+
+/* Formata quantidade de meses no singular ou plural. */
+function textoMeses(quantidade) {
+    if (quantidade === 1) return '1 mês';
+    return quantidade + ' meses';
+}
+
 /* Monta o objeto de resposta usado pelo frontend, a partir dos dados do banco e do Gold S3. */
 function montarResposta(plano, servidores, historico, gestor, telemetriaGold) {
     var primeiro = (plano && plano[0]) || {};
@@ -162,18 +176,16 @@ function montarResposta(plano, servidores, historico, gestor, telemetriaGold) {
 
             if (temGold) {
                 var itemGold = mapaGold[idServidor];
-                if (itemGold && itemGold.uso_medio_30d != null) {
-                    uso = Number(itemGold.uso_medio_30d);
-                    pico = uso;
-                    if (itemGold.pico_30d != null) {
-                        pico = Number(itemGold.pico_30d);
-                    }
-                    if (itemGold.ram_media_30d != null) {
-                        ramMedia = Number(itemGold.ram_media_30d);
-                    }
-                    if (itemGold.disco_medio_30d != null) {
-                        discoMedio = Number(itemGold.disco_medio_30d);
-                    }
+                var usoGold = null;
+                if (itemGold) {
+                    usoGold = numeroOuNulo(itemGold.uso_medio_30d);
+                }
+                if (usoGold !== null) {
+                    uso = usoGold;
+                    pico = numeroOuNulo(itemGold.pico_30d);
+                    if (pico === null) pico = uso;
+                    ramMedia = numeroOuNulo(itemGold.ram_media_30d);
+                    discoMedio = numeroOuNulo(itemGold.disco_medio_30d);
                     conexao = itemGold.conexao || 'online';
                 } else {
                     semTelemetria = true;
@@ -307,57 +319,22 @@ function formatarReais(valor) {
 }
 
 /* Consolida métricas financeiras, de capacidade e de ociosidade da frota. */
-function calcularMetricasRelatorio(dados, corpoRequisicao) {
-    var listaRecebida = [];
-    if (corpoRequisicao && Array.isArray(corpoRequisicao.servidores)) {
-        listaRecebida = corpoRequisicao.servidores;
-    }
-
-    var servidoresDetalhados = dados.servidores.map(function (srv, indice) {
-        var correspondente = listaRecebida.find(function (item) {
-            if (!item) return false;
-            if (srv.idServidor && item.idServidor) {
-                return Number(item.idServidor) === Number(srv.idServidor);
-            }
-            return item.nome === srv.nome;
-        });
-
-        var uso = null;
+function calcularMetricasRelatorio(dados) {
+    var servidoresDetalhados = dados.servidores.map(function (srv) {
+        var uso = numeroOuNulo(srv.uso);
+        var semTelemetria = Boolean(srv.semTelemetria) || uso === null;
         var pico = null;
-        var semTelemetria = Boolean(srv.semTelemetria);
-
-        if (dados.origemTelemetria === 's3_gold') {
-            if (!semTelemetria && srv.uso != null) {
-                uso = Number(srv.uso);
-                pico = uso;
-                if (srv.pico != null) {
-                    pico = Number(srv.pico);
-                }
-            } else {
-                semTelemetria = true;
-            }
-        } else if (srv.uso != null) {
-            uso = Number(srv.uso);
-            pico = uso;
-            if (srv.pico != null) {
-                pico = Number(srv.pico);
-            }
-        } else if (!semTelemetria) {
-            var ref = USOS_REFERENCIA[indice] || { uso: 0, pico: 0 };
-            uso = ref.uso;
-            pico = ref.pico;
-            if (correspondente && correspondente.uso != null) {
-                uso = Number(correspondente.uso) || 0;
-            }
-            if (correspondente && correspondente.pico != null) {
-                pico = Number(correspondente.pico) || uso;
-            }
+        if (!semTelemetria) {
+            pico = numeroOuNulo(srv.pico);
+            if (pico === null) pico = uso;
+        } else {
+            uso = null;
         }
 
         var custoOcioso = 0;
         var situacao = 'Sem dados';
 
-        if (!semTelemetria && uso != null) {
+        if (!semTelemetria) {
             if (uso < dados.metaUso) {
                 custoOcioso = srv.custo * (dados.metaUso - uso) / 100;
             }
@@ -370,15 +347,6 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
             }
         }
 
-        var ramMedia = null;
-        if (srv.ramMedia != null) {
-            ramMedia = Number(srv.ramMedia);
-        }
-        var discoMedio = null;
-        if (srv.discoMedio != null) {
-            discoMedio = Number(srv.discoMedio);
-        }
-
         return {
             idServidor: srv.idServidor || null,
             nome: srv.nome,
@@ -386,8 +354,8 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
             custo: srv.custo,
             uso: uso,
             pico: pico,
-            ramMedia: ramMedia,
-            discoMedio: discoMedio,
+            ramMedia: numeroOuNulo(srv.ramMedia),
+            discoMedio: numeroOuNulo(srv.discoMedio),
             conexao: srv.conexao || 'simulado',
             semTelemetria: semTelemetria,
             custoOcioso: Number(custoOcioso.toFixed(2)),
@@ -477,9 +445,7 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
         var prazoEntrega = c.prazoFixo || 'Imediato';
         if (c.adicionais > 0) {
             if (dados.provisionamento > 0) {
-                var unidadePrazo = ' meses';
-                if (dados.provisionamento === 1) unidadePrazo = ' mês';
-                prazoEntrega = dados.provisionamento + unidadePrazo;
+                prazoEntrega = textoMeses(dados.provisionamento);
             } else {
                 prazoEntrega = 'Imediato';
             }
@@ -623,10 +589,8 @@ function gerarAnaliseFallback(dados, metricas) {
                     p.excedenteCapacidade.toLocaleString('pt-BR') +
                     ' jogadores (' + p.ocupacaoPrevista + '% de ocupação), exigindo expansão prévia.';
             }
-            var unidade = ' meses';
-            if (p.meses === 1) unidade = ' mês';
             return {
-                horizonte: p.meses + unidade,
+                horizonte: textoMeses(p.meses),
                 previsao: textoPrev,
                 impactoNegocio: textoImp
             };
@@ -744,13 +708,14 @@ function normalizarDadosFallback(corpoRequisicao) {
     }
 
     var servidores = listaServidores.map(function (s) {
-        var uso = null;
-        if (s && s.uso != null) {
-            uso = Number(s.uso);
-        }
-        var pico = uso;
-        if (s && s.pico != null) {
-            pico = Number(s.pico);
+        var uso = numeroOuNulo(s && s.uso);
+        var semTelemetria = Boolean(s && s.semTelemetria) || uso === null;
+        var pico = null;
+        if (!semTelemetria) {
+            pico = numeroOuNulo(s && s.pico);
+            if (pico === null) pico = uso;
+        } else {
+            uso = null;
         }
         return {
             idServidor: (s && s.idServidor) || null,
@@ -759,8 +724,10 @@ function normalizarDadosFallback(corpoRequisicao) {
             custo: Number(s && s.custo) || 0,
             uso: uso,
             pico: pico,
+            ramMedia: numeroOuNulo(s && s.ramMedia),
+            discoMedio: numeroOuNulo(s && s.discoMedio),
             conexao: (s && s.conexao) || 'simulado',
-            semTelemetria: Boolean(s && s.semTelemetria)
+            semTelemetria: semTelemetria
         };
     });
 
@@ -812,7 +779,7 @@ function gerarRelatorio(req, res) {
                 dados = normalizarDadosFallback(corpo);
             }
 
-            var metricas = calcularMetricasRelatorio(dados, corpo);
+            var metricas = calcularMetricasRelatorio(dados);
             var emitidoEm = new Date().toLocaleString('pt-BR');
 
             return consultarGeminiRelatorio(dados, metricas)
