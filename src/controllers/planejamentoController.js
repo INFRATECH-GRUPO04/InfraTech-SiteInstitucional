@@ -267,9 +267,6 @@ function obter(req, res) {
 
     carregarPlanejamento(idEmpresa)
         .then(function (dados) {
-            if (!dados) {
-                return res.status(404).json({ erro: 'Planejamento não configurado para esta empresa.' });
-            }
             return res.status(200).json(dados);
         })
         .catch(function (erro) {
@@ -450,9 +447,12 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
         }
     });
 
-    var usoMedioFrota = 0;
-    if (qtdComTelemetria > 0) {
-        usoMedioFrota = somaUso / qtdComTelemetria;
+    var usoMedioFrota = null;
+    var custoOciosoConsolidado = null;
+    var temTelemetria = qtdComTelemetria > 0;
+    if (temTelemetria) {
+        usoMedioFrota = Number((somaUso / qtdComTelemetria).toFixed(1));
+        custoOciosoConsolidado = Number(custoOciosoTotal.toFixed(2));
     }
 
     var projecoes = [1, 3, 6].map(function (meses) {
@@ -512,8 +512,9 @@ function calcularMetricasRelatorio(dados, corpoRequisicao) {
         percentualCapacidade: Number(percentualCapacidade.toFixed(1)),
         runwayMeses: runwayMeses,
         prazoDecisaoMeses: prazoDecisaoMeses,
-        custoOciosoTotal: Number(custoOciosoTotal.toFixed(2)),
-        usoMedioFrota: Number(usoMedioFrota.toFixed(1)),
+        temTelemetria: temTelemetria,
+        custoOciosoTotal: custoOciosoConsolidado,
+        usoMedioFrota: usoMedioFrota,
         servidorGargalo: servidorGargalo,
         servidoresSaturados: servidoresSaturados,
         servidoresSubutilizados: servidoresSubutilizados,
@@ -562,12 +563,36 @@ function gerarAnaliseFallback(dados, metricas) {
             ' meses) já é menor ou igual ao tempo de entrega de hardware (' + dados.provisionamento + ' meses).';
     }
 
-    var analiseFrota = 'A frota opera com uso médio de ' + metricas.usoMedioFrota +
-        '%, acumulando ' + formatarReais(metricas.custoOciosoTotal) +
-        '/mês de custo ocioso em relação à meta de ' + dados.metaUso + '%. ';
-    if (metricas.servidorGargalo) {
-        analiseFrota += 'O principal ponto de atenção é ' + nomeGargalo + ' (' + usoGargalo +
-            '% médio e pico de ' + picoGargalo + '%), que pode gerar fila antes do limite global.';
+    var analiseFrota = 'Ainda não há leituras de telemetria nos últimos 30 dias para calcular o uso médio e o custo ocioso da frota.';
+    if (metricas.usoMedioFrota !== null) {
+        analiseFrota = 'A frota opera com uso médio de ' + metricas.usoMedioFrota +
+            '%, acumulando ' + formatarReais(metricas.custoOciosoTotal) +
+            '/mês de custo ocioso em relação à meta de ' + dados.metaUso + '%. ';
+        if (metricas.servidorGargalo) {
+            analiseFrota += 'O principal ponto de atenção é ' + nomeGargalo + ' (' + usoGargalo +
+                '% médio e pico de ' + picoGargalo + '%), que pode gerar fila antes do limite global.';
+        }
+    }
+
+    var insights = [
+        'Validar o envio do agente de coleta nos servidores sem telemetria para consolidar o histórico de 30 dias na camada Gold.',
+        'Acompanhar a evolução da base de jogadores frente à janela de provisionamento de ' + dados.provisionamento + ' meses.'
+    ];
+    var planoAcao = [
+        'Conferir a chave e o envio periódico do agente nos servidores sem leituras recentes.',
+        'Aprovar reserva orçamentária para expansão física antes do prazo crítico de decisão.'
+    ];
+    if (metricas.usoMedioFrota !== null) {
+        insights = [
+            'Realocar parte da carga de ' + nomeGargalo + ' para servidores com folga antes de atingir fila de conexão.',
+            'Reduzir os ' + formatarReais(metricas.custoOciosoTotal) + '/mês de ociosidade aproximando a frota da meta de ' + dados.metaUso + '%.',
+            'Iniciar cotação de expansão respeitando a janela de provisionamento de ' + dados.provisionamento + ' meses.'
+        ];
+        planoAcao = [
+            'Auditar balanceamento de carga no servidor ' + nomeGargalo + ' nesta semana.',
+            'Avaliar realocação nos servidores abaixo de ' + dados.limiteSubutilizado + '% de uso.',
+            'Aprovar reserva orçamentária para expansão física antes do prazo crítico de decisão.'
+        ];
     }
 
     return {
@@ -589,7 +614,10 @@ function gerarAnaliseFallback(dados, metricas) {
         analiseFrotaGargalos: analiseFrota,
         previsoesFuturas: metricas.projecoes.map(function (p) {
             var textoPrev = 'Demanda estimada em ' + p.jogadoresPrevistos.toLocaleString('pt-BR') + ' jogadores simultâneos.';
-            var textoImp = 'Capacidade global suficiente, monitorando picos locais em ' + nomeGargalo + '.';
+            var textoImp = 'Capacidade global suficiente, acompanhando a evolução da carga da frota.';
+            if (metricas.servidorGargalo) {
+                textoImp = 'Capacidade global suficiente, monitorando picos locais em ' + nomeGargalo + '.';
+            }
             if (p.excedenteCapacidade > 0) {
                 textoImp = 'Demanda prevista supera a capacidade atual em ' +
                     p.excedenteCapacidade.toLocaleString('pt-BR') +
@@ -603,18 +631,10 @@ function gerarAnaliseFallback(dados, metricas) {
                 impactoNegocio: textoImp
             };
         }),
-        insightsEstrategicos: [
-            'Realocar parte da carga de ' + nomeGargalo + ' para servidores com folga antes de atingir fila de conexão.',
-            'Reduzir os ' + formatarReais(metricas.custoOciosoTotal) + '/mês de ociosidade aproximando a frota da meta de ' + dados.metaUso + '%.',
-            'Iniciar cotação de expansão respeitando a janela de provisionamento de ' + dados.provisionamento + ' meses.'
-        ],
+        insightsEstrategicos: insights,
         cenarioRecomendado: cenarioRecomendado,
         justificativaRecomendacao: justificativa,
-        planoAcaoImediato: [
-            'Auditar balanceamento de carga no servidor ' + nomeGargalo + ' nesta semana.',
-            'Avaliar realocação nos servidores abaixo de ' + dados.limiteSubutilizado + '% de uso.',
-            'Aprovar reserva orçamentária para expansão física antes do prazo crítico de decisão.'
-        ]
+        planoAcaoImediato: planoAcao
     };
 }
 
