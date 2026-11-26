@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planejamento Financeiro | InfraTech</title>
@@ -13,6 +15,7 @@
   <script src="/js/permissoes.js"></script>
   <script src="/js/sessao.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body class="pagina-planejamento-financeiro dashboard-compartilhada">
@@ -20,9 +23,11 @@
   <!-- Barra lateral padrão (os menus são preenchidos pelo sessao.js) -->
   <aside class="header-left" id="sidebar_dash">
     <div class="logo">
+
       <a href="./dash-geral.html" title="InfraTech Painel">
         <img src="../assets/icon/logo.png" alt="InfraTech">
       </a>
+
     </div>
 
     <hr class="linha">
@@ -64,6 +69,7 @@
     <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
       <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
     </div>
+
   </aside>
 
   <!-- Conteúdo principal -->
@@ -75,7 +81,8 @@
         <span class="dashboard-welcome__cargo">(<span id="cargo_usuario">GESTOR</span>)</span>
       </h1>
       <div class="dashboard-welcome__meta">
-        <span class="plan-selo plan-selo--online"><span class="plan-selo__ponto"></span><span id="fisicos-online">6</span> físicos online</span>
+        <span class="plan-selo plan-selo--online"><span class="plan-selo__ponto"></span><span
+            id="fisicos-online">6</span> físicos online</span>
         <time class="dashboard-welcome__hora" id="relogio"></time>
       </div>
     </header>
@@ -91,7 +98,8 @@
       </div>
       <div class="plan-introducao__acoes">
         <button type="button" class="plan-botao plan-botao--contorno" id="btn-premissas-topo">Premissas</button>
-        <button type="button" class="plan-botao plan-botao--principal" id="btn-gerar-relatorio">Gerar relatório IA</button>
+        <button type="button" class="plan-botao plan-botao--principal" id="btn-gerar-relatorio">Gerar relatório
+          IA</button>
       </div>
     </section>
 
@@ -169,7 +177,8 @@
           <span id="runway-uso">10.000 / 12.000 jogadores</span>
           <span id="runway-percentual">83,3%</span>
         </div>
-        <p class="plan-cartao__nota" id="runway-detalhe">Prazo útil para decidir: 3 meses e 1 semana (provisionamento: 2 meses).</p>
+        <p class="plan-cartao__nota" id="runway-detalhe">Prazo útil para decidir: 3 meses e 1 semana (provisionamento: 2
+          meses).</p>
       </article>
 
       <article class="plan-cartao plan-cartao--expansao">
@@ -205,21 +214,29 @@
         <div class="plan-cartao__cabecalho">
           <div>
             <h3 class="plan-cartao__titulo">Custo × uso por servidor</h3>
-            <p class="plan-cartao__subtitulo" id="subtitulo-servidores">Custo mensal (cadastro do gestor) · uso médio simulado (30 dias) · ordenado por prioridade.</p>
+            <p class="plan-cartao__subtitulo" id="subtitulo-servidores">Custo mensal (cadastro do gestor) · uso médio
+              simulado (30 dias) · ordenado por prioridade.</p>
           </div>
-          <span class="plan-selo-simulado" id="selo-uso-servidores" title="Métricas de uso e pico são simuladas até a integração com 03-gold">Uso simulado</span>
+          <span class="plan-selo-simulado" id="selo-uso-servidores"
+            title="Métricas de uso e pico são simuladas até a integração com 03-gold">Uso simulado</span>
         </div>
 
         <div class="plan-barra-filtros">
           <label class="plan-pesquisa-campo" for="pesquisa-servidor">
-            <input type="search" id="pesquisa-servidor" placeholder="Buscar servidor ou localidade..." aria-label="Buscar servidor ou localidade">
+            <input type="search" id="pesquisa-servidor" placeholder="Buscar servidor ou localidade..."
+              aria-label="Buscar servidor ou localidade">
           </label>
           <div class="plan-filtros-grupo" role="group" aria-label="Filtrar servidores por prioridade">
-            <button type="button" class="plan-filtro-botao" data-filtro-servidor="alertas" aria-pressed="false">Alertas e críticos (<span id="cont-filtro-alertas">0</span>)</button>
-            <button type="button" class="plan-filtro-botao" data-filtro-servidor="criticos" aria-pressed="false">Críticos (<span id="cont-filtro-criticos">0</span>)</button>
-            <button type="button" class="plan-filtro-botao" data-filtro-servidor="subutilizados" aria-pressed="false">Subutilizados (<span id="cont-filtro-subutilizados">0</span>)</button>
-            <button type="button" class="plan-filtro-botao" data-filtro-servidor="normais" aria-pressed="false">Normais (<span id="cont-filtro-normais">0</span>)</button>
-            <button type="button" class="plan-filtro-botao plan-filtro-botao--ativo" data-filtro-servidor="todos" aria-pressed="true">Todos (<span id="cont-filtro-todos">0</span>)</button>
+            <button type="button" class="plan-filtro-botao" data-filtro-servidor="alertas" aria-pressed="false">Alertas
+              e críticos (<span id="cont-filtro-alertas">0</span>)</button>
+            <button type="button" class="plan-filtro-botao" data-filtro-servidor="criticos"
+              aria-pressed="false">Críticos (<span id="cont-filtro-criticos">0</span>)</button>
+            <button type="button" class="plan-filtro-botao" data-filtro-servidor="subutilizados"
+              aria-pressed="false">Subutilizados (<span id="cont-filtro-subutilizados">0</span>)</button>
+            <button type="button" class="plan-filtro-botao" data-filtro-servidor="normais" aria-pressed="false">Normais
+              (<span id="cont-filtro-normais">0</span>)</button>
+            <button type="button" class="plan-filtro-botao plan-filtro-botao--ativo" data-filtro-servidor="todos"
+              aria-pressed="true">Todos (<span id="cont-filtro-todos">0</span>)</button>
           </div>
         </div>
 
@@ -270,7 +287,9 @@
         Custos estimados, não faturados. Projeção linear, sem sazonalidade.
       </p>
       <div class="plan-rodape__premissas">
-        <span><strong>Premissas:</strong> <span id="resumo-premissas">crescimento 375 jogadores/mês · 2.000 jogadores por servidor · provisionamento 2 meses · meta de uso 75% · novo servidor R$ 3.200/mês + R$ 2.000 de implantação.</span></span>
+        <span><strong>Premissas:</strong> <span id="resumo-premissas">crescimento 375 jogadores/mês · 2.000 jogadores
+            por servidor · provisionamento 2 meses · meta de uso 75% · novo servidor R$ 3.200/mês + R$ 2.000 de
+            implantação.</span></span>
         <button type="button" class="plan-atalho" id="btn-editar-premissas">Editar premissas</button>
         <button type="button" class="plan-atalho" id="btn-relatorio-rodape">Simular cenários no Relatório IA</button>
       </div>
@@ -286,7 +305,8 @@
           <h2 id="titulo-premissas">Premissas</h2>
           <p>Configurado pela gestão/financeiro · atualizado em <span id="modal-data">10/11/2026</span></p>
         </div>
-        <button type="button" class="plan-modal__fechar" id="btn-fechar-premissas" aria-label="Fechar premissas">&times;</button>
+        <button type="button" class="plan-modal__fechar" id="btn-fechar-premissas"
+          aria-label="Fechar premissas">&times;</button>
       </div>
 
       <form id="form-premissas">
@@ -386,7 +406,8 @@
 
         <div class="plan-modal__rodape">
           <button type="button" class="plan-botao plan-botao--contorno" id="btn-cancelar-premissas">Cancelar</button>
-          <button type="submit" class="plan-botao plan-botao--principal" id="btn-salvar-premissas">Aplicar e recalcular</button>
+          <button type="submit" class="plan-botao plan-botao--principal" id="btn-salvar-premissas">Aplicar e
+            recalcular</button>
         </div>
       </form>
     </div>
@@ -402,9 +423,12 @@
           <span class="plan-relatorio__selo" id="relatorio-selo-origem">Google Gemini</span>
         </div>
         <div class="plan-relatorio__acoes">
-          <button type="button" class="plan-botao plan-botao--contorno" id="btn-regerar-relatorio">Regerar análise</button>
-          <button type="button" class="plan-botao plan-botao--principal" id="btn-imprimir-relatorio">Baixar / Salvar em PDF</button>
-          <button type="button" class="plan-modal__fechar" id="btn-fechar-relatorio" aria-label="Fechar relatório">&times;</button>
+          <button type="button" class="plan-botao plan-botao--contorno" id="btn-regerar-relatorio">Regerar
+            análise</button>
+          <button type="button" class="plan-botao plan-botao--principal" id="btn-imprimir-relatorio">Baixar / Salvar em
+            PDF</button>
+          <button type="button" class="plan-modal__fechar" id="btn-fechar-relatorio"
+            aria-label="Fechar relatório">&times;</button>
         </div>
       </div>
 
@@ -507,4 +531,5 @@
 
   <script src="/js/planejamento_financeiro.js"></script>
 </body>
+
 </html>
