@@ -9,12 +9,13 @@ function erroServidor(res, status, mensagem) {
     return res.status(status).json({ erro: mensagem });
 }
 
+
 async function carregarServidores(idEmpresa) {
     const resultado = await servidorModel.listar(idEmpresa);
     return Array.isArray(resultado) ? resultado : [];
 }
 
-// (Cláudia - M) Descreve o objeto Gold consultado para que a interface possa comprovar a origem dos dados.
+// identifica o objeto gold consultado
 function origemGold(idEmpresa) {
     const prefixo = (process.env.S3_GOLD_PREFIX || '03-gold/').replace(/^\/+|\/+$/g, '');
     const objetoMetadados = `${prefixo}/empresa-${Number(idEmpresa)}/dashboard.json`;
@@ -25,6 +26,7 @@ function origemGold(idEmpresa) {
         objetoMetadados
     };
 }
+
 
 async function metadados(req, res) {
     const idEmpresa = Number(req.usuario && req.usuario.empresa);
@@ -65,6 +67,7 @@ async function metadados(req, res) {
     }
 }
 
+
 function validarPeriodo(body, metadadosGold) {
     const inicio = body && body.periodo && body.periodo.inicio;
     const fim = body && body.periodo && body.periodo.fim;
@@ -100,16 +103,17 @@ function validarPeriodo(body, metadadosGold) {
     return { inicioUtc, fimUtc };
 }
 
+
 async function carregarLimites(idEmpresa, servidores) {
     const [globaisBanco, ...componentesPorServidor] = await Promise.all([
         servidorModel.listarLimitesGlobais(idEmpresa).catch((erro) => {
-            // Usa os limites já cadastrados por servidor quando esta instalação ainda não tem a tabela global.
+            // usa os limites já cadastrados por servidor quando esta instalação ainda não tem a tabela global
             if (erro && erro.code === 'ER_NO_SUCH_TABLE') return [];
             throw erro;
         }),
         ...servidores.map((idServidor) => servidorModel.listarComponentesPorServidor(idServidor))
     ]);
-    // (Cláudia - M) Mantém os limites de atenção e crítico da empresa para classificar visualmente os eventos da tabela.
+    // organiza os limites operacionais da empresa
     const globais = Object.fromEntries((globaisBanco || []).map((item) => [
         String(item.tipo).toLowerCase(), {
             atencao: item.limite_atencao == null ? null : Number(item.limite_atencao),
@@ -149,7 +153,7 @@ async function carregarLimites(idEmpresa, servidores) {
     return limites;
 }
 
-// (Cláudia - M) Disponibiliza os limites da própria empresa para colorir eventos sem transformar Z-score em estado operacional.
+// prepara os limites operacionais por servidor
 function prepararLimitesOperacionais(limitesCriticos, servidores) {
     return Object.fromEntries(servidores.map((idServidor) => {
         const origem = limitesCriticos[String(idServidor)] || {};
@@ -170,6 +174,7 @@ function prepararLimitesOperacionais(limitesCriticos, servidores) {
         return [String(idServidor), porMetrica];
     }));
 }
+
 
 async function analisar(req, res) {
     const idEmpresa = Number(req.usuario && req.usuario.empresa);

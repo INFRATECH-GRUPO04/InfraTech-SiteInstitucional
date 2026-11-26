@@ -1,7 +1,6 @@
-/* (Claudia - M): Carrega os servidores da sessão e os limites do histórico publicado na Gold.
- */
+/* carrega os servidores e o histórico da empresa */
 (function () {
-    // (Cláudia - M) Centraliza os cortes visuais da cobertura para facilitar ajustes sem alterar o cálculo do backend.
+    // define as faixas visuais de cobertura
     var FAIXAS_COBERTURA = Object.freeze({ normal: 95, atencao: 80 });
     var filtroPeriodo = document.getElementById('filtroPeriodoHistorico');
     var conteudoInvestigacao = document.getElementById('conteudoInvestigacao');
@@ -9,7 +8,7 @@
     var dataInicial = document.getElementById('dataInicioHistorico');
     var dataFinal = document.getElementById('dataFimHistorico');
     var botaoAplicarPeriodo = document.getElementById('aplicarPeriodoHistorico');
-    // (Cláudia - M) Conecta o aviso de período aos metadados históricos carregados da Gold.
+    // conecta o aviso aos metadados da gold
     var estadoPeriodo = document.getElementById('estadoHistoricoGold');
     var botaoServidores = document.getElementById('alternarServidores');
     var listaServidores = document.getElementById('listaServidores');
@@ -23,8 +22,6 @@
     var avisoSemServidor = document.getElementById('avisoSemServidor');
     var metricaPrimaria = document.getElementById('metricaPrimaria');
     var metricaComparada = document.getElementById('metricaComparada');
-    var seletorRelacaoRegressao = document.getElementById('seletorRelacaoRegressao');
-
     if (!filtroPeriodo || !dataInicial || !dataFinal || !botaoAplicarPeriodo || !estadoPeriodo
         || !botaoServidores || !listaServidores || !opcoesServidores) return;
     estadoPeriodo.textContent = 'Carregando os limites do histórico publicado na Gold.';
@@ -38,11 +35,11 @@
     var temporizadorAtualizacao = null;
     var graficosInvestigacao = {};
     var documentoAnaliseAtual = null;
-    // (Cláudia - M) Guarda a ocorrência escolhida para realçá-la na média temporal, sem trocar o valor agregado pelo individual.
+    // guarda o evento selecionado no gráfico
     var eventoTemporalSelecionado = null;
 
-    /* Converte datas do histórico para o calendário local, sem criar um limite
-     * de dias ou meses que não esteja presente nos metadados recebidos.
+    /* converte datas do histórico para o calendário local, sem criar um limite
+     * de dias ou meses que não esteja presente nos metadados recebidos
      */
     function normalizarData(valor) {
         var texto = valor instanceof Date ? '' : String(valor || '').trim();
@@ -63,19 +60,19 @@
         return `${valores.year}-${valores.month}-${valores.day}`;
     }
 
-    /* Mostra datas no padrão brasileiro, mantendo o valor ISO nos campos e no evento. */
+    /* mostra datas no padrão brasileiro, mantendo o valor ISO nos campos e no evento */
     function formatarData(valor) {
         if (!valor) return '—';
         var partes = valor.split('-');
         return `${partes[2]}/${partes[1]}/${partes[0]}`;
     }
 
-    // (Cláudia - M) Mostra somente a origem e a quantidade informadas após uma resposta real do backend.
+    // mostra a origem informada pelo servidor
     function atualizarIndicadorOrigem(origem, resultado) {
         if (!indicadorOrigemGold) return;
         if (!origem || origem.provedor !== 'Amazon S3' || origem.camada !== 'Gold') {
             indicadorOrigemGold.dataset.estado = 'erro';
-            indicadorOrigemGold.textContent = 'Origem Gold/S3 não confirmada';
+            indicadorOrigemGold.textContent = 'Fonte indisponível';
             indicadorOrigemGold.title = 'A API não retornou a identificação da origem consultada.';
             return;
         }
@@ -83,19 +80,19 @@
         var objeto = origem.bucket ? `s3://${origem.bucket}/${origem.objetoMetadados}` : origem.objetoMetadados;
         indicadorOrigemGold.dataset.estado = origem.metadadosEncontrados === false ? 'ausente' : 'confirmada';
         if (resultado && Number.isFinite(Number(resultado.particoesLidas))) {
-            indicadorOrigemGold.textContent = `Gold/S3 · ${resultado.particoesLidas}/${resultado.particoesListadas} partições · ${formatarNumero(resultado.capturasNoPeriodo || 0, 0)} capturas`;
+            indicadorOrigemGold.textContent = origem.metadadosEncontrados === false ? 'Fonte indisponível' : 'Fonte conectada';
             indicadorOrigemGold.title = `Metadados consultados em ${objeto}. Partições históricas efetivamente lidas para esta análise: ${resultado.particoesLidas} de ${resultado.particoesListadas}.`;
         } else if (origem.metadadosEncontrados === false) {
-            indicadorOrigemGold.textContent = 'Gold/S3 consultada · metadados não encontrados';
+            indicadorOrigemGold.textContent = 'Fonte indisponível';
             indicadorOrigemGold.title = `A API consultou ${objeto}, mas o objeto não foi encontrado.`;
         } else {
-            indicadorOrigemGold.textContent = 'Fonte confirmada · Gold no Amazon S3';
+            indicadorOrigemGold.textContent = 'Fonte conectada';
             indicadorOrigemGold.title = `Metadados históricos recebidos de ${objeto}.`;
         }
     }
 
-    /* Habilita o calendário apenas depois que a API de metadados fornecer os
-     * limites reais do histórico da empresa.
+    /* habilita o calendário apenas depois que a API de metadados fornecer os
+     * limites reais do histórico da empresa
      */
     function configurarLimitesEmpresa(primeiraCaptura, ultimaCaptura) {
         var inicio = normalizarData(primeiraCaptura);
@@ -126,8 +123,8 @@
         return true;
     }
 
-    /* Registra as datas extremas conhecidas para um servidor. Elas não indicam
-     * que existam capturas em todos os instantes entre esses limites.
+    /* registra as datas extremas conhecidas para um servidor elas não indicam
+     * que existam capturas em todos os instantes entre esses limites
      */
     function configurarLimitesServidor(idServidor, primeiraCaptura, ultimaCaptura) {
         var id = String(idServidor || '').trim();
@@ -139,8 +136,8 @@
         return true;
     }
 
-    /* Retorna os servidores atualmente marcados no filtro, usando os IDs vindos
-     * do banco em vez de nomes fixos escritos no HTML.
+    /* retorna os servidores atualmente marcados no filtro, usando os ids vindos
+     * do banco em vez de nomes fixos escritos no HTML
      */
     function obterSelecionados() {
         return Array.from(opcoesServidores.querySelectorAll('input[name="servidores"]:checked'))
@@ -149,7 +146,7 @@
             });
     }
 
-    /* Mantém o contador, a validação de seleção e a persistência local dos IDs. */
+    /* mantém o contador, a validação de seleção e a persistência local dos ids */
     function atualizarResumoSelecao(persistir) {
         var selecionados = obterSelecionados();
         resumoServidores.textContent = selecionados.length
@@ -203,8 +200,8 @@
         return selecionados;
     }
 
-    /* Cria as opções com o inventário retornado pela empresa autenticada. Uma
-     * nova inclusão aparece desmarcada para não ampliar a análise sem escolha.
+    /* cria as opções com o inventário retornado pela empresa autenticada uma
+     * nova inclusão aparece desmarcada para não ampliar a análise sem escolha
      */
     function renderizarServidores(lista) {
         var selecionadosAntes = new Set(obterSelecionados().map(function (item) { return item.id; }));
@@ -266,8 +263,8 @@
         atualizarResumoSelecao(true);
     }
 
-    /* Atualiza o inventário a partir do backend, cuja consulta é limitada à
-     * empresa da sessão e inclui os servidores cadastrados desde a última busca.
+    /* atualiza o inventário a partir do servidor, cuja consulta é limitada à
+     * empresa da sessão e inclui os servidores cadastrados desde a última busca
      */
     async function atualizarListaServidores() {
         if (document.visibilityState === 'hidden') return;
@@ -318,7 +315,7 @@
         } catch (erro) {
             if (indicadorOrigemGold) {
                 indicadorOrigemGold.dataset.estado = 'erro';
-                indicadorOrigemGold.textContent = 'Origem Gold/S3 não confirmada';
+                indicadorOrigemGold.textContent = 'Fonte indisponível';
                 indicadorOrigemGold.title = erro && erro.message ? erro.message : 'Falha ao consultar a API.';
             }
             if (conteudoInvestigacao) {
@@ -333,16 +330,16 @@
         }
     }
 
-    /* Usa a empresa já carregada pela sessão. Se ainda não estiver no navegador,
-     * consulta a mesma sessão autenticada validada pelo restante da aplicação.
+    /* usa a empresa já carregada pela sessão se ainda não estiver no navegador,
+     * consulta a mesma sessão autenticada validada pelo restante da aplicação
      */
     async function iniciarListaServidores() {
         await atualizarListaServidores();
         temporizadorAtualizacao = window.setInterval(atualizarListaServidores, 30000);
     }
 
-    /* Valida datas, seleção de servidores e limites recebidos para só liberar
-     * a aplicação de um intervalo possível dentro do histórico da empresa.
+    /* valida datas, seleção de servidores e limites recebidos para só liberar
+     * a aplicação de um intervalo possível dentro do histórico da empresa
      */
     function atualizarEstadoAplicacao() {
         if (!limitesEmpresa) {
@@ -358,7 +355,7 @@
             || dataInicial.value > dataFinal.value;
     }
 
-    /* (Claudia - M): Consulta a Gold pelo backend; a empresa vem da sessão e não do navegador. */
+    /* consulta a gold pelo servidor; a empresa vem da sessão e não do navegador */
     async function aplicarAnalise() {
         atualizarEstadoAplicacao();
         if (botaoAplicarPeriodo.disabled) return;
@@ -416,7 +413,7 @@
             if (conteudoInvestigacao) conteudoInvestigacao.dataset.estado = 'erro';
             if (indicadorOrigemGold) {
                 indicadorOrigemGold.dataset.estado = 'erro';
-                indicadorOrigemGold.textContent = 'Consulta Gold/S3 não concluída';
+                indicadorOrigemGold.textContent = 'Fonte indisponível';
                 indicadorOrigemGold.title = erro && erro.message ? erro.message : 'Falha ao consultar os dados históricos.';
             }
             estadoPeriodo.textContent = erro && erro.message ? erro.message : 'Não foi possível consultar as análises.';
@@ -429,48 +426,45 @@
 
     botaoAplicarPeriodo.addEventListener('click', aplicarAnalise);
 
-    async function carregarRelacaoSelecionada() {
-        if (!documentoAnaliseAtual || !seletorRelacaoRegressao || !seletorRelacaoRegressao.value) return;
-        var partes = seletorRelacaoRegressao.value.split(':').map(Number);
-        var solicitacao = {
-            servidores: obterSelecionados().map(function (servidor) { return Number(servidor.id); }),
-            metricas: { x: metricaPrimaria.value, y: metricaComparada.value, boxplot: metricaPrimaria.value },
-            periodo: { inicio: dataInicial.value, fim: dataFinal.value },
-            relacao: { origem: partes[0], destino: partes[1] }
-        };
-        seletorRelacaoRegressao.disabled = true;
-        try {
-            var resposta = await fetch('/investigacao/analisar', {
-                method: 'POST', credentials: 'same-origin', cache: 'no-store',
-                headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(solicitacao)
-            });
-            var detalhe = await resposta.json();
-            if (!resposta.ok) throw new Error(detalhe.erro || `A API respondeu com erro (${resposta.status}).`);
-            atualizarIndicadorOrigem(detalhe.origemDados, detalhe.origemDados);
-            documentoAnaliseAtual.regressao.representativa = detalhe.relacao;
-            documentoAnaliseAtual.kpis.maiorDesvioRegressao = detalhe.kpis.maiorDesvioRegressao;
-            renderizarResumoRegressao(documentoAnaliseAtual);
-            montarGraficoRegressao(documentoAnaliseAtual);
-        } catch (erro) {
-            estadoPeriodo.textContent = erro.message || 'Não foi possível abrir esta relação.';
-        } finally {
-            seletorRelacaoRegressao.disabled = false;
-        }
-    }
-
-    if (seletorRelacaoRegressao) seletorRelacaoRegressao.addEventListener('change', carregarRelacaoSelecionada);
-
     function formatarNumero(valor, casas) {
         if (valor == null || !Number.isFinite(Number(valor))) return '—';
         return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: casas == null ? 2 : casas }).format(Number(valor));
     }
+
+    // converte os dias dos filtros para instantes no fuso usado nos rótulos do histórico
+    function converterDataFiltroParaTimestamp(valor, fimDoDia) {
+        var correspondencia = String(valor || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!correspondencia) return null;
+        var horario = fimDoDia ? [23, 59, 59, 999] : [0, 0, 0, 0];
+        var instanteLocalComoUtc = Date.UTC(
+            Number(correspondencia[1]), Number(correspondencia[2]) - 1, Number(correspondencia[3]),
+            horario[0], horario[1], horario[2], horario[3]
+        );
+        var instante = instanteLocalComoUtc;
+        var formatador = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+        });
+        for (var tentativa = 0; tentativa < 2; tentativa += 1) {
+            var partes = Object.fromEntries(formatador.formatToParts(new Date(instante))
+                .map(function (parte) { return [parte.type, parte.value]; }));
+            var milissegundos = new Date(instante).getUTCMilliseconds();
+            var horarioRepresentadoComoUtc = Date.UTC(
+                Number(partes.year), Number(partes.month) - 1, Number(partes.day),
+                Number(partes.hour), Number(partes.minute), Number(partes.second), milissegundos
+            );
+            instante = instanteLocalComoUtc - (horarioRepresentadoComoUtc - instante);
+        }
+        return instante;
+    }
+
 
     function rotuloMetrica(metrica) {
         var unidades = { cpu: 'CPU (%)', ram: 'RAM (%)', disco: 'Disco (%)', rede: 'Rede (Mbps)' };
         return unidades[metrica] || String(metrica || '').toUpperCase();
     }
 
-    // (Cláudia - M) Classifica eventos somente pelos limites operacionais válidos do próprio servidor e da métrica.
+    // classifica eventos pelos limites do servidor
     function obterSeveridadeOperacional(documento, evento) {
         var limites = documento.limitesOperacionais || {};
         var servidor = limites[String(evento.idServidor)] || {};
@@ -485,9 +479,11 @@
         return 'normal';
     }
 
+
     function unidadeDesvio(metrica) {
-        return ['cpu', 'ram', 'disco'].includes(metrica) ? 'p.p.' : 'Mbps';
+        return ['cpu', 'ram', 'disco'].includes(metrica) ? '%' : 'Mbps';
     }
+
 
     function destruirGrafico(nome) {
         if (graficosInvestigacao[nome]) {
@@ -496,10 +492,15 @@
         }
     }
 
+
     function montarGraficoRegressao(documento) {
         if (!window.Chart) return;
         destruirGrafico('regressao');
         var relacao = documento.regressao.representativa;
+        var telaGrafico = document.getElementById('graficoRegressao');
+        telaGrafico.setAttribute('aria-label', relacao && relacao.status === 'ok'
+            ? `Dispersão da relação representativa entre ${rotuloMetrica(documento.regressao.metricaX)} e ${rotuloMetrica(documento.regressao.metricaY)}.`
+            : 'Não há uma relação representativa com amostras suficientes para regressão.');
         var datasets = [];
         if (relacao && relacao.status === 'ok') {
             datasets.push({
@@ -510,13 +511,13 @@
                     timestampX: ponto.timestampX, timestampY: ponto.timestampY,
                     estimado: ponto.estimado, residuo: ponto.residuo
                 }; }),
-                backgroundColor: '#a855f7', borderColor: '#a855f7', pointRadius: 2.2, pointHoverRadius: 5
+                backgroundColor: '#b879f5', borderColor: '#b879f5', pointRadius: 2.4, pointHoverRadius: 5
             });
             if (relacao.reta && relacao.reta.length) {
                 datasets.push({
                     label: 'Reta de regressão',
                     data: relacao.reta, showLine: true, pointRadius: 0,
-                    borderColor: '#00d2df', borderWidth: 2
+                    borderColor: '#16d9e5', borderWidth: 2.25
                 });
             }
             if (relacao.maiorDesvio) {
@@ -526,12 +527,12 @@
                 if (ponto) datasets.push({
                     label: 'Maior desvio',
                     data: [{ x: ponto.x, y: ponto.observado }],
-                    backgroundColor: '#fbbf24', borderColor: '#fbbf24', pointRadius: 6, pointStyle: 'triangle'
+                    backgroundColor: '#ffd166', borderColor: '#ffd166', pointRadius: 6, pointStyle: 'triangle'
                 });
             }
         var eixoX = documento.regressao.metricaX;
         var eixoY = documento.regressao.metricaY;
-        graficosInvestigacao.regressao = new Chart(document.getElementById('graficoRegressao'), {
+        graficosInvestigacao.regressao = new Chart(telaGrafico, {
             type: 'scatter', data: { datasets: datasets },
             options: {
                 responsive: true, maintainAspectRatio: false,
@@ -548,72 +549,83 @@
                     }
                 } } },
                 scales: {
-                    x: { type: 'linear', title: { display: true, text: rotuloMetrica(eixoX), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 }, maxTicksLimit: 7 }, grid: { color: '#293746' } },
-                    y: { title: { display: true, text: rotuloMetrica(eixoY), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 }, maxTicksLimit: 7 }, grid: { color: '#293746' } }
+                    x: { type: 'linear', title: { display: true, text: rotuloMetrica(eixoX), color: '#d7e0e8', font: { size: 11, weight: '600' } }, ticks: { color: '#d7e0e8', font: { size: 11 }, maxTicksLimit: 7 }, grid: { color: '#354656' } },
+                    y: { title: { display: true, text: rotuloMetrica(eixoY), color: '#d7e0e8', font: { size: 11, weight: '600' } }, ticks: { color: '#d7e0e8', font: { size: 11 }, maxTicksLimit: 7 }, grid: { color: '#354656' } }
                 }
             }
         });
         } else {
             datasets = [];
-            document.getElementById('graficoRegressao').setAttribute('aria-label', 'Não há uma relação cruzada com amostras suficientes para regressão.');
         }
     }
+
 
     function renderizarResumoRegressao(documento) {
         var regressao = documento.regressao;
         var relacao = regressao.representativa;
         var resumo = regressao.resumo || {};
-        var seletor = seletorRelacaoRegressao;
-        if (seletor) {
-            var valorAnterior = seletor.value;
-            seletor.replaceChildren();
-            (regressao.relacoes || []).forEach(function (item) {
-                var opcao = document.createElement('option');
-                opcao.value = `${item.idOrigem}:${item.idDestino}`;
-                opcao.textContent = `${item.nomeOrigem} → ${item.nomeDestino} · ${item.amostrasAlinhadas} pares`;
-                seletor.appendChild(opcao);
-            });
-            if (valorAnterior && Array.from(seletor.options).some(function (opcao) { return opcao.value === valorAnterior; })) {
-                seletor.value = valorAnterior;
-            } else if (resumo.idRelacaoRepresentativa) seletor.value = resumo.idRelacaoRepresentativa;
-            seletor.disabled = (regressao.relacoes || []).length === 0;
-        }
-        document.getElementById('regressaoMetricaX').textContent = regressao.metricaX.toUpperCase();
-        document.getElementById('regressaoMetricaY').textContent = regressao.metricaY.toUpperCase();
-        document.getElementById('tituloGraficoRegressao').textContent = relacao
-            ? `Regressão: ${relacao.nomeOrigem} → ${relacao.nomeDestino}`
-            : `Regressão cruzada: ${regressao.metricaX.toUpperCase()} × ${regressao.metricaY.toUpperCase()}`;
-        var equacao = document.getElementById('equacaoRegressao');
+        var nomeX = rotuloMetrica(regressao.metricaX);
+        var nomeY = rotuloMetrica(regressao.metricaY);
+        document.getElementById('descricaoRegressao').textContent = `Relação entre ${nomeX} e ${nomeY}`;
+        document.getElementById('tituloGraficoRegressao').textContent = 'Regressão representativa';
         var r2Saida = document.getElementById('r2Regressao');
-        var amostrasSaida = document.getElementById('amostrasRegressao');
-        var angular = document.getElementById('coeficienteAngular');
-        var intercepto = document.getElementById('interceptoRegressao');
-        var desvioDetalhe = document.getElementById('desvioRegressaoDetalhe');
-        if (relacao && relacao.status === 'ok') {
-            equacao.textContent = `y = ${formatarNumero(relacao.angular, 4)}x ${relacao.intercepto < 0 ? '−' : '+'} ${formatarNumero(Math.abs(relacao.intercepto), 4)}`;
-            r2Saida.textContent = formatarNumero(relacao.r2);
-            amostrasSaida.textContent = formatarNumero(relacao.quantidade, 0);
-            angular.textContent = formatarNumero(relacao.angular, 4);
-            intercepto.textContent = formatarNumero(relacao.intercepto, 4);
-            var desvioRelacao = relacao.maiorDesvio;
-            var unidadeRelacao = unidadeDesvio(regressao.metricaY);
-            desvioDetalhe.textContent = desvioRelacao
-                ? `${formatarNumero(desvioRelacao.valor)} ${unidadeRelacao}` : '—';
+        var r2Mediana = resumo.medianaR2 == null ? null : Number(resumo.medianaR2);
+        r2Saida.textContent = Number.isFinite(r2Mediana) ? `${formatarNumero(r2Mediana * 100, 1)}%` : '—';
+        var quantidadeValidas = Number(resumo.quantidadeRelacoesValidas) || 0;
+        var crescentes = Number(resumo.inclinacoesPositivas) || 0;
+        var decrescentes = Number(resumo.inclinacoesNegativas) || 0;
+
+        // resume a tendência e a variação explicada com os resultados já calculados pelo servidor
+        var fraseTendencia;
+        if (!quantidadeValidas) {
+            fraseTendencia = 'Não há dados suficientes para resumir a tendência entre as métricas.';
+        } else if (document.getElementById('classificacaoPearson').textContent === 'Praticamente nula') {
+            fraseTendencia = `A relação entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')} é praticamente nula.`;
+        } else if (crescentes > decrescentes) {
+            fraseTendencia = `Predominam relações crescentes entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')}.`;
+        } else if (decrescentes > crescentes) {
+            fraseTendencia = `Predominam relações decrescentes entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')}.`;
         } else {
-            equacao.textContent = relacao ? 'Amostras insuficientes para ajustar uma reta.' : 'Não há pares de servidores diferentes selecionados.';
-            r2Saida.textContent = '—';
-            amostrasSaida.textContent = relacao ? formatarNumero(relacao.quantidade, 0) : '—';
-            angular.textContent = '—';
-            intercepto.textContent = '—';
-            desvioDetalhe.textContent = '—';
+            fraseTendencia = `Não há predominância de tendência entre ${nomeX.replace(/\s*\([^)]*\)$/, '')} e ${nomeY.replace(/\s*\([^)]*\)$/, '')}.`;
         }
+        var r2Percentual = Number.isFinite(r2Mediana) ? r2Mediana * 100 : null;
+        var r2Arredondado = Number.isFinite(r2Percentual) ? formatarNumero(r2Percentual, 1) : '—';
+        var r2ArredondadoParaZero = Number.isFinite(r2Percentual)
+            && Math.round(Math.abs(r2Percentual) * 10) === 0;
+        var r2VisualmenteZero = r2ArredondadoParaZero && r2Mediana !== 0;
+        r2Saida.textContent = Number.isFinite(r2Percentual)
+            ? `${r2VisualmenteZero ? '≈ ' : ''}${r2Arredondado}%` : '—';
+        var metricaYSimples = nomeY.replace(/\s*\([^)]*\)$/, '');
+        var descricaoMetricaY = { cpu: 'na CPU', ram: 'na RAM', disco: 'no disco', rede: 'na rede' }[regressao.metricaY]
+            || `em ${metricaYSimples}`;
+        var interpretacao;
+        if (!quantidadeValidas) {
+            interpretacao = 'Não há dados suficientes para resumir a tendência. A variação explicada não está disponível neste período.';
+        } else if (r2ArredondadoParaZero) {
+            var percentualProximoDeZero = r2VisualmenteZero ? 'aproximadamente 0%' : '0%';
+            interpretacao = `Os modelos lineares explicam ${percentualProximoDeZero} da variação observada ${descricaoMetricaY}. Recomenda-se investigar outros fatores associados ao seu comportamento.`;
+        } else if (!Number.isFinite(r2Percentual)) {
+            interpretacao = `${fraseTendencia} A variação explicada não está disponível neste período.`;
+        } else {
+            var percentualInterpretacao = formatarNumero(r2Percentual, 1);
+            interpretacao = `${fraseTendencia} A mediana do R² indica que os modelos explicam ${percentualInterpretacao}% da variação observada ${descricaoMetricaY}.`;
+        }
+        document.getElementById('interpretacaoRegressao').textContent = interpretacao;
+
+        var detalheTecnico;
+        if (relacao && relacao.status === 'ok') {
+            var equacao = `y = ${formatarNumero(relacao.angular, 4)}x ${relacao.intercepto < 0 ? '−' : '+'} ${formatarNumero(Math.abs(relacao.intercepto), 4)}`;
+            detalheTecnico = `Relação representativa: ${relacao.rotulo || `${relacao.nomeOrigem} → ${relacao.nomeDestino}`}. Critério: R² mais próximo da mediana do conjunto; desempate por quantidade de amostras e IDs. X: ${nomeX}; Y: ${nomeY}. Inclinação: ${formatarNumero(relacao.angular, 4)}; intercepto: ${formatarNumero(relacao.intercepto, 4)}; equação: ${equacao}; R² desta relação: ${formatarNumero(Number(relacao.r2) * 100, 1)}%; amostras: ${formatarNumero(relacao.quantidade, 0)}. A reta representa somente este par, não um ajuste conjunto nem causalidade.`;
+        } else {
+            detalheTecnico = 'Não há uma relação representativa com amostras suficientes para ajustar uma reta.';
+        }
+        document.getElementById('graficoRegressao').title = `${detalheTecnico} Relações válidas: ${quantidadeValidas}; tendências crescentes: ${crescentes}; decrescentes: ${decrescentes}.`;
         var maiorDesvio = documento.kpis.maiorDesvioRegressao;
         var unidade = unidadeDesvio(regressao.metricaY);
-        document.getElementById('kpiMaiorDesvio').textContent = maiorDesvio ? `${formatarNumero(maiorDesvio.valor)} ${unidade}` : '—';
+        document.getElementById('kpiMaiorDesvio').textContent = maiorDesvio ? `${formatarNumero(maiorDesvio.valor)}${unidade === '%' ? '' : ' '}${unidade}` : '—';
         document.getElementById('escopoMaiorDesvio').textContent = maiorDesvio ? maiorDesvio.relacao : 'Sem regressão válida';
-        var legendaDesvio = document.getElementById('legendaMaiorDesvio');
-        if (legendaDesvio) legendaDesvio.textContent = maiorDesvio ? `(${formatarNumero(maiorDesvio.valor)} ${unidade})` : '(—)';
     }
+
 
     function montarGraficoAnomalias(documento) {
         if (!window.Chart) return;
@@ -624,6 +636,14 @@
         var datasets = [];
         var seriesAgregadas = documento.anomalias.serie || [];
         var serieCoorte = seriesAgregadas[0];
+        var inicioEixoX = converterDataFiltroParaTimestamp(dataInicial.value, false);
+        var fimEixoX = converterDataFiltroParaTimestamp(dataFinal.value, true);
+        var timestampsCaptura = seriesAgregadas.flatMap(function (serie) {
+            return (serie.pontos || []).map(function (ponto) { return Date.parse(ponto.timestamp); })
+                .filter(Number.isFinite);
+        });
+        if (!Number.isFinite(inicioEixoX) && timestampsCaptura.length) inicioEixoX = Math.min.apply(null, timestampsCaptura);
+        if (!Number.isFinite(fimEixoX) && timestampsCaptura.length) fimEixoX = Math.max.apply(null, timestampsCaptura);
         (documento.anomalias.serie || []).forEach(function (servidor) {
             [
                 { metrica: eixoX, chave: 'x', idEixo: 'y' },
@@ -654,8 +674,8 @@
             datasets.push({
                 label: `Limite crítico · ${eixoX.toUpperCase()}`,
                 data: [
-                    { x: Date.parse(serieCoorte.pontos[0].timestamp), y: limiteCoorte },
-                    { x: Date.parse(serieCoorte.pontos[serieCoorte.pontos.length - 1].timestamp), y: limiteCoorte }
+                    { x: Number.isFinite(inicioEixoX) ? inicioEixoX : Date.parse(serieCoorte.pontos[0].timestamp), y: limiteCoorte },
+                    { x: Number.isFinite(fimEixoX) ? fimEixoX : Date.parse(serieCoorte.pontos[serieCoorte.pontos.length - 1].timestamp), y: limiteCoorte }
                 ],
                 showLine: true, pointRadius: 0, borderColor: '#fb5360', borderDash: [6, 4],
                 borderWidth: 1.5, yAxisID: 'y'
@@ -681,7 +701,8 @@
                 return {
                     x: timestampEvento, y: pontoAgregado[chaveSerie], valorIndividual: evento.valor,
                     nomeServidor: evento.nomeServidor, zScore: evento.zScore, timestamp: evento.timestamp,
-                    idServidor: evento.idServidor, selecionado: Boolean(selecionado), serieAgregada: true
+                    idServidor: evento.idServidor, metrica: evento.metrica,
+                    selecionado: Boolean(selecionado), serieAgregada: true
                 };
             }).filter(Boolean);
             if (!marcadores.length) return;
@@ -723,21 +744,30 @@
                     });
                     return agregado && agregado[chaveSerie] != null ? {
                         x: Date.parse(evento.timestamp), y: agregado[chaveSerie], nomeServidor: evento.nomeServidor,
-                        valorIndividual: evento.valor, zScore: evento.zScore, simultaneo: true
+                        valorIndividual: evento.valor, zScore: evento.zScore, idServidor: evento.idServidor,
+                        metrica: evento.metrica, timestamp: evento.timestamp, simultaneo: true
                     } : null;
                 }).filter(Boolean),
                 showLine: false, backgroundColor: '#a855f7', borderColor: '#f5f7fa',
                 pointRadius: 6, pointStyle: 'rectRot', yAxisID: chaveEixo
             });
         });
-        var escalas = {
-            x: { type: 'linear', ticks: { color: '#c3d0da', font: { size: 11 }, maxTicksLimit: 6, callback: function (valor) {
+        var escalaTemporal = {
+            type: 'linear', bounds: 'data',
+            ticks: { color: '#d7e0e8', font: { size: 12 }, maxTicksLimit: 5, maxRotation: 0, autoSkip: true, includeBounds: true, callback: function (valor) {
                 return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }).format(new Date(valor));
-            } }, grid: { color: '#293746' } },
-            y: { position: 'left', title: { display: true, text: rotuloMetrica(eixoX), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 } }, grid: { color: '#293746' } }
+            } }, grid: { color: '#354656' }
         };
-        if (eixoX !== eixoY) escalas.y1 = { position: 'right', title: { display: true, text: rotuloMetrica(eixoY), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 } }, grid: { drawOnChartArea: false } };
-        // (Cláudia - M) Marca o horário selecionado no gráfico agregado sem atribuir ao conjunto o valor individual do evento.
+        if (Number.isFinite(inicioEixoX) && Number.isFinite(fimEixoX) && fimEixoX > inicioEixoX) {
+            escalaTemporal.min = inicioEixoX;
+            escalaTemporal.max = fimEixoX;
+        }
+        var escalas = {
+            x: escalaTemporal,
+            y: { position: 'left', title: { display: true, text: rotuloMetrica(eixoX), color: '#d7e0e8', font: { size: 12, weight: '600' } }, ticks: { color: '#d7e0e8', font: { size: 12 } }, grid: { color: '#354656' } }
+        };
+        if (eixoX !== eixoY) escalas.y1 = { position: 'right', title: { display: true, text: rotuloMetrica(eixoY), color: '#d7e0e8', font: { size: 12, weight: '600' } }, ticks: { color: '#d7e0e8', font: { size: 12 } }, grid: { drawOnChartArea: false } };
+        // marca o horário selecionado no gráfico
         var pluginEventoSelecionado = {
             id: 'infratechEventoTemporalSelecionado',
             afterDatasetsDraw: function (grafico) {
@@ -766,21 +796,33 @@
                     title: function (itens) { return itens.length ? new Date(itens[0].parsed.x).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : ''; },
                     label: function (contexto) {
                         var ponto = contexto.raw || {};
-                        return ponto.nomeServidor
-                            ? `${contexto.dataset.label}: média ${formatarNumero(contexto.parsed.y)} · evento individual ${ponto.nomeServidor} (${formatarNumero(ponto.valorIndividual)}) · Z ${formatarNumero(ponto.zScore)}${ponto.simultaneo ? ' · ocorrência simultânea' : ''}`
-                            : `${contexto.dataset.label}: ${formatarNumero(contexto.parsed.y)}`;
+                        if (!ponto.nomeServidor) return `${contexto.dataset.label}: ${formatarNumero(contexto.parsed.y)}`;
+                        var severidade = obterSeveridadeOperacional(documento, {
+                            idServidor: ponto.idServidor, metrica: ponto.metrica, valor: ponto.valorIndividual
+                        });
+                        var rotulosSeveridade = {
+                            'sem-limite': 'sem limite operacional', normal: 'abaixo dos limites',
+                            atencao: 'atenção', critico: 'crítico'
+                        };
+                        return [
+                            `Média do conjunto: ${formatarNumero(contexto.parsed.y)}`,
+                            `${ponto.nomeServidor}: ${formatarNumero(ponto.valorIndividual)} · Z-score ${formatarNumero(ponto.zScore)}`,
+                            `Limite operacional: ${rotulosSeveridade[severidade]}`,
+                            ponto.simultaneo ? 'Evento em grupo simultâneo' : 'Anomalia individual'
+                        ];
                     }
                 } } }, scales: escalas }
         });
     }
 
-    // (Cláudia - M) Apresenta os quartis já calculados pelo backend e mantém tooltips estatísticos por servidor.
+    // mostra os quartis e os detalhes por servidor
     function montarGraficoBoxplot(documento) {
         if (!window.Chart) return;
         destruirGrafico('boxplot');
         var itens = (documento.boxplot.porServidor || []).slice()
             .sort(function (a, b) { return Number(a.idServidor) - Number(b.idServidor); });
         var nomes = itens.map(function (item) { return item.nomeServidor; });
+        var nomesEixo = nomes.length > 0 && nomes.length <= 3 ? [' ', ...nomes, ' '] : nomes;
         var metricasPercentuais = ['cpu', 'ram', 'disco'];
         var metrica = documento.boxplot.metrica;
         var unidade = metricasPercentuais.includes(metrica) ? '%' : ' Mbps';
@@ -801,14 +843,34 @@
         var nomeMetrica = { cpu: 'CPU', ram: 'RAM', disco: 'Disco', rede: 'Rede' }[metrica] || String(metrica || '').toUpperCase();
         var tituloBoxplot = document.getElementById('tituloBoxplot');
         if (tituloBoxplot) tituloBoxplot.textContent = `Distribuição de ${nomeMetrica} por servidor`;
-        var espacoVertical = Math.max(6, (6 - Math.min(itens.length, 6)) * 9);
+        // resume a mediana, o IQR e os valores atípicos
+        var validos = itens.filter(function (item) {
+            return item.status === 'ok' && Number.isFinite(item.mediana) && Number.isFinite(item.iqr);
+        });
+        var interpretacaoBoxplot = document.getElementById('interpretacaoBoxplot');
+        if (!validos.length) {
+            interpretacaoBoxplot.textContent = `Não há dados suficientes para resumir a distribuição de ${nomeMetrica}.`;
+        } else {
+            var maiorIqr = Math.max.apply(null, validos.map(function (item) { return item.iqr; }));
+            var maiorMediana = Math.max.apply(null, validos.map(function (item) { return item.mediana; }));
+            var nomesIqr = validos.filter(function (item) { return item.iqr === maiorIqr; }).map(function (item) { return item.nomeServidor; });
+            var nomesMediana = validos.filter(function (item) { return item.mediana === maiorMediana; }).map(function (item) { return item.nomeServidor; });
+            var fraseBoxplot = validos.length === 1
+                ? `${validos[0].nomeServidor}: mediana de ${formatarNumero(maiorMediana)}${unidade} e IQR de ${formatarNumero(maiorIqr)}${unidade} em ${nomeMetrica}.`
+                : `${nomesIqr.length > 1 ? 'Empate na maior variabilidade central' : 'Maior variabilidade central'}: ${nomesIqr.join(', ')}; ${nomesMediana.length > 1 ? 'empate na maior mediana' : 'maior mediana'}: ${nomesMediana.join(', ')}.`;
+            var dadosOutliers = validos.filter(function (item) { return Number.isFinite(item.outliersTotal); });
+            var fraseOutliers = dadosOutliers.some(function (item) { return item.outliersTotal > 0; })
+                ? `Há valores atípicos de ${nomeMetrica}.`
+                : dadosOutliers.length === itens.length ? `Não há valores atípicos de ${nomeMetrica}.` : '';
+            interpretacaoBoxplot.textContent = `${fraseBoxplot}${fraseOutliers ? ` ${fraseOutliers}` : ''}`;
+        }
         var pluginBoxplot = {
             id: 'infratechBoxplot',
             afterDatasetsDraw: function (grafico, args, opcoes) {
                 var ctx = grafico.ctx, escalaX = grafico.scales.x, escalaY = grafico.scales.y;
                 var alturaCategoria = escalaY.height / Math.max(1, (opcoes.itens || []).length);
-                var alturaCaixa = Math.min(28, Math.max(14, alturaCategoria * 0.62));
-                var corCaixa = '#91A3B0';
+                var alturaCaixa = Math.min(32, Math.max(16, alturaCategoria * 0.76));
+                var corCaixa = '#00CFFF';
                 ctx.save();
                 (opcoes.itens || []).forEach(function (item) {
                     if (item.status !== 'ok') return;
@@ -818,16 +880,17 @@
                     var xMediana = escalaX.getPixelForValue(item.mediana);
                     var xQ3 = escalaX.getPixelForValue(item.q3);
                     var xMax = escalaX.getPixelForValue(item.bigodeSuperior);
-                    ctx.strokeStyle = corCaixa; ctx.fillStyle = 'rgba(145, 163, 176, 0.24)'; ctx.lineWidth = 1.5;
+                    ctx.strokeStyle = corCaixa; ctx.fillStyle = 'rgba(0, 207, 255, 0.24)'; ctx.lineWidth = 2;
                     ctx.beginPath(); ctx.moveTo(xMin, y); ctx.lineTo(xMax, y); ctx.stroke();
                     ctx.beginPath(); ctx.moveTo(xMin, y - alturaCaixa / 2); ctx.lineTo(xMin, y + alturaCaixa / 2); ctx.moveTo(xMax, y - alturaCaixa / 2); ctx.lineTo(xMax, y + alturaCaixa / 2); ctx.stroke();
                     ctx.fillRect(xQ1, y - alturaCaixa / 2, Math.max(1, xQ3 - xQ1), alturaCaixa);
                     ctx.strokeRect(xQ1, y - alturaCaixa / 2, Math.max(1, xQ3 - xQ1), alturaCaixa);
-                    ctx.strokeStyle = '#E5EDF2'; ctx.lineWidth = 2.2;
+                    ctx.strokeStyle = '#EAFBFF'; ctx.lineWidth = 3;
                     ctx.beginPath(); ctx.moveTo(xMediana, y - alturaCaixa / 2); ctx.lineTo(xMediana, y + alturaCaixa / 2); ctx.stroke();
-                    ctx.fillStyle = '#C3D0D8';
+                    ctx.fillStyle = '#00CFFF';
                     (item.outliers || []).forEach(function (valor) {
-                        ctx.beginPath(); ctx.arc(escalaX.getPixelForValue(valor), y, 3, 0, Math.PI * 2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(escalaX.getPixelForValue(valor), y, 3.5, 0, Math.PI * 2); ctx.fill();
+                        ctx.strokeStyle = '#EAFBFF'; ctx.lineWidth = 1; ctx.stroke();
                     });
                 });
                 ctx.restore();
@@ -836,7 +899,7 @@
         graficosInvestigacao.boxplot = new Chart(document.getElementById('graficoBoxplot'), {
             type: 'scatter', data: { datasets: [{ data: pontosTooltip, pointRadius: 0, pointHitRadius: 12, pointHoverRadius: 0 }] }, plugins: [pluginBoxplot],
             options: { responsive: true, maintainAspectRatio: false,
-                layout: { padding: { top: espacoVertical, bottom: espacoVertical } },
+                layout: { padding: { top: 7, bottom: 18 } },
                 plugins: { legend: { display: false }, infratechBoxplot: { itens: itens }, tooltip: { callbacks: {
                     title: function (contextos) { return contextos[0] && contextos[0].raw.item.nomeServidor; },
                     label: function (contexto) {
@@ -852,12 +915,13 @@
                     }
                 } } },
                 scales: {
-                    x: { type: 'linear', min: minimo, max: maximo, title: { display: true, text: rotuloMetrica(metrica) }, ticks: { color: '#c3d0da', callback: function (valor) { return `${formatarNumero(valor)}${unidade}`; } }, grid: { color: '#293746' } },
-                    y: { type: 'category', labels: nomes, reverse: true, ticks: { color: '#e0e8ee', font: { size: 11, weight: '600' }, padding: 9 }, grid: { display: false } }
+                    x: { type: 'linear', min: minimo, max: maximo, title: { display: true, text: rotuloMetrica(metrica) }, ticks: { color: '#c3d0da', padding: 8, maxTicksLimit: 7, callback: function (valor) { return `${formatarNumero(valor)}${unidade}`; } }, grid: { color: '#293746' } },
+                    y: { type: 'category', labels: nomesEixo, reverse: false, ticks: { color: '#e0e8ee', font: { size: 11, weight: '600' }, padding: 9 }, grid: { display: false } }
                 }
             }
         });
     }
+
 
     function renderizarAnalise(documento) {
         var resumo = documento.pearson.resumo || {};
@@ -865,37 +929,68 @@
         var relacoes = documento.pearson.porRelacao || [];
         var valorPearson = resumo.medianaCoeficiente;
         var anelPearson = document.getElementById('anelPearson');
+        var medianaPearson = document.getElementById('medianaPearson');
         var coeficienteSaida = document.getElementById('coeficientePearson');
         var classificacao = document.getElementById('classificacaoPearson');
-        var sinalSaida = document.getElementById('sinalPearson');
+        // identifica as métricas dos filtros no resumo visual de pearson
+        var metricasCurtas = { cpu: 'CPU', ram: 'RAM', disco: 'Disco', rede: 'Rede' };
+        var metricaX = documento.metricas && documento.metricas.x;
+        var metricaY = documento.metricas && documento.metricas.y;
+        var nomeMetricaCurta = function (metrica) { return metricasCurtas[metrica] || (metrica ? String(metrica).toUpperCase() : 'métrica'); };
+        document.getElementById('descricaoPearson').textContent = `Relação entre ${nomeMetricaCurta(metricaX)} e ${nomeMetricaCurta(metricaY)}`;
         var intensidade = valorPearson == null ? 0 : Math.abs(Number(valorPearson));
         var sinal = valorPearson == null || Number(valorPearson) === 0 ? 'neutro' : Number(valorPearson) > 0 ? 'positivo' : 'negativo';
         var faixa = valorPearson == null ? 'sem-dados'
             : intensidade >= 0.7 ? 'forte' : intensidade >= 0.3 ? 'moderada' : intensidade < 0.1 ? 'nula' : 'fraca';
-        var rotulosFaixa = { forte: 'Forte', moderada: 'Moderada', fraca: 'Fraca', nula: 'Praticamente nula', 'sem-dados': 'Sem pares suficientes' };
-        coeficienteSaida.textContent = valorPearson == null ? '—' : formatarNumero(valorPearson, 3);
+        var rotulosFaixa = { forte: 'Forte', moderada: 'Moderada', fraca: 'Fraca', nula: 'Praticamente nula', 'sem-dados': 'Dados insuficientes' };
+        coeficienteSaida.textContent = valorPearson == null ? 'N/D' : formatarNumero(valorPearson, 3);
         anelPearson.style.setProperty('--pearson-arco', `${intensidade * 360}deg`);
-        anelPearson.dataset.sinal = sinal;
         anelPearson.dataset.faixa = faixa;
+        anelPearson.dataset.sinal = sinal;
+        medianaPearson.dataset.faixa = faixa;
         anelPearson.setAttribute('aria-label', valorPearson == null
-            ? 'Correlação mediana indisponível' : `Correlação mediana ${formatarNumero(valorPearson, 3)}, força ${rotulosFaixa[faixa]}, direção ${sinal}`);
+            ? 'Correlação mediana: dados insuficientes' : `Correlação mediana ${formatarNumero(valorPearson, 3)}, força ${rotulosFaixa[faixa]}, direção ${sinal}`);
         classificacao.textContent = rotulosFaixa[faixa];
-        sinalSaida.textContent = valorPearson == null ? 'Sinal indisponível' : `Sinal ${sinal}`;
-        document.getElementById('amostrasPearson').textContent = `${relacoes.length} relações consideradas · alinhamento 1:1, tolerância 30 s`;
+        var totalRelacoes = relacoes.length;
+        // mostra as contagens por intensidade
+        var contagensForca = {
+            fracasNulas: Number(distribuicao.fracas || 0) + Number(distribuicao.nulas || 0),
+            moderadas: Number(distribuicao.moderadas || 0),
+            fortes: Number(distribuicao.fortes || 0)
+        };
+        var totalClassificadas = contagensForca.fracasNulas + contagensForca.moderadas + contagensForca.fortes;
+        document.getElementById('amostrasPearson').textContent = `${totalRelacoes} relações analisadas`;
         document.getElementById('pearsonPositivas').textContent = distribuicao.positivas || 0;
         document.getElementById('pearsonNegativas').textContent = distribuicao.negativas || 0;
-        document.getElementById('pearsonFortes').textContent = distribuicao.fortes || 0;
-        document.getElementById('pearsonModeradas').textContent = distribuicao.moderadas || 0;
-        document.getElementById('pearsonOutras').textContent = (distribuicao.fracas || 0) + (distribuicao.nulas || 0);
-        var listaRelacoes = document.getElementById('listaRelacoesPearson');
-        listaRelacoes.replaceChildren();
-        relacoes.forEach(function (item) {
-            var linha = document.createElement('li');
-            linha.textContent = `${item.rotulo}: ${item.coeficiente == null ? 'dados insuficientes' : `r = ${formatarNumero(item.coeficiente, 3)} (${item.sinal}, ${item.intensidade})`} · ${item.amostrasAlinhadas} amostras`;
-            listaRelacoes.appendChild(linha);
+        document.getElementById('pearsonFortes').textContent = contagensForca.fortes;
+        document.getElementById('pearsonModeradas').textContent = contagensForca.moderadas;
+        document.getElementById('pearsonOutras').textContent = contagensForca.fracasNulas;
+        [
+            ['pearsonBarOutras', contagensForca.fracasNulas],
+            ['pearsonBarModeradas', contagensForca.moderadas],
+            ['pearsonBarFortes', contagensForca.fortes]
+        ].forEach(function (barra) {
+            var elemento = document.getElementById(barra[0]);
+            var proporcao = totalClassificadas > 0 ? (barra[1] / totalClassificadas) * 100 : 0;
+            elemento.style.width = `${proporcao}%`;
         });
+        var interpretacaoPearson = document.getElementById('interpretacaoPearson');
+        var maioresContagens = [
+            { nome: 'fracas ou nulas', quantidade: contagensForca.fracasNulas },
+            { nome: 'moderadas', quantidade: contagensForca.moderadas },
+            { nome: 'fortes', quantidade: contagensForca.fortes }
+        ].sort(function (a, b) { return b.quantidade - a.quantidade; });
+        var textoForca = !totalClassificadas
+            ? 'Não há relações válidas suficientes para resumir a intensidade.'
+            : maioresContagens[0].quantidade === maioresContagens[1].quantidade
+                ? `As intensidades se distribuem sem predominância entre ${nomeMetricaCurta(metricaX)} e ${nomeMetricaCurta(metricaY)}.`
+                : `Predominam relações ${maioresContagens[0].nome} entre ${nomeMetricaCurta(metricaX)} e ${nomeMetricaCurta(metricaY)}.`;
+        interpretacaoPearson.textContent = textoForca;
+        document.querySelector('.investigacao-pearson__segmentos').setAttribute('aria-label',
+            `${totalClassificadas} relações válidas: ${contagensForca.fracasNulas} fracas ou nulas, ${contagensForca.moderadas} moderadas e ${contagensForca.fortes} fortes.`);
         var lista = document.getElementById('listaAnomalias');
         var rolagemTabela = document.getElementById('rolagemTabelaAnomalias');
+        var detalhesEventos = document.getElementById('detalhesEventosAnomalia');
         var avisoVazio = document.getElementById('anomaliasVazio');
         lista.replaceChildren();
         var anomalias = documento.anomalias.eventosIndividuais || [];
@@ -905,7 +1000,7 @@
         avisoVazio.textContent = anomalias.length || simultaneas.length ? '' : semCapturas
             ? 'Não há capturas dos servidores selecionados no intervalo.'
             : 'Nenhuma anomalia estatística encontrada no intervalo.';
-        // (Cláudia - M) Mantém eventos individuais e grupos simultâneos em linhas distintas, ordenados pelo horário real.
+        // ordena os eventos individuais e simultâneos
         var registrosAnomalia = anomalias.map(function (evento) {
             return { tipo: 'individual', timestamp: evento.timestamp, evento: evento };
         }).concat(simultaneas.map(function (grupo) {
@@ -973,15 +1068,7 @@
             lista.appendChild(linha);
         });
         rolagemTabela.hidden = registrosAnomalia.length === 0;
-        var resumoServidores = document.getElementById('resumoAnomaliasServidor');
-        if (resumoServidores) {
-            var contagens = documento.anomalias.contagemPorServidor || [];
-            var servidoresComEventos = contagens.filter(function (item) { return item.quantidade > 0; });
-            resumoServidores.textContent = servidoresComEventos.length
-                ? `Mais eventos: ${servidoresComEventos.slice(0, 3).map(function (item) { return `${item.nomeServidor} (${item.quantidade})`; }).join(' · ')}`
-                : 'Nenhuma anomalia no período.';
-            resumoServidores.title = contagens.map(function (item) { return `${item.nomeServidor}: ${item.quantidade}`; }).join('\n');
-        }
+        detalhesEventos.hidden = registrosAnomalia.length === 0;
         var tituloAnomalias = document.getElementById('tituloGraficoAnomalias');
         if (tituloAnomalias) {
             var serie = (documento.anomalias.serie || [])[0];
@@ -1004,12 +1091,25 @@
             : 'Sem janela suficiente para estimar a cobertura';
         var estadoCoberturaLabel = document.getElementById('estadoCoberturaLabel');
         if (estadoCoberturaLabel) estadoCoberturaLabel.textContent = ({ normal: 'Dentro do esperado', atencao: 'Atenção', critico: 'Baixa', 'sem-dados': 'Sem dados' })[estadoCobertura];
-        document.getElementById('metricaTempoCritico').textContent = documento.kpis.tempoCritico.metrica.toUpperCase();
-        document.getElementById('kpiTempoCritico').textContent = documento.kpis.tempoCritico.segundos == null
+        var tempoCritico = documento.kpis.tempoCritico;
+        var servidoresDisponibilidade = documento.disponibilidade || [];
+        var dadosDisponiveis = Number(cobertura.capturasValidas) > 0
+            && servidoresDisponibilidade.length > 0
+            && servidoresDisponibilidade.every(function (servidor) { return !servidor.semDados; });
+        var limitesCompletos = Number(tempoCritico.servidoresAnalisados) > 0
+            && Number(tempoCritico.limitesDisponiveis) === Number(tempoCritico.servidoresAnalisados)
+            && !tempoCritico.limitesIncompletos;
+        var duracaoCritica = tempoCritico.segundos == null ? null : Number(tempoCritico.segundos);
+        var estadoTempoCritico = duracaoCritica > 0 ? 'critico'
+            : duracaoCritica === 0 && dadosDisponiveis && limitesCompletos ? 'normal' : 'atencao';
+        var cardTempoCritico = document.querySelector('.investigacao-kpi--critico');
+        if (cardTempoCritico) cardTempoCritico.dataset.estado = estadoTempoCritico;
+        document.getElementById('metricaTempoCritico').textContent = tempoCritico.metrica.toUpperCase();
+        document.getElementById('kpiTempoCritico').textContent = tempoCritico.segundos == null
             ? '—' : `${formatarNumero(documento.kpis.tempoCritico.segundos / 60, 1)} min-servidor`;
         var textoCritico = document.querySelector('.investigacao-kpi--critico p');
         if (textoCritico) {
-            var critico = documento.kpis.tempoCritico;
+            var critico = tempoCritico;
             textoCritico.textContent = critico.limitesIncompletos
                 ? `Soma dos ${critico.limitesDisponiveis}/${critico.servidoresAnalisados} servidores com limite configurado.`
                 : critico.limitesDiferentes
@@ -1030,7 +1130,7 @@
         montarGraficoBoxplot(documento);
     }
 
-    // (Cláudia - M) Ao escolher uma linha, destaca no gráfico o ponto médio agregado do mesmo horário, quando ele existe.
+    // destaca o horário do evento selecionado
     document.getElementById('listaAnomalias').addEventListener('click', function (evento) {
         var linha = evento.target.closest('tr[data-evento]');
         if (!linha || !documentoAnaliseAtual) return;
@@ -1046,7 +1146,7 @@
         }
     });
 
-    /* Abre e fecha o menu, mantendo o estado acessível para teclado e leitor de tela. */
+    /* abre e fecha o menu, mantendo o estado acessível para teclado e leitor de tela */
     botaoServidores.addEventListener('click', function () {
         var aberto = listaServidores.hidden;
         listaServidores.hidden = !aberto;
@@ -1103,8 +1203,8 @@
         });
     }
 
-    /* Revalida o período quando os campos mudam e atualiza o inventário ao
-     * retornar à aba; a consulta periódica também detecta inclusões e remoções.
+    /* revalida o período quando os campos mudam e atualiza o inventário ao
+     * retornar à aba; a consulta periódica também detecta inclusões e remoções
      */
     dataInicial.addEventListener('change', function () {
         atualizarEstadoAplicacao();
@@ -1117,7 +1217,7 @@
         if (document.visibilityState === 'visible') atualizarListaServidores();
     });
 
-    /* (Claudia - M): Expõe os limites históricos já carregados para componentes compatíveis da página. */
+    /* expõe os limites históricos já carregados para componentes compatíveis da página */
     window.InfraTechInvestigacaoDatas = {
         configurarLimitesEmpresa: configurarLimitesEmpresa,
         configurarLimitesServidor: configurarLimitesServidor
