@@ -140,21 +140,38 @@
     let listaHosts = [];
     let usouBanco = false;
     let nocPorId = new Map();
+    let jiraPorServidorId = new Map();
+    let jiraPorNome = new Map();
     let usouS3Real = false;
 
     const usuario = typeof carregarSessaoConfiavel === 'function' ? await carregarSessaoConfiavel() : null;
     if (usuario?.idEmpresa) {
       if (typeof validarSessao === 'function') await validarSessao().catch(() => {});
-      const [servs, globais, nocResp] = await Promise.all([
+      const [servs, globais, nocResp, incidentesResp] = await Promise.all([
         fetchJson(`/servidor/listar/${usuario.idEmpresa}`),
         fetchJson(`/servidor/alertas/globais/${usuario.idEmpresa}`),
-        fetchJson('/servidor/noc/telemetria')
+        fetchJson('/servidor/noc/telemetria'),
+        fetchJson('/dash-geral/incidentes')
       ]);
       aplicarLimites(state.limitesGlobais, globais);
 
       if (nocResp?.disponivel && Array.isArray(nocResp.servidores)) {
         usouS3Real = true;
         nocResp.servidores.forEach((s) => nocPorId.set(Number(s.id_servidor), s));
+      }
+
+      if (Array.isArray(incidentesResp?.abertos)) {
+        incidentesResp.abertos.forEach((item) => {
+          const idSrv = Number(item.id_servidor);
+          if (Number.isInteger(idSrv) && idSrv > 0) {
+            if (!jiraPorServidorId.has(idSrv)) jiraPorServidorId.set(idSrv, []);
+            jiraPorServidorId.get(idSrv).push(item);
+          } else if (item.servidor) {
+            const chaveNome = String(item.servidor).trim().toLowerCase();
+            if (!jiraPorNome.has(chaveNome)) jiraPorNome.set(chaveNome, []);
+            jiraPorNome.get(chaveNome).push(item);
+          }
+        });
       }
 
       if (Array.isArray(servs) && servs.length) {
@@ -186,6 +203,18 @@
           : gerarMockNocServidor(srv);
       }
 
+      const chamadosRota = jiraPorServidorId.get(Number(srv.id_servidor))
+        || jiraPorNome.get(String(srv.nome || '').trim().toLowerCase())
+        || [];
+      const chamadosJira = Array.isArray(raw.chamados_jira) && raw.chamados_jira.length
+        ? raw.chamados_jira
+        : chamadosRota.map((ch) => ({
+            key: ch.id,
+            summary: `${ch.responsavel ? `Resp.: ${ch.responsavel} · ` : ''}Aberto há ${formatarDuracao(ch.minutos ?? 0)}`,
+            status: ch.prioridade === 'critico' ? 'Crítico' : ch.prioridade === 'atencao' ? 'Atenção' : 'Aberto',
+            status_categoria: ch.prioridade === 'critico' ? 'new' : 'indeterminate'
+          }));
+
       const met = raw.metricas_atuais || {};
       const ultimoEnvio = raw.ultimo_envio_hhmm || formatarHoraCurta(raw.ultima_coleta);
       const tel = {
@@ -198,7 +227,8 @@
         down: met.download_mbps != null ? Math.round(met.download_mbps) : null,
         up: met.upload_mbps != null ? Math.round(met.upload_mbps) : null,
         series24h: Array.isArray(raw.series_24h) ? raw.series_24h : [],
-        processos: Array.isArray(raw.processos) ? raw.processos : []
+        processos: Array.isArray(raw.processos) ? raw.processos : [],
+        chamadosJira
       };
 
       const classif = classificarServidor(srv, tel);
@@ -571,6 +601,23 @@
     $('incident-note').textContent = srv.estado === 'healthy'
       ? 'Operação dentro dos limites configurados'
       : srv.estado === 'neutral' ? 'Verificar coleta do agente e conectividade S3' : `Persistência monitorada na janela de ${state.janela}`;
+
+    const chamados = tel.chamadosJira || [];
+    $('jira-tickets-list').innerHTML = chamados.length
+      ? chamados.map((ch) => {
+          const cat = ch.status_categoria === 'done' ? 'healthy' : ch.status_categoria === 'indeterminate' ? 'warning' : 'critical';
+          const keyEl = ch.url
+            ? `<a class="jira-ticket-key" href="${esc(ch.url)}" target="_blank" rel="noopener noreferrer">${esc(ch.key)}</a>`
+            : `<span class="jira-ticket-key">${esc(ch.key)}</span>`;
+          return `<li class="jira-ticket-item">
+            <div class="jira-ticket-main">
+              ${keyEl}
+              <span class="jira-ticket-summary">${esc(ch.summary)}</span>
+            </div>
+            <span class="badge-status ${cat}"><span class="badge-dot"></span>${esc(ch.status)}</span>
+          </li>`;
+        }).join('')
+      : '<li class="jira-ticket-empty">Nenhum chamado Jira vinculado para este servidor.</li>';
 
     // Barras de recursos e processos
     if (tel.semTelemetria) {
