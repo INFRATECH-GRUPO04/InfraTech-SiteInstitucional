@@ -431,226 +431,181 @@
 
         function plotarDashboardEspecifica(capturas, dados) {
             dash_main.innerHTML = `
-            <div class="dash-parte1">
-                <div class="card-ranking-variacoes cards">
-                    <div class="titulo-card">Maior variação dos componentes</div>
-                    <div class="subtitulo-ocorrencias">Atual - anterior</div>
+            <div class="dash-main" id="dash_main">
+                <div class="dash-parte1">
+                    <div class="card-ranking-variacoes cards">
+                        <div class="titulo-card">Maior variação dos componentes</div>
+                        <div class="subtitulo-ocorrencias">Atual - anterior</div>
 
-                    <div class="lista-ranking">
-                        <div class="item-ranking">
-                            <div class="ranking-topo">
-                                <span class="ranking-nome">CPU</span>
-                                <span class="ranking-hora">16:40</span>
-                            </div>
-                            <div class="variacao">
-                                <div class="barra-fundo">
-                                    <div class="barra-preenchida critico" style="width: 89%"></div>
+                        <div class="lista-ranking">
+                            <div class="item-ranking">
+                                <div class="ranking-topo">
+                                    <span class="ranking-nome">CPU</span>
+                                    <span class="ranking-percentual valor-critico">89%</span>
+                                    <span class="ranking-hora">16:40</span>
                                 </div>
-                                <span class="ranking-variacao valor-critico">+ 21</span>
+                                <div class="variacao">
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 89%"></div>
+                                    </div>
+                                    <span class="ranking-variacao valor-critico">+ 21</span>
+                                </div>
                             </div>
-                            <span class="ranking-percentual valor-critico">89%</span>
+                            <div class="item-ranking">
+                                <div class="ranking-topo">
+                                    <span class="ranking-nome">RAM</span>
+                                    <span class="ranking-percentual valor-critico">76%</span>
+                                    <span class="ranking-hora">12:27</span>
+                                </div>
+                                <div class="variacao">
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida critico" style="width: 76%"></div>
+                                    </div>
+                                    <span class="ranking-variacao valor-critico">+ 18</span>
+                                </div>
+                            </div>
+                            <div class="item-ranking">
+                                <div class="ranking-topo">
+                                    <span class="ranking-nome">Disco</span>
+                                    <span class="ranking-percentual valor-atencao">79%</span>
+                                    <span class="ranking-hora">20:54</span>
+                                </div>
+                                <div class="variacao">
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 79%"></div>
+                                    </div>
+                                    <span class="ranking-variacao valor-atencao">+ 15</span>
+                                </div>
+                            </div>
+                            <div class="item-ranking">
+                                <div class="ranking-topo">
+                                    <span class="ranking-nome">Rede</span>
+                                    <span class="ranking-percentual valor-atencao">76%</span>
+                                    <span class="ranking-hora">17:38</span>
+                                </div>
+                                <div class="variacao">
+                                    <div class="barra-fundo">
+                                        <div class="barra-preenchida atencao" style="width: 76%"></div>
+                                    </div>
+                                    <span class="ranking-variacao valor-atencao">+ 12</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="item-ranking">
-                            <div class="ranking-topo">
-                                <span class="ranking-nome">RAM</span>
-                                <span class="ranking-hora">12:27</span>
-                            </div>
-                            <div class="variacao">
-                                <div class="barra-fundo">
-                                    <div class="barra-preenchida critico" style="width: 76%"></div>
-                                </div>
-                                <span class="ranking-variacao valor-critico">+ 18</span>
-                            </div>
-                            <span class="ranking-percentual valor-critico">76%</span>
-                        </div>
-                        <div class="item-ranking">
-                            <div class="ranking-topo">
-                                <span class="ranking-nome">Disco</span>
-                                <span class="ranking-hora">20:54</span>
-                            </div>
-                            <div class="variacao">
-                                <div class="barra-fundo">
-                                    <div class="barra-preenchida atencao" style="width: 79%"></div>
-                                </div>
-                                <span class="ranking-variacao valor-atencao">+ 15</span>
-                            </div>
-                            <span class="ranking-percentual valor-atencao">79%</span>
-                        </div>
-                        <div class="item-ranking">
-                            <div class="ranking-topo">
-                                <span class="ranking-nome">Rede</span>
-                                <span class="ranking-hora">17:38</span>
-                            </div>
-                            <div class="variacao">
-                                <div class="barra-fundo">
-                                    <div class="barra-preenchida atencao" style="width: 76%"></div>
-                                </div>
-                                <span class="ranking-variacao valor-atencao">+ 12</span>
-                            </div>
-                            <span class="ranking-percentual valor-atencao">76%</span>
+                    </div>
+                    <div class="card-uso-recursos cards">
+                        <div class="titulo-card">Uso de recursos</div>
+
+                        <div class="box-grafico-uso-recurso">
+                            <canvas id="grafico_uso_recurso"></canvas>
                         </div>
                     </div>
                 </div>
-                <div class="card-uso-recursos cards">
-                    <div class="titulo-card">Maior variação dos componentes</div>
-                    <div class="subtitulo-ocorrencias">Atual - anterior</div>
+                <div class="dash-parte2 especifica">
+                    <div class="card-logs cards">
+                        <div class="cabecalho-logs">
+                            <div>
+                                <div class="titulo-card">Alertas registrados</div>
+                                <!-- <div class="subtitulo-ocorrencias">Leituras registradas no mesmo período e nas séries do
+                                gráfico.</div> -->
+                            </div>
+                            <div class="contador-logs" id="contador_logs">12</div>
+                        </div>
 
-                    <div class="box-grafico-uso-recurso">
-                        <canvas id="grafico_uso_recurso"></canvas>
+                        <div class="tabela-wrapper tabela-logs-wrapper">
+                            <table class="tabela-ocorrencias tabela-logs">
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Recurso</th>
+                                        <th>Evento</th>
+                                        <th>Faixa</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela_logs">
+                                    <tr>
+                                        <td>22h</td>
+                                        <td>CPU</td>
+                                        <td>Leitura acima do limite de atenção</td>
+                                        <td><span class="badge atencao">Atenção</span></td>
+                                        <td class="valor-log">72%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>22h</td>
+                                        <td>RAM</td>
+                                        <td>Leitura acima do limite de atenção</td>
+                                        <td><span class="badge atencao">Atenção</span></td>
+                                        <td class="valor-log">78%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-demanda-mapa-calor cards">
+                        <div class="titulo-card">Demanda por Período</div>
+                        <div class="mapa-calor">
+                            <!-- cabeçalho -->
+                            <div class="linha-calor linha-calor-topo">
+                                <div class="legenda-calor">DIA / PICO (%)</div>
+                                <div class="coluna-periodo">Manhã<span>06-12h</span></div>
+                                <div class="coluna-periodo">Tarde<span>12-18h</span></div>
+                                <div class="coluna-periodo">Noite<span>18-24h</span></div>
+                                <div class="coluna-periodo">Madrugada<span>00-06h</span></div>
+                            </div>
+
+                            <div class="linha-calor">
+                                <div class="dia-calor">Segunda · 19/10</div>
+                                <div class="celula-calor normal">56%</div>
+                                <div class="celula-calor normal">68%</div>
+                                <div class="celula-calor atencao">84%</div>
+                                <div class="celula-calor normal">48%</div>
+                            </div>
+                            <div class="linha-calor">
+                                <div class="dia-calor">Terça · 20/10</div>
+                                <div class="celula-calor normal">58%</div>
+                                <div class="celula-calor normal">72%</div>
+                                <div class="celula-calor critico">88%</div>
+                                <div class="celula-calor normal">51%</div>
+                            </div>
+                            <div class="linha-calor">
+                                <div class="dia-calor">Quarta · 21/10</div>
+                                <div class="celula-calor normal">61%</div>
+                                <div class="celula-calor atencao">76%</div>
+                                <div class="celula-calor critico">91%</div>
+                                <div class="celula-calor normal">55%</div>
+                            </div>
+                            <div class="linha-calor">
+                                <div class="dia-calor">Quinta · 22/10</div>
+                                <div class="celula-calor normal">60%</div>
+                                <div class="celula-calor atencao">79%</div>
+                                <div class="celula-calor critico">92%</div>
+                                <div class="celula-calor normal">57%</div>
+                            </div>
+                            <div class="linha-calor">
+                                <div class="dia-calor">Sexta · 23/10</div>
+                                <div class="celula-calor normal">64%</div>
+                                <div class="celula-calor atencao">85%</div>
+                                <div class="celula-calor critico">96%</div>
+                                <div class="celula-calor normal">68%</div>
+                            </div>
+                            <div class="linha-calor">
+                                <div class="dia-calor">Sábado · 24/10</div>
+                                <div class="celula-calor normal">69%</div>
+                                <div class="celula-calor critico">93%</div>
+                                <div class="celula-calor critico">99%</div>
+                                <div class="celula-calor atencao">82%</div>
+                            </div>
+                            <div class="linha-calor">
+                                <div class="dia-calor">Domingo · 25/10</div>
+                                <div class="celula-calor normal">65%</div>
+                                <div class="celula-calor atencao">86%</div>
+                                <div class="celula-calor critico">97%</div>
+                                <div class="celula-calor atencao">77%</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="dash-parte2 especifica">
-                <div class="card-logs cards">
-                    <div class="cabecalho-logs">
-                        <div>
-                            <div class="titulo-card">Logs e eventos — 24h</div>
-                            <div class="subtitulo-ocorrencias">Leituras registradas no mesmo período e nas séries do
-                                gráfico.</div>
-                        </div>
-                        <div class="contador-logs" id="contador_logs">12</div>
-                    </div>
-
-                    <div class="nota-logs">
-                        A severidade usa os limites dos KPIs. Leituras não confirmam incidente persistente.
-                    </div>
-
-                    <div class="tabela-wrapper tabela-logs-wrapper">
-                        <table class="tabela-ocorrencias tabela-logs">
-                            <thead>
-                                <tr>
-                                    <th>Hora</th>
-                                    <th>Recurso</th>
-                                    <th>Evento</th>
-                                    <th>Faixa</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabela_logs">
-                                <tr>
-                                    <td>24h</td>
-                                    <td>CPU</td>
-                                    <td>Retorno à faixa saudável</td>
-                                    <td><span class="badge info">Info</span></td>
-                                    <td class="valor-log">42%</td>
-                                </tr>
-                                <tr>
-                                    <td>24h</td>
-                                    <td>RAM</td>
-                                    <td>Retorno à faixa saudável</td>
-                                    <td><span class="badge info">Info</span></td>
-                                    <td class="valor-log">67%</td>
-                                </tr>
-                                <tr>
-                                    <td>22h</td>
-                                    <td>CPU</td>
-                                    <td>Leitura acima do limite de atenção</td>
-                                    <td><span class="badge atencao">Atenção</span></td>
-                                    <td class="valor-log">72%</td>
-                                </tr>
-                                <tr>
-                                    <td>22h</td>
-                                    <td>RAM</td>
-                                    <td>Leitura acima do limite de atenção</td>
-                                    <td><span class="badge atencao">Atenção</span></td>
-                                    <td class="valor-log">78%</td>
-                                </tr>
-                                <tr>
-                                    <td>22h</td>
-                                    <td>Disco</td>
-                                    <td>Retorno à faixa saudável</td>
-                                    <td><span class="badge info">Info</span></td>
-                                    <td class="valor-log">74%</td>
-                                </tr>
-                                <tr>
-                                    <td>22h</td>
-                                    <td>Disco</td>
-                                    <td>Retorno à faixa saudável</td>
-                                    <td><span class="badge info">Info</span></td>
-                                    <td class="valor-log">74%</td>
-                                </tr>
-                                <tr>
-                                    <td>22h</td>
-                                    <td>Disco</td>
-                                    <td>Retorno à faixa saudável</td>
-                                    <td><span class="badge info">Info</span></td>
-                                    <td class="valor-log">74%</td>
-                                </tr>
-                                <tr>
-                                    <td>22h</td>
-                                    <td>Disco</td>
-                                    <td>Retorno à faixa saudável</td>
-                                    <td><span class="badge info">Info</span></td>
-                                    <td class="valor-log">74%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-demanda-mapa-calor cards">
-                    <div class="titulo-card">Demanda por Período</div>
-                    <div class="mapa-calor">
-        <!-- cabeçalho -->
-        <div class="linha-calor linha-calor-topo">
-            <div class="legenda-calor">DIA / PICO (%)</div>
-            <div class="coluna-periodo">Manhã<span>06-12h</span></div>
-            <div class="coluna-periodo">Tarde<span>12-18h</span></div>
-            <div class="coluna-periodo">Noite<span>18-24h</span></div>
-            <div class="coluna-periodo">Madrugada<span>00-06h</span></div>
-        </div>
-
-        <div class="linha-calor">
-            <div class="dia-calor">Segunda · 19/10</div>
-            <div class="celula-calor normal">56%</div>
-            <div class="celula-calor normal">68%</div>
-            <div class="celula-calor atencao">84%</div>
-            <div class="celula-calor normal">48%</div>
-        </div>
-        <div class="linha-calor">
-            <div class="dia-calor">Terça · 20/10</div>
-            <div class="celula-calor normal">58%</div>
-            <div class="celula-calor normal">72%</div>
-            <div class="celula-calor critico">88%</div>
-            <div class="celula-calor normal">51%</div>
-        </div>
-        <div class="linha-calor">
-            <div class="dia-calor">Quarta · 21/10</div>
-            <div class="celula-calor normal">61%</div>
-            <div class="celula-calor atencao">76%</div>
-            <div class="celula-calor critico">91%</div>
-            <div class="celula-calor normal">55%</div>
-        </div>
-        <div class="linha-calor">
-            <div class="dia-calor">Quinta · 22/10</div>
-            <div class="celula-calor normal">60%</div>
-            <div class="celula-calor atencao">79%</div>
-            <div class="celula-calor critico">92%</div>
-            <div class="celula-calor normal">57%</div>
-        </div>
-        <div class="linha-calor">
-            <div class="dia-calor">Sexta · 23/10</div>
-            <div class="celula-calor normal">64%</div>
-            <div class="celula-calor atencao">85%</div>
-            <div class="celula-calor critico">96%</div>
-            <div class="celula-calor normal">68%</div>
-        </div>
-        <div class="linha-calor">
-            <div class="dia-calor">Sábado · 24/10</div>
-            <div class="celula-calor normal">69%</div>
-            <div class="celula-calor critico">93%</div>
-            <div class="celula-calor critico">99%</div>
-            <div class="celula-calor atencao">82%</div>
-        </div>
-        <div class="linha-calor">
-            <div class="dia-calor">Domingo · 25/10</div>
-            <div class="celula-calor normal">65%</div>
-            <div class="celula-calor atencao">86%</div>
-            <div class="celula-calor critico">97%</div>
-            <div class="celula-calor atencao">77%</div>
-        </div>
-    </div>
-                </div>
-                </div>
                 
             `
             plotarGraficoUsoRecursos();
