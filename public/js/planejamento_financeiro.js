@@ -40,13 +40,6 @@ var planejamento = {
     { mes: 'Set/26', valor: 16000 },
     { mes: 'Out/26', valor: 19200 },
     { mes: 'Nov/26', valor: 19200 }
-  ],
-
-  cenarios: [
-    { nome: 'Manter frota', detalhe: 'Sem expansão', adicionais: 0, capacidadeExtra: 0, prazo: '—' },
-    { nome: 'Otimizar frota', detalhe: 'Realocar carga, sem comprar', adicionais: 0, capacidadeExtra: 500, prazo: 'Imediato' },
-    { nome: 'Crescimento esperado', detalhe: 'Adicionar 2 servidores físicos', adicionais: 2, capacidadeExtra: 0, destaque: true },
-    { nome: 'Expansão agressiva', detalhe: 'Adicionar 5 servidores físicos', adicionais: 5, capacidadeExtra: 0 }
   ]
 };
 
@@ -55,14 +48,6 @@ var toastTimer = null;
 var filtroServidorAtual = 'todos';
 var termoBuscaServidor = '';
 var nomesMeses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
-var USOS_ILUSTRATIVOS = [
-  { uso: 78, pico: 96 },
-  { uso: 58, pico: 58 },
-  { uso: 52, pico: 52 },
-  { uso: 44, pico: 44 },
-  { uso: 41, pico: 41 },
-  { uso: 18, pico: 18 }
-];
 
 function el(id) {
   return document.getElementById(id);
@@ -581,47 +566,6 @@ function renderServidores() {
   corpo.innerHTML = html;
 }
 
-function calcularCenarios(dados) {
-  var base = dados || planejamento;
-  var listaServidores = base.servidores || [];
-  var baseServidores = listaServidores.length;
-
-  return planejamento.cenarios.map(function (cenario) {
-    var servidoresTotais = baseServidores + cenario.adicionais;
-    var capacidadeAdicional = cenario.adicionais * base.capacidadeNova + cenario.capacidadeExtra;
-    var capacidadeTotal = baseServidores * base.capacidadeAtual + capacidadeAdicional;
-    var custoMensalAdicional = cenario.adicionais * base.custoNovoServidor;
-    var custoImplantacao = cenario.adicionais * base.custoImplantacao;
-
-    var prazoEntrega = cenario.prazo;
-    if (cenario.adicionais > 0) {
-      if (base.provisionamento > 0) {
-        prazoEntrega = textoUnidade(base.provisionamento, 'mês', 'meses');
-      } else {
-        prazoEntrega = 'Imediato';
-      }
-    }
-
-    var runway = null;
-    if (base.crescimento > 0) {
-      runway = Number(Math.max(0, (capacidadeTotal - base.jogadores) / base.crescimento).toFixed(1));
-    }
-
-    return {
-      nome: cenario.nome,
-      detalhe: cenario.detalhe,
-      adicionais: cenario.adicionais,
-      servidoresTotais: servidoresTotais,
-      capacidadeTotal: capacidadeTotal,
-      capacidadeAdicional: capacidadeAdicional,
-      custoMensalAdicional: custoMensalAdicional,
-      custoImplantacao: custoImplantacao,
-      prazoEntrega: prazoEntrega,
-      runwayMeses: runway
-    };
-  });
-}
-
 function renderGrafico() {
   var canvas = document.getElementById('grafico-custo');
   if (!canvas || typeof Chart === 'undefined') return;
@@ -794,30 +738,14 @@ function aplicarDadosServidor(dados) {
   planejamento.origemTelemetria = dados.origemTelemetria || 'simulado';
   planejamento.telemetriaGeradaEm = dados.telemetriaGeradaEm || null;
 
-  var usandoGold = planejamento.origemTelemetria === 's3_gold';
-
-  planejamento.servidores = servidoresRecebidos.map(function (servidor, indice) {
-    var semTelemetria = Boolean(servidor.semTelemetria);
+  planejamento.servidores = servidoresRecebidos.map(function (servidor) {
     var uso = null;
     var pico = null;
+    var semTelemetria = Boolean(servidor.semTelemetria) || servidor.uso == null;
 
-    if (usandoGold) {
-      if (!semTelemetria && servidor.uso != null) {
-        uso = Number(servidor.uso);
-        pico = uso;
-        if (servidor.pico != null) {
-          pico = Number(servidor.pico);
-        }
-      } else {
-        semTelemetria = true;
-      }
-    } else {
-      var referencia = USOS_ILUSTRATIVOS[indice] || { uso: 0, pico: 0 };
-      uso = referencia.uso;
-      if (servidor.uso != null) {
-        uso = Number(servidor.uso);
-      }
-      pico = referencia.pico;
+    if (!semTelemetria) {
+      uso = Number(servidor.uso);
+      pico = uso;
       if (servidor.pico != null) {
         pico = Number(servidor.pico);
       }
@@ -830,8 +758,6 @@ function aplicarDadosServidor(dados) {
       custo: Number(servidor.custo) || 0,
       uso: uso,
       pico: pico,
-      ramMedia: servidor.ramMedia,
-      discoMedio: servidor.discoMedio,
       conexao: servidor.conexao || 'simulado',
       semTelemetria: semTelemetria
     };
@@ -914,6 +840,7 @@ function carregarPlanejamentoBackend() {
     })
     .catch(function () {
       atualizarAvisoOrigem(false);
+      renderTudo();
     });
 }
 
@@ -1080,104 +1007,6 @@ function definirCarregandoRelatorio(carregando) {
   atualizarBotaoEstado('btn-regerar-relatorio', carregando, 'Analisando...', 'Regerar análise');
 }
 
-function montarRelatorioLocalFallback() {
-  var billing = dadosBilling();
-  var totais = totaisServidores();
-  var capacidadeTotal = planejamento.servidores.length * planejamento.capacidadeAtual;
-  var runway = runwayMeses(capacidadeTotal);
-  var servidoresDetalhados = planejamento.servidores.map(function (srv) {
-    var semTelemetria = Boolean(srv.semTelemetria) || srv.uso == null;
-    var uso = null;
-    var pico = null;
-    if (!semTelemetria) {
-      uso = Number(srv.uso);
-      pico = uso;
-      if (srv.pico != null) {
-        pico = Number(srv.pico);
-      }
-    }
-    return {
-      idServidor: srv.idServidor || null,
-      nome: srv.nome,
-      local: srv.local || '-',
-      custo: Number(srv.custo) || 0,
-      uso: uso,
-      pico: pico,
-      semTelemetria: semTelemetria,
-      custoOcioso: custoOcioso(srv),
-      situacao: situacaoServidor(uso).texto
-    };
-  });
-
-  var maior = servidorComMaiorUso(servidoresDetalhados);
-  var nomeGargalo = 'Nenhum servidor';
-  if (maior) nomeGargalo = maior.nome;
-
-  var projecoes = [1, 3, 6].map(function (meses) {
-    var previstos = planejamento.jogadores + planejamento.crescimento * meses;
-    var ocupacaoPrevista = 0;
-    if (capacidadeTotal > 0) {
-      ocupacaoPrevista = (previstos / capacidadeTotal) * 100;
-    }
-    var excedenteCapacidade = Math.max(0, previstos - capacidadeTotal);
-    var unidadeMes = ' meses';
-    if (meses === 1) unidadeMes = ' mês';
-    var impacto = 'Capacidade global suficiente, monitorando picos em ' + nomeGargalo + '.';
-    if (excedenteCapacidade > 0) {
-      impacto = 'Demanda prevista supera a capacidade atual em ' + formatarNumero(excedenteCapacidade) +
-        ' jogadores (' + ocupacaoPrevista.toFixed(1) + '% de ocupação), exigindo expansão prévia.';
-    }
-    return {
-      horizonte: meses + unidadeMes,
-      previsao: 'Demanda estimada de ' + formatarNumero(previstos) + ' jogadores simultâneos.',
-      impactoNegocio: impacto
-    };
-  });
-
-  return {
-    origem: 'analitico_local',
-    modelo: 'motor-analitico-local',
-    emitidoEm: new Date().toLocaleString('pt-BR'),
-    dados: planejamento,
-    metricas: {
-      receita: billing.receita,
-      lucro: billing.lucro,
-      margem: billing.margem,
-      roi: billing.roi,
-      breakeven: billing.breakeven,
-      capacidadeTotal: capacidadeTotal,
-      runwayMeses: runway,
-      custoOciosoTotal: totais.ociosoTotal,
-      servidoresDetalhados: servidoresDetalhados,
-      cenarios: calcularCenarios(planejamento)
-    },
-    analise: {
-      tituloExecutivo: 'Relatório Executivo de Infraestrutura e FinOps — Plano ' + planejamento.plano,
-      vereditoSituacao: 'Operação Analisada pelo Motor Analítico InfraTech',
-      resumoExecutivo: 'Operação com ' + servidoresDetalhados.length + ' servidores ativos suportando ' +
-        formatarNumero(planejamento.jogadores) + ' jogadores, gerando receita estimada de ' +
-        formatarMoeda(billing.receita) + ' e lucro líquido de ' + formatarMoeda(billing.lucro) + '.',
-      analiseFinanceira: 'Margem estimada de ' + formatarPercentual(billing.margem, 2) +
-        ' e ROI de ' + formatarPercentual(billing.roi, 2) + ', com break-even em ' +
-        formatarNumero(billing.breakeven) + ' jogadores.',
-      analiseFrotaGargalos: 'Custo ocioso total estimado em ' + formatarMoeda(totais.ociosoTotal) +
-        '/mês. Principal ponto de atenção: ' + nomeGargalo + '.',
-      previsoesFuturas: projecoes,
-      insightsEstrategicos: [
-        'Avaliar realocação de carga em ' + nomeGargalo + ' para equilibrar a frota.',
-        'Reduzir ociosidade aproximando os servidores subutilizados da meta de ' + planejamento.metaUso + '%.'
-      ],
-      cenarioRecomendado: 'Crescimento esperado (+2 servidores físicos)',
-      justificativaRecomendacao: 'Considerando o provisionamento de ' + textoUnidade(planejamento.provisionamento, 'mês', 'meses') +
-        ', a antecipação evita saturação da capacidade nos próximos meses.',
-      planoAcaoImediato: [
-        'Revisar distribuição de jogadores em ' + nomeGargalo + '.',
-        'Validar orçamento de expansão antes do prazo crítico de decisão.'
-      ]
-    }
-  };
-}
-
 function renderizarRelatorio(pacote) {
   var dados = pacote.dados || planejamento;
   var metricas = pacote.metricas || {};
@@ -1257,9 +1086,9 @@ function renderizarRelatorio(pacote) {
       '</div>';
   }).join('');
 
-  var cenariosRel = metricas.cenarios;
-  if (!Array.isArray(cenariosRel) || cenariosRel.length === 0) {
-    cenariosRel = calcularCenarios(dados);
+  var cenariosRel = [];
+  if (Array.isArray(metricas.cenarios)) {
+    cenariosRel = metricas.cenarios;
   }
   var recomendadoTexto = String(analise.cenarioRecomendado || '').toLowerCase();
   var tabelaCenarios = el('rel-tabela-cenarios');
@@ -1366,9 +1195,7 @@ function gerarRelatorioIA() {
       }
     })
     .catch(function () {
-      renderizarRelatorio(montarRelatorioLocalFallback());
-      abrirModalRelatorio();
-      mostrarToast('Relatório gerado localmente (servidor indisponível).', false);
+      mostrarToast('Não foi possível conectar ao servidor para gerar o relatório.', true);
     })
     .finally(function () {
       definirCarregandoRelatorio(false);
@@ -1378,7 +1205,6 @@ function gerarRelatorioIA() {
 /* ---------- Inicialização ---------- */
 
 document.addEventListener('DOMContentLoaded', function () {
-  renderTudo();
   iniciarRelogio();
   carregarPlanejamentoBackend();
 
