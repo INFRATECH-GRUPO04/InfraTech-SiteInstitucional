@@ -74,16 +74,6 @@
                     </select>
                 </div>
                 <div class="box-filtro">
-                    <span class="label-filtro">Componente</span>
-                    <select class="filtro" name="componentes" id="filtro_componentes">
-                        <option value="Todos">Todos</option>
-                        <option value="cpu">CPU</option>
-                        <option value="ram">RAM</option>
-                        <option value="disco">Disco</option>
-                        <option value="rede">Rede</option>
-                    </select>
-                </div>
-                <div class="box-filtro">
                     <span class="label-filtro">Data de Início</span>
                     <input type="date" class="filtro" name="data_inicio" id="filtro_data_inicio">
                 </div>
@@ -131,8 +121,7 @@
                 </div>
             </div>
             <div class="container-filtro">
-
-                <div class="box-filtro" style="margin-left: 1vw; width: 10vw;">
+                <div class="box-filtro" id="box_filtro_componentes">
                     <span class="label-filtro">Componente</span>
                     <select class="filtro" name="componentes" id="filtro_componentes">
                         <option value="Todos">Todos</option>
@@ -142,6 +131,7 @@
                         <option value="rede">Rede</option>
                     </select>
                 </div>
+                <div>Selecione um componente para ter uma visão específica</div>
             </div>
             <div class="dash-main" id="dash_main">
                 <div class="dash-parte1">
@@ -342,10 +332,9 @@
                         // Agora o select já tem opções: o value existe
                         if (filtro_servidor.options.length > 0) {
                             filtro_servidor.selectedIndex = 0;
-                            //atualizarDashboard();       //  era 
+                            // atualizarDashboard();       //  era 
                             carregarServidor(resposta[i].idServidor)
 
-                            //carregarServidor(filtro_servidor.value);
                         } else {
                             mostrarSemServidor();
                         }
@@ -361,6 +350,9 @@
         var filtroServidor = document.getElementById('filtro_servidor');
         var corpoDashboard = document.getElementById('corpo_dashboard');
         var dashboard_main = document.getElementById('dash_main');
+        var filtroComponentes = document.getElementById('filtro_componentes');
+        var filtroDataInicio = document.getElementById('filtro_data_inicio');
+        var filtroDataFinal = document.getElementById('filtro_data_final');
 
         var servidorEscolhido = "";
 
@@ -380,7 +372,6 @@
 
         async function carregarServidor(idServidor) {
             servidorEscolhido = idServidor;
-
             try {
                 var dados = await buscarCapturas(idServidor, filtro_data_inicio.value, filtro_data_final.value);
                 console.log("Dados recebidos:", dados);
@@ -435,7 +426,7 @@
             carregarServidor(filtroServidor.value);
         });
 
-        filtro_componentes.addEventListener('change', function () {
+        filtroComponentes.addEventListener('change', function () {
             if (ultimosDados) plotarDashboardEspecifica(ultimosDados.capturas, ultimosDados);
         });
 
@@ -759,12 +750,12 @@
             );
         }
 
-        filtro_data_inicio.addEventListener('change', function () {
+        filtroDataInicio.addEventListener('change', function () {
             console.log(filtro_data_inicio.value);
             atualizarDashboard();
         });
 
-        filtro_data_final.addEventListener('change', function () {
+        filtroDataFinal.addEventListener('change', function () {
             console.log(filtro_data_inicio.value);
             atualizarDashboard()
         });
@@ -811,16 +802,6 @@
             }
             carregarServidor(filtroServidor.value);
         }
-
-
-        // const resposta = await fetch(
-        //     `/dashboardSarah/lerServidor/${idEmpresa}/${servidorEscolhido}/${inicio}/${fim}`,
-        //     { cache: 'no-store' }
-        // );
-        // if (resposta.status === 401) return location.href = '/paginas/autenticacao/login/login.html';
-        // if (resposta.status === 204) return mostrarSemDados('Sem dados para o período');
-        // if (!resposta.ok) throw new Error(await resposta.text());
-        // const capturas = await resposta.json();
 
     </script>
 </body>

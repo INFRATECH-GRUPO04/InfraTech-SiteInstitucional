@@ -24,11 +24,11 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 40vw;
+    width: 38vw;
 }
 
 .box-filtro{
-    width: 24%;
+    width: 35%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -36,7 +36,7 @@
 }
 
 .label-filtro{
-    font-size: 0.75vw;
+    font-size: 0.9vw;
 }
 
 .filtro{
@@ -45,6 +45,21 @@
     border-radius: 10px;
     width: 95%;
     height: 90%;
+}
+
+.container-filtro{
+    width: 60%;
+    height: 5vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 1vw;
+}
+
+#box_filtro_componentes{
+    height: 80%;
+    width: 30%;
 }
 
 .corpo-dashboard{
