@@ -17,7 +17,7 @@ async function carregarServidores(idEmpresa) {
 // (Cláudia - M) Descreve o objeto Gold consultado para que a interface possa comprovar a origem dos dados.
 function origemGold(idEmpresa) {
     const prefixo = (process.env.S3_GOLD_PREFIX || '03-gold/').replace(/^\/+|\/+$/g, '');
-    const objetoMetadados = `${prefixo}/empresa-${Number(idEmpresa)}/historico/metadados.json`;
+    const objetoMetadados = `${prefixo}/empresa-${Number(idEmpresa)}/dashboard.json`;
     return {
         provedor: 'Amazon S3',
         camada: 'Gold',

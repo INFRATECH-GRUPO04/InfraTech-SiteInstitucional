@@ -160,7 +160,7 @@
 
                 <!-- (Cláudia - M) Associa os filtros de data ao aviso dos metadados históricos publicados na Gold. -->
                 <div class="investigacao-filtro investigacao-filtro--periodo" id="filtroPeriodoHistorico" data-estado-historico="aguardando-metadados">
-                    <span class="investigacao-filtro__rotulo">Intervalo do histórico da empresa</span>
+                    <span class="investigacao-filtro__rotulo">Período disponível</span>
                     <div class="investigacao-periodo__campos">
                         <label>
                             <span>De</span>
@@ -173,7 +173,6 @@
                         <button type="button" id="aplicarPeriodoHistorico" disabled>Aplicar</button>
                     </div>
                     <p class="investigacao-periodo__estado" id="estadoHistoricoGold" role="status" aria-live="polite">Aguardando os limites de data do histórico publicado na Gold.</p>
-                    <p class="investigacao-periodo__nota">Os limites do calendário não garantem capturas em todos os momentos do intervalo.</p>
                 </div>
             </section>
 
@@ -203,7 +202,7 @@
                         <div><h2 id="tituloPearson">Correlação cruzada de Pearson</h2><p>Mediana dos pares direcionados selecionados.</p></div>
                         <button class="investigacao-ajuda" type="button" aria-label="Sobre a correlação de Pearson" aria-describedby="ajudaPearson">i</button>
                     </header>
-                    <p class="investigacao-ajuda__texto" id="ajudaPearson">Correlação mede associação linear e não confirma causalidade.</p>
+                    <p class="investigacao-ajuda__texto" id="ajudaPearson">A cor indica a intensidade de |r| e a prioridade de investigação, não severidade operacional. O sinal mostra a direção; correlação não confirma causalidade.</p>
                     <div class="investigacao-pearson">
                         <!-- (Cláudia - M) O anel mostra a intensidade absoluta; sinal e resumo continuam explícitos ao lado. -->
                         <div class="investigacao-pearson__resultado" aria-label="Resumo mediano de Pearson">
@@ -213,13 +212,16 @@
                             <span class="investigacao-pearson__direcao" id="classificacaoPearson">Aguardando pares direcionados</span>
                             <span class="investigacao-pearson__sinal" id="sinalPearson">Sinal —</span>
                         </div>
-                        <div class="investigacao-pearson__legenda" aria-label="Distribuição dos pares correlacionados">
-                            <span><i class="ponto-legenda ponto-legenda--positivo" aria-hidden="true"></i>Positivas <b id="pearsonPositivas">0</b></span>
-                            <span><i class="ponto-legenda ponto-legenda--negativa" aria-hidden="true"></i>Negativas <b id="pearsonNegativas">0</b></span>
+                        <!-- (Cláudia - M) Separa a intensidade estatística da direção para evitar leitura como estado operacional. -->
+                        <div class="investigacao-pearson__legenda" aria-label="Resumo das relações de Pearson">
+                            <small class="investigacao-pearson__grupo-titulo">Intensidade · valor absoluto de r</small>
+                            <span><i class="ponto-legenda ponto-legenda--fraca" aria-hidden="true"></i>Fracas ou nulas <b id="pearsonOutras">0</b></span>
+                            <span><i class="ponto-legenda ponto-legenda--moderada" aria-hidden="true"></i>Moderadas <b id="pearsonModeradas">0</b></span>
                             <span><i class="ponto-legenda ponto-legenda--forte" aria-hidden="true"></i>Fortes <b id="pearsonFortes">0</b></span>
-                            <span><i class="ponto-legenda ponto-legenda--moderada-fraca" aria-hidden="true"></i>Moderadas / fracas <b id="pearsonOutras">0</b></span>
+                            <small class="investigacao-pearson__grupo-titulo">Direção · sinal de r</small>
+                            <span><i class="ponto-legenda ponto-legenda--direcao" aria-hidden="true">+</i>Positivas <b id="pearsonPositivas">0</b></span>
+                            <span><i class="ponto-legenda ponto-legenda--direcao" aria-hidden="true">−</i>Negativas <b id="pearsonNegativas">0</b></span>
                             <small id="amostrasPearson">0 relações válidas</small>
-                            <small>O anel representa |r|. Positivo e negativo são direções, não avaliação de saúde.</small>
                             <details class="investigacao-pares-detalhes">
                                 <summary>Ver relações direcionadas</summary>
                                 <ul id="listaRelacoesPearson"></ul>
@@ -278,9 +280,9 @@
                             <ul class="investigacao-legenda" aria-label="Legenda do gráfico temporal">
                                 <li><i class="ponto-legenda ponto-legenda--cpu" aria-hidden="true"></i><span id="legendaMetricaPrimaria">CPU</span></li>
                                 <li><i class="ponto-legenda ponto-legenda--ram" aria-hidden="true"></i><span id="legendaMetricaComparada">RAM</span></li>
-                                <li><i class="ponto-legenda ponto-legenda--anomalia" aria-hidden="true"></i>Anomalia estatística</li>
-                                <li><i class="ponto-legenda ponto-legenda--simultaneo" aria-hidden="true"></i>Grupo simultâneo</li>
-                                <li id="legendaLimiteCritico"><i class="linha-legenda linha-legenda--limite" aria-hidden="true"></i>Limite crítico comum</li>
+                                <li><i class="ponto-legenda ponto-legenda--anomalia" aria-hidden="true"></i>Anomalia</li>
+                                <li><i class="ponto-legenda ponto-legenda--simultaneo" aria-hidden="true"></i>Simultâneo</li>
+                                <li id="legendaLimiteCritico"><i class="linha-legenda linha-legenda--limite" aria-hidden="true"></i>Limite crítico</li>
                             </ul>
                         </figure>
                         <!-- (Cláudia - M) A tabela preserva servidor, horário e Z-score em uma área rolável própria. -->
@@ -300,19 +302,20 @@
 
                 <article class="investigacao-painel investigacao-painel--boxplot" aria-labelledby="tituloBoxplot">
                     <header class="investigacao-painel__cabecalho">
-                        <div><h2 id="tituloBoxplot">Boxplot — Distribuição por servidor</h2><p>Compara os servidores selecionados usando todos os valores válidos.</p></div>
+                        <div><h2 id="tituloBoxplot">Distribuição de CPU por servidor</h2><p>Valores válidos dos servidores selecionados.</p></div>
                         <button class="investigacao-ajuda" type="button" aria-label="Como interpretar o boxplot" aria-describedby="ajudaBoxplot">i</button>
                     </header>
                     <p class="investigacao-ajuda__texto" id="ajudaBoxplot">A caixa vai de Q1 a Q3; a linha central é a mediana. Bigodes chegam a 1,5 × IQR e os pontos externos são possíveis outliers, não falhas confirmadas.</p>
+                    <!-- (Cláudia - M) O boxplot acompanha automaticamente a Métrica 1 dos filtros principais. -->
                     <div class="investigacao-boxplot__corpo">
-                        <label for="metricaBoxplot">Métrica</label>
-                        <select id="metricaBoxplot" name="metricaBoxplot">
-                            <option value="cpu" selected>Métrica 1 · CPU</option>
-                            <option value="ram">Métrica 2 · RAM</option>
-                        </select>
                         <figure class="investigacao-grafico investigacao-grafico--boxplot">
                             <figcaption class="visually-hidden">Distribuição da métrica no conjunto de servidores selecionados</figcaption>
                             <canvas id="graficoBoxplot" role="img" aria-label="Diagrama de caixa comparando a distribuição da métrica entre os servidores selecionados"></canvas>
+                            <ul class="investigacao-boxplot__legenda" aria-label="Elementos do boxplot">
+                                <li><i class="investigacao-boxplot__chave investigacao-boxplot__chave--caixa" aria-hidden="true"></i>Q1–Q3</li>
+                                <li><i class="investigacao-boxplot__chave investigacao-boxplot__chave--mediana" aria-hidden="true"></i>Mediana</li>
+                                <li><i class="investigacao-boxplot__chave investigacao-boxplot__chave--outlier" aria-hidden="true"></i>Outlier</li>
+                            </ul>
                         </figure>
                     </div>
                 </article>

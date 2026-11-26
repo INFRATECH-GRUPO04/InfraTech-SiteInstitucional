@@ -1662,6 +1662,259 @@
 }
 
 .investigacao-origem[data-estado="confirmada"]::before { background: var(--investigacao-verde); }
+
+/* (Cláudia - M) Separa as cores de intensidade estatística da direção positiva ou negativa. */
+.investigacao-pearson__legenda {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 8px;
+  font-size: 0.68rem;
+}
+
+.investigacao-pearson__legenda .investigacao-pearson__grupo-titulo {
+  grid-column: 1 / -1;
+  min-height: 0;
+  padding: 3px 0 0;
+  border: 0;
+  color: #92a6b5;
+  background: transparent;
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.investigacao-pearson__anel[data-faixa="forte"] { --pearson-cor: var(--investigacao-vermelho); }
+.investigacao-pearson__anel[data-faixa="moderada"] { --pearson-cor: var(--investigacao-amarelo); }
+.investigacao-pearson__anel[data-faixa="fraca"],
+.investigacao-pearson__anel[data-faixa="nula"] { --pearson-cor: var(--investigacao-verde); }
+
+.ponto-legenda--forte { background: var(--investigacao-vermelho); }
+.ponto-legenda--fraca { background: var(--investigacao-verde); }
+.ponto-legenda--direcao {
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  place-items: center;
+  border: 1px solid #607585;
+  border-radius: 4px;
+  color: #e0e8ee;
+  background: #263746;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* (Cláudia - M) Mantém o boxplot horizontal, amplo e legível, com uma chave compacta dos elementos. */
+.investigacao-boxplot__corpo {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 5px;
+}
+
+.investigacao-boxplot__metrica {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #c3d0da;
+  font-size: 0.65rem;
+  font-weight: 650;
+}
+
+.investigacao-grafico--boxplot {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 3px;
+  margin: 0;
+}
+
+.investigacao-boxplot__legenda {
+  display: flex;
+  min-width: 0;
+  justify-content: center;
+  gap: 14px;
+  margin: 0;
+  padding: 2px 0 0;
+  color: #9fb0bd;
+  font-size: 0.59rem;
+  list-style: none;
+}
+
+.investigacao-boxplot__legenda li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.investigacao-boxplot__chave {
+  display: inline-block;
+  width: 15px;
+  height: 9px;
+}
+
+.investigacao-boxplot__chave--caixa {
+  border: 1px solid #91A3B0;
+  border-radius: 2px;
+  background: rgba(145, 163, 176, 0.24);
+}
+
+.investigacao-boxplot__chave--mediana {
+  width: 2px;
+  height: 11px;
+  margin: 0 6px;
+  background: #E5EDF2;
+}
+
+.investigacao-boxplot__chave--outlier {
+  width: 7px;
+  height: 7px;
+  border: 1px solid #C3D0D8;
+  border-radius: 50%;
+  background: #C3D0D8;
+}
+
+@media (max-width: 760px) {
+  .investigacao-boxplot__legenda { gap: 10px; font-size: 0.56rem; }
+}
+
+/* (Cláudia - M) Encurta a faixa dos filtros para devolver altura útil aos painéis analíticos. */
+.investigacao-filtros {
+  align-items: start;
+  gap: 8px 10px;
+  padding: 7px 9px;
+}
+
+.investigacao-filtro { gap: 3px; }
+.investigacao-filtro__rotulo { font-size: 0.69rem; }
+.investigacao-filtro select { min-height: 34px; padding: 6px 9px; }
+.investigacao-seletor-servidores { min-height: 36px; padding: 3px 6px; }
+.investigacao-servidor-chip { height: 25px; }
+.investigacao-periodo__campos input[type="date"],
+.investigacao-periodo__campos button { height: 34px; min-height: 34px; }
+.investigacao-periodo__estado {
+  overflow: hidden;
+  margin-top: 2px;
+  color: #8fa3b2;
+  font-size: 0.61rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.investigacao-filtro--periodo { align-self: start; }
+.investigacao-periodo__campos label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 5px;
+}
+.investigacao-periodo__campos label > span { flex: 0 0 auto; }
+.investigacao-periodo__campos input[type="date"] { flex: 1 1 auto; }
+
+/* (Cláudia - M) Uniformiza os quatro KPIs e prioriza seus valores sem colorir estatísticas como severidade. */
+.investigacao-kpis { gap: 10px; }
+.investigacao-kpi {
+  min-height: 68px;
+  gap: 9px;
+  padding: 8px 10px;
+}
+.investigacao-kpi__icone {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+  border: 0;
+  border-radius: 8px;
+  color: #91a3b0;
+  background: #202d38;
+  font-size: 1.12rem;
+}
+.investigacao-kpi--anomalias .investigacao-kpi__icone,
+.investigacao-kpi--desvio .investigacao-kpi__icone { color: #91a3b0; background: #202d38; }
+.investigacao-kpi--critico .investigacao-kpi__icone { color: var(--investigacao-vermelho); background: #321e25; }
+.investigacao-kpi h2 { font-size: 0.7rem; }
+.investigacao-kpi output { font-size: clamp(1.3rem, 1.65vw, 1.55rem); }
+.investigacao-kpi p { font-size: 0.62rem; }
+
+/* (Cláudia - M) Deixa a legenda do Pearson sem cartões e separa direção de intensidade em blocos simples. */
+.investigacao-pearson {
+  grid-template-columns: minmax(150px, 0.72fr) minmax(0, 1.28fr);
+  gap: 12px;
+}
+.investigacao-pearson__legenda {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  align-content: center;
+  font-size: 0.67rem;
+}
+.investigacao-pearson__legenda > span {
+  min-height: 0;
+  padding: 2px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.investigacao-pearson__legenda .investigacao-pearson__grupo-titulo {
+  padding: 5px 0 2px;
+}
+.investigacao-pearson__legenda small { font-size: 0.58rem; }
+
+/* (Cláudia - M) Reduz contornos do resumo da regressão e libera área para o gráfico de dispersão. */
+.investigacao-regressao {
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.8fr);
+  gap: 12px;
+}
+.investigacao-regressao__resumo { gap: 6px; }
+.investigacao-regressao__metricas { gap: 2px 8px; }
+.investigacao-regressao__metricas > div {
+  padding: 4px 3px;
+  border: 0;
+  border-bottom: 1px solid #273a49;
+  border-radius: 0;
+  background: transparent;
+}
+.investigacao-regressao__metricas > div span { font-size: 0.62rem; }
+.investigacao-regressao__metricas > div strong { font-size: 0.76rem; }
+.investigacao-regressao__metricas > .investigacao-regressao__equacao {
+  padding-top: 7px;
+  border-top: 1px solid #34495a;
+  border-bottom: 0;
+}
+.investigacao-regressao__metricas > .investigacao-regressao__desvio { border-bottom: 0; }
+.investigacao-regressao__metricas > .investigacao-regressao__desvio strong { color: var(--investigacao-ciano); }
+.investigacao-regressao .investigacao-grafico figcaption { font-size: 0.73rem; }
+
+/* (Cláudia - M) Aumenta contraste e alinhamento das ocorrências sem mudar a tabela ou seus dados. */
+.investigacao-anomalias { gap: 12px; }
+.investigacao-lista-anomalias { padding-left: 12px; }
+.investigacao-lista-anomalias h3 { color: #e4edf3; font-size: 0.72rem; }
+.investigacao-lista-anomalias__nota { font-size: 0.62rem; }
+.investigacao-tabela-anomalias { font-size: 0.68rem; }
+.investigacao-tabela-anomalias th {
+  padding: 7px 6px;
+  color: #c3d0da;
+  font-size: 0.63rem;
+}
+.investigacao-tabela-anomalias td { padding: 6px; color: #e0e8ee; }
+.investigacao-tabela-anomalias td:nth-child(1),
+.investigacao-tabela-anomalias td:nth-child(4),
+.investigacao-tabela-anomalias td:nth-child(5) { font-variant-numeric: tabular-nums; }
+.investigacao-lista-anomalias .investigacao-severidade--grupo { background: var(--investigacao-roxo); }
+
+@media (min-width: 1101px) {
+  .investigacao-regressao__metricas { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1100px) {
+  .investigacao-regressao { grid-template-columns: minmax(240px, 0.82fr) minmax(0, 1.18fr); }
+}
+
+@media (max-width: 760px) {
+  .investigacao-pearson { grid-template-columns: minmax(132px, 0.8fr) minmax(0, 1.2fr); }
+  .investigacao-regressao { grid-template-columns: minmax(0, 1fr); }
+  .investigacao-anomalias { grid-template-columns: minmax(0, 1fr); }
+}
 .investigacao-origem[data-estado="ausente"]::before { background: var(--investigacao-amarelo); }
 .investigacao-origem[data-estado="erro"]::before { background: var(--investigacao-vermelho); }
 

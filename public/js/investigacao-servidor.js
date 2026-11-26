@@ -23,7 +23,6 @@
     var avisoSemServidor = document.getElementById('avisoSemServidor');
     var metricaPrimaria = document.getElementById('metricaPrimaria');
     var metricaComparada = document.getElementById('metricaComparada');
-    var metricaBoxplot = document.getElementById('metricaBoxplot');
     var seletorRelacaoRegressao = document.getElementById('seletorRelacaoRegressao');
 
     if (!filtroPeriodo || !dataInicial || !dataFinal || !botaoAplicarPeriodo || !estadoPeriodo
@@ -374,7 +373,7 @@
             metricas: {
                 x: metricaPrimaria.value,
                 y: metricaComparada.value,
-                boxplot: metricaBoxplot.value
+                boxplot: metricaPrimaria.value
             },
             periodo: { inicio: dataInicial.value, fim: dataFinal.value }
         };
@@ -435,7 +434,7 @@
         var partes = seletorRelacaoRegressao.value.split(':').map(Number);
         var solicitacao = {
             servidores: obterSelecionados().map(function (servidor) { return Number(servidor.id); }),
-            metricas: { x: metricaPrimaria.value, y: metricaComparada.value, boxplot: metricaBoxplot.value },
+            metricas: { x: metricaPrimaria.value, y: metricaComparada.value, boxplot: metricaPrimaria.value },
             periodo: { inicio: dataInicial.value, fim: dataFinal.value },
             relacao: { origem: partes[0], destino: partes[1] }
         };
@@ -549,8 +548,8 @@
                     }
                 } } },
                 scales: {
-                    x: { type: 'linear', title: { display: true, text: rotuloMetrica(eixoX) }, ticks: { color: '#a6b7c7' }, grid: { color: '#293746' } },
-                    y: { title: { display: true, text: rotuloMetrica(eixoY) }, ticks: { color: '#a6b7c7' }, grid: { color: '#293746' } }
+                    x: { type: 'linear', title: { display: true, text: rotuloMetrica(eixoX), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 }, maxTicksLimit: 7 }, grid: { color: '#293746' } },
+                    y: { title: { display: true, text: rotuloMetrica(eixoY), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 }, maxTicksLimit: 7 }, grid: { color: '#293746' } }
                 }
             }
         });
@@ -732,12 +731,12 @@
             });
         });
         var escalas = {
-            x: { type: 'linear', ticks: { color: '#a6b7c7', maxTicksLimit: 8, callback: function (valor) {
+            x: { type: 'linear', ticks: { color: '#c3d0da', font: { size: 11 }, maxTicksLimit: 6, callback: function (valor) {
                 return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }).format(new Date(valor));
             } }, grid: { color: '#293746' } },
-            y: { position: 'left', title: { display: true, text: rotuloMetrica(eixoX) }, ticks: { color: '#a6b7c7' }, grid: { color: '#293746' } }
+            y: { position: 'left', title: { display: true, text: rotuloMetrica(eixoX), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 } }, grid: { color: '#293746' } }
         };
-        if (eixoX !== eixoY) escalas.y1 = { position: 'right', title: { display: true, text: rotuloMetrica(eixoY) }, ticks: { color: '#a6b7c7' }, grid: { drawOnChartArea: false } };
+        if (eixoX !== eixoY) escalas.y1 = { position: 'right', title: { display: true, text: rotuloMetrica(eixoY), color: '#c3d0da', font: { size: 11, weight: '600' } }, ticks: { color: '#c3d0da', font: { size: 11 } }, grid: { drawOnChartArea: false } };
         // (Cláudia - M) Marca o horário selecionado no gráfico agregado sem atribuir ao conjunto o valor individual do evento.
         var pluginEventoSelecionado = {
             id: 'infratechEventoTemporalSelecionado',
@@ -775,23 +774,43 @@
         });
     }
 
+    // (Cláudia - M) Apresenta os quartis já calculados pelo backend e mantém tooltips estatísticos por servidor.
     function montarGraficoBoxplot(documento) {
         if (!window.Chart) return;
         destruirGrafico('boxplot');
-        var itens = documento.boxplot.porServidor || [];
+        var itens = (documento.boxplot.porServidor || []).slice()
+            .sort(function (a, b) { return Number(a.idServidor) - Number(b.idServidor); });
         var nomes = itens.map(function (item) { return item.nomeServidor; });
+        var metricasPercentuais = ['cpu', 'ram', 'disco'];
+        var metrica = documento.boxplot.metrica;
+        var unidade = metricasPercentuais.includes(metrica) ? '%' : ' Mbps';
         var valores = itens.filter(function (item) { return item.status === 'ok'; })
             .flatMap(function (item) { return [item.bigodeInferior, item.bigodeSuperior].concat(item.outliers || []); });
         var minimo = valores.length ? valores.reduce(function (menor, valor) { return Math.min(menor, valor); }, Infinity) : 0;
         var maximo = valores.length ? valores.reduce(function (maior, valor) { return Math.max(maior, valor); }, -Infinity) : 100;
-        if (minimo === maximo) { minimo -= 1; maximo += 1; }
+        if (metricasPercentuais.includes(metrica)) {
+            minimo = 0;
+            maximo = 100;
+        } else {
+            minimo = Math.min(0, minimo);
+            if (maximo <= 0) maximo = 1;
+            else maximo *= 1.08;
+        }
+        var pontosTooltip = itens.filter(function (item) { return item.status === 'ok'; })
+            .map(function (item) { return { x: item.mediana, y: item.nomeServidor, item: item }; });
+        var nomeMetrica = { cpu: 'CPU', ram: 'RAM', disco: 'Disco', rede: 'Rede' }[metrica] || String(metrica || '').toUpperCase();
+        var tituloBoxplot = document.getElementById('tituloBoxplot');
+        if (tituloBoxplot) tituloBoxplot.textContent = `Distribuição de ${nomeMetrica} por servidor`;
+        var espacoVertical = Math.max(6, (6 - Math.min(itens.length, 6)) * 9);
         var pluginBoxplot = {
             id: 'infratechBoxplot',
             afterDatasetsDraw: function (grafico, args, opcoes) {
                 var ctx = grafico.ctx, escalaX = grafico.scales.x, escalaY = grafico.scales.y;
-                var cores = ['#00d2df', '#a855f7', '#22d3a6', '#60a5fa', '#fbbf24', '#fb7185'];
+                var alturaCategoria = escalaY.height / Math.max(1, (opcoes.itens || []).length);
+                var alturaCaixa = Math.min(28, Math.max(14, alturaCategoria * 0.62));
+                var corCaixa = '#91A3B0';
                 ctx.save();
-                (opcoes.itens || []).forEach(function (item, indice) {
+                (opcoes.itens || []).forEach(function (item) {
                     if (item.status !== 'ok') return;
                     var y = escalaY.getPixelForValue(item.nomeServidor);
                     var xMin = escalaX.getPixelForValue(item.bigodeInferior);
@@ -799,51 +818,46 @@
                     var xMediana = escalaX.getPixelForValue(item.mediana);
                     var xQ3 = escalaX.getPixelForValue(item.q3);
                     var xMax = escalaX.getPixelForValue(item.bigodeSuperior);
-                    var cor = cores[indice % cores.length];
-                    ctx.strokeStyle = cor; ctx.fillStyle = `${cor}44`; ctx.lineWidth = 2;
+                    ctx.strokeStyle = corCaixa; ctx.fillStyle = 'rgba(145, 163, 176, 0.24)'; ctx.lineWidth = 1.5;
                     ctx.beginPath(); ctx.moveTo(xMin, y); ctx.lineTo(xMax, y); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(xMin, y - 7); ctx.lineTo(xMin, y + 7); ctx.moveTo(xMax, y - 7); ctx.lineTo(xMax, y + 7); ctx.stroke();
-                    ctx.fillRect(xQ1, y - 11, Math.max(1, xQ3 - xQ1), 22); ctx.strokeRect(xQ1, y - 11, Math.max(1, xQ3 - xQ1), 22);
-                    ctx.beginPath(); ctx.moveTo(xMediana, y - 11); ctx.lineTo(xMediana, y + 11); ctx.stroke();
-                    ctx.fillStyle = '#fbbf24';
+                    ctx.beginPath(); ctx.moveTo(xMin, y - alturaCaixa / 2); ctx.lineTo(xMin, y + alturaCaixa / 2); ctx.moveTo(xMax, y - alturaCaixa / 2); ctx.lineTo(xMax, y + alturaCaixa / 2); ctx.stroke();
+                    ctx.fillRect(xQ1, y - alturaCaixa / 2, Math.max(1, xQ3 - xQ1), alturaCaixa);
+                    ctx.strokeRect(xQ1, y - alturaCaixa / 2, Math.max(1, xQ3 - xQ1), alturaCaixa);
+                    ctx.strokeStyle = '#E5EDF2'; ctx.lineWidth = 2.2;
+                    ctx.beginPath(); ctx.moveTo(xMediana, y - alturaCaixa / 2); ctx.lineTo(xMediana, y + alturaCaixa / 2); ctx.stroke();
+                    ctx.fillStyle = '#C3D0D8';
                     (item.outliers || []).forEach(function (valor) {
-                        ctx.beginPath(); ctx.arc(escalaX.getPixelForValue(valor), y, 3.5, 0, Math.PI * 2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(escalaX.getPixelForValue(valor), y, 3, 0, Math.PI * 2); ctx.fill();
                     });
                 });
                 ctx.restore();
             }
         };
         graficosInvestigacao.boxplot = new Chart(document.getElementById('graficoBoxplot'), {
-            type: 'scatter', data: { datasets: [{ data: [], pointRadius: 0 }] }, plugins: [pluginBoxplot],
+            type: 'scatter', data: { datasets: [{ data: pontosTooltip, pointRadius: 0, pointHitRadius: 12, pointHoverRadius: 0 }] }, plugins: [pluginBoxplot],
             options: { responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, infratechBoxplot: { itens: itens } },
+                layout: { padding: { top: espacoVertical, bottom: espacoVertical } },
+                plugins: { legend: { display: false }, infratechBoxplot: { itens: itens }, tooltip: { callbacks: {
+                    title: function (contextos) { return contextos[0] && contextos[0].raw.item.nomeServidor; },
+                    label: function (contexto) {
+                        var item = contexto.raw.item;
+                        return [
+                            `Bigode inferior: ${formatarNumero(item.bigodeInferior)}${unidade}`,
+                            `Q1: ${formatarNumero(item.q1)}${unidade}`,
+                            `Mediana: ${formatarNumero(item.mediana)}${unidade}`,
+                            `Q3: ${formatarNumero(item.q3)}${unidade}`,
+                            `Bigode superior: ${formatarNumero(item.bigodeSuperior)}${unidade}`,
+                            `Outliers: ${item.outliersTotal == null ? (item.outliers || []).length : item.outliersTotal}`
+                        ];
+                    }
+                } } },
                 scales: {
-                    x: { type: 'linear', min: minimo, max: maximo, title: { display: true, text: rotuloMetrica(documento.boxplot.metrica) }, ticks: { color: '#a6b7c7' }, grid: { color: '#293746' } },
-                    y: { type: 'category', labels: nomes, reverse: true, ticks: { color: '#dce7ef' }, grid: { display: false } }
+                    x: { type: 'linear', min: minimo, max: maximo, title: { display: true, text: rotuloMetrica(metrica) }, ticks: { color: '#c3d0da', callback: function (valor) { return `${formatarNumero(valor)}${unidade}`; } }, grid: { color: '#293746' } },
+                    y: { type: 'category', labels: nomes, reverse: true, ticks: { color: '#e0e8ee', font: { size: 11, weight: '600' }, padding: 9 }, grid: { display: false } }
                 }
             }
         });
     }
-
-    function atualizarOpcoesMetricaBoxplot() {
-        if (!metricaBoxplot || !metricaPrimaria || !metricaComparada) return;
-        var valores = [metricaPrimaria.value, metricaComparada.value];
-        var atual = metricaBoxplot.value;
-        var nomes = { cpu: 'CPU', ram: 'RAM', disco: 'Disco', rede: 'Rede' };
-        metricaBoxplot.replaceChildren();
-        valores.forEach(function (metrica, indice) {
-            var opcao = document.createElement('option');
-            opcao.value = metrica;
-            opcao.textContent = `Métrica ${indice + 1} · ${nomes[metrica] || metrica.toUpperCase()}`;
-            metricaBoxplot.appendChild(opcao);
-        });
-        metricaBoxplot.value = valores.includes(atual) ? atual : valores[0];
-    }
-
-    [metricaPrimaria, metricaComparada].forEach(function (seletor) {
-        if (seletor) seletor.addEventListener('change', atualizarOpcoesMetricaBoxplot);
-    });
-    atualizarOpcoesMetricaBoxplot();
 
     function renderizarAnalise(documento) {
         var resumo = documento.pearson.resumo || {};
@@ -871,7 +885,8 @@
         document.getElementById('pearsonPositivas').textContent = distribuicao.positivas || 0;
         document.getElementById('pearsonNegativas').textContent = distribuicao.negativas || 0;
         document.getElementById('pearsonFortes').textContent = distribuicao.fortes || 0;
-        document.getElementById('pearsonOutras').textContent = (distribuicao.moderadas || 0) + (distribuicao.fracas || 0);
+        document.getElementById('pearsonModeradas').textContent = distribuicao.moderadas || 0;
+        document.getElementById('pearsonOutras').textContent = (distribuicao.fracas || 0) + (distribuicao.nulas || 0);
         var listaRelacoes = document.getElementById('listaRelacoesPearson');
         listaRelacoes.replaceChildren();
         relacoes.forEach(function (item) {
