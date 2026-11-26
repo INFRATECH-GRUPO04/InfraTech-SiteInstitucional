@@ -93,6 +93,7 @@
 
         <article class="fr-card fr-saude" id="card-saude" aria-labelledby="titulo-saude">
           <h2 class="fr-card__titulo" id="titulo-saude">Saúde da Frota</h2>
+          <p class="fr-card__nota">Servidores classificados no último ciclo de coleta.</p>
           <div class="fr-saude__corpo">
             <div class="fr-saude__texto">
               <p class="fr-saude__valor">
@@ -125,6 +126,7 @@
               <button type="button" data-periodo="30d" aria-pressed="false">30d</button>
             </div>
           </header>
+          <p class="fr-card__nota">Média ponderada das capturas recebidas no período.</p>
           <div class="fr-sla">
             <div class="fr-sla__valor">
               <p class="fr-grande fr-grande--ciano" id="disp-valor">—</p>
@@ -137,12 +139,14 @@
 
         <article class="fr-card" aria-labelledby="titulo-ativos">
           <h2 class="fr-card__titulo" id="titulo-ativos">Incidentes Ativos</h2>
+          <p class="fr-card__nota">Chamados do Jira ainda não concluídos.</p>
           <p class="fr-grande fr-grande--ciano"><span id="kpi-incidentes">—</span> <span class="fr-grande__rotulo">Abertos</span></p>
           <p class="fr-chip fr-chip--atencao" id="kpi-chip" hidden></p>
         </article>
 
         <article class="fr-card fr-card--roxo" aria-labelledby="titulo-mttr">
-          <h2 class="fr-card__titulo" id="titulo-mttr">MTTR</h2>
+          <h2 class="fr-card__titulo" id="titulo-mttr">MTTR (últimos 30d)</h2>
+          <p class="fr-card__nota">Tempo médio entre a criação e a conclusão dos chamados no período.</p>
           <p class="fr-grande fr-grande--roxo" id="kpi-mttr">—</p>
           <p class="fr-mttr__delta" id="mttr-delta">—</p>
         </article>
@@ -156,7 +160,7 @@
           <header class="fr-card__cabecalho">
             <h2 class="fr-card__titulo" id="titulo-abertos">
               <svg class="fr-ico fr-ico--critico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-              Incidentes (Jira)
+              Incidentes Abertos (Jira)
             </h2>
           </header>
 
@@ -205,33 +209,6 @@
             </header>
             <p class="fr-card__nota">Top 3 servidores com mais incidentes no período</p>
             <ol class="fr-ranking" id="lista-problematicos"></ol>
-          </article>
-
-          <article class="fr-card fr-card--ia" aria-labelledby="titulo-ia">
-            <header class="fr-card__cabecalho">
-              <h2 class="fr-card__titulo" id="titulo-ia">
-                <svg class="fr-ico fr-ico--titulo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>
-                Relatório Executivo (IA)
-              </h2>
-              <div class="fr-ia__acoes">
-                <span class="fr-ia__gerado" id="ia-gerado" role="status">Gerado por IA • —</span>
-                <button type="button" class="fr-botao-ia" id="ia-atualizar">
-                  <svg class="fr-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-                  <span>Atualizar análise</span>
-                </button>
-              </div>
-            </header>
-
-            <div class="fr-ia__corpo">
-              <section>
-                <h3>Resumo</h3>
-                <p id="ia-resumo"></p>
-              </section>
-              <section>
-                <h3>Recomendações</h3>
-                <ol class="fr-ia__lista" id="ia-recomendacoes"></ol>
-              </section>
-            </div>
           </article>
 
         </div>

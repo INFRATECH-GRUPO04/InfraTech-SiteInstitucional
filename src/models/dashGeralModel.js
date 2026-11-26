@@ -2,10 +2,10 @@
  * Dashboard Geral: lê o JSON gold, cruza com os limites do MySQL e devolve o
  * contrato agregado consumido por public/js/dash-geral.js.
  *
- * O JSON principal não lista servidores nem traz IA: o front recebe apenas os
- * agregados de saúde, a série de disponibilidade e o ranking de incidentes
- * Jira dos últimos 30d (vazio se o Jira estiver indisponível). As rotas
- * complementares ficam em dashComplementosModel.
+ * O JSON principal não lista servidores nem detalhes de incidentes: o front
+ * recebe apenas os agregados de saúde, a série de disponibilidade e o ranking
+ * de incidentes Jira dos últimos 30d (vazio se o Jira estiver indisponível).
+ * As rotas complementares ficam em dashComplementosModel.
  */
 var fs = require('fs/promises');
 var path = require('path');

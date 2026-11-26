@@ -20,8 +20,16 @@ var TTL_SUCESSO_MS = 5 * 60 * 1000;
 // Falha fica em cache só por pouco tempo: evita duas chamadas no mesmo ciclo
 // do front (/dash-geral + /dash-geral/incidentes) sem impedir nova tentativa.
 var TTL_FALHA_MS = 30 * 1000;
+var CHANGELOG_MAX_PAGINAS = 10;
+
+// Status de destino considerados "concluído" no changelog e no fallback de
+// status da issue. Normalizados (sem acento/caixa) antes da comparação.
+var STATUS_CONCLUIDOS = [
+    'done', 'closed', 'fechado', 'concluido', 'resolvido', 'cancelado', 'canceled', 'feito'
+];
 
 var cacheBusca = { chave: null, valor: null, expiraEm: 0 };
+var cacheChangelog = new Map();
 var avisoConfigEmitido = false;
 
 function texto(valor) {
@@ -103,6 +111,23 @@ function numeroValido(valor) {
     return Number.isFinite(numero) ? numero : null;
 }
 
+function normalizarNomeStatus(nome) {
+    return String(nome || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+/* Usado pelo service para decidir se a issue está concluída e pelo parser do
+ * changelog para reconhecer o status de destino de uma transição.
+ */
+function ehStatusConcluido(nome) {
+    var normalizado = normalizarNomeStatus(nome);
+    if (!normalizado) return false;
+    return STATUS_CONCLUIDOS.some(function (palavra) { return normalizado.indexOf(palavra) !== -1; });
+}
+
 function configuracao() {
     var baseUrl = String(process.env.JIRA_BASE_URL || '').trim().replace(/\/+$/, '');
     var email = String(process.env.JIRA_EMAIL || '').trim();
@@ -123,6 +148,7 @@ function configuracao() {
     var jql = 'project = "' + projetoEscapado + '" AND (created >= -60d OR statusCategory != Done) ORDER BY created DESC';
 
     return {
+        baseUrl: baseUrl,
         url: baseUrl + apiPath,
         jql: jql,
         timeoutMs: timeout,
@@ -261,4 +287,126 @@ async function buscarIssuesProjeto() {
     return valor;
 }
 
-module.exports = { buscarIssuesProjeto, normalizarIssue };
+/* Link de navegação (fora da API REST) usado na seta da tabela de incidentes. */
+function urlIssue(key) {
+    var cfg = configuracao();
+    var chave = String(key || '').trim();
+    if (!cfg || !chave) return null;
+    return cfg.baseUrl + '/browse/' + encodeURIComponent(chave);
+}
+
+/* Changelog: usado só como fallback de MTTR quando resolutiondate veio vazio.
+ * Considera a ÚLTIMA transição para um status concluído; isso cobre o caso de
+ * reabertura seguida de nova conclusão.
+ */
+async function buscarConclusaoComPaginacao(issueKey, cfg) {
+    var controlador = new AbortController();
+    var temporizador = setTimeout(function () { controlador.abort(); }, cfg.timeoutMs);
+    var urlBase = cfg.baseUrl + '/rest/api/3/issue/' + encodeURIComponent(issueKey) + '/changelog';
+
+    try {
+        var conclusao = null;
+        var startAt = 0;
+
+        for (var pagina = 0; pagina < CHANGELOG_MAX_PAGINAS; pagina += 1) {
+            var query = new URLSearchParams();
+            query.set('maxResults', String(MAX_RESULTADOS));
+            query.set('startAt', String(startAt));
+
+            var resposta = await fetch(urlBase + '?' + query.toString(), {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: cfg.autorizacao
+                },
+                signal: controlador.signal
+            });
+
+            if (!resposta.ok) {
+                var erro = new Error('falha no changelog do Jira');
+                erro.status = resposta.status;
+                throw erro;
+            }
+
+            var corpo = await resposta.json();
+            if (!corpo || typeof corpo !== 'object' || Array.isArray(corpo)) {
+                throw new Error('resposta inesperada do changelog');
+            }
+
+            // Jira Cloud devolve `values`; outras instâncias/versões usam
+            // `histories`. Aceitar os dois evita perder a transição.
+            var historias = Array.isArray(corpo.values) ? corpo.values
+                : Array.isArray(corpo.histories) ? corpo.histories
+                : [];
+            historias.forEach(function (historia) {
+                var criadoEm = paraData(historia && historia.created);
+                if (!criadoEm) return;
+                var itens = historia && Array.isArray(historia.items) ? historia.items : [];
+                itens.forEach(function (item) {
+                    if (!item || String(item.field || '').toLowerCase() !== 'status') return;
+                    if (!ehStatusConcluido(texto(item.toString))) return;
+                    if (!conclusao || criadoEm.getTime() > conclusao.getTime()) conclusao = criadoEm;
+                });
+            });
+
+            if (corpo.isLast === true) break;
+
+            var inicio = numeroValido(corpo.startAt);
+            var total = numeroValido(corpo.total);
+            if (inicio != null && total != null) {
+                var proximo = inicio + Math.max(historias.length, 1);
+                if (!historias.length || proximo >= total) break;
+                startAt = proximo;
+                continue;
+            }
+
+            // Sem isLast/startAt/total, não há como avançar com segurança.
+            break;
+        }
+
+        return conclusao;
+    } finally {
+        clearTimeout(temporizador);
+    }
+}
+
+async function buscarConclusaoIssue(key) {
+    var issueKey = String(key || '').trim();
+    if (!issueKey) return null;
+
+    var cfg = configuracao();
+    if (!cfg) {
+        avisarConfiguracaoIncompleta();
+        return null;
+    }
+
+    // Inclui a configuração na chave para não reaproveitar dados de outra
+    // instância/projeto se o processo trocar de ambiente em runtime.
+    var chave = cfg.chave + '|' + issueKey;
+    var entrada = cacheChangelog.get(chave);
+    if (entrada && Date.now() < entrada.expiraEm) return entrada.valor;
+
+    var valor = null;
+    var sucesso = false;
+    try {
+        valor = await buscarConclusaoComPaginacao(issueKey, cfg);
+        sucesso = true;
+    } catch (erro) {
+        console.warn('[jira] falha ao ler changelog de ' + issueKey + '; retornando sem conclusão', detalheSeguro(erro));
+        valor = null;
+    }
+
+    cacheChangelog.set(chave, {
+        valor: valor,
+        expiraEm: Date.now() + (sucesso ? TTL_SUCESSO_MS : TTL_FALHA_MS)
+    });
+    return valor;
+}
+
+module.exports = {
+    buscarIssuesProjeto,
+    normalizarIssue,
+    ehStatusConcluido,
+    urlIssue,
+    buscarConclusaoIssue
+};

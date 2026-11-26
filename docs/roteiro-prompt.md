@@ -3,7 +3,7 @@
 Registro dos pedidos feitos no OpenCode, separados por **feat** e por **modo** (Plan / Build).
 Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/2026.
 
-> **Atualização de 25/11/2026:** esta sessão planejou a integração dos **cards relacionados ao Jira** na `dash-geral` (Incidentes Ativos, tabela de incidentes, Incidentes por Dia, MTTR e Ranking Problemáticos 30d). O plano anterior da v2 revisada foi substituído por um plano autossuficiente em `docs/plano-implementacao.md`, focado na leitura read-only da API Jira Cloud pelo Node, mantendo o contrato já consumido pelo front. **Relatório com IA permanece fora do escopo desta tarefa.**
+> **Atualização de 25/11/2026:** esta sessão planejou a integração dos **cards relacionados ao Jira** na `dash-geral` (Incidentes Ativos, tabela de incidentes, Incidentes por Dia, MTTR e Ranking Problemáticos 30d). O plano anterior da v2 revisada foi substituído por um plano autossuficiente em `docs/plano-implementacao.md`, focado na leitura read-only da API Jira Cloud pelo Node, mantendo o contrato já consumido pelo front.
 
 ## Legenda
 
@@ -47,7 +47,7 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 
 #### P2 — Decisões fechadas [RECONSTRUÍDO]
 
-> deixa esses pontos fechados no plano: rota `GET /dash-geral` sem ID na URL; ADMIN/INFRATECH fora das dashboards de cliente; Jira só leitura, com fetch nativo e sem credencial continua funcionando; relatório de IA é template mesmo, não serviço externo; sem tabela `limite_alerta_global`, usa `metrica`/`componente`/`servidor`; S3 por padrão com `DASH_GOLD_LOCAL=1` pra testar o JSON local. o exemplo da empresa 2 é esse @docs/dash-geral.json. no final me mostra o checklist de validação.
+> deixa esses pontos fechados no plano: rota `GET /dash-geral` sem ID na URL; ADMIN/INFRATECH fora das dashboards de cliente; Jira só leitura, com fetch nativo e sem credencial continua funcionando; sem tabela `limite_alerta_global`, usa `metrica`/`componente`/`servidor`; S3 por padrão com `DASH_GOLD_LOCAL=1` pra testar o JSON local. o exemplo da empresa 2 é esse @docs/dash-geral.json. no final me mostra o checklist de validação.
 
 ### Modo Build
 
@@ -59,8 +59,8 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 - Criados `src/models/dashGeralModel.js`, `src/controllers/dashGeralController.js` e `src/routes/dashGeral.js`.
 - Rota montada em `app.js` com autenticação + `exigirPermissao('monitorar')`.
 - Filtro por `req.usuario.empresa`, bloqueio explícito de `ADMIN`/`INFRATECH`, filtro de `status_sistema = 1` e regra de vínculo em `servidor_funcionario`.
-- `situacao`, `tempo_min`, `inc7d`, Jira e IA template preenchidos no backend; `nome`/`cidade` vindos do MySQL.
-- `public/js/dash-geral.js` trocado: um `fetch`, sem mock, sem relógio duplicado e sem IA simulada por `setTimeout`.
+- `situacao`, `tempo_min`, `inc7d` e Jira preenchidos no backend; `nome`/`cidade` vindos do MySQL.
+- `public/js/dash-geral.js` trocado: um `fetch`, sem mock e sem relógio duplicado.
 - `servidorModel.js`: limites globais derivados de `metrica`, sem tabela inexistente.
 - `.env.example`, `.env.dev`, `.gitignore` ajustados; `docs/` passou a ser versionável.
 
@@ -106,7 +106,7 @@ Este arquivo acompanha a implementação da Dashboard Geral concluída em 22/11/
 
 #### P4 — Contrato de saída [RECONSTRUÍDO]
 
-> no repo de ETL, ajusta o `silver2gold.py` pra gravar `03-gold/empresa-{id}/dash-geral.json` no formato do plano do site. sem `kpis`, sem rede, sem `serie_24h` e sem janelas 7d/30d por servidor. disponibilidade tem que ficar `null` quando não tem captura, nunca `0` falso. incidente e IA ficam vazios: quem preenche é o back do site. mantém o cabeçalho do CSV igual, que o script de captura depende disso.
+> no repo de ETL, ajusta o `silver2gold.py` pra gravar `03-gold/empresa-{id}/dash-geral.json` no formato do plano do site. sem `kpis`, sem rede, sem `serie_24h` e sem janelas 7d/30d por servidor. disponibilidade tem que ficar `null` quando não tem captura, nunca `0` falso. incidentes ficam vazios: quem preenche é o back do site. mantém o cabeçalho do CSV igual, que o script de captura depende disso.
 
 ### Modo Build
 
@@ -190,8 +190,8 @@ Site com apenas o plano modificado e ETL limpo.
 - MySQL `infratech-mysql` iniciado; fixture da seção 4.1 em
   `03-gold/empresa-2/dash-geral.json` (ignorado pelo Git); servidores ativos 3 e 4.
 - Site no ar em `:3333`: 401 sem sessão, 200 com o contrato exato 4.2 (sem
-  `ambiente`, `meta_sla`, `servidores`, `incidentes` ou `relatorio_ia`), 403 para
-  ADMIN e 404 para empresa sem gold; incidentes/IA vazios como na seção 4.3.
+  `ambiente`, `meta_sla`, `servidores` ou `incidentes`), 403 para
+  ADMIN e 404 para empresa sem gold; incidentes vazios como na seção 4.1.
 - Front executado num DOM mínimo via `vm` em `/tmp/opencode/site-test/validar_front.js`:
   `Dados gerados em 25/11/2026 14:30`, contadores `0/0/1/1`, centro `0/2`, donut
   `[0, 0, 1, 1]`, `99,5%` no 7d e `99,8%` no 30d, eixo 95–100, refresh sem
@@ -236,7 +236,7 @@ nos prompts”, com os prompts `B7`, `B8` e `B9` marcados como `[REAL]`.
 
 ## Feat 8 — Cards Jira na Dashboard Geral (planejamento)
 
-**Objetivo.** Planejar a implementação dos cards relacionados ao Jira na `dash-geral`, mantendo o contrato já consumido pelo front e deixando Relatório com IA fora do escopo.
+**Objetivo.** Planejar a implementação dos cards relacionados ao Jira na `dash-geral`, mantendo o contrato já consumido pelo front.
 
 **Contexto usado.** `AGENTS.md`, `docs/plano-implementacao.md` (versão anterior), `public/html/dash-geral.html`, `public/js/dash-geral.js`, `src/models/dashGeralModel.js`, `src/models/dashComplementosModel.js`, `src/controllers/dashComplementosController.js`, `src/routes/dashGeral.js`, `.env.example`.
 
@@ -244,7 +244,7 @@ nos prompts”, com os prompts `B7`, `B8` e `B9` marcados como `[REAL]`.
 
 #### B10 — Pedido inicial de planejamento [REAL]
 
-> agora preciso continuar preenchendo os campos da dash-geral, gostaria de começar o planejamento para os cards que tem relação com o Jira, faça perguntas para começarmos o planejamento em tudo em relação a como tudo vai ser implementado (Relatórios com IA) não entra no escopo da tarefa de agora
+> agora preciso continuar preenchendo os campos da dash-geral, gostaria de começar o planejamento para os cards que tem relação com o Jira, faça perguntas para começarmos o planejamento em tudo em relação a como tudo vai ser implementado
 
 #### B11 — Solicitação de formato das perguntas [REAL]
 
@@ -266,7 +266,7 @@ nos prompts”, com os prompts `B7`, `B8` e `B9` marcados como `[REAL]`.
 **Decisões fechadas nesta rodada:**
 - Fonte: API Jira Cloud direta pelo Node (read-only), com `JIRA_*` do `.env.example`.
 - Escopo: somente `InfraTech-SiteInstitucional`; Java/logs como dependência externa já definida.
-- Cards no escopo: Incidentes Ativos (KPI+chip), tabela Incidentes (Jira), Incidentes por Dia, MTTR, Ranking Servidores Mais Problemáticos (30d). Relatório com IA fora.
+- Cards no escopo: Incidentes Ativos (KPI+chip), tabela Incidentes (Jira), Incidentes por Dia, MTTR, Ranking Servidores Mais Problemáticos (30d).
 - Mapeamento: padrão existente no Jira, ex. summary `[EMP-2][SRV-3] [CRÍTICO] ...` e descrição com `Empresa: id 2` / `Servidor: ... (id 3)`.
 - Abertos: tudo que não está em Done/fechado (statusCategory != done ou nomes equivalentes).
 - Prioridade: Highest/High=>critico, Medium=>atencao, Low/Lowest=>normal; default normal.
@@ -300,6 +300,6 @@ nos prompts”, com os prompts `B7`, `B8` e `B9` marcados como `[REAL]`.
 - Referências a arquivos com `@caminho` e aspas quando o caminho tem espaço ou é argumento direto.
 - Pedidos diretos e curtos: “implemente”, “agora valida”, “coloca”, “não mexe”, “se der erro ajusta”.
 - Contexto de negócio vem primeiro: sessão define empresa, isolamento por `fk_empresa`, exclusão lógica e “sem dados” em vez de zero falso.
-- Escopo explícito para evitar invenções: fora de escopo não entra sem pedido; Jira somente leitura; IA é template; ETL e site se encontram só no JSON gold.
+- Escopo explícito para evitar invenções: fora de escopo não entra sem pedido; Jira somente leitura; ETL e site se encontram só no JSON gold.
 - Validação sempre manual: login, curl com cookie, perfis diferentes, estados 401/403/404 e conferência visual da dash.
 - Com o plano já fechado e anexado, o pedido encurta para “execute” / “continue”: não reformular decisões, não commitar, validar antes de encerrar e só depois registrar o que foi pedido.

@@ -14,7 +14,8 @@ var FUSO = 'America/Sao_Paulo';
 var TTL_CACHE_MS = 5 * 60 * 1000;
 var MAX_DIAS = 30;
 var JANELAS = { '7d': 7, '30d': 30 };
-var NOMES_FECHADOS = ['done', 'closed', 'fechado', 'resolvido', 'cancelado', 'canceled', 'concluido'];
+var MAX_CANDIDATOS_CHANGELOG = 50;
+var LOTE_CHANGELOG = 10;
 
 var formatadorBRT = new Intl.DateTimeFormat('en-US', {
     timeZone: FUSO, year: 'numeric', month: '2-digit', day: '2-digit'
@@ -100,17 +101,51 @@ async function issuesDaEmpresa(idEmpresa, servidores) {
         return issue.empresaId === idEmpresa && visiveis.has(issue.servidorId);
     });
 
+    // Enriquece antes de cachear: as duas rotas (/dash-geral e /incidentes)
+    // reaproveitam o mesmo dataset com concluidoEm já preenchido.
+    await enriquecerConclusao(issues);
+
     cacheEmpresa.set(chave, { issues: issues, expiraEm: Date.now() + TTL_CACHE_MS });
     return issues;
 }
 
-function estaAberta(issue) {
-    var categoria = normalizarTexto(issue.statusCategoriaChave);
-    if (categoria) return categoria !== 'done';
+/* A lista de status concluídos é compartilhada com o parser do changelog
+ * (src/integrations/jira.js). Categoria `done` vale antes dos nomes.
+ */
+function estaConcluida(issue) {
+    if (normalizarTexto(issue.statusCategoriaChave) === 'done') return true;
+    return jira.ehStatusConcluido(issue.statusNome) || jira.ehStatusConcluido(issue.statusCategoriaNome);
+}
 
-    var nomes = normalizarTexto([issue.statusNome, issue.statusCategoriaNome].filter(Boolean).join(' '));
-    if (!nomes) return true;
-    return !NOMES_FECHADOS.some(function (palavra) { return nomes.indexOf(palavra) !== -1; });
+function estaAberta(issue) {
+    return !estaConcluida(issue);
+}
+
+/* Fallback de MTTR: só issues ainda sem resolutiondate, com created válido e
+ * concluídas hoje. `concluidoEm` é a última transição para done no changelog.
+ * Limites evitam N+1 descontrolado e o cache por issue evita repetição.
+ */
+async function enriquecerConclusao(issues) {
+    var candidatos = issues.filter(function (issue) {
+        return issue.criadoEm && !issue.resolvidoEm && estaConcluida(issue);
+    });
+
+    if (candidatos.length > MAX_CANDIDATOS_CHANGELOG) {
+        console.warn('[jira] ' + candidatos.length + ' issues elegíveis ao changelog; limitando a ' + MAX_CANDIDATOS_CHANGELOG);
+    }
+
+    var selecionados = candidatos.slice(0, MAX_CANDIDATOS_CHANGELOG);
+    for (var i = 0; i < selecionados.length; i += LOTE_CHANGELOG) {
+        var lote = selecionados.slice(i, i + LOTE_CHANGELOG);
+        await Promise.all(lote.map(function (issue) {
+            return jira.buscarConclusaoIssue(issue.key).then(function (data) {
+                issue.concluidoEm = data;
+            }).catch(function (erro) {
+                console.warn('[jira] changelog indisponível para ' + issue.key + '; mantendo sem conclusão', erro && erro.name);
+                issue.concluidoEm = null;
+            });
+        }));
+    }
 }
 
 function prioridadeFront(nome) {
@@ -140,7 +175,8 @@ function montarAbertos(issues, nomesPorId) {
                 servidor: nomeServidor(issue, nomesPorId),
                 prioridade: prioridadeFront(issue.prioridadeNome),
                 minutos: Math.max(0, Math.round((agora - issue.criadoEm.getTime()) / 60000)),
-                responsavel: issue.responsavel || null
+                responsavel: issue.responsavel || null,
+                url_jira: jira.urlIssue(issue.key)
             };
         });
 }
@@ -165,12 +201,19 @@ function montarPorDia(issues, todosOsDias) {
 }
 
 function mediaMinutos(issues, inicio, fim) {
+    // resolutiondate continua prioritário; concluidoEm vem do changelog apenas
+    // quando o Jira não preencheu a resolução ao concluir a issue.
+    function dataConclusao(issue) {
+        return issue.resolvidoEm || issue.concluidoEm || null;
+    }
+
     var valores = issues.filter(function (issue) {
-        if (!issue.criadoEm || !issue.resolvidoEm) return false;
-        var resolvido = issue.resolvidoEm.getTime();
-        return resolvido >= inicio && resolvido <= fim;
+        var conclusao = dataConclusao(issue);
+        if (!issue.criadoEm || !conclusao) return false;
+        var concluido = conclusao.getTime();
+        return concluido >= inicio && concluido <= fim;
     }).map(function (issue) {
-        return (issue.resolvidoEm.getTime() - issue.criadoEm.getTime()) / 60000;
+        return (dataConclusao(issue).getTime() - issue.criadoEm.getTime()) / 60000;
     }).filter(function (minutos) { return Number.isFinite(minutos) && minutos >= 0; });
 
     if (!valores.length) return null;

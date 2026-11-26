@@ -1,7 +1,7 @@
 /*
- * Rotas complementares da Dashboard Geral: incidentes passam a vir do Jira
- * (via serviço compartilhado com /dash-geral); o relatório de IA continua stub.
- * O contrato do front não muda, inclusive quando o Jira falha.
+ * Rota complementar da Dashboard Geral: incidentes vêm do Jira via serviço
+ * compartilhado com /dash-geral. O contrato do front não muda, inclusive
+ * quando o Jira falha.
  */
 
 var jiraDashGeral = require('../services/jiraDashGeral');
@@ -29,12 +29,4 @@ async function incidentes(contexto) {
     }
 }
 
-function relatorioIA() {
-    return {
-        gerado_em: null,
-        resumo: '',
-        recomendacoes: []
-    };
-}
-
-module.exports = { incidentes, incidentesVazios, relatorioIA };
+module.exports = { incidentes, incidentesVazios };

@@ -14,7 +14,6 @@ Este arquivo é **autossuficiente**: uma sessão nova, sem histórico de convers
 - Não há testes automatizados, lint ou CI. Valide manualmente conforme a seção 10.
 - Em caso de divergência entre este plano e o código atual, **o código atual vale mais**. Se algo faltar ou parecer ambíguo, pergunte antes de assumir.
 - Este plano é a única fonte desta rodada. **Não crie outro arquivo de plano.**
-- **Relatório com IA fica fora do escopo.** Não alterar `GET /dash-geral/relatorio-ia` nem o comportamento do botão de IA.
 
 ---
 
@@ -44,13 +43,13 @@ Este arquivo é **autossuficiente**: uma sessão nova, sem histórico de convers
 
 - Branch: `feat/dash-luiz`.
 - Já existem e funcionam:
-  - `src/routes/dashGeral.js`: `GET /`, `GET /incidentes`, `GET /relatorio-ia`, todos com `autenticar` no `app.js` e `exigirPermissao('monitorar')`.
+  - `src/routes/dashGeral.js`: `GET /` e `GET /incidentes`, ambos com `autenticar` no `app.js` e `exigirPermissao('monitorar')`.
   - `src/controllers/dashGeralController.js`: 403 para `ADMIN/INFRATECH`, 403 para empresa inválida, 404 quando gold não encontrado, 503 genérico.
-  - `src/controllers/dashComplementosController.js`: valida empresa da sessão e delega aos stubs.
-  - `src/models/dashComplementosModel.js`: **stub vazio** — `incidentes()` retorna `abertos:[]`, `por_dia` 7d/30d vazios, `mttr` nulo; `relatorioIA()` retorna vazio.
+  - `src/controllers/dashComplementosController.js`: valida empresa da sessão e delega ao serviço Jira.
+  - `src/models/dashComplementosModel.js`: **stub vazio** — `incidentes()` retorna `abertos:[]`, `por_dia` 7d/30d vazios, `mttr` nulo.
   - `src/models/dashGeralModel.js`: lê gold local/S3, cruza limites do MySQL, monta `saude_frota`, `disponibilidade_frota`, `ranking_problematicos: []`. Já tem `buscarServidoresPermitidos` e classificação de situação.
-  - `public/html/dash-geral.html`: já tem todos os cards Jira (KPI, tabela, gráfico por dia, MTTR, ranking) e IA.
-  - `public/js/dash-geral.js`: já consome `/dash-geral`, `/dash-geral/incidentes`, `/dash-geral/relatorio-ia`; tolera falha de complementos com `console.warn`; renderiza contrato descrito na seção 4.
+  - `public/html/dash-geral.html`: já tem todos os cards Jira (KPI, tabela, gráfico por dia, MTTR, ranking).
+  - `public/js/dash-geral.js`: já consome `/dash-geral` e `/dash-geral/incidentes`; tolera falha de complementos com `console.warn`; renderiza contrato descrito na seção 4.
 - `.env.example` já reserva `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_TOKEN`, `JIRA_PROJECT`, `JIRA_API_PATH=/rest/api/3/search/jql`, `JIRA_TIMEOUT_MS=5000`.
 - Não existem módulos de integração Jira no código atual.
 
@@ -64,7 +63,7 @@ Este arquivo é **autossuficiente**: uma sessão nova, sem histórico de convers
 | Env | `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_TOKEN`, `JIRA_PROJECT`, `JIRA_API_PATH` (default `/rest/api/3/search/jql`), `JIRA_TIMEOUT_MS` (default `5000`). |
 | Escopo | Só `InfraTech-SiteInstitucional`. Mudanças no Java/logs (formato do issue) são dependência externa já definida. |
 | Cards | Incidentes Ativos (KPI + chip), Tabela Incidentes (Jira), Incidentes por Dia, MTTR, Ranking Servidores Mais Problemáticos (30d). |
-| Fora de escopo | Relatório com IA, Jira por cliente, escrever no Jira, criar chamados, alterar front/HTML/CSS, alterar schema SQL, alterar Java/ETL/script. |
+| Fora de escopo | Jira por cliente, escrever no Jira, criar chamados, alterar front/HTML/CSS, alterar schema SQL, alterar Java/ETL/script. |
 | Falha Jira / sem credencial | Stub vazio + `console.warn`; dashboard principal não quebra. `GET /dash-geral/incidentes` retorna 200 com stub vazio; `GET /dash-geral` retorna 200 com `ranking_problematicos: []`. |
 | Validação | Contra Jira real/teste. Sem modo mock local nesta entrega. |
 | Mapeamento | Summary: `[EMP-{id}][SRV-{id}] ...`; fallback descrição `Empresa: id X` / `Servidor: ... (id X)`. Exibir só issues da empresa da sessão. |
@@ -126,10 +125,6 @@ O endpoint principal **mantém o shape atual** da seção 4.2 do plano anterior,
 - `incidentes`: contagem de issues Jira **criadas nos últimos 30d BRT** para aquele servidor, pertencentes à empresa da sessão.
 - Apenas top 3, `incidentes > 0`, ordenação `incidentes desc, nome asc`.
 - Se Jira indisponível/sem credencial/falha: `ranking_problematicos: []`, sem quebrar o endpoint.
-
-### 4.3 `GET /dash-geral/relatorio-ia`
-
-**Sem alteração.** Continua stub vazio atual.
 
 ---
 
@@ -275,7 +270,6 @@ project = "<JIRA_PROJECT>" AND (created >= -60d OR statusCategory != Done) ORDER
 - `public/html/dash-geral.html` (contrato já compatível).
 - `public/js/dash-geral.js` (contrato já compatível).
 - `public/css/*`, `app.js`, `src/routes/dashGeral.js`, `src/models/servidorModel.js`, `src/database/*`, SQL, ETL, Java, script Python.
-- `dashComplementosModel.relatorioIA` / rota `/relatorio-ia`.
 
 ---
 
@@ -334,8 +328,6 @@ project = "<JIRA_PROJECT>" AND (created >= -60d OR statusCategory != Done) ORDER
 
 ### 10.6 Regressão
 
-- [ ] `GET /dash-geral/relatorio-ia` continua igual (stub vazio).
-- [ ] Cards de IA continuam visíveis e funcionando como antes.
 - [ ] Saúde/disponibilidade da frota não foram alteradas.
 
 ---
@@ -356,6 +348,5 @@ project = "<JIRA_PROJECT>" AND (created >= -60d OR statusCategory != Done) ORDER
 - `GET /dash-geral/incidentes` retorna dados reais do Jira quando configurado; stub vazio + warn quando indisponível.
 - `GET /dash-geral` preenche `ranking_problematicos` com dados Jira, mantendo saúde/disponibilidade.
 - Isolamento por empresa e permissão de dashboard preservados.
-- Relatório IA intacto.
 - Checklist da seção 10 executado manualmente (ou registrado o que não pôde ser validado por falta de credencial Jira).
 - `git status --short --branch` conferido ao final.

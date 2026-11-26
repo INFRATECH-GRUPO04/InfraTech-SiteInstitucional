@@ -2,8 +2,7 @@
  * Dashboard Geral (gestor) — "Monitoramento da Frota".
  * O front consome três rotas:
  *   GET /dash-geral              agregados de saúde, série e ranking
- *   GET /dash-geral/incidentes   incidentes/MTTR (stub vazio por enquanto)
- *   GET /dash-geral/relatorio-ia relatório executivo (stub vazio por enquanto)
+ *   GET /dash-geral/incidentes   incidentes/MTTR (Jira)
  *
  * Campos do dashboard principal:
  *   gerado_em, saude_frota, disponibilidade_frota, ranking_problematicos
@@ -11,11 +10,10 @@
  *   disponibilidade_frota   { "7d" | "30d": { rotulos, valores } }
  *   ranking_problematicos[] { id_servidor, nome, situacao, incidentes }
  *
- * Campos complementares (vazios até Jira/IA entrarem):
- *   incidentes.abertos[]    { id, id_servidor, servidor, prioridade, minutos, responsavel }
+ * Campos complementares:
+ *   incidentes.abertos[]    { id, id_servidor, servidor, prioridade, minutos, responsavel, url_jira }
  *   incidentes.por_dia      { "7d" | "30d": { rotulos, valores } }
  *   incidentes.mttr         { minutos, periodo, anterior_minutos }
- *   relatorio_ia            { gerado_em, resumo, recomendacoes }
  *
  * Nenhuma regra de limite é calculada no navegador: aqui só há apresentação.
  */
@@ -24,7 +22,6 @@
 
   const URL_DADOS = '/dash-geral';
   const URL_INCIDENTES = '/dash-geral/incidentes';
-  const URL_RELATORIO_IA = '/dash-geral/relatorio-ia';
 
   const INTERVALO_ATUALIZACAO_MS = 5 * 60 * 1000;
 
@@ -83,10 +80,6 @@
     return Math.floor(total / 1440) + 'd ' + Math.floor((total % 1440) / 60) + 'h';
   }
 
-  function horaAgora(data) {
-    return String(data.getHours()).padStart(2, '0') + ':' + String(data.getMinutes()).padStart(2, '0');
-  }
-
   function iniciais(nome) {
     return String(nome).trim().split(/\s+/).slice(0, 2).map((parte) => parte.charAt(0)).join('').toUpperCase();
   }
@@ -118,7 +111,6 @@
   /* ---------- Carregamento ---------- */
   function mostrarCarregando() {
     ['saude-pct', 'disp-valor', 'kpi-incidentes', 'kpi-mttr'].forEach((id) => definirTexto(id, '…'));
-    definirTexto('ia-resumo', 'Carregando…');
   }
 
   function linhaVazia(colunas, texto) {
@@ -129,18 +121,14 @@
     return linha;
   }
 
-  function mostrarErro(mensagem) {
+  function mostrarErro() {
     ['saude-pct', 'disp-valor', 'kpi-incidentes', 'kpi-mttr', 'donut-numero'].forEach((id) => definirTexto(id, '—'));
     definirTexto('mttr-delta', '—');
-    definirTexto('ia-gerado', 'Gerado por IA • —');
-    definirTexto('ia-resumo', mensagem);
 
     const corpo = document.getElementById('corpo-incidentes');
     if (corpo) corpo.replaceChildren(linhaVazia(6, 'Não foi possível carregar os incidentes.'));
     const lista = document.getElementById('lista-problematicos');
     if (lista) lista.replaceChildren(el('li', 'fr-vazio', 'Sem dados.'));
-    const recomendacoes = document.getElementById('ia-recomendacoes');
-    if (recomendacoes) recomendacoes.replaceChildren();
   }
 
   async function buscarJSON(url) {
@@ -153,16 +141,13 @@
     return resposta.json();
   }
 
-  // Complementos são independentes: se um falhar, o dashboard principal segue.
+  // Complemento independente: se falhar, o dashboard principal segue.
   async function carregarComplementos() {
-    const [incidentes, relatorio] = await Promise.allSettled([
-      buscarJSON(URL_INCIDENTES),
-      buscarJSON(URL_RELATORIO_IA)
-    ]);
-    if (incidentes.status === 'fulfilled') dados.incidentes = incidentes.value;
-    else console.warn('[dash-geral] não foi possível carregar os incidentes:', incidentes.reason);
-    if (relatorio.status === 'fulfilled') dados.relatorio_ia = relatorio.value;
-    else console.warn('[dash-geral] não foi possível carregar o relatório de IA:', relatorio.reason);
+    try {
+      dados.incidentes = await buscarJSON(URL_INCIDENTES);
+    } catch (erro) {
+      console.warn('[dash-geral] não foi possível carregar os incidentes:', erro);
+    }
   }
 
   async function carregarDados(silent = false) {
@@ -175,7 +160,7 @@
       renderizarTudo();
     } catch (erro) {
       console.error('[dash-geral] falha ao carregar dados:', erro);
-      if (!silent) mostrarErro(erro.message || 'Não foi possível carregar os dados.');
+      if (!silent) mostrarErro();
     } finally {
       carregando = false;
     }
@@ -343,7 +328,7 @@
     const alvo = document.getElementById('mttr-delta');
     if (!alvo) return;
     if (atual == null || anterior == null) {
-      alvo.replaceChildren(el('span', 'fr-delta fr-delta--neutro', 'sem comparação com o mês anterior'));
+      alvo.replaceChildren(el('span', 'fr-delta fr-delta--neutro', 'sem comparação com os 30d anteriores'));
       return;
     }
     const diferenca = Math.round(atual - anterior);
@@ -352,7 +337,7 @@
     const classe = diferenca < 0 ? 'fr-delta--bom' : diferenca > 0 ? 'fr-delta--ruim' : 'fr-delta--neutro';
     alvo.replaceChildren(
       el('span', 'fr-delta ' + classe, sinal + formatarDuracao(Math.abs(diferenca))),
-      document.createTextNode(' vs. mês anterior')
+      document.createTextNode(' vs. 30d anteriores')
     );
   }
 
@@ -452,9 +437,17 @@
   }
 
   function linkIncidente(incidente) {
-    // Quando o Jira entrar, cada chamado já trará id_servidor para o link direto.
-    const id = incidente.id_servidor != null ? incidente.id_servidor : incidente.servidor;
-    return linkServidor(id, incidente.servidor || '—');
+    // A seta da tabela abre a issue no Jira em nova guia, sem sair do dashboard.
+    if (!incidente.url_jira) {
+      const indisponivel = el('span', 'fr-seta');
+      indisponivel.setAttribute('aria-disabled', 'true');
+      return indisponivel;
+    }
+    const link = el('a', 'fr-seta');
+    link.href = incidente.url_jira;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    return link;
   }
 
   function celulaResponsavel(incidente) {
@@ -492,7 +485,7 @@
       const tdAcao = el('td');
       const botao = linkIncidente(incidente);
       botao.className = 'fr-seta';
-      botao.setAttribute('aria-label', 'Abrir ' + incidente.id + ' no ' + (incidente.servidor || 'servidor'));
+      botao.setAttribute('aria-label', 'Abrir ' + incidente.id + ' no Jira em nova guia');
       botao.innerHTML = ICONE_SETA;
       tdAcao.append(botao);
 
@@ -545,53 +538,6 @@
     }));
   }
 
-  /* ---------- Relatório executivo (IA) ---------- */
-  function renderizarRelatorioIA() {
-    const ia = dados.relatorio_ia || {};
-    const gerado = ia.gerado_em ? new Date(ia.gerado_em) : null;
-    const valido = gerado && !Number.isNaN(gerado.getTime());
-    const hoje = valido && gerado.toDateString() === new Date().toDateString();
-    const dois = (n) => String(n).padStart(2, '0');
-    definirTexto('ia-gerado', valido
-      ? 'Gerado por IA • ' + (hoje ? 'hoje' : dois(gerado.getDate()) + '/' + dois(gerado.getMonth() + 1)) + ' ' + horaAgora(gerado)
-      : 'Gerado por IA • —');
-    definirTexto('ia-resumo', ia.resumo || 'Sem dados para análise.');
-
-    const recomendacoes = document.getElementById('ia-recomendacoes');
-    if (recomendacoes) {
-      const itens = (ia.recomendacoes || []).map((texto) => el('li', '', texto));
-      recomendacoes.replaceChildren(...(itens.length ? itens : [el('li', 'fr-vazio', 'Sem recomendações.')]));
-    }
-  }
-
-  async function carregarRelatorioIA() {
-    const relatorio = await buscarJSON(URL_RELATORIO_IA);
-    dados = dados || {};
-    dados.relatorio_ia = relatorio;
-    renderizarRelatorioIA();
-  }
-
-  function configurarAtualizacaoIA() {
-    const botao = document.getElementById('ia-atualizar');
-    if (!botao) return;
-    botao.addEventListener('click', async () => {
-      if (botao.disabled) return;
-      const rotulo = botao.querySelector('span');
-      botao.disabled = true;
-      botao.classList.add('carregando');
-      if (rotulo) rotulo.textContent = 'Analisando…';
-      try {
-        await carregarRelatorioIA();
-      } catch (erro) {
-        console.warn('[dash-geral] falha ao atualizar o relatório de IA:', erro);
-      } finally {
-        botao.disabled = false;
-        botao.classList.remove('carregando');
-        if (rotulo) rotulo.textContent = 'Atualizar análise';
-      }
-    });
-  }
-
   /* ---------- Inicialização ---------- */
   function renderizarTudo() {
     if (!dados) return;
@@ -600,7 +546,6 @@
     renderizarIndicadoresIncidentes();
     renderizarIncidentesAbertos();
     renderizarProblematicos();
-    renderizarRelatorioIA();
     atualizarDisponibilidade();
     atualizarIncidentes();
   }
@@ -611,7 +556,6 @@
     criarGraficoIncidentes();
     configurarFiltro('filtro-disp', 'disp', atualizarDisponibilidade);
     configurarFiltro('filtro-inc', 'inc', atualizarIncidentes);
-    configurarAtualizacaoIA();
     carregarDados();
     setInterval(() => {
       if (!document.hidden) carregarDados(true);

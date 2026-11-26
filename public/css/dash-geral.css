@@ -244,7 +244,6 @@ body.pagina-dash-geral .conteudo-principal h3 {
 .fr-filtro button.ativo { color: #04202a; background: var(--fr-ciano); }
 
 .fr-filtro button:focus-visible,
-.fr-botao-ia:focus-visible,
 .fr-seta:focus-visible,
 .fr-link-servidor:focus-visible {
   outline: 2px solid var(--fr-ciano);
@@ -565,74 +564,6 @@ body.pagina-dash-geral .conteudo-principal h3 {
   white-space: nowrap;
 }
 
-/* ---------- Relatório executivo (IA) ---------- */
-.fr-ia__acoes {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-}
-
-.fr-ia__gerado { color: var(--fr-texto-suave); font-size: 0.74rem; }
-
-.fr-botao-ia {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border: 1px solid var(--fr-ciano);
-  border-radius: 8px;
-  color: var(--fr-texto);
-  background: rgb(0 216 255 / 0.06);
-  font: 600 0.78rem/1.3 inherit;
-  cursor: pointer;
-  transition: background-color 0.16s ease;
-}
-
-.fr-botao-ia:hover:not(:disabled) { background: rgb(0 216 255 / 0.16); }
-.fr-botao-ia:disabled { cursor: progress; opacity: 0.75; }
-.fr-botao-ia .fr-ico { width: 15px; height: 15px; }
-.fr-botao-ia.carregando .fr-ico { animation: fr-girar 0.9s linear infinite; }
-
-@keyframes fr-girar { to { transform: rotate(360deg); } }
-
-.fr-ia__corpo {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 20px;
-}
-
-.fr-ia__corpo h3 {
-  margin-bottom: 6px !important;
-  color: var(--fr-ciano);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.fr-ia__corpo p {
-  color: var(--fr-texto);
-  font-size: 0.8rem;
-  line-height: 1.6;
-}
-
-.fr-ia__lista {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--fr-texto);
-  font-size: 0.78rem;
-  line-height: 1.45;
-  counter-reset: rec;
-}
-
-.fr-ia__lista li { display: flex; gap: 8px; counter-increment: rec; }
-.fr-ia__lista li::before { content: counter(rec) "."; color: var(--fr-texto-suave); }
-.fr-ia__lista li.fr-vazio { padding: 0; text-align: left; counter-increment: none; }
-.fr-ia__lista li.fr-vazio::before { content: none; }
-
 /* ---------- Responsivo ---------- */
 @media (max-width: 1280px) {
   .fr-linha--indicadores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -654,14 +585,11 @@ body.pagina-dash-geral .conteudo-principal h3 {
 @media (max-width: 640px) {
   .fr-linha--indicadores { grid-template-columns: minmax(0, 1fr); }
   .fr-sla { grid-template-columns: minmax(0, 1fr); }
-  .fr-ia__corpo { grid-template-columns: minmax(0, 1fr); }
   .fr-ranking__item { grid-template-columns: 18px minmax(70px, auto) minmax(40px, 1fr) auto; gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fr-botao-ia.carregando .fr-ico { animation: none; }
   .fr-filtro button,
   .fr-seta,
-  .fr-botao-ia,
   .fr-saude__barra > span { transition: none; }
 }

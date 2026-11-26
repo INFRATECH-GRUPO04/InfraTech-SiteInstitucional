@@ -10,6 +10,5 @@ var dashComplementosController = require("../controllers/dashComplementosControl
 
 router.get("/", permitir('monitorar'), dashGeralController.obter);
 router.get("/incidentes", permitir('monitorar'), dashComplementosController.incidentes);
-router.get("/relatorio-ia", permitir('monitorar'), dashComplementosController.relatorioIA);
 
 module.exports = router;

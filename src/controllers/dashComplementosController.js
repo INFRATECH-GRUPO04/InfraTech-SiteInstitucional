@@ -1,7 +1,7 @@
 /*
  * Controller das rotas complementares da Dashboard Geral. Mantém a mesma regra
  * de empresa da sessão do controller principal. Incidentes usam os servidores
- * visíveis da sessão para filtrar o Jira; IA continua respondendo stub vazio.
+ * visíveis da sessão para filtrar o Jira.
  */
 
 var dashComplementosModel = require("../models/dashComplementosModel");
@@ -44,9 +44,4 @@ async function incidentes(req, res) {
     }
 }
 
-function relatorioIA(req, res) {
-    if (empresaDaSessao(req, res) == null) return;
-    return res.status(200).json(dashComplementosModel.relatorioIA());
-}
-
-module.exports = { incidentes, relatorioIA };
+module.exports = { incidentes };
