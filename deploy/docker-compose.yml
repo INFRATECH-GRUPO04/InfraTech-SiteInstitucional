@@ -1,6 +1,4 @@
-# Compose usado no dev e copiado para /opt/infratech na EC2.
 # O arquivo de ambiente fica sempre ao lado deste compose (infratech.env).
-# Troque "seuusuario" pelo seu namespace antes de publicar as imagens.
 
 services:
   mysql:
@@ -17,7 +15,7 @@ services:
       retries: 10
 
   site:
-    image: seuusuario/infratech-site:1.0
+    image: luizdsilva/infratech-site:1.0
     env_file: ./infratech.env
     depends_on:
       mysql:
@@ -26,7 +24,7 @@ services:
       - "8080:8080"
 
   alertas:
-    image: seuusuario/infratech-alertas:1.0
+    image: luizdsilva/infratech-alertas:1.0
     env_file: ./infratech.env
     depends_on:
       mysql:
