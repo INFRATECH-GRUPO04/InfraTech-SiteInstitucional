@@ -490,7 +490,7 @@ function atualizarContadoresFiltros(lista) {
     } else if (item.situacao.prioridade === 2) {
       contadores.subutilizados += 1;
       contadores.alertas += 1;
-    } else {
+    } else if (item.situacao.prioridade === 3) {
       contadores.normais += 1;
     }
   });
@@ -563,8 +563,10 @@ function renderServidores() {
   }
 
   var usoMedioTexto = 'Sem dados';
+  var ociosoTotalTexto = '—';
   if (totais.usoMedio != null) {
     usoMedioTexto = formatarPercentual(totais.usoMedio);
+    ociosoTotalTexto = formatarMoeda(totais.ociosoTotal) + ' (' + formatarPercentual(totais.percentualOcioso) + ')';
   }
 
   html += '<tr class="plan-tabela__total">' +
@@ -572,7 +574,7 @@ function renderServidores() {
     '<td>' + rotuloTotal + '</td>' +
     '<td>' + formatarMoeda(totais.custoTotal) + '</td>' +
     '<td>' + usoMedioTexto + '</td>' +
-    '<td>' + formatarMoeda(totais.ociosoTotal) + ' (' + formatarPercentual(totais.percentualOcioso) + ')</td>' +
+    '<td>' + ociosoTotalTexto + '</td>' +
     '<td>—</td>' +
     '</tr>';
 
@@ -864,6 +866,19 @@ function atualizarAvisoOrigem(conectadoAoBanco) {
       subtituloServidores.textContent = 'Custo mensal (banco) · uso médio real de CPU (S3 Gold · 30 dias) · ordenado por prioridade.';
     } else {
       subtituloServidores.textContent = 'Custo mensal (cadastro do gestor) · uso médio simulado (30 dias) · ordenado por prioridade.';
+    }
+  }
+
+  var rodapeFontes = el('rodape-fontes-pagina');
+  if (rodapeFontes) {
+    if (usandoGold) {
+      rodapeFontes.innerHTML = '<strong>Fontes:</strong> custos dos servidores, histórico e premissas (banco de dados); ' +
+        'uso médio e pico de 30 dias (telemetria S3 · camada Gold); jogadores simultâneos e projeções (dados simulados/ilustrativos). ' +
+        'Custos estimados, não faturados. Projeção linear, sem sazonalidade.';
+    } else {
+      rodapeFontes.innerHTML = '<strong>Fontes:</strong> custos dos servidores, histórico e premissas (banco de dados); ' +
+        'jogadores simultâneos e uso médio/pico por servidor (dados simulados/ilustrativos nesta versão). ' +
+        'Custos estimados, não faturados. Projeção linear, sem sazonalidade.';
     }
   }
 
@@ -1189,6 +1204,11 @@ function renderizarRelatorio(pacote) {
     textoRunwayRel = mesesTexto(Number(metricas.runwayMeses));
   }
 
+  var custoOciosoKpi = 'Sem dados';
+  if (metricas.custoOciosoTotal != null) {
+    custoOciosoKpi = formatarMoeda(metricas.custoOciosoTotal);
+  }
+
   var listaKpis = [
     { rotulo: 'Custo InfraTech', valor: formatarMoeda(dados.custoInfraTech) },
     { rotulo: 'Receita Estimada', valor: formatarMoeda(metricas.receita) },
@@ -1197,7 +1217,7 @@ function renderizarRelatorio(pacote) {
     { rotulo: 'Break-even', valor: formatarNumero(metricas.breakeven) + ' jog.' },
     { rotulo: 'Capacidade Global', valor: formatarNumero(metricas.capacidadeTotal) + ' jog.' },
     { rotulo: 'Runway Global', valor: textoRunwayRel },
-    { rotulo: 'Custo Ocioso', valor: formatarMoeda(metricas.custoOciosoTotal) }
+    { rotulo: 'Custo Ocioso', valor: custoOciosoKpi }
   ];
 
   el('rel-kpis').innerHTML = listaKpis.map(function (item) {
@@ -1298,6 +1318,19 @@ function renderizarRelatorio(pacote) {
     textoUnidade(dados.provisionamento, 'mês', 'meses') + ' · orçamento ' +
     formatarMoeda(dados.orcamento) + ' · meta ' + dados.metaUso + '% · subutilizado <' + dados.limiteSubutilizado + '%.'
   );
+
+  var relTransparencia = el('rel-transparencia-rodape');
+  if (relTransparencia) {
+    if (dados.origemTelemetria === 's3_gold') {
+      relTransparencia.innerHTML = '<strong>Transparência e governança de dados:</strong> custos de servidores, histórico e premissas ' +
+        'vêm do banco de dados; uso médio e pico (30 dias) vêm da telemetria S3 (camada Gold); contagem de jogadores simultâneos e projeções ' +
+        'lineares utilizam dados simulados/ilustrativos (sem sazonalidade).';
+    } else {
+      relTransparencia.innerHTML = '<strong>Transparência e governança de dados:</strong> custos de servidores e premissas de negócio são ' +
+        'cadastrados no banco de dados pelo gestor; métricas de uso/pico por servidor e contagem de jogadores simultâneos utilizam dados ' +
+        'simulados/ilustrativos para fins de projeção linear (sem sazonalidade).';
+    }
+  }
 }
 
 function abrirModalRelatorio() {
