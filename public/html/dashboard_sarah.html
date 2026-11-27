@@ -326,6 +326,8 @@
         var filtroDataInicio = document.getElementById('filtro_data_inicio');
         var filtroDataFinal = document.getElementById('filtro_data_final');
 
+        mostrarPedidoDatas('Selecione o servidor e o período para carregar os dados');
+
         fetch(`/dashboardSarah/buscarServidoresPorEmpresa/${idEmpresa}/${idUsuario}`, { cache: 'no-store' })
             .then(function (response) {
                 if (response.ok) {
@@ -360,6 +362,210 @@
 
         // 2) Buscar capturas no S3 (via backend)
         var ultimosDados = null;
+        var atualizando = false;
+        var proximoServidor = null;
+        var graficoUsoRecursos = null;
+
+        var COMPONENTES = [
+            { chave: 'cpu', nome: 'CPU', cor: '#4f8ef7' },
+            { chave: 'ram', nome: 'RAM', cor: '#a78bfa' },
+            { chave: 'disco', nome: 'Disco', cor: '#fbbf24' },
+            { chave: 'rede', nome: 'Rede', cor: '#2ecc71' }
+        ];
+        var PERIODOS = [
+            { nome: 'Manhã', faixa: '06-12h', inicio: 6, fim: 12 },
+            { nome: 'Tarde', faixa: '12-18h', inicio: 12, fim: 18 },
+            { nome: 'Noite', faixa: '18-24h', inicio: 18, fim: 24 },
+            { nome: 'Madrugada', faixa: '00-06h', inicio: 0, fim: 6 }
+        ];
+        var CORES = { critico: '#f04a55', atencao: '#fbbf24', normal: '#2ecc71' };
+
+        function numero(valor) {
+            if (valor === null || valor === undefined || valor === '') return null;
+            var n = Number(valor);
+            return Number.isFinite(n) ? n : null;
+        }
+
+        function temLimites() {
+            return COMPONENTES.some(function (comp) {
+                var limite = limites[comp.chave] || {};
+                return numero(limite.atencao) !== null || numero(limite.critico) !== null;
+            });
+        }
+
+        function nivelComponente(valor, chave) {
+            var v = numero(valor);
+            if (v === null) return 'sem-dados';
+            var limite = limites[chave] || {};
+            var critico = numero(limite.critico);
+            var atencao = numero(limite.atencao);
+            if (critico !== null && v >= critico) return 'critico';
+            if (atencao !== null && v >= atencao) return 'atencao';
+            return 'normal';
+        }
+
+        function classeValor(nivel) {
+            if (nivel === 'critico') return 'valor-critico';
+            if (nivel === 'atencao') return 'valor-atencao';
+            if (nivel === 'normal') return 'valor-normal';
+            return '';
+        }
+
+        function formatarValor(valor) {
+            var v = numero(valor);
+            return v === null ? '—' : (Math.round(v * 10) / 10) + '%';
+        }
+
+        function formatarVariacao(valor) {
+            var v = numero(valor);
+            if (v === null) return '—';
+            return (v > 0 ? '+' : '') + (Math.round(v * 10) / 10);
+        }
+
+        function escapeHtml(texto) {
+            return String(texto == null ? '' : texto).replace(/[&<>"']/g, function (caractere) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caractere];
+            });
+        }
+
+        function horaDaCaptura(captura) {
+            var texto = String(captura.dataHora || '');
+            return texto.slice(11, 16) || '—';
+        }
+
+        function ordenarCapturas(capturas) {
+            return capturas.slice().sort(function (a, b) {
+                return String(a.dataHora || '').localeCompare(String(b.dataHora || ''));
+            });
+        }
+
+        function pararGrafico() {
+            if (graficoUsoRecursos) {
+                graficoUsoRecursos.destroy();
+                graficoUsoRecursos = null;
+            }
+        }
+
+        function calcularIndicadores(capturas) {
+            var contagem = {};
+            var alertas = [];
+            var leituras = 0;
+            var normais = 0;
+            var maior = null;
+
+            COMPONENTES.forEach(function (comp) { contagem[comp.chave] = { atencao: 0, critico: 0 }; });
+
+            capturas.forEach(function (captura) {
+                COMPONENTES.forEach(function (comp) {
+                    var valor = numero(captura[comp.chave]);
+                    if (valor === null) return;
+                    leituras++;
+                    var nivel = nivelComponente(valor, comp.chave);
+                    if (nivel === 'critico' || nivel === 'atencao') {
+                        contagem[comp.chave][nivel]++;
+                        alertas.push({ captura: captura, componente: comp, valor: valor, nivel: nivel });
+                    } else if (nivel === 'normal') {
+                        normais++;
+                    }
+                    var variacao = captura.variacao ? numero(captura.variacao[comp.chave]) : null;
+                    if (variacao !== null && (!maior || Math.abs(variacao) > Math.abs(maior.variacao))) {
+                        maior = { componente: comp, valor: valor, variacao: variacao };
+                    }
+                });
+            });
+
+            var componenteMais = COMPONENTES.slice().sort(function (a, b) {
+                var totalA = contagem[a.chave].atencao + contagem[a.chave].critico;
+                var totalB = contagem[b.chave].atencao + contagem[b.chave].critico;
+                return totalB - totalA;
+            })[0];
+
+            return {
+                contagem: contagem,
+                alertas: alertas,
+                totalAlertas: alertas.length,
+                atencao: alertas.filter(function (item) { return item.nivel === 'atencao'; }).length,
+                critico: alertas.filter(function (item) { return item.nivel === 'critico'; }).length,
+                componenteMais: alertas.length ? componenteMais : null,
+                maiorVariacao: maior,
+                saude: temLimites() && leituras ? Math.round(normais / leituras * 100) : null
+            };
+        }
+
+        function calcularMapaCalor(capturas) {
+            var dias = {};
+            capturas.forEach(function (captura) {
+                var texto = String(captura.dataHora || '');
+                if (texto.length < 13) return;
+                var data = texto.slice(0, 10);
+                var hora = Number(texto.slice(11, 13));
+                var periodo = PERIODOS.find(function (p) { return hora >= p.inicio && hora < p.fim; });
+                if (!periodo) return;
+                var dia = dias[data] || (dias[data] = {});
+                var celula = dia[periodo.nome] || (dia[periodo.nome] = { valor: null, componente: null });
+                COMPONENTES.forEach(function (comp) {
+                    var valor = numero(captura[comp.chave]);
+                    if (valor !== null && (celula.valor === null || valor > celula.valor)) {
+                        celula.valor = valor;
+                        celula.componente = comp.chave;
+                    }
+                });
+            });
+
+            return Object.keys(dias).sort().slice(-7).map(function (data) {
+                return {
+                    data: data,
+                    periodos: PERIODOS.map(function (periodo) {
+                        var celula = dias[data][periodo.nome];
+                        var valor = celula ? celula.valor : null;
+                        return {
+                            valor: valor,
+                            nivel: valor === null ? 'normal' : nivelComponente(valor, celula.componente)
+                        };
+                    })
+                };
+            });
+        }
+
+        function serieParaGrafico(capturas) {
+            var lista = ordenarCapturas(capturas.filter(function (c) { return String(c.dataHora || '').length >= 16; }));
+            var agruparPorHora = lista.length > 120;
+            var pontos = {};
+            var chaves = [];
+
+            lista.forEach(function (captura) {
+                var texto = String(captura.dataHora);
+                var chave = agruparPorHora ? texto.slice(0, 13) : texto.slice(11, 16);
+                if (!pontos[chave]) {
+                    pontos[chave] = {
+                        label: agruparPorHora ? texto.slice(5, 13) : chave,
+                        somas: {},
+                        contagens: {}
+                    };
+                    chaves.push(chave);
+                }
+                COMPONENTES.forEach(function (comp) {
+                    var valor = numero(captura[comp.chave]);
+                    if (valor === null) return;
+                    pontos[chave].somas[comp.chave] = (pontos[chave].somas[comp.chave] || 0) + valor;
+                    pontos[chave].contagens[comp.chave] = (pontos[chave].contagens[comp.chave] || 0) + 1;
+                });
+            });
+
+            var series = {};
+            COMPONENTES.forEach(function (comp) { series[comp.chave] = []; });
+            chaves.forEach(function (chave) {
+                var ponto = pontos[chave];
+                COMPONENTES.forEach(function (comp) {
+                    var quantidade = ponto.contagens[comp.chave] || 0;
+                    series[comp.chave].push(quantidade
+                        ? Math.round(ponto.somas[comp.chave] / quantidade * 10) / 10
+                        : null);
+                });
+            });
+
+            return { labels: chaves.map(function (chave) { return pontos[chave].label; }), series: series };
+        }
 
         async function buscarCapturas(idServidor, inicio, fim) {
             var resposta = await fetch(
@@ -373,12 +579,18 @@
         }
 
         async function carregarServidor(idServidor) {
+            if (atualizando) {
+                proximoServidor = idServidor;
+                return;
+            }
+            atualizando = true;
             servidorEscolhido = idServidor;
             try {
                 var dados = await buscarCapturas(idServidor, filtroDataInicio.value, filtroDataFinal.value);
                 console.log("Dados recebidos:", dados);
 
-                if (!dados || dados.capturas.length === 0) {
+                if (!dados || !Array.isArray(dados.capturas) || dados.capturas.length === 0) {
+                    pararGrafico();
                     mostrarPedidoDatas('Sem dados para o período');
                     return;
                 }
@@ -388,7 +600,15 @@
                 plotarDashboardEspecifica(dados.capturas, dados);
             } catch (e) {
                 console.error("Erro ao buscar capturas:", e);
+                pararGrafico();
                 mostrarPedidoDatas('Falha ao ler os dados');
+            } finally {
+                atualizando = false;
+                if (proximoServidor !== null) {
+                    var proximo = proximoServidor;
+                    proximoServidor = null;
+                    carregarServidor(proximo);
+                }
             }
         }
 
@@ -400,6 +620,7 @@
         };
 
         async function carregarLimites(idServidor) {
+            COMPONENTES.forEach(function (comp) { limites[comp.chave] = { atencao: null, critico: null }; });
             var response = await fetch(`/servidor/listarComponentes/${idServidor}`, { cache: 'no-store' });
             if (!response.ok) throw new Error("Falha ao buscar limites");
 
@@ -425,6 +646,7 @@
         }
 
         function mostrarSemServidor() {
+            pararGrafico();
             esconderKpis();
             dashboard_main.innerHTML = `
         <div class="cards" style="margin:1vw; text-align:center;">
@@ -440,75 +662,130 @@
         });
 
         filtroComponentes.addEventListener('change', function () {
-            if (ultimosDados) plotarDashboardEspecifica(ultimosDados.capturas, ultimosDados);
+            if (ultimosDados) plotarGraficoUsoRecursos(ultimosDados.capturas);
         });
 
         function plotarDashboardEspecifica(capturas, dados) {
             mostrarKpis();
+            var linhas = ordenarCapturas(capturas);
+            var indicadores = calcularIndicadores(linhas);
+            var comLimites = temLimites();
+            var ultima = linhas[linhas.length - 1] || {};
+
+            var nivelSaude = indicadores.saude === null
+                ? ''
+                : indicadores.saude >= 80 ? 'normal' : indicadores.saude >= 60 ? 'atencao' : 'critico';
+            var corSaude = CORES[nivelSaude] || '#9aa4bf';
+            var maior = indicadores.maiorVariacao;
+            var maiorNivel = maior ? nivelComponente(maior.valor, maior.componente.chave) : '';
+            var contagemMais = indicadores.componenteMais
+                ? indicadores.contagem[indicadores.componenteMais.chave]
+                : { atencao: 0, critico: 0 };
+
+            kpis.innerHTML = `
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Componente com mais alertas</div>
+                    <div class="conteudo">${indicadores.componenteMais ? escapeHtml(indicadores.componenteMais.nome) : '—'}</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">${comLimites ? contagemMais.atencao : '—'} Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">${comLimites ? contagemMais.critico : '—'} Crítico</div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Saúde do servidor</div>
+                    <div class="conteudo-saude">
+                        <div class="conteudo" style="color: ${corSaude};">${indicadores.saude === null ? '—' : indicadores.saude + '%'}</div>
+                        <div class="especificacao">
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida ${nivelSaude}" style="width: ${indicadores.saude === null ? 0 : indicadores.saude}%; background-color: ${corSaude};"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Maior variação</div>
+                    <div class="conteudo ${classeValor(maiorNivel)}">${maior ? escapeHtml(maior.componente.nome) + ' ' + formatarValor(maior.valor) : '—'}</div>
+                    <div class="especificacao ${classeValor(maiorNivel)}">${maior ? formatarVariacao(maior.variacao) : '—'}</div>
+                </div>
+                <div class="kpi cards">
+                    <div class="titulo-conteudo">Alertas registrados</div>
+                    <div class="conteudo">${comLimites ? indicadores.totalAlertas : '—'}</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">${comLimites ? indicadores.atencao : '—'} Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">${comLimites ? indicadores.critico : '—'} Crítico</div>
+                    </div>
+                </div>
+            `;
+
+            var ordemRanking = COMPONENTES.slice().sort(function (a, b) {
+                var va = ultima.variacao ? numero(ultima.variacao[a.chave]) : null;
+                var vb = ultima.variacao ? numero(ultima.variacao[b.chave]) : null;
+                return Math.abs(vb || 0) - Math.abs(va || 0);
+            });
+            var ranking = ordemRanking.map(function (comp) {
+                var valor = ultima[comp.chave];
+                var variacao = ultima.variacao ? ultima.variacao[comp.chave] : null;
+                var nivel = nivelComponente(valor, comp.chave);
+                var largura = numero(valor) === null ? 0 : Math.min(100, Math.max(0, numero(valor)));
+                return `
+                    <div class="item-ranking">
+                        <div class="ranking-topo">
+                            <span class="ranking-nome">${comp.nome}</span>
+                            <span class="ranking-percentual ${classeValor(nivel)}">${formatarValor(valor)}</span>
+                            <span class="ranking-hora">${escapeHtml(horaDaCaptura(ultima))}</span>
+                        </div>
+                        <div class="variacao">
+                            <div class="barra-fundo">
+                                <div class="barra-preenchida ${nivel === 'sem-dados' ? '' : nivel}" style="width: ${largura}%"></div>
+                            </div>
+                            <span class="ranking-variacao ${classeValor(nivel)}">${formatarVariacao(variacao)}</span>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            var alertas = indicadores.alertas.slice(-20).reverse();
+            var linhasLogs = alertas.length
+                ? alertas.map(function (item) {
+                    return `
+                        <tr>
+                            <td>${escapeHtml(horaDaCaptura(item.captura))}</td>
+                            <td>${item.componente.nome}</td>
+                            <td>Leitura acima do limite de ${item.nivel === 'critico' ? 'crítico' : 'atenção'}</td>
+                            <td><span class="badge ${item.nivel}">${item.nivel === 'critico' ? 'Crítico' : 'Atenção'}</span></td>
+                            <td class="valor-log">${formatarValor(item.valor)}</td>
+                        </tr>`;
+                }).join('')
+                : `<tr><td colspan="5">${comLimites ? 'Nenhum alerta no período' : 'Limites não configurados'}</td></tr>`;
+
+            var mapaCalor = calcularMapaCalor(linhas);
+            var cabecalhoCalor = `
+                <div class="linha-calor linha-calor-topo">
+                    <div class="legenda-calor">DIA / PICO (%)</div>
+                    ${PERIODOS.map(function (periodo) {
+                        return `<div class="coluna-periodo">${periodo.nome}<span>${periodo.faixa}</span></div>`;
+                    }).join('')}
+                </div>`;
+            var corpoCalor = mapaCalor.length
+                ? mapaCalor.map(function (dia) {
+                    return `
+                        <div class="linha-calor">
+                            <div class="dia-calor">${escapeHtml(dia.data)}</div>
+                            ${dia.periodos.map(function (periodo) {
+                                return `<div class="celula-calor ${periodo.nivel}">${formatarValor(periodo.valor)}</div>`;
+                            }).join('')}
+                        </div>`;
+                }).join('')
+                : `<div class="linha-calor"><div class="dia-calor">Sem dados</div><div class="celula-calor normal" colspan="4">—</div></div>`;
+
             dashboard_main.innerHTML = `
                 <div class="dash-parte1">
                     <div class="card-ranking-variacoes cards">
                         <div class="titulo-card">Maior variação dos componentes</div>
                         <div class="subtitulo-ocorrencias">Atual - anterior</div>
-
-                        <div class="lista-ranking">
-                            <div class="item-ranking">
-                                <div class="ranking-topo">
-                                    <span class="ranking-nome">CPU</span>
-                                    <span class="ranking-percentual valor-critico">89%</span>
-                                    <span class="ranking-hora">16:40</span>
-                                </div>
-                                <div class="variacao">
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 89%"></div>
-                                    </div>
-                                    <span class="ranking-variacao valor-critico">+ 21</span>
-                                </div>
-                            </div>
-                            <div class="item-ranking">
-                                <div class="ranking-topo">
-                                    <span class="ranking-nome">RAM</span>
-                                    <span class="ranking-percentual valor-critico">76%</span>
-                                    <span class="ranking-hora">12:27</span>
-                                </div>
-                                <div class="variacao">
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida critico" style="width: 76%"></div>
-                                    </div>
-                                    <span class="ranking-variacao valor-critico">+ 18</span>
-                                </div>
-                            </div>
-                            <div class="item-ranking">
-                                <div class="ranking-topo">
-                                    <span class="ranking-nome">Disco</span>
-                                    <span class="ranking-percentual valor-atencao">79%</span>
-                                    <span class="ranking-hora">20:54</span>
-                                </div>
-                                <div class="variacao">
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 79%"></div>
-                                    </div>
-                                    <span class="ranking-variacao valor-atencao">+ 15</span>
-                                </div>
-                            </div>
-                            <div class="item-ranking">
-                                <div class="ranking-topo">
-                                    <span class="ranking-nome">Rede</span>
-                                    <span class="ranking-percentual valor-atencao">76%</span>
-                                    <span class="ranking-hora">17:38</span>
-                                </div>
-                                <div class="variacao">
-                                    <div class="barra-fundo">
-                                        <div class="barra-preenchida atencao" style="width: 76%"></div>
-                                    </div>
-                                    <span class="ranking-variacao valor-atencao">+ 12</span>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="lista-ranking">${ranking}</div>
                     </div>
                     <div class="card-uso-recursos cards">
                         <div class="titulo-card">Uso de recursos</div>
-
                         <div class="box-grafico-uso-recurso">
                             <canvas id="grafico_uso_recurso"></canvas>
                         </div>
@@ -519,12 +796,9 @@
                         <div class="cabecalho-logs">
                             <div>
                                 <div class="titulo-card">Alertas registrados</div>
-                                <!-- <div class="subtitulo-ocorrencias">Leituras registradas no mesmo período e nas séries do
-                                gráfico.</div> -->
                             </div>
-                            <div class="contador-logs" id="contador_logs">12</div>
+                            <div class="contador-logs" id="contador_logs">${indicadores.totalAlertas}</div>
                         </div>
-
                         <div class="tabela-wrapper tabela-logs-wrapper">
                             <table class="tabela-ocorrencias tabela-logs">
                                 <thead>
@@ -536,185 +810,92 @@
                                         <th>Valor</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabela_logs">
-                                    <tr>
-                                        <td>22h</td>
-                                        <td>CPU</td>
-                                        <td>Leitura acima do limite de atenção</td>
-                                        <td><span class="badge atencao">Atenção</span></td>
-                                        <td class="valor-log">72%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>22h</td>
-                                        <td>RAM</td>
-                                        <td>Leitura acima do limite de atenção</td>
-                                        <td><span class="badge atencao">Atenção</span></td>
-                                        <td class="valor-log">78%</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="tabela_logs">${linhasLogs}</tbody>
                             </table>
                         </div>
                     </div>
                     <div class="card-demanda-mapa-calor cards">
                         <div class="titulo-card">Demanda por Período</div>
                         <div class="mapa-calor">
-                            <!-- cabeçalho -->
-                            <div class="linha-calor linha-calor-topo">
-                                <div class="legenda-calor">DIA / PICO (%)</div>
-                                <div class="coluna-periodo">Manhã<span>06-12h</span></div>
-                                <div class="coluna-periodo">Tarde<span>12-18h</span></div>
-                                <div class="coluna-periodo">Noite<span>18-24h</span></div>
-                                <div class="coluna-periodo">Madrugada<span>00-06h</span></div>
-                            </div>
-
-                            <div class="linha-calor">
-                                <div class="dia-calor">Segunda · 19/10</div>
-                                <div class="celula-calor normal">56%</div>
-                                <div class="celula-calor normal">68%</div>
-                                <div class="celula-calor atencao">84%</div>
-                                <div class="celula-calor normal">48%</div>
-                            </div>
-                            <div class="linha-calor">
-                                <div class="dia-calor">Terça · 20/10</div>
-                                <div class="celula-calor normal">58%</div>
-                                <div class="celula-calor normal">72%</div>
-                                <div class="celula-calor critico">88%</div>
-                                <div class="celula-calor normal">51%</div>
-                            </div>
-                            <div class="linha-calor">
-                                <div class="dia-calor">Quarta · 21/10</div>
-                                <div class="celula-calor normal">61%</div>
-                                <div class="celula-calor atencao">76%</div>
-                                <div class="celula-calor critico">91%</div>
-                                <div class="celula-calor normal">55%</div>
-                            </div>
-                            <div class="linha-calor">
-                                <div class="dia-calor">Quinta · 22/10</div>
-                                <div class="celula-calor normal">60%</div>
-                                <div class="celula-calor atencao">79%</div>
-                                <div class="celula-calor critico">92%</div>
-                                <div class="celula-calor normal">57%</div>
-                            </div>
-                            <div class="linha-calor">
-                                <div class="dia-calor">Sexta · 23/10</div>
-                                <div class="celula-calor normal">64%</div>
-                                <div class="celula-calor atencao">85%</div>
-                                <div class="celula-calor critico">96%</div>
-                                <div class="celula-calor normal">68%</div>
-                            </div>
-                            <div class="linha-calor">
-                                <div class="dia-calor">Sábado · 24/10</div>
-                                <div class="celula-calor normal">69%</div>
-                                <div class="celula-calor critico">93%</div>
-                                <div class="celula-calor critico">99%</div>
-                                <div class="celula-calor atencao">82%</div>
-                            </div>
-                            <div class="linha-calor">
-                                <div class="dia-calor">Domingo · 25/10</div>
-                                <div class="celula-calor normal">65%</div>
-                                <div class="celula-calor atencao">86%</div>
-                                <div class="celula-calor critico">97%</div>
-                                <div class="celula-calor atencao">77%</div>
-                            </div>
+                            ${cabecalhoCalor}
+                            ${corpoCalor}
                         </div>
                     </div>
                 </div>
-                
-            `
-            plotarGraficoUsoRecursos();
+            `;
+            plotarGraficoUsoRecursos(linhas);
         }
 
 
-        function plotarGraficoUsoRecursos() {
+        function plotarGraficoUsoRecursos(capturas) {
+            pararGrafico();
+            var canvas = document.getElementById('grafico_uso_recurso');
+            if (!canvas) return;
 
-            var labelsHora = ["07:40", "08:40", "09:40", "10:40", "11:40", "12:40", "13:40", "14:40", "15:40", "16:40"];
-            new Chart(
-                document.getElementById('grafico_uso_recurso'),
-                {
-                    type: 'line',
-                    options: {
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
+            var serie = serieParaGrafico(capturas || []);
+            var filtro = filtroComponentes.value;
+            var selecionados = filtro === 'Todos'
+                ? COMPONENTES
+                : COMPONENTES.filter(function (comp) { return comp.chave === filtro; });
+
+            graficoUsoRecursos = new Chart(canvas, {
+                type: 'line',
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: { color: '#e5e9f5' }
                         },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: { color: '#e5e9f5' }
-                            },
-                            tooltip: {
-                                enabled: true,
-                                callbacks: {
-                                    label: function (item) {
-                                        return item.dataset.label + ': ' + item.parsed.y + '%';
-                                    }
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function (item) {
+                                    return item.dataset.label + ': ' + item.parsed.y + '%';
                                 }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                ticks: { color: '#9aa4bf' },
-                                grid: { color: '#232B40' }
-                            },
-                            y: {
-                                min: 0,
-                                max: 100,
-                                ticks: {
-                                    stepSize: 20,
-                                    color: '#9aa4bf',
-                                    callback: function (v) { return v + '%'; }
-                                },
-                                grid: { color: '#232B40' }
                             }
                         }
                     },
-                    data: {
-                        labels: labelsHora,
-                        datasets: [
-                            {
-                                label: 'CPU',
-                                data: [42, 45, 50, 54, 58, 61, 64, 66, 67.6, 89],
-                                borderColor: '#4f8ef7',
-                                backgroundColor: '#4f8ef7',
-                                borderWidth: 2,
-                                tension: 0.3,
-                                pointRadius: 3
+                    scales: {
+                        x: {
+                            ticks: { color: '#9aa4bf' },
+                            grid: { color: '#232B40' }
+                        },
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                color: '#9aa4bf',
+                                callback: function (v) { return v + '%'; }
                             },
-                            {
-                                label: 'RAM',
-                                data: [68, 72, 75, 81, 84, 80, 82, 76, 67, 85],
-                                borderColor: '#a78bfa',
-                                backgroundColor: '#a78bfa',
-                                borderWidth: 2,
-                                tension: 0.3,
-                                pointRadius: 3
-                            },
-                            {
-                                label: 'Disco',
-                                data: [52, 54, 55, 57, 58, 59, 59, 60, 60.3, 75],
-                                borderColor: '#fbbf24',
-                                backgroundColor: '#fbbf24',
-                                borderWidth: 2,
-                                tension: 0.3,
-                                pointRadius: 3
-                            },
-                            {
-                                label: 'Rede',
-                                data: [58, 60, 63, 66, 62, 65, 68, 63, 64.7, 50],
-                                borderColor: '#2ecc71',
-                                backgroundColor: '#2ecc71',
-                                borderWidth: 2,
-                                tension: 0.3,
-                                pointRadius: 3
-                            }
-                        ]
+                            grid: { color: '#232B40' }
+                        }
                     }
+                },
+                data: {
+                    labels: serie.labels,
+                    datasets: selecionados.map(function (comp) {
+                        return {
+                            label: comp.nome,
+                            data: serie.series[comp.chave],
+                            borderColor: comp.cor,
+                            backgroundColor: comp.cor,
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            spanGaps: true
+                        };
+                    })
                 }
-            );
+            });
         }
 
         filtroDataInicio.addEventListener('change', function () {
@@ -735,19 +916,17 @@
             if (!inicio) return "Selecione a data de início";
             if (!final) return "Selecione a data final";
             if (inicio > final) return "A data de início não pode ser maior que a data final";
-            // limite: início + 3 meses
-            var limite = new Date(inicio + "T00:00:00");
-            limite.setMonth(limite.getMonth() + 3);
+            var limite = new Date(inicio + "T00:00:00Z");
+            var dataFinal = new Date(final + "T00:00:00Z");
 
-            var dataFinal = new Date(final + "T00:00:00");
-
-            if (dataFinal > limite) {
-                return "O intervalo máximo é de 3 meses";
+            if ((dataFinal - limite) / 86400000 > 31) {
+                return "O intervalo máximo é de 31 dias";
             }
             return null;   // tudo certo
         }
 
         function mostrarPedidoDatas(mensagem) {
+            pararGrafico();
             esconderKpis();
             dashboard_main.innerHTML = `
         <div class="cards" style="margin:1vw; text-align:center;">
@@ -770,6 +949,16 @@
             }
             carregarServidor(filtroServidor.value);
         }
+
+        setInterval(function () {
+            if (document.visibilityState === 'visible' && filtroServidor.value) {
+                atualizarDashboard();
+            }
+        }, 60000);
+
+        window.addEventListener('focus', function () {
+            if (filtroServidor.value) atualizarDashboard();
+        });
 
     </script>
 </body>
