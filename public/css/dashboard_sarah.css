@@ -164,6 +164,7 @@
 .tabela-wrapper::-webkit-scrollbar-thumb {
     background: #00CFFF;
     border-radius: 50vw;
+    height: 70%;
 }
 
 .tabela-ocorrencias {

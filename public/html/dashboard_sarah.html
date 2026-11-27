@@ -137,7 +137,7 @@
                 <div class="dash-parte1">
                     <div class="card-ranking-variacoes cards">
                         <div class="titulo-card">Maior variação dos componentes</div>
-                        <div class="subtitulo-ocorrencias">Atual - anterior</div>
+                        <div class="subtitulo-ocorrencias">Maior variação no período (atual - anterior)</div>
 
                         <div class="lista-ranking">
                             <div class="item-ranking">
@@ -369,8 +369,8 @@
         var COMPONENTES = [
             { chave: 'cpu', nome: 'CPU', cor: '#4f8ef7' },
             { chave: 'ram', nome: 'RAM', cor: '#a78bfa' },
-            { chave: 'disco', nome: 'Disco', cor: '#fbbf24' },
-            { chave: 'rede', nome: 'Rede', cor: '#2ecc71' }
+            { chave: 'disco', nome: 'Disco', cor: '#FF8DA1' },
+            { chave: 'rede', nome: 'Rede', cor: '#D75413' }
         ];
         var PERIODOS = [
             { nome: 'Manhã', faixa: '06-12h', inicio: 6, fim: 12 },
@@ -439,6 +439,42 @@
             });
         }
 
+        function maioresVariacoesPorComponente(capturas) {
+            var melhores = COMPONENTES.map(function () { return null; });
+
+            ordenarCapturas(capturas).forEach(function (captura) {
+                COMPONENTES.forEach(function (comp, indice) {
+                    var variacao = captura.variacao ? numero(captura.variacao[comp.chave]) : null;
+                    if (variacao === null) return;
+
+                    var atual = melhores[indice];
+                    var absoluta = Math.abs(variacao);
+                    var atualAbsoluta = atual ? Math.abs(atual.variacao) : -1;
+                    if (absoluta > atualAbsoluta ||
+                        (atual && absoluta === atualAbsoluta &&
+                         String(captura.dataHora || '').localeCompare(String(atual.dataHora || '')) > 0)) {
+                        melhores[indice] = {
+                            componente: comp,
+                            variacao: variacao,
+                            valor: captura[comp.chave],
+                            dataHora: captura.dataHora
+                        };
+                    }
+                });
+            });
+
+            return melhores;
+        }
+
+        function rotuloDataHora(captura, mostrarData) {
+            var texto = String((captura && captura.dataHora) || '');
+            if (!texto) return '—';
+            if (mostrarData && texto.length >= 16) {
+                return texto.slice(8, 10) + '/' + texto.slice(5, 7) + ' ' + texto.slice(11, 16);
+            }
+            return horaDaCaptura(captura);
+        }
+
         function pararGrafico() {
             if (graficoUsoRecursos) {
                 graficoUsoRecursos.destroy();
@@ -451,7 +487,6 @@
             var alertas = [];
             var leituras = 0;
             var normais = 0;
-            var maior = null;
 
             COMPONENTES.forEach(function (comp) { contagem[comp.chave] = { atencao: 0, critico: 0 }; });
 
@@ -466,10 +501,6 @@
                         alertas.push({ captura: captura, componente: comp, valor: valor, nivel: nivel });
                     } else if (nivel === 'normal') {
                         normais++;
-                    }
-                    var variacao = captura.variacao ? numero(captura.variacao[comp.chave]) : null;
-                    if (variacao !== null && (!maior || Math.abs(variacao) > Math.abs(maior.variacao))) {
-                        maior = { componente: comp, valor: valor, variacao: variacao };
                     }
                 });
             });
@@ -487,7 +518,6 @@
                 atencao: alertas.filter(function (item) { return item.nivel === 'atencao'; }).length,
                 critico: alertas.filter(function (item) { return item.nivel === 'critico'; }).length,
                 componenteMais: alertas.length ? componenteMais : null,
-                maiorVariacao: maior,
                 saude: temLimites() && leituras ? Math.round(normais / leituras * 100) : null
             };
         }
@@ -670,13 +700,18 @@
             var linhas = ordenarCapturas(capturas);
             var indicadores = calcularIndicadores(linhas);
             var comLimites = temLimites();
-            var ultima = linhas[linhas.length - 1] || {};
+            var maiores = maioresVariacoesPorComponente(linhas);
+            var maior = maiores.filter(Boolean).slice().sort(function (a, b) {
+                return Math.abs(b.variacao) - Math.abs(a.variacao);
+            })[0] || null;
+            var mostrarData = new Set(linhas.map(function (linha) {
+                return String(linha.dataHora || '').slice(0, 10);
+            }).filter(Boolean)).size > 1;
 
             var nivelSaude = indicadores.saude === null
                 ? ''
                 : indicadores.saude >= 80 ? 'normal' : indicadores.saude >= 60 ? 'atencao' : 'critico';
             var corSaude = CORES[nivelSaude] || '#9aa4bf';
-            var maior = indicadores.maiorVariacao;
             var maiorNivel = maior ? nivelComponente(maior.valor, maior.componente.chave) : '';
             var contagemMais = indicadores.componenteMais
                 ? indicadores.contagem[indicadores.componenteMais.chave]
@@ -717,22 +752,33 @@
                 </div>
             `;
 
-            var ordemRanking = COMPONENTES.slice().sort(function (a, b) {
-                var va = ultima.variacao ? numero(ultima.variacao[a.chave]) : null;
-                var vb = ultima.variacao ? numero(ultima.variacao[b.chave]) : null;
-                return Math.abs(vb || 0) - Math.abs(va || 0);
+            var ordemRanking = maiores.map(function (item, indice) {
+                return item || {
+                    componente: COMPONENTES[indice],
+                    variacao: null,
+                    valor: null,
+                    dataHora: null
+                };
+            }).sort(function (a, b) {
+                var va = numero(a.variacao);
+                var vb = numero(b.variacao);
+                if (va === null && vb === null) return 0;
+                if (va === null) return 1;
+                if (vb === null) return -1;
+                return Math.abs(vb) - Math.abs(va);
             });
-            var ranking = ordemRanking.map(function (comp) {
-                var valor = ultima[comp.chave];
-                var variacao = ultima.variacao ? ultima.variacao[comp.chave] : null;
+            var ranking = ordemRanking.map(function (item) {
+                var comp = item.componente;
+                var valor = item.valor;
+                var variacao = item.variacao;
                 var nivel = nivelComponente(valor, comp.chave);
                 var largura = numero(valor) === null ? 0 : Math.min(100, Math.max(0, numero(valor)));
                 return `
                     <div class="item-ranking">
                         <div class="ranking-topo">
-                            <span class="ranking-nome">${comp.nome}</span>
+                            <span class="ranking-nome">${escapeHtml(comp.nome)}</span>
                             <span class="ranking-percentual ${classeValor(nivel)}">${formatarValor(valor)}</span>
-                            <span class="ranking-hora">${escapeHtml(horaDaCaptura(ultima))}</span>
+                            <span class="ranking-hora">${escapeHtml(rotuloDataHora(item, mostrarData))}</span>
                         </div>
                         <div class="variacao">
                             <div class="barra-fundo">
@@ -781,7 +827,7 @@
                 <div class="dash-parte1">
                     <div class="card-ranking-variacoes cards">
                         <div class="titulo-card">Maior variação dos componentes</div>
-                        <div class="subtitulo-ocorrencias">Atual - anterior</div>
+                        <div class="subtitulo-ocorrencias">Maior variação no período (atual - anterior)</div>
                         <div class="lista-ranking">${ranking}</div>
                     </div>
                     <div class="card-uso-recursos cards">
