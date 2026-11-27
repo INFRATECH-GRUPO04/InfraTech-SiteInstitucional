@@ -248,7 +248,7 @@
                         <div class="mapa-calor">
                             <!-- cabeçalho -->
                             <div class="linha-calor linha-calor-topo">
-                                <div class="legenda-calor">DIA / HORA</div>
+                                <div class="legenda-calor">DIA / SAÚDE (%)</div>
                                 <div class="coluna-periodo">Manhã<span>06-12h</span></div>
                                 <div class="coluna-periodo">Tarde<span>12-18h</span></div>
                                 <div class="coluna-periodo">Noite<span>18-24h</span></div>
@@ -411,6 +411,12 @@
             return '';
         }
 
+        function faixaSaude(saude) {
+            var valor = numero(saude);
+            if (valor === null) return '';
+            return valor >= 80 ? 'normal' : valor >= 60 ? 'atencao' : 'critico';
+        }
+
         function formatarValor(valor) {
             var v = numero(valor);
             return v === null ? '—' : (Math.round(v * 10) / 10) + '%';
@@ -482,7 +488,7 @@
             }
         }
 
-        function calcularIndicadores(capturas) {
+        function avaliarLeituras(capturas) {
             var contagem = {};
             var alertas = [];
             var leituras = 0;
@@ -505,20 +511,31 @@
                 });
             });
 
+            return {
+                contagem: contagem,
+                alertas: alertas,
+                leituras: leituras,
+                normais: normais,
+                saude: temLimites() && leituras ? Math.round(normais / leituras * 100) : null
+            };
+        }
+
+        function calcularIndicadores(capturas) {
+            var avaliacao = avaliarLeituras(capturas);
             var componenteMais = COMPONENTES.slice().sort(function (a, b) {
-                var totalA = contagem[a.chave].atencao + contagem[a.chave].critico;
-                var totalB = contagem[b.chave].atencao + contagem[b.chave].critico;
+                var totalA = avaliacao.contagem[a.chave].atencao + avaliacao.contagem[a.chave].critico;
+                var totalB = avaliacao.contagem[b.chave].atencao + avaliacao.contagem[b.chave].critico;
                 return totalB - totalA;
             })[0];
 
             return {
-                contagem: contagem,
-                alertas: alertas,
-                totalAlertas: alertas.length,
-                atencao: alertas.filter(function (item) { return item.nivel === 'atencao'; }).length,
-                critico: alertas.filter(function (item) { return item.nivel === 'critico'; }).length,
-                componenteMais: alertas.length ? componenteMais : null,
-                saude: temLimites() && leituras ? Math.round(normais / leituras * 100) : null
+                contagem: avaliacao.contagem,
+                alertas: avaliacao.alertas,
+                totalAlertas: avaliacao.alertas.length,
+                atencao: avaliacao.alertas.filter(function (item) { return item.nivel === 'atencao'; }).length,
+                critico: avaliacao.alertas.filter(function (item) { return item.nivel === 'critico'; }).length,
+                componenteMais: avaliacao.alertas.length ? componenteMais : null,
+                saude: avaliacao.saude
             };
         }
 
@@ -532,25 +549,18 @@
                 var periodo = PERIODOS.find(function (p) { return hora >= p.inicio && hora < p.fim; });
                 if (!periodo) return;
                 var dia = dias[data] || (dias[data] = {});
-                var celula = dia[periodo.nome] || (dia[periodo.nome] = { valor: null, componente: null });
-                COMPONENTES.forEach(function (comp) {
-                    var valor = numero(captura[comp.chave]);
-                    if (valor !== null && (celula.valor === null || valor > celula.valor)) {
-                        celula.valor = valor;
-                        celula.componente = comp.chave;
-                    }
-                });
+                var celula = dia[periodo.nome] || (dia[periodo.nome] = []);
+                celula.push(captura);
             });
 
             return Object.keys(dias).sort().slice(-7).map(function (data) {
                 return {
                     data: data,
                     periodos: PERIODOS.map(function (periodo) {
-                        var celula = dias[data][periodo.nome];
-                        var valor = celula ? celula.valor : null;
+                        var saude = avaliarLeituras(dias[data][periodo.nome] || []).saude;
                         return {
-                            valor: valor,
-                            nivel: valor === null ? 'normal' : nivelComponente(valor, celula.componente)
+                            valor: saude,
+                            nivel: faixaSaude(saude)
                         };
                     })
                 };
@@ -708,9 +718,7 @@
                 return String(linha.dataHora || '').slice(0, 10);
             }).filter(Boolean)).size > 1;
 
-            var nivelSaude = indicadores.saude === null
-                ? ''
-                : indicadores.saude >= 80 ? 'normal' : indicadores.saude >= 60 ? 'atencao' : 'critico';
+            var nivelSaude = faixaSaude(indicadores.saude);
             var corSaude = CORES[nivelSaude] || '#9aa4bf';
             var maiorNivel = maior ? nivelComponente(maior.valor, maior.componente.chave) : '';
             var contagemMais = indicadores.componenteMais
@@ -806,7 +814,7 @@
             var mapaCalor = calcularMapaCalor(linhas);
             var cabecalhoCalor = `
                 <div class="linha-calor linha-calor-topo">
-                    <div class="legenda-calor">DIA / HORA</div>
+                    <div class="legenda-calor">DIA / SAÚDE (%)</div>
                     ${PERIODOS.map(function (periodo) {
                         return `<div class="coluna-periodo">${periodo.nome}<span>${periodo.faixa}</span></div>`;
                     }).join('')}
@@ -821,7 +829,7 @@
                             }).join('')}
                         </div>`;
                 }).join('')
-                : `<div class="linha-calor"><div class="dia-calor">Sem dados</div><div class="celula-calor normal" colspan="4">—</div></div>`;
+                : `<div class="linha-calor"><div class="dia-calor">Sem dados</div><div class="celula-calor" colspan="4">—</div></div>`;
 
             dashboard_main.innerHTML = `
                 <div class="dash-parte1">
