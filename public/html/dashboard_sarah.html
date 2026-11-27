@@ -85,7 +85,7 @@
         </div>
 
         <div class="corpo-dashboard" id="corpo_dashboard">
-            <div class="kpis">
+            <div class="kpis" id="kpis">
                 <div class="kpi cards">
                     <div class="titulo-conteudo">Componente com mais alertas</div>
                     <div class="conteudo">RAM</div>
@@ -120,7 +120,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container-filtro">
+            <div class="container-filtro" id="container_filtro">
                 <div class="box-filtro" id="box_filtro_componentes">
                     <span class="label-filtro">Componente</span>
                     <select class="filtro" name="componentes" id="filtro_componentes">
@@ -317,6 +317,15 @@
         var idEmpresa = sessionStorage.ID_EMPRESA;
         var idUsuario = sessionStorage.ID_USUARIO;
 
+        var filtroServidor = document.getElementById('filtro_servidor');
+        var corpoDashboard = document.getElementById('corpo_dashboard');
+        var kpis = document.getElementById('kpis');
+        var containerFiltro = document.getElementById('container_filtro');
+        var dashboard_main = document.getElementById('dash_main');
+        var filtroComponentes = document.getElementById('filtro_componentes');
+        var filtroDataInicio = document.getElementById('filtro_data_inicio');
+        var filtroDataFinal = document.getElementById('filtro_data_final');
+
         fetch(`/dashboardSarah/buscarServidoresPorEmpresa/${idEmpresa}/${idUsuario}`, { cache: 'no-store' })
             .then(function (response) {
                 if (response.ok) {
@@ -346,12 +355,6 @@
                 console.error("Erro na obtenção de dados", error);
             });
 
-        var filtroServidor = document.getElementById('filtro_servidor');
-        var corpoDashboard = document.getElementById('corpo_dashboard');
-        var dashboard_main = document.getElementById('dash_main');
-        var filtroComponentes = document.getElementById('filtro_componentes');
-        var filtroDataInicio = document.getElementById('filtro_data_inicio');
-        var filtroDataFinal = document.getElementById('filtro_data_final');
 
         var servidorEscolhido = "";
 
@@ -372,7 +375,7 @@
         async function carregarServidor(idServidor) {
             servidorEscolhido = idServidor;
             try {
-                var dados = await buscarCapturas(idServidor, filtro_data_inicio.value, filtro_data_final.value);
+                var dados = await buscarCapturas(idServidor, filtroDataInicio.value, filtroDataFinal.value);
                 console.log("Dados recebidos:", dados);
 
                 if (!dados || dados.capturas.length === 0) {
@@ -412,8 +415,18 @@
             console.log("Limites:", limites);
         }
 
+        function esconderKpis() {
+            kpis.style.display = "none";
+            containerFiltro.style.display = "none";
+        }
+        function mostrarKpis() {
+            kpis.style.display = "";
+            containerFiltro.style.display = "";
+        }
+
         function mostrarSemServidor() {
-            corpoDashboard.innerHTML = `
+            esconderKpis();
+            dashboard_main.innerHTML = `
         <div class="cards" style="margin:1vw; text-align:center;">
             <div class="titulo-card">Nenhum servidor disponível</div>
             <div class="subtitulo-ocorrencias">Você não tem acesso a nenhum servidor desta empresa.</div>
@@ -422,7 +435,8 @@
         }
 
         filtroServidor.addEventListener('change', function () {
-            carregarServidor(filtroServidor.value);
+            atualizarDashboard()
+            // carregarServidor(filtroServidor.value);
         });
 
         filtroComponentes.addEventListener('change', function () {
@@ -430,8 +444,8 @@
         });
 
         function plotarDashboardEspecifica(capturas, dados) {
-            dash_main.innerHTML = `
-            <div class="dash-main" id="dash_main">
+            mostrarKpis();
+            dashboard_main.innerHTML = `
                 <div class="dash-parte1">
                     <div class="card-ranking-variacoes cards">
                         <div class="titulo-card">Maior variação dos componentes</div>
@@ -605,7 +619,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
                 
             `
             plotarGraficoUsoRecursos();
@@ -715,8 +728,8 @@
         });
 
         function validarDatas() {
-            var inicio = filtro_data_inicio.value;
-            var final = filtro_data_final.value;
+            var inicio = filtroDataInicio.value;
+            var final = filtroDataFinal.value;
 
             if (!inicio && !final) return "Selecione a data de início e a data final";
             if (!inicio) return "Selecione a data de início";
@@ -735,12 +748,13 @@
         }
 
         function mostrarPedidoDatas(mensagem) {
-            corpoDashboard.innerHTML = `
+            esconderKpis();
+            dashboard_main.innerHTML = `
         <div class="cards" style="margin:1vw; text-align:center;">
             <div class="titulo-card">${mensagem}</div>
             <div class="subtitulo-ocorrencias">Use os filtros na barra superior para escolher o período.</div>
-        </div>
-    `;
+        </div>`;
+
         }
 
         // decide o que mostrar: pedido de datas ou o dashboard
