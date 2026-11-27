@@ -332,11 +332,6 @@
     justify-content: center;
 }
 
-.card-demanda-mapa-calor{
-    width: 52%;
-    height: 60vh;
-}
-
 .tabela-logs-wrapper {
     flex: 1;
     min-height: 0;
@@ -347,7 +342,7 @@
 }
 
 .card-demanda-mapa-calor {
-    width: 57%;
+    width: 52%;
     height: 60vh;
     display: flex;
     flex-direction: column;
