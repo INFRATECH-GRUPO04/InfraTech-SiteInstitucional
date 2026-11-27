@@ -48,7 +48,7 @@
 }
 
 .container-filtro{
-    width: 85%;
+    width: 96%;
     height: 5vw;
     display: flex;
     flex-direction: row;
@@ -161,7 +161,7 @@
 
 .tabela-wrapper {
     padding: 0 20px;
-    max-height: 80%;
+    max-height: 70%;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0 1.4vw;
@@ -374,11 +374,23 @@
     flex-direction: column;
     gap: 0.4vh;
     margin-top: 1.5vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #00CFFF #171D2B;
+}
+
+.mapa-calor::-webkit-scrollbar { width: 6px; }
+.mapa-calor::-webkit-scrollbar-thumb {
+    background: #00CFFF;
+    border-radius: 50vw;
 }
 
 /* cada linha é um grid: 1 coluna para o dia + 4 para os períodos */
 .linha-calor {
-    flex: 1;
+    flex: 0 0 40px;
+    height: 40px;
     display: grid;
     grid-template-columns: 20% repeat(4, 1fr);
     gap: 0.5vw;
@@ -386,7 +398,12 @@
 }
 
 .linha-calor-topo {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     flex: 0 0 auto;
+    height: auto;
+    background-color: #171D2B;
     margin-bottom: 1vh;
 }
 
@@ -642,12 +659,16 @@
     .mapa-calor {
         flex: none;
         min-width: 560px;
+        max-height: 360px;
         gap: 6px;
         margin-top: 16px;
+        overflow-x: auto;
     }
 
     .linha-calor {
         flex: none;
+        height: auto;
+        min-height: 40px;
         grid-template-columns: 130px repeat(4, 1fr);
         gap: 6px;
     }

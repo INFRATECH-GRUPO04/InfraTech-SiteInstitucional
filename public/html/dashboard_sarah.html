@@ -553,7 +553,7 @@
                 celula.push(captura);
             });
 
-            return Object.keys(dias).sort().slice(-7).map(function (data) {
+            return Object.keys(dias).sort().map(function (data) {
                 return {
                     data: data,
                     periodos: PERIODOS.map(function (periodo) {
