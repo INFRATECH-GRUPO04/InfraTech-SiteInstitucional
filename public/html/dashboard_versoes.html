@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,9 @@
     <link rel="stylesheet" href="../css/dashboard-versoes.css">
 
     <title>Dashboard de Versões | InfraTech</title>
-    <link rel="icon" href="../assets/icon/logo.png" type="image/png"/>
+    <link rel="icon" href="/public/assets/icon/logo.png" type="image/png" />
 </head>
+
 <body class="pagina-painel dashboard-compartilhada">
 
     <!-- BARRA LATERAL -->
@@ -68,26 +70,42 @@
     <div class="container-dashboard">
         <div class="container-cabecalho-dash">
             <div class="barra-bem-vindo">
-                <div><h4>BEM-VINDO, LUCAS (engenheiro de QA)</h4></div>
-                <div class="indicador-status"><h6>Revisão pré-release</h6></div>   
+                <div>
+                    <h4 id="boas-vindas-qa">BEM-VINDO, ENGENHEIRO DE QA</h4>
+                </div>
             </div>
             <div class="caixa-titulo">
                 <div class="titulo-dash">
                     <div class="primeiro-titulo">
                         <h2>Comparativo entre versões do jogo</h2>
                     </div>
-                    <div class="barra-bem-vindo"><h5>Detecte sinais de vazamento e regressões de recursos antes da liberação oficial.</h5></div>
+                    <div class="barra-bem-vindo">
+                        <h5>Detecte sinais de vazamento e regressões de recursos antes da liberação oficial.</h5>
+                    </div>
                 </div>
                 <div class="caixa-builds">
                     <div class="builds">
                         <div class="seletor">
-                            <div class="titulo_build"><h5>BUILD BASE · BASELINE</h5></div>
-                            <div class="nome-build1"><h4>● Build v1.1</h4></div>
+                            <div class="titulo_build">
+                                <h5>BUILD BASE · BASELINE (V1)</h5>
+                            </div>
+                            <div class="nome-build1">
+                                <h4><select id="select-v1" class="select-build" aria-label="Servidor Baseline (V1)">
+                                        <option value="">Carregando...</option>
+                                    </select></h4>
+                            </div>
                         </div>
-                        <div class="seta">→</div>
+                        <div class="seta btn-inverter-builds" id="btn-inverter-builds"
+                            title="Inverter Baseline e Candidata">⇄</div>
                         <div class="seletor">
-                            <div class="titulo_build"><h5>BUILD CANDIDATA</h5></div>
-                            <div class="nome-build2"><h4>● Build v1.2</h4></div>
+                            <div class="titulo_build">
+                                <h5>BUILD CANDIDATA (V2)</h5>
+                            </div>
+                            <div class="nome-build2">
+                                <h4><select id="select-v2" class="select-build" aria-label="Servidor Candidata (V2)">
+                                        <option value="">Carregando...</option>
+                                    </select></h4>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -96,93 +114,146 @@
 
         <div class="container-kpi">
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h5>Índice de Crescimento de Memória V2</h5></div>
+                <div class="titulo-kpi">
+                    <h5>Índice de Crescimento de Memória V2</h5>
+                </div>
                 <div class="status-kpi">
                     <p>
-                        <span class="status-valor">84</span>
-                        <span class="status-metrica">MB/h</span>
+                        <span class="status-valor" id="kpi-mem-valor">--</span>
+                        <span class="status-metrica" id="kpi-mem-metrica">MB/h</span>
                     </p>
-                    <div class="status status-critico"><h3>● CRÍTICO</h3></div>
+                    <div class="status status-estavel" id="kpi-mem-badge">
+                        <h3 id="kpi-mem-status">● ALINHADO</h3>
+                    </div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div class="versao1"><h6>v1.1: 12 MB/h</h6></div>
-                    <div class="versao2"><h6>v1.2: +72 MB/h</h6></div>
+                    <div class="versao1">
+                        <h6 id="kpi-mem-v1">V1: -- MB/h</h6>
+                    </div>
+                    <div class="versao2">
+                        <h6 id="kpi-mem-v2">V2: -- MB/h</h6>
+                    </div>
                 </div>
-                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
+                <div class="subtitulo-kpi">
+                    <h6>Atualizado a cada 10 minutos</h6>
+                </div>
             </div>
 
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h5>Taxa de Troca de Contexto V2</h5></div>
+                <div class="titulo-kpi">
+                    <h5>Taxa de Troca de Contexto V2</h5>
+                </div>
                 <div class="status-kpi">
                     <p>
-                        <span class="status-valor status-alerta">27.000</span>
-                        <span class="status-metrica status-alerta">trocas/s</span>
+                        <span class="status-valor" id="kpi-ctx-valor">--</span>
+                        <span class="status-metrica" id="kpi-ctx-metrica">trocas/s</span>
                     </p>
-                    <div class="status status-alerta"><h3>● ALERTA</h3></div>
+                    <div class="status status-estavel" id="kpi-ctx-badge">
+                        <h3 id="kpi-ctx-status">● ALINHADO</h3>
+                    </div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div class="versao1"><h6>v1.1: 18.000 trocas/s</h6></div>
-                    <div class="versao2"><h6>v1.2: +50% sobre v1.1</h6></div>
+                    <div class="versao1">
+                        <h6 id="kpi-ctx-v1">V1: -- trocas/s</h6>
+                    </div>
+                    <div class="versao2">
+                        <h6 id="kpi-ctx-v2">V2: --</h6>
+                    </div>
                 </div>
-                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
+                <div class="subtitulo-kpi">
+                    <h6>Atualizado a cada 10 minutos</h6>
+                </div>
             </div>
 
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h5>Tempo de Fila de Disco V2</h5></div>
+                <div class="titulo-kpi">
+                    <h5>Tempo de Fila de Disco V2</h5>
+                </div>
                 <div class="status-kpi">
                     <p>
-                        <span class="status-valor">800</span>
-                        <span class="status-metrica">ms</span>
+                        <span class="status-valor" id="kpi-disco-valor">--</span>
+                        <span class="status-metrica" id="kpi-disco-metrica">ms</span>
                     </p>
-                    <div class="status status-critico"><h3>● CRÍTICO</h3></div>
+                    <div class="status status-estavel" id="kpi-disco-badge">
+                        <h3 id="kpi-disco-status">● ALINHADO</h3>
+                    </div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div class="versao1"><h6>v1.1: 12 MB/h</h6></div>
-                    <div class="versao2"><h6>v1.2: +788 ms</h6></div>
+                    <div class="versao1">
+                        <h6 id="kpi-disco-v1">V1: -- ms</h6>
+                    </div>
+                    <div class="versao2">
+                        <h6 id="kpi-disco-v2">V2: -- ms</h6>
+                    </div>
                 </div>
-                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
+                <div class="subtitulo-kpi">
+                    <h6>Atualizado a cada 10 minutos</h6>
+                </div>
             </div>
 
             <div class="caixa-kpi">
-                <div class="titulo-kpi"><h5>Eficiência de Payload V2</h5></div>
+                <div class="titulo-kpi">
+                    <h5>Eficiência de Payload V2</h5>
+                </div>
                 <div class="status-kpi">
                     <p>
-                        <span class="status-valor status-estavel">80</span>
-                        <span class="status-metrica status-estavel">B/jogador</span>
+                        <span class="status-valor" id="kpi-payload-valor">--</span>
+                        <span class="status-metrica" id="kpi-payload-metrica">B/s/jogador</span>
                     </p>
-                    <div class="status status-estavel"><h3>● ESTÁVEL</h3></div>
+                    <div class="status status-estavel" id="kpi-payload-badge">
+                        <h3 id="kpi-payload-status">● ALINHADO</h3>
+                    </div>
                 </div>
                 <div class="comparacao-kpi">
-                    <div class="versao1"><h6>v1.1: 32 B/jogador/tick</h6></div>
-                    <div class="versao2"><h6>v1.2: +48 B · +150%</h6></div>
+                    <div class="versao1">
+                        <h6 id="kpi-payload-v1">V1: -- B/s/jogador</h6>
+                    </div>
+                    <div class="versao2">
+                        <h6 id="kpi-payload-v2">V2: --</h6>
+                    </div>
                 </div>
-                <div class="subtitulo-kpi"><h6>Atualizado a cada 10 minutos</h6></div>
+                <div class="subtitulo-kpi">
+                    <h6>Atualizado a cada 10 minutos</h6>
+                </div>
             </div>
         </div>
 
         <div class="container-consumo-recursos">
             <div class="cabecalho-grafico">
                 <div class="titulo-recursos">
-                    <div class="titulo-principal"><h4>Consumo de recursos ao longo do tempo</h4></div>
-                    <div class="subtitulo-principal"><h6 id="subtitulo-consumo">Taxa de I/O de disco · leitura + escrita · 64 jogadores nas duas builds</h6></div>
+                    <div class="titulo-principal">
+                        <h4>Consumo de recursos ao longo do tempo</h4>
+                    </div>
+                    <div class="subtitulo-principal">
+                        <h6 id="subtitulo-consumo">Uso de armazenamento em disco</h6>
+                    </div>
                 </div>
                 <div class="seletor-recurso">
                     <div class="seletor-componente">
-                        <div class="recurso-selecionado" data-recurso="CPU"><h4>CPU</h4></div>
-                        <div class="recurso-selecionado" data-recurso="RAM"><h4>RAM</h4></div>
-                        <div class="recurso-selecionado ativo" data-recurso="DISCO"><h4>Disco</h4></div>
-                        <div class="recurso-selecionado" data-recurso="REDE"><h4>REDE</h4></div>
+                        <div class="recurso-selecionado" data-recurso="CPU">
+                            <h4>CPU</h4>
+                        </div>
+                        <div class="recurso-selecionado" data-recurso="RAM">
+                            <h4>RAM</h4>
+                        </div>
+                        <div class="recurso-selecionado ativo" data-recurso="DISCO">
+                            <h4>Disco</h4>
+                        </div>
+                        <div class="recurso-selecionado" data-recurso="REDE">
+                            <h4>REDE</h4>
+                        </div>
                     </div>
-                    <div class="caixa-evento" id="btn-adicionar-evento"><h5>+ Adicionar evento</h5></div>
+                    <div class="versao1">
+                        <h6 id="legenda-consumo-v1">V1 · baseline</h6>
+                    </div>
+                    <div class="versao2">
+                        <h6 id="legenda-consumo-v2">V2 · candidata</h6>
+                    </div>
                 </div>
             </div>
 
             <div class="barra-info-grafico">
-                <span class="unidade-eixo" id="unidade-consumo">I/O DE DISCO (MB/S)</span>
-                <div class="legenda-builds-grafico">
-                    <div class="versao1"><h6>v1.1 · baseline</h6></div>
-                    <div class="versao2"><h6>v1.2 · candidata</h6></div>
-                </div>
+                <span class="unidade-eixo" id="unidade-consumo">USO DE DISCO (MB)</span>
             </div>
 
             <div class="caixa-grafico-recursos">
@@ -194,31 +265,52 @@
             <div class="caixa-grafico-escalabilidade">
                 <div class="cabecalho-grafico">
                     <div class="titulo-recursos">
-                        <div class="titulo-principal"><h4>Escalabilidade de jogadores</h4></div>
-                        <div class="subtitulo-principal"><h6>Radar de Proximidade</h6></div>
+                        <div class="titulo-principal">
+                            <h4>Escalabilidade de jogadores</h4>
+                        </div>
+                        <div class="subtitulo-principal">
+                            <h6>Projeção linear por consumo unitário de CPU</h6>
+                        </div>
                     </div>
-                    <div class="status status-critico"><h3>● CRÍTICO</h3></div>
+                    <div class="status status-estavel" id="badge-escalabilidade">
+                        <h3 id="texto-badge-escalabilidade">● ALINHADO</h3>
+                    </div>
                 </div>
                 <div class="builds">
-                    <div class="versao1"><h6>v1.1 · baseline</h6></div>
-                    <div class="versao2"><h6>v1.2 · candidata</h6></div>
+                    <div class="versao1">
+                        <h6 id="legenda-esc-v1">V1 · baseline</h6>
+                    </div>
+                    <div class="versao2">
+                        <h6 id="legenda-esc-v2">V2 · candidata</h6>
+                    </div>
                 </div>
                 <span class="unidade-eixo">CPU (%)</span>
                 <div class="caixa-grafico-recursos">
                     <canvas id="graficoEscalabilidade"></canvas>
                 </div>
-                <div class="caixa-projecao"><h5>A nova versão 1.2 não suportaria mais de 90 jogadores simultâneos</h5></div>
+                <div class="caixa-projecao">
+                    <h5 id="texto-projecao-escalabilidade">Aguardando seleção dos servidores para projetar capacidade...
+                    </h5>
+                </div>
             </div>
 
             <div class="caixa-grafico-performance">
                 <div class="cabecalho-grafico">
                     <div class="titulo-recursos">
-                        <div class="titulo-principal"><h4>Assinatura de performance dos componentes</h4></div>
-                        <div class="subtitulo-principal"><h6>Atualizado a cada 24h · estados sempre referentes à v1.2</h6></div>
+                        <div class="titulo-principal">
+                            <h4>Assinatura de performance dos componentes</h4>
+                        </div>
+                        <div class="subtitulo-principal">
+                            <h6>Atualizado a cada 24h (P95)</h6>
+                        </div>
                     </div>
                     <div class="builds">
-                        <div class="versao1"><h6>v1.1 · baseline</h6></div>
-                        <div class="versao2"><h6>v1.2 · candidata</h6></div>
+                        <div class="versao1">
+                            <h6 id="legenda-perf-v1">V1 · baseline</h6>
+                        </div>
+                        <div class="versao2">
+                            <h6 id="legenda-perf-v2">V2 · candidata</h6>
+                        </div>
                     </div>
                 </div>
                 <div class="parte-grafico">
@@ -226,13 +318,30 @@
                         <span class="unidade-eixo">0% no centro · 100% em cada ponta</span>
                         <canvas id="graficoPerformance"></canvas>
                     </div>
-                    <div class="estado-componentes">
-                        <div class="estado-componente"><h5>COMPONENTE / v1.2 Estado</h5></div>
-                        <div class="estado-componente"><h5>RAM  72%</h5><h5 class="estado-alerta">● Alerta</h5></div>
-                        <div class="estado-componente"><h5>CPU  94%</h5><h5 class="estado-critico">● Crítico</h5></div>
-                        <div class="estado-componente"><h5>Disco  64%</h5><h5 class="estado-saudavel">● Saudável</h5></div>
-                        <div class="estado-componente"><h5>Rede  88%</h5><h5 class="estado-alerta">● Alerta</h5></div>
-                        <div class="estado-componente"><h5>Ef. térmica  82%</h5><h5 class="estado-saudavel">● Saudável</h5></div>
+                    <div class="estado-componentes" id="lista-estado-componentes">
+                        <div class="estado-componente">
+                            <h5 id="titulo-estado-v2">COMPONENTE V2 CANDIDATA</h5>
+                        </div>
+                        <div class="estado-componente">
+                            <h5>RAM --%</h5>
+                            <h5 class="estado-saudavel">● --</h5>
+                        </div>
+                        <div class="estado-componente">
+                            <h5>CPU --%</h5>
+                            <h5 class="estado-saudavel">● --</h5>
+                        </div>
+                        <div class="estado-componente">
+                            <h5>Disco --%</h5>
+                            <h5 class="estado-saudavel">● --</h5>
+                        </div>
+                        <div class="estado-componente">
+                            <h5>Rede --%</h5>
+                            <h5 class="estado-saudavel">● --</h5>
+                        </div>
+                        <div class="estado-componente">
+                            <h5>Ef. térmica --%</h5>
+                            <h5 class="estado-saudavel">● --</h5>
+                        </div>
                     </div>
                 </div>
             </div>
