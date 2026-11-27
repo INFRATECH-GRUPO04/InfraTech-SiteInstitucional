@@ -442,3 +442,185 @@ body.pagina-servidores {
         width: 100%;
     }
 }
+
+/* ----------- Gerenciamento de Servidores de Teste ----------- */
+.grade-paineis-teste {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1100px) {
+    .grade-paineis-teste {
+        grid-template-columns: 1fr;
+    }
+}
+
+.banner-feedback {
+    padding: 14px 18px;
+    border-radius: var(--raio);
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    border: 1px solid var(--cor-borda);
+    transition: all var(--transicao);
+}
+
+.banner-feedback.sucesso {
+    background-color: rgb(5 223 114 / 0.12);
+    border-color: rgb(5 223 114 / 0.45);
+    color: var(--cor-sucesso, #05df72);
+}
+
+.banner-feedback.erro {
+    background-color: rgb(220 38 38 / 0.14);
+    border-color: rgb(239 68 68 / 0.5);
+    color: #f87171;
+}
+
+/* Caixa de listagem com rolagem para seleção única */
+.caixa-selecao-servidores {
+    background-color: var(--cor-input);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    max-height: 270px;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.caixa-selecao-servidores::-webkit-scrollbar {
+    width: 6px;
+}
+
+.caixa-selecao-servidores::-webkit-scrollbar-thumb {
+    background: rgb(0 207 255 / 0.25);
+    border-radius: 4px;
+}
+
+.texto-vazio {
+    margin: 0;
+    padding: 20px 12px;
+    text-align: center;
+    color: var(--cor-texto-suave);
+    font-family: var(--fonte-mono);
+    font-size: 0.82rem;
+}
+
+/* Item selecionável com bolinha (radio) */
+.item-servidor-opcao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--raio);
+    background-color: rgb(7 16 26 / 0.65);
+    border: 1px solid var(--cor-borda);
+    cursor: pointer;
+    transition: all var(--transicao);
+    user-select: none;
+}
+
+.item-servidor-opcao:hover {
+    border-color: rgb(0 207 255 / 0.4);
+    background-color: #081420;
+}
+
+.item-servidor-opcao.selecionado {
+    border-color: var(--cor-cyan);
+    background-color: rgb(0 207 255 / 0.08);
+}
+
+.item-servidor-opcao input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.info-servidor-opcao {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* Bolinha externa e bolinha preenchida interna */
+.radio-bolinha {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--cor-texto-suave);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transicao);
+}
+
+.item-servidor-opcao.selecionado .radio-bolinha {
+    border-color: var(--cor-cyan);
+}
+
+.radio-bolinha::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background-color: var(--cor-cyan);
+    transform: scale(0);
+    transition: transform 0.15s ease-in-out;
+}
+
+.item-servidor-opcao.selecionado .radio-bolinha::after {
+    transform: scale(1);
+}
+
+.detalhes-servidor-opcao {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.nome-servidor-opcao {
+    color: var(--cor-branco, #ffffff);
+    font-family: var(--fonte-mono);
+    font-size: 0.88rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.meta-servidor-opcao {
+    color: var(--cor-texto-suave);
+    font-family: var(--fonte-mono);
+    font-size: 0.74rem;
+}
+
+.badge-servidor {
+    font-family: var(--fonte-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: var(--raio-pill);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.badge-servidor.padrao {
+    background: rgb(0 207 255 / 0.1);
+    color: var(--cor-cyan);
+    border: 1px solid rgb(0 207 255 / 0.3);
+}
+
+.badge-servidor.teste {
+    background: rgb(245 158 11 / 0.12);
+    color: #fbbf24;
+    border: 1px solid rgb(245 158 11 / 0.35);
+}
