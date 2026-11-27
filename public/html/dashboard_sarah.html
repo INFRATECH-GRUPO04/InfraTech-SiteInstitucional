@@ -244,7 +244,7 @@
                         </div>
                     </div>
                     <div class="card-demanda-mapa-calor cards">
-                        <div class="titulo-card">Demanda por Período</div>
+                        <div class="titulo-card">Saúde por Período</div>
                         <div class="mapa-calor">
                             <!-- cabeçalho -->
                             <div class="linha-calor linha-calor-topo">
@@ -369,8 +369,8 @@
         var COMPONENTES = [
             { chave: 'cpu', nome: 'CPU', cor: '#4f8ef7' },
             { chave: 'ram', nome: 'RAM', cor: '#a78bfa' },
-            { chave: 'disco', nome: 'Disco', cor: '#FF8DA1' },
-            { chave: 'rede', nome: 'Rede', cor: '#D75413' }
+            { chave: 'disco', nome: 'Disco', cor: '#FFC0CB' },
+            { chave: 'rede', nome: 'Rede', cor: '#22d3ee' }
         ];
         var PERIODOS = [
             { nome: 'Manhã', faixa: '06-12h', inicio: 6, fim: 12 },
@@ -861,7 +861,7 @@
                         </div>
                     </div>
                     <div class="card-demanda-mapa-calor cards">
-                        <div class="titulo-card">Demanda por Período</div>
+                        <div class="titulo-card">Saúde por Período</div>
                         <div class="mapa-calor">
                             ${cabecalhoCalor}
                             ${corpoCalor}
@@ -883,6 +883,49 @@
             var selecionados = filtro === 'Todos'
                 ? COMPONENTES
                 : COMPONENTES.filter(function (comp) { return comp.chave === filtro; });
+
+            var datasets = selecionados.map(function (comp) {
+                return {
+                    label: comp.nome,
+                    data: serie.series[comp.chave],
+                    borderColor: comp.cor,
+                    backgroundColor: comp.cor,
+                    borderWidth: 2,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    spanGaps: true
+                };
+            });
+
+            if (selecionados.length === 1) {
+                var chave = selecionados[0].chave;
+                var limitesComponente = limites[chave] || {};
+                var atencao = numero(limitesComponente.atencao);
+                var critico = numero(limitesComponente.critico);
+
+                if (atencao !== null) {
+                    datasets.push({
+                        label: 'Alerta atenção',
+                        data: serie.labels.map(function () { return atencao; }),
+                        borderColor: CORES.atencao,
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        fill: false
+                    });
+                }
+                if (critico !== null) {
+                    datasets.push({
+                        label: 'Alerta crítico',
+                        data: serie.labels.map(function () { return critico; }),
+                        borderColor: CORES.critico,
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        fill: false
+                    });
+                }
+            }
 
             graficoUsoRecursos = new Chart(canvas, {
                 type: 'line',
@@ -928,18 +971,7 @@
                 },
                 data: {
                     labels: serie.labels,
-                    datasets: selecionados.map(function (comp) {
-                        return {
-                            label: comp.nome,
-                            data: serie.series[comp.chave],
-                            borderColor: comp.cor,
-                            backgroundColor: comp.cor,
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 3,
-                            spanGaps: true
-                        };
-                    })
+                    datasets: datasets
                 }
             });
         }
