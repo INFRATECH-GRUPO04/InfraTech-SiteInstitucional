@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidores de Teste | InfraTech</title>
+    <link rel="icon" href="../assets/icon/logo.png">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/cadastro-base.css">
+    <link rel="stylesheet" href="../css/cadastro_servidor.css">
+
+    <script src="/js/permissoes.js"></script>
+    <script src="/js/sessao.js"></script>
+</head>
+
+<body class="pagina-servidores" onload="validarSessao()">
+
+    <!-- BARRA LATERAL -->
+    <aside class="header-left">
+        <div class="logo">
+            <a href="../dashboard/dash-geral.html" title="InfraTech">
+                <img src="../assets/icon/logo.png" alt="InfraTech">
+            </a>
+        </div>
+
+        <hr class="linha">
+
+        <h3 class="nav-categoria">
+            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Servidores
+        </h3>
+
+        <a href="../html/cadastro_servidor.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Host
+        </a>
+        <a href="../html/modificar_servidor.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Modificar Servidor
+        </a>
+        <a href="../html/servidores-de-teste.html" class="nav-item ativo">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Definir Servidor de Teste
+        </a>
+
+        <h3 class="nav-categoria secao-funcionarios">
+            <img src="../assets/imgs/funcionarios.png" alt="" class="menu-icon-title">
+            Funcionários
+        </h3>
+
+        <a href="../funcionarios/cadastro_token/cadastro_token.html" class="nav-item">
+            <img src="../assets/imgs/token.png" alt="" class="menu-icon">
+            Cadastrar Token
+        </a>
+
+        <h3 class="nav-categoria secao-empresas">
+            <img src="../assets/imgs/servidores.png" alt="" class="menu-icon-title">
+            Empresas
+        </h3>
+
+        <a href="../empresas/gerenciar_empresa.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Gerenciar
+        </a>
+        <a href="../empresas/cadastro_empresa.html" class="nav-item">
+            <img src="../assets/imgs/modificar.png" alt="" class="menu-icon">
+            Cadastrar Empresa
+        </a>
+
+        <div class="btn-logout" onclick="limparSessao()" title="Sair do Sistema">
+            <img src="../assets/imgs/logout.png" alt="Sair" class="logout-icon">
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo-principal pagina-cadastro-host">
+        <div class="barra-superior-painel">
+            <div class="migalhas">
+                <span class="text-muted">Servidores</span> / <span>Gerenciar servidores de teste</span>
+            </div>
+            <div class="usuario-sessao">
+                <span class="ponto-status"></span>
+                <span id="nome_usuario" class="nome-usuario">Administrador</span>
+            </div>
+        </div>
+
+        <div class="corpo-pagina">
+            <header class="intro-pagina">
+                <h1>Gerenciar servidores de teste</h1>
+                <p>Selecione um servidor cadastrado para torná-lo ambiente de testes ou reverta servidores de teste ativos.</p>
+            </header>
+
+            <!-- Banner de Feedback (Sucesso / Erro) -->
+            <div id="banner_feedback" class="banner-feedback" role="alert" hidden></div>
+
+            <div class="area-operacional grade-paineis-teste">
+
+                <section class="painel-formulario">
+                    <div class="cabecalho-painel">
+                        <img src="../assets/icon/logo_server.png" alt="Servidor">
+                        <div>
+                            <h3>Definir Servidor de Teste</h3>
+                            <p>Escolha um servidor disponível e defina sua nova identificação para testes</p>
+                        </div>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label>SELECIONE O SERVIDOR DISPONÍVEL (APENAS UM)</label>
+                        <div id="lista_servidores_disponiveis" class="caixa-selecao-servidores">
+                            <p class="texto-vazio">Carregando servidores...</p>
+                        </div>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="input_novo_nome_teste">NOVO NOME DO SERVIDOR DE TESTE</label>
+                        <input type="text" class="controle-formulario" id="input_novo_nome_teste"
+                            placeholder="Ex: SRV-TESTE-BUILD-01" maxlength="100" autocomplete="off">
+                    </div>
+
+                    <div class="acoes-rodape">
+                        <button type="button" class="botao-primario" onclick="definirServidorTeste()">
+                            Definir como Servidor de Teste
+                        </button>
+                    </div>
+                </section>
+
+                <section class="painel-formulario">
+                    <div class="cabecalho-painel">
+                        <img src="../assets/icon/logo_server.png" alt="Servidor de Teste">
+                        <div>
+                            <h3>Servidores de Teste Ativos</h3>
+                            <p>Selecione um servidor de teste para removê-lo desta função e renomeá-lo</p>
+                        </div>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label>SELECIONE O SERVIDOR DE TESTE PARA REMOVER</label>
+                        <div id="lista_servidores_teste" class="caixa-selecao-servidores">
+                            <p class="texto-vazio">Carregando servidores de teste...</p>
+                        </div>
+                    </div>
+
+                    <div class="grupo-formulario">
+                        <label for="input_novo_nome_padrao">NOVO NOME DO SERVIDOR APÓS REMOÇÃO</label>
+                        <input type="text" class="controle-formulario" id="input_novo_nome_padrao"
+                            placeholder="Ex: SRV-PRODUCAO-02" maxlength="100" autocomplete="off">
+                    </div>
+
+                    <div class="acoes-rodape">
+                        <button type="button" class="botao-perigo" onclick="removerServidorTeste()">
+                            Remover Servidor de Teste
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/servidores_teste.js"></script>
+    <script src="../js/permissoes.js"></script>
+    <script src="../js/sessao.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/dashboard-versoes.js"></script>
+</body>
+</body>
+
+</html>
