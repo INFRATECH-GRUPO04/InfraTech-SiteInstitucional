@@ -5,180 +5,224 @@ document.addEventListener('DOMContentLoaded', () => {
     const COR_V1 = '#4da6ff';
     const COR_V2 = '#a78bfa';
     const COR_CRITICO = '#f06565';
-    const COR_ALERTA = '#f0b44c';
 
-    // Conjuntos de dados para as abas CPU, RAM, DISCO e REDE
-    const dadosRecursos = {
+    // Estado inicial da tela
+    let listaServidoresTeste = [];
+    let servidorV1 = null;
+    let servidorV2 = null;
+    let recursoAtual = 'DISCO';
+
+    // configuração das abas dos componentes do gráfico de recursos:
+
+    const configRecursos = {
         DISCO: {
-            subtitulo: 'Taxa de I/O de disco · leitura + escrita · 64 jogadores nas duas builds',
-            unidadeEixo: 'I/O DE DISCO (MB/S)',
-            unidadeCurta: 'MB/s', //mostrada no evento adicionado.
-            maxY: 175, // onde termina
-            stepY: 40, // onde começa
-            limiteValor: 140, 
-            limiteTexto: 'Limite proposto · 140 MB/s',
-            v1: [32, 35, 38, 42, 40, 48, 70, 38, 36, 40, 37, 36, 37],
-            v2: [45, 50, 56, 62, 68, 56, 128, 66, 68, 72, 65, 63, 66]
+            chaveJson: 'disco_mb',
+            subtitulo: 'Espaço utilizado em disco',
+            unidadeEixo: 'USO DE DISCO (MB)',
+            unidadeCurta: 'MB',
+            casasLimite: 0
         },
         CPU: {
-            subtitulo: 'Uso médio de processamento · threads principais · 64 jogadores nas duas builds',
+            chaveJson: 'cpu_pct',
+            subtitulo: 'Uso de processamento',
             unidadeEixo: 'USO DE CPU (%)',
             unidadeCurta: '%',
-            maxY: 100,
-            stepY: 25,
-            limiteValor: 85,
-            limiteTexto: 'Limite proposto · 85%',
-            v1: [34, 36, 39, 41, 40, 44, 58, 42, 41, 43, 40, 39, 41],
-            v2: [48, 52, 57, 61, 65, 62, 91, 68, 70, 72, 67, 66, 69]
+            casasLimite: 0
         },
         RAM: {
-            subtitulo: 'Alocação de memória residente (RSS) · 64 jogadores nas duas builds',
+            chaveJson: 'ram_gb',
+            subtitulo: 'Uso de memória',
             unidadeEixo: 'MEMÓRIA ALOCADA (GB)',
             unidadeCurta: 'GB',
-            maxY: 16,
-            stepY: 4,
-            limiteValor: 12,
-            limiteTexto: 'Limite proposto · 12 GB',
-            v1: [4.2, 4.3, 4.4, 4.5, 4.5, 4.6, 5.1, 4.7, 4.7, 4.8, 4.8, 4.9, 4.9],
-            v2: [5.4, 6.1, 6.8, 7.5, 8.2, 8.9, 11.4, 9.8, 10.3, 10.9, 11.4, 11.9, 12.4]
+            casasLimite: 1
         },
         REDE: {
-            subtitulo: 'Vazão de pacotes outbound · tickrate 60Hz · 64 jogadores nas duas builds',
+            chaveJson: 'rede_mbps',
+            subtitulo: 'Tráfego de rede',
             unidadeEixo: 'TRÁFEGO DE REDE (MBPS)',
             unidadeCurta: 'Mbps',
-            maxY: 120,
-            stepY: 30,
-            limiteValor: 95,
-            limiteTexto: 'Limite proposto · 95 Mbps',
-            v1: [22, 24, 25, 27, 26, 29, 44, 28, 27, 29, 28, 27, 28],
-            v2: [38, 41, 44, 48, 51, 49, 88, 54, 55, 58, 53, 52, 54]
+            casasLimite: 1
         }
     };
 
-    let recursoAtual = 'DISCO'; // a tela inicia com o DISCO
-    let eventoCustom = {
-        indice: 6, // '12:00'
-        titulo: '12h · teste da batalha na colina'
+    // Fallbacks caso algum servidor de teste ainda não possua limite cadastrado no banco
+    const limitesRadarPadrao = {
+        RAM: { atencao_pct: 70, critico_pct: 85 },
+        CPU: { atencao_pct: 70, critico_pct: 80 },
+        Disco: { atencao_pct: 70, critico_pct: 90 },
+        Rede: { atencao_pct: 70, critico_pct: 90 },
+        'Eficiência térmica': { saudavel_pct: 80, alerta_pct: 60 }
     };
 
-    /*GRÁFICO DE LINHA: CONSUMO DE RECURSOS AO LONGO DO TEMPO */
+    //lê o limite do componente selecionado no gráfico de recursos:
+    function obterLimiteConsumoV2(v2, recurso) {
+        if (!v2 || !v2.limites || !v2.limites.consumo) return null;
+        const valor = v2.limites.consumo[recurso];
+        return valor !== null && valor !== undefined && !Number.isNaN(Number(valor))
+            ? Number(valor)
+            : null;
+    }
+
+    // funções de formatação e cálculos:
+    function formatarNumero(valor, casasDecimais = 1) {
+        if (valor === null || valor === undefined || Number.isNaN(Number(valor))) return '--';
+        return Number(valor).toLocaleString('pt-BR', {
+            minimumFractionDigits: casasDecimais,
+            maximumFractionDigits: casasDecimais
+        });
+    }
+
+    //Formata o número do limite para o rótulo da linha tracejada de limite
+    function formatarLimiteCurto(valor, casasMax = 1) {
+        const num = Number(valor);
+        if (Number.isInteger(num)) return formatarNumero(num, 0);
+        return formatarNumero(num, casasMax);
+    }
+
+    //Formata diferenças numéricas:
+    function formatarSinal(valor, casasDecimais = 1) {
+        const num = Number(valor) || 0;
+        const prefixo = num > 0 ? '+' : '';
+        return prefixo + formatarNumero(num, casasDecimais);
+    }
+
+    //Calcula a variação percentual entre V1 e V2, evitando divisão por zero
+    function calcularVariacaoPct(v1, v2) {
+        if (!v1 || Math.abs(v1) < 0.0001) return null;
+        return ((v2 - v1) / Math.abs(v1)) * 100;
+    }
+
+    function classificarDivergencia(v1, v2, { pisoValorMax, pisoDiffAbs, limAlinhadoPct, limDivergentePct, limAlinhadoAbs = Infinity, limDivergenteAbs = Infinity }) {
+        const diffAbs = Math.abs(v2 - v1);
+        const maiorValor = Math.max(Math.abs(v1), Math.abs(v2));
+
+        if (maiorValor < pisoValorMax || diffAbs < pisoDiffAbs) {
+            return { classe: 'status-estavel', texto: '● ALINHADO' };
+        }
+
+        const varPct = calcularVariacaoPct(v1, v2);
+        const pctAbs = varPct !== null ? Math.abs(varPct) : 100;
+
+        if (pctAbs <= limAlinhadoPct && diffAbs <= limAlinhadoAbs) {
+            return { classe: 'status-estavel', texto: '● ALINHADO' };
+        }
+        if (pctAbs <= limDivergentePct && diffAbs <= limDivergenteAbs) {
+            return { classe: 'status-alerta', texto: '● DIVERGENTE' };
+        }
+        return { classe: 'status-critico', texto: '● ALTA DIVERGÊNCIA' };
+    }
+
+    //muda a cor conforme o estado da kpi
+    function aplicarEstadoBadge(badgeId, textoId, valorId, metricaId, estado) {
+        const badge = document.getElementById(badgeId);
+        const texto = document.getElementById(textoId);
+        const valor = document.getElementById(valorId);
+        const metrica = document.getElementById(metricaId);
+
+        if (badge) {
+            badge.classList.remove('status-estavel', 'status-alerta', 'status-critico');
+            badge.classList.add(estado.classe);
+        }
+        if (texto) {
+            texto.textContent = estado.texto;
+        }
+        [valor, metrica].forEach((el) => {
+            if (!el) return;
+            el.classList.remove('status-estavel', 'status-alerta', 'status-critico');
+            if (estado.classe === 'status-alerta') el.classList.add('status-alerta');
+            if (estado.classe === 'status-estavel') el.classList.add('status-estavel');
+        });
+    }
+
+    //Calcula dinamicamente o teto (maxY) e o intervalo (stepY)
+    //  do eixo Y do gráfico de consumo para acomodar todos os dados no bloco do gráfico
+    function calcularEscalaDinamica(valoresV1, valoresV2, limiteOpcional, ehPercentual = false) {
+        const todos = [...valoresV1, ...valoresV2].filter((v) => v !== null && v !== undefined);
+        if (limiteOpcional !== null && limiteOpcional !== undefined) {
+            todos.push(limiteOpcional);
+        }
+        const maior = todos.length ? Math.max(...todos) : 100;
+
+        if (ehPercentual && maior <= 100) {
+            return { maxY: 100, stepY: 25 };
+        }
+
+        const alvo = Math.max(maior * 1.15, 1);
+        const ordem = Math.pow(10, Math.floor(Math.log10(alvo)));
+        const passoBase = alvo / ordem <= 2 ? ordem / 5 : (alvo / ordem <= 5 ? ordem / 2 : ordem);
+        const maxY = Math.ceil(alvo / passoBase) * passoBase;
+        const stepY = +(maxY / 4).toFixed(2);
+
+        return { maxY, stepY };
+    }
+
+    // gráficos:
+
     const ctxConsumo = document.getElementById('graficoConsumoRecursos').getContext('2d');
 
-    //plugin customizado para colocar informações extras:
+    // desenha a linha de limite do gráfico de recursos:
     const pluginAnotacoesConsumo = {
         id: 'anotacoesConsumo',
-         /*gancho de ciclo de vida: desenhe primeiro as linhas do grafico
-            e depois faça essa parte*/
         afterDatasetsDraw(chart) {
             const { ctx, chartArea, scales } = chart;
-            /*Proteção para o primeiro milissegundo de carregamento da página,
-             quando o Chart.js ainda está calculando o tamanho da tela e
-              chartArea ainda não existe:*/
-            if (!chartArea) return;
+            if (!chartArea || !chart.data.labels || chart.data.labels.length === 0) return;
 
-            const cfg = dadosRecursos[recursoAtual]; //AAAAAA
-            const yLimite = scales.y.getPixelForValue(cfg.limiteValor);
+            const cfg = configRecursos[recursoAtual];
+            const limiteV2 = obterLimiteConsumoV2(servidorV2, recursoAtual);
+
+            if (limiteV2 === null || !scales.y) return;
+
+            const yLimite = scales.y.getPixelForValue(limiteV2);
+            if (yLimite < chartArea.top || yLimite > chartArea.bottom) return;
 
             ctx.save();
 
-            // Linha horizontal tracejada de limite proposto
-            ctx.beginPath(); //Avisa o Canvas que vamos começar um traço novo.
-            ctx.setLineDash([4, 4]); /*Configura o traço como tracejado (4px pintados, 4px vazios)*/
+            // Linha horizontal tracejada do limite proposto do servidor V2
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'rgba(240, 101, 101, 0.55)';
             ctx.moveTo(chartArea.left, yLimite);
             ctx.lineTo(chartArea.right, yLimite);
             ctx.stroke();
 
-            // Texto "Limite proposto" acima da linha à direita
             ctx.setLineDash([]);
             ctx.font = '500 11px Inter, sans-serif';
             ctx.fillStyle = COR_CRITICO;
             ctx.textAlign = 'right';
-            ctx.fillText(cfg.limiteTexto, chartArea.right - 14, yLimite - 6);
 
-            // Linha vertical tracejada do evento (padrão 12:00)
-            const idx = eventoCustom.indice;
-            const xEvento = scales.x.getPixelForValue(idx); //busca o 12 na lista de horarios
+            const textoValor = formatarLimiteCurto(limiteV2, cfg.casasLimite);
+            const posYTexto = (yLimite - 16 < chartArea.top) ? yLimite + 13 : yLimite - 6;
+            ctx.fillText(`Limite proposto · ${textoValor} ${cfg.unidadeCurta}`, chartArea.right - 14, posYTexto);
 
-            ctx.beginPath();
-            ctx.setLineDash([4, 4]);
-            ctx.lineWidth = 1.2;
-            ctx.strokeStyle = 'rgba(240, 180, 76, 0.65)';
-            ctx.moveTo(xEvento, chartArea.top + 4);
-            ctx.lineTo(xEvento, chartArea.bottom);
-            ctx.stroke(); //desenha a borda da linha
-
-            // Caixa de anotação do evento ao lado da linha vertical
-            const valV1 = cfg.v1[idx];
-            const valV2 = cfg.v2[idx];
-            const linha1 = eventoCustom.titulo;
-            const linha2 = `v1.1: ${valV1}  |  v1.2: ${valV2} ${cfg.unidadeCurta}`;
-
-            ctx.setLineDash([]);
-            ctx.font = '600 11px Inter, sans-serif';
-            /* Mede quantos pixels de largura cada frase vai ocupar na tela
-             com aquela fonte. Isso permite que, se o usuário clicar em
-              "+ Adicionar evento" e digitar um texto longo, a caix
-              a cresça automaticamente.*/
-            const largura1 = ctx.measureText(linha1).width; 
-            ctx.font = '400 10.5px Inter, sans-serif';
-            const largura2 = ctx.measureText(linha2).width;
-            /*Pega a maior das duas linhas e soma 20px de margem
-             interna (10px de cada lado)  */
-            const boxW = Math.max(largura1, largura2) + 20; 
-            const boxH = 38; //altura da caixa
-            /*Posiciona a caixa 10px à direita da linha amarela, mas impede
-             que ela ultrapasse a borda direita do gráfico caso o evento
-              esteja muito perto do fim. */
-            const boxX = Math.min(xEvento + 10, chartArea.right - boxW - 6);
-            const boxY = chartArea.top + 8; //AAAAAAAAAAA
-
-            ctx.fillStyle = 'rgba(42, 34, 21, 0.92)';
-            ctx.strokeStyle = 'rgba(240, 180, 76, 0.4)';
-            ctx.lineWidth = 1;
-            ctx.beginPath(); //AAAAAAAAA
-            ctx.roundRect(boxX, boxY, boxW, boxH, 6); //Desenha o retângulo com bordas arredondadas de 6px
-            ctx.fill(); //preenche o fundo da caixa
-            ctx.stroke(); //borda da caixa
-
-            ctx.textAlign = 'left';
-            ctx.font = '600 11px Inter, sans-serif';
-            ctx.fillStyle = COR_ALERTA;
-            ctx.fillText(linha1, boxX + 10, boxY + 15); //AAAAAA
-
-            //texto das versões embaixo:
-            ctx.font = '400 10.5px Inter, sans-serif';
-            ctx.fillStyle = '#a6b7c7';
-            ctx.fillText(linha2, boxX + 10, boxY + 30); //AAAAAA
-
-            ctx.restore(); //AAAAAAA
+            ctx.restore();
         }
     };
 
     const graficoConsumo = new Chart(ctxConsumo, {
         type: 'line',
         data: {
-            labels: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00'],
+            labels: [],
             datasets: [
                 {
-                    label: 'v1.1 · baseline',
-                    data: dadosRecursos.DISCO.v1,
+                    label: 'V1 · baseline',
+                    data: [],
                     borderColor: COR_V1,
                     backgroundColor: 'transparent',
                     borderWidth: 2,
                     tension: 0.15,
+                    spanGaps: true,
                     pointRadius: 0,
                     pointHoverRadius: 4
                 },
                 {
-                    label: 'v1.2 · candidata',
-                    data: dadosRecursos.DISCO.v2,
+                    label: 'V2 · candidata',
+                    data: [],
                     borderColor: COR_V2,
                     borderWidth: 2.2,
                     tension: 0.15,
+                    spanGaps: true,
                     fill: true,
-                    /*Cria o degrade vertical saindo das linhas v1 e v2:*/
                     backgroundColor: (context) => {
                         const { ctx, chartArea } = context.chart;
                         if (!chartArea) return 'rgba(167, 139, 250, 0.08)';
@@ -187,154 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         gradient.addColorStop(1, 'rgba(167, 139, 250, 0.0)');
                         return gradient;
                     },
-                    //Deixa aparecendo somente a bolinha do evento:*/
-                    pointRadius: (ctx) => (ctx.dataIndex === eventoCustom.indice ? 4 : 0),
+                    pointRadius: 0,
                     pointBackgroundColor: '#ffffff',
                     pointBorderColor: COR_V2,
                     pointBorderWidth: 2,
-                    pointHoverRadius: 5
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            /*Desativa a proporção fixa padrão do Chart.js,
-             pro grafico não estourar a altura: */
-            maintainAspectRatio: false,
-            //mostra as informações ao passar o mouse:
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: { display: false }, //tira a legenda automática
-                tooltip: { //cores da caixinha que aparece ao passar o mouse:
-                    backgroundColor: '#0d141c',
-                    borderColor: '#253445',
-                    borderWidth: 1,
-                    titleColor: '#f2f6fa',
-                    bodyColor: '#c7d8e4'
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    border: { color: '#222f3e' },
-                    ticks: { font: { size: 10.5 }, padding: 6 } // ajusta o tamanho da fonte da linha horizontal.
-                },
-                y: {
-                    min: 0, //começa em zero
-                    max: dadosRecursos.DISCO.maxY, //termina no valor max do disco
-                    border: { display: false },
-                    //linhas branco claro horizontais do grafico:
-                    grid: { color: 'rgba(255, 255, 255, 0.06)' },
-                    ticks: { // define o intervalo entre os valores do eixo y:
-                        stepSize: dadosRecursos.DISCO.stepY,
-                        font: { size: 10.5 },
-                        padding: 8
-                    }
-                }
-            }
-        },
-        plugins: [pluginAnotacoesConsumo] //conecta o grafico ao plugin extra
-    });
-
-    // Interatividade das abas CPU / RAM / Disco / REDE
-    //busca no html todos os botoes com a classe .recurso-selecionado':
-    document.querySelectorAll('.recurso-selecionado').forEach((aba) => {
-        aba.addEventListener('click', () => { // so acontece quando o usuário clica.
-            const recurso = aba.dataset.recurso; //atribui o componente selecionado.
-            if (!dadosRecursos[recurso]) return; //se nao existir não faça nada.
-
-            document.querySelectorAll('.recurso-selecionado').forEach((el) => el.classList.remove('ativo'));
-            aba.classList.add('ativo'); //muda a cor do componente
-
-            recursoAtual = recurso;
-            const cfg = dadosRecursos[recurso]; 
-
-            document.getElementById('subtitulo-consumo').textContent = cfg.subtitulo;
-            document.getElementById('unidade-consumo').textContent = cfg.unidadeEixo;
-
-            //muda toda a estrutura do gráfico conforme o componente selecionado:
-            graficoConsumo.data.datasets[0].data = cfg.v1;
-            graficoConsumo.data.datasets[1].data = cfg.v2;
-            graficoConsumo.options.scales.y.max = cfg.maxY;
-            graficoConsumo.options.scales.y.ticks.stepSize = cfg.stepY;
-            graficoConsumo.update();
-        });
-    });
-
-    // Interatividade do botão "+ Adicionar evento"
-    //mostra a caixinha de adicionar evento:
-    const btnEvento = document.getElementById('btn-adicionar-evento');
-    if (btnEvento) {
-        btnEvento.addEventListener('click', () => {
-            const nomeEvento = prompt('Descrição do evento no gráfico (ex: 13h · spawn de chefão):');
-            if (!nomeEvento || !nomeEvento.trim()) return;
-            eventoCustom.titulo = nomeEvento.trim();
-            graficoConsumo.update();
-        });
-    }
-
-    /*GRÁFICO DE ESCALABILIDADE DE JOGADORES */
-    const ctxEscalabilidade = document.getElementById('graficoEscalabilidade').getContext('2d');
-
-    const pluginLimiteEscalabilidade = {
-        id: 'limiteEscalabilidade',
-        afterDatasetsDraw(chart) { // só aparece depois do grafico ser criado
-            const { ctx, chartArea, scales } = chart;
-            if (!chartArea) return;
-
-            /*identifica em qual posição vertical (em pixels) fica o
-             valor 90 do eixo Y e guarda esse número na variável */
-             //sendo o 90 o limite critico.
-            const yCritico = scales.y.getPixelForValue(90);
-/*O canvas funciona como uma tela em branco, enquanto o ctx é o pincel,
-toda vez que precisamos desenhar algo novo(uma linha) precisamos 
-configurar o ctx e antes salvar seu estado atual, depois de usar precisamos
-"limpar o pincel" apagando do ctx as configurações que atribuimos, dessa
-forma possibilitando que ele seja configurado novamente posteriormente
-para desenha outra linha. */
-            ctx.save(); 
-            ctx.beginPath(); //avisa o canvas que vamos criar uma linha nova
-            ctx.setLineDash([3, 3]); // linha pontilhada
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'rgba(240, 101, 101, 0.55)';
-            ctx.moveTo(chartArea.left, yCritico);
-            ctx.lineTo(chartArea.right, yCritico);
-            ctx.stroke(); // faz a linha aparecer 
-
-            ctx.setLineDash([]); //remove o pontilhado do pincel
-            ctx.font = '500 10.5px Inter, sans-serif';
-            ctx.fillStyle = COR_CRITICO;
-            ctx.textAlign = 'right';
-            //texto critico e sua posição:
-            ctx.fillText('Crítico >90%', chartArea.right - 16, yCritico - 5);
-            ctx.restore(); //volta o pincel ao seu estado normal salvo no ctx.save().
-        }
-    };
-
-    new Chart(ctxEscalabilidade, {
-        type: 'line',
-        data: {
-            labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
-            datasets: [
-                {
-                    label: 'v1.1 · baseline',
-                    data: [4, 9, 15, 21, 28, 35, 42, 49, 56, 63, 70],
-                    borderColor: COR_V1,
-                    borderWidth: 2,
-                    tension: 0.25,
-                    pointRadius: 0,
-                    pointHoverRadius: 4
-                },
-                {
-                    label: 'v1.2 · candidata',
-                    data: [2, 4, 8, 14, 22, 32, 45, 61, 79, 90, 100],
-                    borderColor: COR_V2,
-                    borderWidth: 2,
-                    borderDash: [4, 4],
-                    tension: 0.35,
-                    pointRadius: (ctx) => (ctx.dataIndex >= 3 ? 2.5 : 2.5),
-                    pointBackgroundColor: (ctx) => (ctx.dataIndex === 9 ? COR_CRITICO : COR_V2),
-                    pointBorderColor: (ctx) => (ctx.dataIndex === 9 ? '#ffffff' : COR_V2),
                     pointHoverRadius: 5
                 }
             ]
@@ -348,17 +248,116 @@ para desenha outra linha. */
                 tooltip: {
                     backgroundColor: '#0d141c',
                     borderColor: '#253445',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    titleColor: '#f2f6fa',
+                    bodyColor: '#c7d8e4'
                 }
             },
             scales: {
                 x: {
-                    grid: { display: false }, //esconde as linhas verticais
+                    grid: { display: false },
                     border: { color: '#222f3e' },
+                    ticks: { font: { size: 10.5 }, padding: 6 }
+                },
+                y: {
+                    min: 0,
+                    max: 100,
+                    border: { display: false },
+                    grid: { color: 'rgba(255, 255, 255, 0.06)' },
                     ticks: {
-                        autoSkip: false,
-                        font: { size: 10.5 }
+                        stepSize: 25,
+                        font: { size: 10.5 },
+                        padding: 8
+                    }
+                }
+            }
+        },
+        plugins: [pluginAnotacoesConsumo]
+    });
+
+    const ctxEscalabilidade = document.getElementById('graficoEscalabilidade').getContext('2d');
+
+    // desenha a linha de limite no gráfico de escalabilidade
+    const pluginLimiteEscalabilidade = {
+        id: 'limiteEscalabilidade',
+        afterDatasetsDraw(chart) {
+            const { ctx, chartArea, scales } = chart;
+            if (!chartArea) return;
+
+            const yCritico = scales.y.getPixelForValue(90);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.setLineDash([3, 3]);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(240, 101, 101, 0.55)';
+            ctx.moveTo(chartArea.left, yCritico);
+            ctx.lineTo(chartArea.right, yCritico);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+            ctx.font = '500 10.5px Inter, sans-serif';
+            ctx.fillStyle = COR_CRITICO;
+            ctx.textAlign = 'right';
+            ctx.fillText('Crítico >90%', chartArea.right - 16, yCritico - 5);
+            ctx.restore();
+        }
+    };
+
+    const graficoEscalabilidade = new Chart(ctxEscalabilidade, {
+        type: 'line',
+        data: {
+            labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
+            datasets: [
+                {
+                    label: 'V1 · baseline',
+                    data: [],
+                    borderColor: COR_V1,
+                    borderWidth: 2,
+                    tension: 0.2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4
+                },
+                {
+                    label: 'V2 · candidata',
+                    data: [],
+                    borderColor: COR_V2,
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    tension: 0.2,
+                    pointRadius: 2.5,
+                    pointBackgroundColor: (ctx) => {
+                        const val = ctx.dataset.data[ctx.dataIndex];
+                        return val >= 90 ? COR_CRITICO : COR_V2;
                     },
+                    pointBorderColor: (ctx) => {
+                        const val = ctx.dataset.data[ctx.dataIndex];
+                        return val >= 90 ? '#ffffff' : COR_V2;
+                    },
+                    pointHoverRadius: 5
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#0d141c',
+                    borderColor: '#253445',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}% CPU`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    border: { color: '#222f3e' },
+                    ticks: { autoSkip: false, font: { size: 10.5 } },
                     title: {
                         display: true,
                         text: 'Quantidade de jogadores',
@@ -374,28 +373,25 @@ para desenha outra linha. */
                     grid: { color: 'rgba(255, 255, 255, 0.06)' },
                     ticks: {
                         stepSize: 25,
-                        /*coloca a porcentagem no numeros e esconde qualque 
-                        numero acima de 100%: */
                         callback: (v) => (v <= 100 ? `${v}%` : ''),
                         font: { size: 10.5 }
                     }
                 }
             }
         },
-        plugins: [pluginLimiteEscalabilidade] //ativa o plugin personalizado da linha limite
+        plugins: [pluginLimiteEscalabilidade]
     });
 
-    /*GRÁFICO RADAR: ASSINATURA DE PERFORMANCE DOS COMPONENTES */
     const ctxPerformance = document.getElementById('graficoPerformance').getContext('2d');
 
-    new Chart(ctxPerformance, {
+    const graficoPerformance = new Chart(ctxPerformance, {
         type: 'radar',
         data: {
             labels: ['RAM', 'CPU', 'Disco', 'Rede', ['Eficiência', 'térmica']],
             datasets: [
                 {
-                    label: 'v1.1 · baseline',
-                    data: [55, 62, 52, 58, 60],
+                    label: 'V1 · baseline',
+                    data: [0, 0, 0, 0, 0],
                     borderColor: COR_V1,
                     backgroundColor: 'rgba(77, 166, 255, 0.14)',
                     borderWidth: 1.8,
@@ -403,8 +399,8 @@ para desenha outra linha. */
                     pointBackgroundColor: COR_V1
                 },
                 {
-                    label: 'v1.2 · candidata',
-                    data: [72, 94, 64, 88, 82],
+                    label: 'V2 · candidata',
+                    data: [0, 0, 0, 0, 0],
                     borderColor: COR_V2,
                     backgroundColor: 'rgba(167, 139, 250, 0.22)',
                     borderWidth: 2,
@@ -421,27 +417,26 @@ para desenha outra linha. */
                 tooltip: {
                     backgroundColor: '#0d141c',
                     borderColor: '#253445',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    callbacks: {
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.r}%`
+                    }
                 }
             },
             scales: {
-                r: { // ao inves de eixos x e y, utiliza o r que vai do centro as pontas.
+                r: {
                     min: 0,
                     max: 100,
                     startAngle: 0,
                     ticks: {
-                        stepSize: 25, //a escala aumenta de 25 em 25.
+                        stepSize: 25,
                         backdropColor: 'transparent',
                         color: '#6b8196',
                         font: { size: 9 },
                         callback: (v) => `${v}%`
                     },
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.08)'
-                    },
-                    angleLines: {
-                        color: 'rgba(255, 255, 255, 0.08)'
-                    },
+                    grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                    angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
                     pointLabels: {
                         color: '#8da1b3',
                         font: { size: 10.5, weight: '500' }
@@ -450,4 +445,418 @@ para desenha outra linha. */
             }
         }
     });
+
+    // funções para atualizar os componentes sempre que os valores de V1 e V2 mudarem:
+
+    function atualizarKpis(v1, v2) {
+        const semDadosV1 = !v1 || !v1.kpis;
+        const semDadosV2 = !v2 || !v2.kpis;
+
+        if (semDadosV2) {
+            ['kpi-mem-valor', 'kpi-ctx-valor', 'kpi-disco-valor', 'kpi-payload-valor'].forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = '--';
+            });
+            return;
+        }
+
+        // Índice de Crescimento de Memória (MB/h):
+        const memV2 = Number(v2.kpis.indice_crescimento_memoria.valor_mb_h) || 0;
+        const memV1 = !semDadosV1 ? (Number(v1.kpis.indice_crescimento_memoria.valor_mb_h) || 0) : 0;
+        const diffMem = memV2 - memV1;
+
+        document.getElementById('kpi-mem-valor').textContent = formatarNumero(memV2, 1);
+        document.getElementById('kpi-mem-v1').textContent = !semDadosV1
+            ? `V1: ${formatarNumero(memV1, 1)} MB/h`
+            : 'V1: aguardando dados';
+        document.getElementById('kpi-mem-v2').textContent = !semDadosV1
+            ? `V2: ${formatarSinal(diffMem, 1)} MB/h`
+            : `V2: ${formatarNumero(memV2, 1)} MB/h`;
+
+        const estadoMem = classificarDivergencia(memV1, memV2, {
+            pisoValorMax: 25,
+            pisoDiffAbs: 20,
+            limAlinhadoPct: 25,
+            limDivergentePct: 75,
+            limAlinhadoAbs: 50,
+            limDivergenteAbs: 150
+        });
+        aplicarEstadoBadge('kpi-mem-badge', 'kpi-mem-status', 'kpi-mem-valor', 'kpi-mem-metrica', estadoMem);
+
+        //Taxa de Troca de Contexto (trocas/s):
+        const ctxV2 = Number(v2.kpis.taxa_troca_contexto.valor_trocas_s) || 0;
+        const ctxV1 = !semDadosV1 ? (Number(v1.kpis.taxa_troca_contexto.valor_trocas_s) || 0) : 0;
+        const varCtxPct = !semDadosV1 ? calcularVariacaoPct(ctxV1, ctxV2) : null;
+
+        document.getElementById('kpi-ctx-valor').textContent = formatarNumero(ctxV2, 0);
+        document.getElementById('kpi-ctx-v1').textContent = !semDadosV1
+            ? `V1: ${formatarNumero(ctxV1, 0)} trocas/s`
+            : 'V1: aguardando dados';
+        document.getElementById('kpi-ctx-v2').textContent = varCtxPct !== null
+            ? `V2: ${formatarSinal(varCtxPct, 1)}%`
+            : `V2: ${formatarSinal(ctxV2 - ctxV1, 0)} trocas/s`;
+
+        const estadoCtx = classificarDivergencia(ctxV1, ctxV2, {
+            pisoValorMax: 2000,
+            pisoDiffAbs: 1500,
+            limAlinhadoPct: 20,
+            limDivergentePct: 50
+        });
+        aplicarEstadoBadge('kpi-ctx-badge', 'kpi-ctx-status', 'kpi-ctx-valor', 'kpi-ctx-metrica', estadoCtx);
+
+        //Tempo de Fila de Disco (ms):
+        const discoV2 = Number(v2.kpis.tempo_fila_disco.valor_ms) || 0;
+        const discoV1 = !semDadosV1 ? (Number(v1.kpis.tempo_fila_disco.valor_ms) || 0) : 0;
+        const diffDisco = discoV2 - discoV1;
+
+        document.getElementById('kpi-disco-valor').textContent = formatarNumero(discoV2, 0);
+        document.getElementById('kpi-disco-v1').textContent = !semDadosV1
+            ? `V1: ${formatarNumero(discoV1, 0)} ms`
+            : 'V1: aguardando dados';
+        document.getElementById('kpi-disco-v2').textContent = !semDadosV1
+            ? `V2: ${formatarSinal(diffDisco, 0)} ms`
+            : `V2: ${formatarNumero(discoV2, 0)} ms`;
+
+        const estadoDisco = classificarDivergencia(discoV1, discoV2, {
+            pisoValorMax: 50,
+            pisoDiffAbs: 40,
+            limAlinhadoPct: 25,
+            limDivergentePct: 75,
+            limAlinhadoAbs: 100,
+            limDivergenteAbs: 300
+        });
+        aplicarEstadoBadge('kpi-disco-badge', 'kpi-disco-status', 'kpi-disco-valor', 'kpi-disco-metrica', estadoDisco);
+
+        //Eficiência de Payload (B/s/jogador):
+        const payV2 = Number(v2.kpis.eficiencia_payload.valor_bytes_s_jogador) || 0;
+        const payV1 = !semDadosV1 ? (Number(v1.kpis.eficiencia_payload.valor_bytes_s_jogador) || 0) : 0;
+        const varPayPct = !semDadosV1 ? calcularVariacaoPct(payV1, payV2) : null;
+
+        document.getElementById('kpi-payload-valor').textContent = formatarNumero(payV2, 1);
+        document.getElementById('kpi-payload-v1').textContent = !semDadosV1
+            ? `V1: ${formatarNumero(payV1, 1)} B/s/jogador`
+            : 'V1: aguardando dados';
+        document.getElementById('kpi-payload-v2').textContent = varPayPct !== null
+            ? `V2: ${formatarSinal(varPayPct, 1)}%`
+            : `V2: ${formatarNumero(payV2, 1)} B/s/jogador`;
+
+        const estadoPay = classificarDivergencia(payV1, payV2, {
+            pisoValorMax: 200,
+            pisoDiffAbs: 150,
+            limAlinhadoPct: 20,
+            limDivergentePct: 50
+        });
+        aplicarEstadoBadge('kpi-payload-badge', 'kpi-payload-status', 'kpi-payload-valor', 'kpi-payload-metrica', estadoPay);
+    }
+
+    function atualizarGraficoConsumo(v1, v2) {
+        const cfg = configRecursos[recursoAtual];
+        const serie1 = (v1 && v1.graficos && v1.graficos.consumo_recursos_24h[cfg.chaveJson]) || [];
+        const serie2 = (v2 && v2.graficos && v2.graficos.consumo_recursos_24h[cfg.chaveJson]) || [];
+
+        const mapaV1 = new Map(serie1.map((p) => [p.horario, p.valor]));
+        const mapaV2 = new Map(serie2.map((p) => [p.horario, p.valor]));
+
+        const todosHorarios = Array.from(new Set([...mapaV1.keys(), ...mapaV2.keys()])).sort();
+        const labelsCurtos = todosHorarios.map((h) => (h.includes(' ') ? h.split(' ')[1] : h));
+
+        const dadosAlinhadosV1 = todosHorarios.map((h) => (mapaV1.has(h) ? mapaV1.get(h) : null));
+        const dadosAlinhadosV2 = todosHorarios.map((h) => (mapaV2.has(h) ? mapaV2.get(h) : null));
+
+        const limiteV2 = obterLimiteConsumoV2(v2, recursoAtual);
+        const escala = calcularEscalaDinamica(
+            dadosAlinhadosV1,
+            dadosAlinhadosV2,
+            limiteV2,
+            cfg.unidadeCurta === '%'
+        );
+
+        document.getElementById('subtitulo-consumo').textContent = cfg.subtitulo;
+        document.getElementById('unidade-consumo').textContent = cfg.unidadeEixo;
+
+        graficoConsumo.data.labels = labelsCurtos;
+        graficoConsumo.data.datasets[0].data = dadosAlinhadosV1;
+        graficoConsumo.data.datasets[1].data = dadosAlinhadosV2;
+        graficoConsumo.options.scales.y.max = escala.maxY;
+        graficoConsumo.options.scales.y.ticks.stepSize = escala.stepY;
+        graficoConsumo.update();
+    }
+
+    function atualizarGraficoEscalabilidade(v1, v2) {
+        const escV1 = v1 && v1.graficos && v1.graficos.escalabilidade_jogadores;
+        const escV2 = v2 && v2.graficos && v2.graficos.escalabilidade_jogadores;
+
+        if (!escV2) {
+            graficoEscalabilidade.data.datasets[0].data = [];
+            graficoEscalabilidade.data.datasets[1].data = [];
+            graficoEscalabilidade.update();
+            document.getElementById('texto-projecao-escalabilidade').textContent =
+                'Aguardando coleta de telemetria da build candidata para projetar capacidade.';
+            return;
+        }
+
+        const maxJogV1 = escV1 ? Number(escV1.max_jogadores_suportados) : Number(escV2.max_jogadores_suportados);
+        const maxJogV2 = Number(escV2.max_jogadores_suportados);
+
+        const custoCpuV1 = escV1 ? Number(escV1.consumo_unitario_por_jogador.cpu_pct) : 0;
+        const custoCpuV2 = Number(escV2.consumo_unitario_por_jogador.cpu_pct);
+
+        const maiorMax = Math.max(maxJogV1, maxJogV2, 10);
+        const alvo = Math.max(maiorMax * 1.15, 20);
+        const magnitude = Math.pow(10, String(Math.floor(alvo)).length - 1);
+        const passoBase = alvo / magnitude <= 5 ? magnitude / 2 : magnitude;
+        const tetoGrafico = Math.ceil(alvo / passoBase) * passoBase;
+        const passo = Math.max(1, Math.floor(tetoGrafico / 10));
+
+        const labelsJogadores = [];
+        const pontosV1 = [];
+        const pontosV2 = [];
+
+        for (let qtd = 0; qtd <= tetoGrafico; qtd += passo) {
+            labelsJogadores.push(String(qtd));
+            pontosV1.push(escV1 ? Math.min(100, +(custoCpuV1 * qtd).toFixed(1)) : null);
+            pontosV2.push(Math.min(100, +(custoCpuV2 * qtd).toFixed(1)));
+        }
+
+        graficoEscalabilidade.data.labels = labelsJogadores;
+        graficoEscalabilidade.data.datasets[0].data = pontosV1;
+        graficoEscalabilidade.data.datasets[1].data = pontosV2;
+        graficoEscalabilidade.update();
+
+        const textoProjecao = escV1
+            ? `A build V2 suporta até ${maxJogV2} jogadores simultâneos antes de 90% de CPU.`
+            : `A build V2 suporta até ${maxJogV2} jogadores simultâneos antes de atingir 90% de CPU.`;
+        document.getElementById('texto-projecao-escalabilidade').textContent = textoProjecao;
+
+        const estadoEsc = escV1
+            ? classificarDivergencia(maxJogV1, maxJogV2, {
+                pisoValorMax: 10,
+                pisoDiffAbs: 5,
+                limAlinhadoPct: 15,
+                limDivergentePct: 35
+            })
+            : { classe: 'status-estavel', texto: '● ALINHADO' };
+
+        const badgeEsc = document.getElementById('badge-escalabilidade');
+        const textoBadgeEsc = document.getElementById('texto-badge-escalabilidade');
+        if (badgeEsc && textoBadgeEsc) {
+            badgeEsc.classList.remove('status-estavel', 'status-alerta', 'status-critico');
+            badgeEsc.classList.add(estadoEsc.classe);
+            textoBadgeEsc.textContent = estadoEsc.texto;
+        }
+    }
+
+    function atualizarGraficoPerformance(v1, v2) {
+        const ordemEixos = ['RAM', 'CPU', 'Disco', 'Rede', 'Eficiência térmica'];
+
+        function extrairValoresRadar(servidor) {
+            const eixos = servidor && servidor.graficos && servidor.graficos.assinatura_performance
+                ? servidor.graficos.assinatura_performance.eixos
+                : [];
+            const mapa = new Map(eixos.map((e) => [e.componente, Number(e.valor_pct) || 0]));
+            return ordemEixos.map((nome) => (mapa.has(nome) ? mapa.get(nome) : 0));
+        }
+
+        const valoresV1 = extrairValoresRadar(v1);
+        const valoresV2 = extrairValoresRadar(v2);
+
+        graficoPerformance.data.datasets[0].data = valoresV1;
+        graficoPerformance.data.datasets[1].data = valoresV2;
+        graficoPerformance.update();
+
+        // Atualiza a lista lateral dos status dos componentes do gráfico de radar:
+        const containerLista = document.getElementById('lista-estado-componentes');
+        if (!containerLista) return;
+
+        const limitesRadarV2 = (v2 && v2.limites && v2.limites.radar) || {};
+        const rotulosCurtos = ['RAM', 'CPU', 'Disco', 'Rede', 'Ef. térmica'];
+
+        let htmlLinhas = `<div class="estado-componente"><h5>COMPONENTE V2 CANDIDATA</h5></div>`;
+
+        ordemEixos.forEach((eixo, idx) => {
+            const pct = valoresV2[idx];
+            const ehTermica = eixo === 'Eficiência térmica';
+            const cfgLimite = limitesRadarV2[eixo] || limitesRadarPadrao[eixo];
+
+            let classeEstado = 'estado-saudavel';
+            let rotuloEstado = '● Saudável';
+            let subtituloLimite = '';
+
+            if (ehTermica) {
+                const saudavelMin = cfgLimite.saudavel_pct;
+                const alertaMin = cfgLimite.alerta_pct;
+                subtituloLimite = `≥${saudavelMin}% saudável · ≥${alertaMin}% alerta`;
+
+                if (!v2 || !v2.graficos) {
+                    rotuloEstado = '● --';
+                } else if (pct < alertaMin) {
+                    classeEstado = 'estado-critico';
+                    rotuloEstado = '● Crítico';
+                } else if (pct < saudavelMin) {
+                    classeEstado = 'estado-alerta';
+                    rotuloEstado = '● Alerta';
+                }
+            } else {
+                const saudavelMax = cfgLimite.atencao_pct;
+                const alertaMax = cfgLimite.critico_pct;
+                subtituloLimite = `≤${saudavelMax}% saudável · ≤${alertaMax}% alerta`;
+
+                if (!v2 || !v2.graficos) {
+                    rotuloEstado = '● --';
+                } else if (pct > alertaMax) {
+                    classeEstado = 'estado-critico';
+                    rotuloEstado = '● Crítico';
+                } else if (pct > saudavelMax) {
+                    classeEstado = 'estado-alerta';
+                    rotuloEstado = '● Alerta';
+                }
+            }
+
+            htmlLinhas += `
+                <div class="estado-componente">
+                    <div class="estado-componente-info">
+                        <h5>${rotulosCurtos[idx]} ${v2 && v2.graficos ? formatarNumero(pct, 0) + '%' : '--%'}</h5>
+                        <span class="subtitulo-limite-componente" style="display: block; font-size: 11px; color: #6b8196; margin-top: 2px;">
+                            ${subtituloLimite}
+                        </span>
+                    </div>
+                    <h5 class="${classeEstado}">${rotuloEstado}</h5>
+                </div>
+            `;
+        });
+
+        containerLista.innerHTML = htmlLinhas;
+    }
+
+    // comparação atual: feita a partir dos servidores selecinados:
+
+    function renderizarComparacao() {
+        const selectV1 = document.getElementById('select-v1');
+        const selectV2 = document.getElementById('select-v2');
+
+        const idV1 = Number(selectV1.value);
+        const idV2 = Number(selectV2.value);
+
+        Array.from(selectV1.options).forEach((opt) => {
+            opt.disabled = Number(opt.value) === idV2 && listaServidoresTeste.length > 1;
+        });
+        Array.from(selectV2.options).forEach((opt) => {
+            opt.disabled = Number(opt.value) === idV1 && listaServidoresTeste.length > 1;
+        });
+
+        servidorV1 = listaServidoresTeste.find((s) => Number(s.id_servidor) === idV1) || null;
+        servidorV2 = listaServidoresTeste.find((s) => Number(s.id_servidor) === idV2) || null;
+
+        atualizarKpis(servidorV1, servidorV2);
+        atualizarGraficoConsumo(servidorV1, servidorV2);
+        atualizarGraficoEscalabilidade(servidorV1, servidorV2);
+        atualizarGraficoPerformance(servidorV1, servidorV2);
+    }
+
+    function popularSeletoresServidores(servidores) {
+        const selectV1 = document.getElementById('select-v1');
+        const selectV2 = document.getElementById('select-v2');
+
+        selectV1.innerHTML = '';
+        selectV2.innerHTML = '';
+
+        if (!servidores || servidores.length === 0) {
+            selectV1.innerHTML = '<option value="">Nenhum servidor de teste</option>';
+            selectV2.innerHTML = '<option value="">Nenhum servidor de teste</option>';
+            return;
+        }
+
+        servidores.forEach((srv) => {
+            const sufixoStatus = srv.status === 'aguardando_dados' ? ' (aguardando coleta)' : '';
+            const textoOpcao = `${srv.nome}${sufixoStatus}`;
+
+            const opt1 = document.createElement('option');
+            opt1.value = srv.id_servidor;
+            opt1.textContent = textoOpcao;
+            opt1.style.background = '#0d141c';
+            opt1.style.color = '#f2f6fa';
+            selectV1.appendChild(opt1);
+
+            const opt2 = document.createElement('option');
+            opt2.value = srv.id_servidor;
+            opt2.textContent = textoOpcao;
+            opt2.style.background = '#0d141c';
+            opt2.style.color = '#f2f6fa';
+            selectV2.appendChild(opt2);
+        });
+
+        selectV1.selectedIndex = 0;
+        selectV2.selectedIndex = servidores.length > 1 ? 1 : 0;
+
+        renderizarComparacao();
+    }
+
+    // mudança do valores quando o QA troca os servidores de teste:
+
+    document.getElementById('select-v1').addEventListener('change', renderizarComparacao);
+    document.getElementById('select-v2').addEventListener('change', renderizarComparacao);
+
+    const btnInverter = document.getElementById('btn-inverter-builds');
+    if (btnInverter) {
+        btnInverter.addEventListener('click', () => {
+            const selectV1 = document.getElementById('select-v1');
+            const selectV2 = document.getElementById('select-v2');
+            const temp = selectV1.value;
+            selectV1.value = selectV2.value;
+            selectV2.value = temp;
+            renderizarComparacao();
+        });
+    }
+
+    document.querySelectorAll('.recurso-selecionado').forEach((aba) => {
+        aba.addEventListener('click', () => {
+            const recurso = aba.dataset.recurso;
+            if (!configRecursos[recurso]) return;
+
+            document.querySelectorAll('.recurso-selecionado').forEach((el) => el.classList.remove('ativo'));
+            aba.classList.add('ativo');
+
+            recursoAtual = recurso;
+            atualizarGraficoConsumo(servidorV1, servidorV2);
+        });
+    });
+
+    // carregamento inicial da tela:
+
+    function carregarDadosDashboard() {
+        const nomeUsuario = sessionStorage.getItem('NOME_USUARIO');
+        if (nomeUsuario) {
+            const elBoasVindas = document.getElementById('boas-vindas-qa');
+            if (elBoasVindas) {
+                elBoasVindas.textContent = `BEM-VINDO, ${nomeUsuario.toUpperCase()} (ENGENHEIRO DE QA)`;
+            }
+        }
+
+        const headers = {};
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        fetch('/servidorTeste/dadosDashboard', {
+            method: 'GET',
+            headers,
+            credentials: 'same-origin'
+        })
+            .then((resposta) => {
+                if (!resposta.ok) {
+                    throw new Error(`Falha HTTP ${resposta.status}`);
+                }
+                return resposta.json();
+            })
+            .then((dados) => {
+                listaServidoresTeste = Array.isArray(dados.servidores) ? dados.servidores : [];
+                popularSeletoresServidores(listaServidoresTeste);
+            })
+            .catch((erro) => {
+                console.error('Erro ao carregar dados da dashboard de versões:', erro);
+            });
+    }
+
+    carregarDadosDashboard();
 });

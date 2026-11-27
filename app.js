@@ -36,7 +36,7 @@ var agenteRouter = require("./src/routes/agente");
 
 var cryptoRouter = require("./src/routes/crypto");
 var autorizacao = require("./src/seguranca/autorizacao");
-
+var servidoresTesteRouter = require("./src/routes/servidorTeste");
 /* Converte JSON e formulários recebidos para req.body e protege as páginas antes
  * de publicá-las. As páginas, estilos e scripts do navegador ficam em pastas
  * planas; este resolvedor encontra cada arquivo pelo nome e mantém os endereços
@@ -86,7 +86,8 @@ app.use("/cadastro_empresa", autorizacao.autenticar, autorizacao.exigirPermissao
 app.use("/gerenciar_empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar-empresa", autorizacao.autenticar, autorizacao.exigirPermissao('gerenciarEmpresas'), gerenciarEmpresaRouter);
 app.use("/gerenciar_funcionario", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), gerenciarFuncionarioRouter);
-app.use("/agente", agenteRouter)
+app.use("/agente", agenteRouter);
+app.use("/servidorTeste", autorizacao.autenticar, autorizacao.exigirPermissao('administrar'), servidoresTesteRouter)
 
 module.exports = app;
 
