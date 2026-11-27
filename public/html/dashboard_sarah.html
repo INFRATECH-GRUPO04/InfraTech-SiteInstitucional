@@ -131,7 +131,7 @@
                         <option value="rede">Rede</option>
                     </select>
                 </div>
-                <div>Selecione um componente para ter uma visão específica</div>
+                <div class="texto-filtro">Selecione um componente para detalhar o comportamento no período selecionado.</div>
             </div>
             <div class="dash-main" id="dash_main">
                 <div class="dash-parte1">
@@ -248,7 +248,7 @@
                         <div class="mapa-calor">
                             <!-- cabeçalho -->
                             <div class="linha-calor linha-calor-topo">
-                                <div class="legenda-calor">DIA / PICO (%)</div>
+                                <div class="legenda-calor">DIA / HORA</div>
                                 <div class="coluna-periodo">Manhã<span>06-12h</span></div>
                                 <div class="coluna-periodo">Tarde<span>12-18h</span></div>
                                 <div class="coluna-periodo">Noite<span>18-24h</span></div>
@@ -369,7 +369,7 @@
         var COMPONENTES = [
             { chave: 'cpu', nome: 'CPU', cor: '#4f8ef7' },
             { chave: 'ram', nome: 'RAM', cor: '#a78bfa' },
-            { chave: 'disco', nome: 'Disco', cor: '#FFC0CB' },
+            { chave: 'disco', nome: 'Disco', cor: '#ff59af' },
             { chave: 'rede', nome: 'Rede', cor: '#22d3ee' }
         ];
         var PERIODOS = [
@@ -806,7 +806,7 @@
             var mapaCalor = calcularMapaCalor(linhas);
             var cabecalhoCalor = `
                 <div class="linha-calor linha-calor-topo">
-                    <div class="legenda-calor">DIA / PICO (%)</div>
+                    <div class="legenda-calor">DIA / HORA</div>
                     ${PERIODOS.map(function (periodo) {
                         return `<div class="coluna-periodo">${periodo.nome}<span>${periodo.faixa}</span></div>`;
                     }).join('')}
