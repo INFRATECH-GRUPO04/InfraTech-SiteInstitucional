@@ -627,7 +627,12 @@ function extrairTextoGemini(resposta) {
 }
 
 /* Envia uma requisição para um modelo específico do Google Gemini via Interactions API. */
-function chamarModeloGemini(chave, modelo, dados, metricas) {
+function chamarModeloGemini(chave, modelo, dados, metricas, timeoutMs) {
+    var limiteTempo = 25000;
+    if (Number.isFinite(Number(timeoutMs)) && Number(timeoutMs) > 0) {
+        limiteTempo = Number(timeoutMs);
+    }
+
     var instrucaoSistema = [
         'Você é um consultor executivo sênior de FinOps e infraestrutura física de servidores de jogos online (InfraTech).',
         'Escreva em português do Brasil, de forma realista, direta, transparente e acionável para o gestor.',
@@ -637,13 +642,15 @@ function chamarModeloGemini(chave, modelo, dados, metricas) {
 
     var payload = JSON.stringify({
         model: modelo,
+        store: false,
         system_instruction: instrucaoSistema,
         input: JSON.stringify({
             empresaDados: dados,
             metricasCalculadas: metricas
         }),
         generation_config: {
-            max_output_tokens: 1800
+            thinking_level: 'low',
+            max_output_tokens: 3500
         },
         response_format: {
             type: 'text',
@@ -660,7 +667,7 @@ function chamarModeloGemini(chave, modelo, dados, metricas) {
             'Api-Revision': '2026-05-20'
         },
         body: payload,
-        signal: AbortSignal.timeout(45000)
+        signal: AbortSignal.timeout(limiteTempo)
     }).then(function (resposta) {
         if (!resposta.ok) {
             return resposta.text().then(function (corpo) {
@@ -671,25 +678,43 @@ function chamarModeloGemini(chave, modelo, dados, metricas) {
         }
         return resposta.json();
     }).then(function (respostaJson) {
-        var analise = JSON.parse(extrairTextoGemini(respostaJson));
+        var texto = extrairTextoGemini(respostaJson);
+        if (!texto || !texto.trim()) {
+            throw new Error('Resposta vazia do Gemini');
+        }
+        var analise = JSON.parse(texto);
         return { modelo: modelo, analise: analise };
     });
 }
 
-/* Consulta o Google AI Studio (tenta gemini-3.8-flash e, em pico 503/429, tenta gemini-3.5-flash-lite). */
+/* Identifica erro de credencial/permissão em que não adianta tentar outro modelo. */
+function erroAutenticacaoGemini(erro) {
+    if (erro && (erro.statusCode === 401 || erro.statusCode === 403)) {
+        return true;
+    }
+    return false;
+}
+
+/* Consulta o Google AI Studio (tenta gemini-3.8-flash e cai para gemini-3.5-flash-lite em timeout/indisponibilidade). */
 function consultarGeminiRelatorio(dados, metricas) {
     var chave = String(process.env.GEMINI_API_KEY || '').trim();
     if (!chave || chave === 'sua_chave_google_ai_studio') {
         return Promise.reject(new Error('GEMINI_API_KEY não configurada'));
     }
 
-    return chamarModeloGemini(chave, 'gemini-3.8-flash', dados, metricas)
+    return chamarModeloGemini(chave, 'gemini-3.8-flash', dados, metricas, 20000)
         .catch(function (erroPrincipal) {
-            if (erroPrincipal && (erroPrincipal.statusCode === 503 || erroPrincipal.statusCode === 429)) {
-                console.log('Modelo gemini-3.8-flash indisponível (' + erroPrincipal.statusCode + '), tentando gemini-3.5-flash-lite...');
-                return chamarModeloGemini(chave, 'gemini-3.5-flash-lite', dados, metricas);
+            if (erroAutenticacaoGemini(erroPrincipal)) {
+                throw erroPrincipal;
             }
-            throw erroPrincipal;
+            var motivo = 'erro desconhecido';
+            if (erroPrincipal && erroPrincipal.message) {
+                motivo = erroPrincipal.message;
+            } else if (erroPrincipal && erroPrincipal.statusCode) {
+                motivo = 'HTTP ' + erroPrincipal.statusCode;
+            }
+            console.log('Modelo gemini-3.8-flash falhou (' + motivo + '), tentando gemini-3.5-flash-lite...');
+            return chamarModeloGemini(chave, 'gemini-3.5-flash-lite', dados, metricas, 25000);
         });
 }
 
