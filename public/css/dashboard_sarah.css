@@ -374,11 +374,15 @@
     flex-direction: column;
     gap: 0.4vh;
     margin-top: 1.5vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.4vw;
 }
 
 /* cada linha é um grid: 1 coluna para o dia + 4 para os períodos */
 .linha-calor {
-    flex: 1;
+    flex: 1 0 auto;       /* cresce para preencher, mas NUNCA encolhe */
+    min-height: 44px;     /* altura mínima legível de cada linha */
     display: grid;
     grid-template-columns: 20% repeat(4, 1fr);
     gap: 0.5vw;
@@ -387,7 +391,13 @@
 
 .linha-calor-topo {
     flex: 0 0 auto;
+    min-height: 0;
     margin-bottom: 1vh;
+    position: sticky;
+    top: 0;
+    background: #171D2B;  /* mesma cor do card, para cobrir o conteúdo que passa por baixo */
+    z-index: 1;
+    padding-bottom: 0.5vh;
 }
 
 .legenda-calor {
@@ -420,6 +430,7 @@
 
 .celula-calor {
     height: 85%;
+    min-height: 36px;     /* altura mínima do bloquinho */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -427,6 +438,18 @@
     font-size: 0.95vw;
     font-weight: 700;
     color: #fff;
+}
+
+/* scrollbar no mesmo estilo da tabela de logs */
+.mapa-calor::-webkit-scrollbar {
+    width: 6px;
+}
+.mapa-calor::-webkit-scrollbar-thumb {
+    background: #00CFFF;
+    border-radius: 50vw;
+}
+.mapa-calor::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .celula-calor.normal  { background: rgba(46, 204, 113, 0.15); }
@@ -637,20 +660,24 @@
     .tabela-ocorrencias { font-size: 13px; }
 
     /* Mapa de calor: rola na horizontal se faltar espaço */
-    .card-demanda-mapa-calor { overflow-x: auto; }
+    .card-demanda-mapa-calor {
+    overflow-x: auto;
+    height: 60vh;          /* altura fixa para o scroll Y funcionar */
+}
 
-    .mapa-calor {
-        flex: none;
-        min-width: 560px;
-        gap: 6px;
-        margin-top: 16px;
-    }
+.mapa-calor {
+    flex: 1;               /* era "flex: none" */
+    min-width: 560px;
+    gap: 6px;
+    margin-top: 16px;
+}
 
-    .linha-calor {
-        flex: none;
-        grid-template-columns: 130px repeat(4, 1fr);
-        gap: 6px;
-    }
+.linha-calor {
+    flex: 0 0 auto;        /* era "flex: none" */
+    min-height: 44px;
+    grid-template-columns: 130px repeat(4, 1fr);
+    gap: 6px;
+}
 
     .linha-calor-topo { margin-bottom: 8px; }
 
