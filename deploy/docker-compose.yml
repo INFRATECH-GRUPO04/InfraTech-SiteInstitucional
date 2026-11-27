@@ -7,7 +7,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       # O entrypoint oficial executa este SQL apenas no primeiro start com volume vazio.
-      - ../src/database/infratech-init.sql:/docker-entrypoint-initdb.d/01-infratech.sql:ro
+      - ./infratech-init.sql:/docker-entrypoint-initdb.d/01-infratech.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
       interval: 10s
