@@ -293,8 +293,6 @@ function renderBilling() {
 
   definirTexto('kpi-roi', formatarPercentual(billing.roi, 2));
   definirTexto('kpi-breakeven', 'Break-even: ' + formatarNumero(billing.breakeven) + ' jogadores');
-
-  definirTexto('economia-estimada', formatarMoeda(planejamento.economiaInfraPropria));
 }
 
 function renderCards() {
@@ -685,16 +683,6 @@ function renderPremissasResumo() {
   definirTexto('data-cadastro', planejamento.data);
   definirTexto('modal-data', planejamento.data);
 
-  definirTexto(
-    'resumo-premissas',
-    'crescimento ' + formatarNumero(planejamento.crescimento) + ' jogadores/mês · ' +
-    formatarNumero(planejamento.capacidadeAtual) + ' jogadores por servidor · provisionamento ' +
-    textoUnidade(planejamento.provisionamento, 'mês', 'meses') +
-    ' · meta de uso ' + planejamento.metaUso + '% · novo servidor ' +
-    formatarMoeda(planejamento.custoNovoServidor) + '/mês + ' +
-    formatarMoeda(planejamento.custoImplantacao) + ' de implantação.'
-  );
-
   definirTexto('limite-saturado', planejamento.metaUso);
   definirTexto('limite-normal', Math.max(0, planejamento.metaUso - 1));
   document.querySelectorAll('.limite-subutilizado-nota').forEach(function (item) {
@@ -771,7 +759,6 @@ function aplicarDadosServidor(dados) {
 }
 
 function atualizarAvisoOrigem(conectadoAoBanco) {
-  var aviso = document.getElementById('aviso-ilustrativo');
   var seloUso = el('selo-uso-servidores');
   var subtituloServidores = el('subtitulo-servidores');
   var usandoGold = conectadoAoBanco && planejamento.origemTelemetria === 's3_gold';
@@ -793,37 +780,6 @@ function atualizarAvisoOrigem(conectadoAoBanco) {
     } else {
       subtituloServidores.textContent = 'Custo mensal (cadastro do gestor) · uso médio simulado (30 dias) · ordenado por prioridade.';
     }
-  }
-
-  var rodapeFontes = el('rodape-fontes-pagina');
-  if (rodapeFontes) {
-    if (usandoGold) {
-      rodapeFontes.innerHTML = '<strong>Fontes:</strong> custos dos servidores, histórico e premissas (banco de dados); ' +
-        'uso médio e pico de 30 dias (telemetria S3 · camada Gold); jogadores simultâneos e projeções (dados simulados/ilustrativos). ' +
-        'Custos estimados, não faturados. Projeção linear, sem sazonalidade.';
-    } else {
-      rodapeFontes.innerHTML = '<strong>Fontes:</strong> custos dos servidores, histórico e premissas (banco de dados); ' +
-        'jogadores simultâneos e uso médio/pico por servidor (dados simulados/ilustrativos nesta versão). ' +
-        'Custos estimados, não faturados. Projeção linear, sem sazonalidade.';
-    }
-  }
-
-  if (!aviso) return;
-  aviso.hidden = false;
-  if (usandoGold) {
-    aviso.classList.add('plan-aviso--banco');
-    aviso.innerHTML = '<strong>Origem dos dados:</strong> custos, histórico e premissas vêm do ' +
-      '<strong>banco de dados</strong>; uso médio e pico (30 dias) vêm da <strong>telemetria S3 (camada Gold)</strong>; ' +
-      'quantidade de jogadores e receita estimada utilizam <strong>dados simulados</strong>.';
-  } else if (conectadoAoBanco) {
-    aviso.classList.add('plan-aviso--banco');
-    aviso.innerHTML = '<strong>Origem dos dados:</strong> custos dos servidores, histórico e premissas vêm do ' +
-      '<strong>banco de dados</strong>; quantidade de jogadores, uso médio/pico dos servidores e projeções ' +
-      'utilizam <strong>dados simulados/ilustrativos</strong>.';
-  } else {
-    aviso.classList.remove('plan-aviso--banco');
-    aviso.innerHTML = '<strong>Modo ilustrativo (offline):</strong> exibindo dados locais de demonstração. ' +
-      'As premissas podem ser alteradas no botão <strong>Premissas</strong>.';
   }
 }
 
@@ -1209,14 +1165,11 @@ document.addEventListener('DOMContentLoaded', function () {
   carregarPlanejamentoBackend();
 
   el('btn-premissas-topo').addEventListener('click', abrirPremissas);
-  el('btn-editar-premissas').addEventListener('click', abrirPremissas);
   el('btn-fechar-premissas').addEventListener('click', fecharPremissas);
   el('btn-cancelar-premissas').addEventListener('click', fecharPremissas);
   el('form-premissas').addEventListener('submit', aplicarPremissas);
 
   el('btn-gerar-relatorio').addEventListener('click', gerarRelatorioIA);
-  var btnRelatorioRodape = el('btn-relatorio-rodape');
-  if (btnRelatorioRodape) btnRelatorioRodape.addEventListener('click', gerarRelatorioIA);
   el('btn-regerar-relatorio').addEventListener('click', gerarRelatorioIA);
   el('btn-imprimir-relatorio').addEventListener('click', function () { window.print(); });
   el('btn-fechar-relatorio').addEventListener('click', fecharModalRelatorio);

@@ -27,7 +27,7 @@ body.pagina-planejamento-financeiro {
 body.pagina-planejamento-financeiro .conteudo-principal {
   flex: 1;
   min-width: 0;
-  padding: 14px 24px 44px;
+  padding: 14px 24px 24px;
   box-sizing: border-box;
 }
 
@@ -154,23 +154,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 .plan-introducao__descricao strong {
   color: #dceaf4;
   font-weight: 600;
-}
-
-.plan-aviso {
-  margin-bottom: 14px;
-  padding: 7px 12px;
-  border-left: 3px solid var(--plan-ambar);
-  border-radius: 8px;
-  background: rgb(245 158 11 / 0.1);
-  color: #f5d491;
-  font-size: 11.5px;
-  line-height: 1.4;
-}
-
-.plan-aviso--banco {
-  border-left-color: var(--plan-ciano);
-  background: rgb(0 207 255 / 0.08);
-  color: #cbe8f5;
 }
 
 .plan-selo-simulado {
@@ -308,22 +291,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   color: var(--plan-texto-mudo);
   font-size: 11px;
   line-height: 1.4;
-}
-
-.plan-faixa-economia {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border: 1px solid rgb(0 207 255 / 0.18);
-  border-left: 3px solid var(--plan-ciano);
-  border-radius: 8px;
-  background: rgb(0 207 255 / 0.05);
-  color: #b8d6e6;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.plan-faixa-economia strong {
-  color: var(--plan-ciano);
 }
 
 /* ---------- Cards de decisão ---------- */
@@ -500,7 +467,17 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.plan-paineis .plan-cartao {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-paineis .plan-cartao__nota {
+  margin-top: auto;
+  padding-top: 12px;
 }
 
 .plan-barra-filtros {
@@ -732,43 +709,18 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-grafico-container {
   position: relative;
+  flex: 1 1 250px;
   width: 100%;
-  height: 250px;
+  min-height: 250px;
   min-width: 0;
 }
 
-/* ---------- Rodapé ---------- */
-
-.plan-rodape {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px 2px 0;
-  border-top: 1px solid rgb(41 55 70 / 0.7);
-  color: var(--plan-texto-mudo);
-  font-size: 11px;
-  line-height: 1.55;
+.plan-grafico-container canvas {
+  position: absolute;
+  inset: 0;
 }
 
-.plan-rodape p {
-  margin: 0;
-}
-
-.plan-rodape__fontes strong {
-  color: var(--plan-texto-suave);
-}
-
-.plan-rodape__premissas {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 10px;
-  color: var(--plan-texto-suave);
-}
-
-.plan-rodape__premissas strong {
-  color: #dce8f2;
-}
+/* ---------- Atalhos inline ---------- */
 
 .plan-atalho {
   padding: 0;
@@ -799,7 +751,6 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 .plan-modal[hidden],
 .plan-notificacao[hidden],
-.plan-aviso[hidden],
 .plan-modal__erro[hidden] {
   display: none !important;
 }
@@ -992,13 +943,14 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   }
 
   .plan-grafico-container {
+    flex: none;
     height: 280px;
   }
 }
 
 @media (max-width: 991px) {
   body.pagina-planejamento-financeiro .conteudo-principal {
-    padding: 12px 16px 32px;
+    padding: 12px 16px 24px;
   }
 
   .plan-grade-resumo {
@@ -1013,7 +965,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
 
 @media (max-width: 600px) {
   body.pagina-planejamento-financeiro .conteudo-principal {
-    padding: 10px 12px 28px;
+    padding: 10px 12px 20px;
   }
 
   .plan-kpis {
@@ -1038,6 +990,7 @@ body.pagina-planejamento-financeiro :is(h1, h2, h3, p) {
   }
 
   .plan-grafico-container {
+    flex: none;
     height: 220px;
   }
 
