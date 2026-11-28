@@ -111,12 +111,12 @@
                     <div class="conteudo" style="color: #f04a55;;">CPU 89%</div>
                     <div class="especificacao" style="color: #f04a55;">+21</div>
                 </div>
-                <div class="kpi cards">
+                <div class="kpi cards" id="kpi_alertas_jira">
                     <div class="titulo-conteudo">Alertas registrados</div>
-                    <div class="conteudo">20</div>
+                    <div class="conteudo">—</div>
                     <div class="especificacao">
-                        <div class="alerta" style="color: #fbbf24;">10 Atenção</div>
-                        <div class="alerta" style="color: #f04a55;">10 Crítico</div>
+                        <div class="alerta" style="color: #fbbf24;">— Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">— Crítico</div>
                     </div>
                 </div>
             </div>
@@ -210,35 +210,21 @@
                                 <!-- <div class="subtitulo-ocorrencias">Leituras registradas no mesmo período e nas séries do
                                 gráfico.</div> -->
                             </div>
-                            <div class="contador-logs" id="contador_logs">12</div>
+                            <div class="contador-logs" id="contador_logs">—</div>
                         </div>
 
                         <div class="tabela-wrapper tabela-logs-wrapper">
                             <table class="tabela-ocorrencias tabela-logs">
                                 <thead>
                                     <tr>
-                                        <th>Hora</th>
-                                        <th>Recurso</th>
-                                        <th>Evento</th>
-                                        <th>Faixa</th>
-                                        <th>Valor</th>
+                                        <th>Chamado</th>
+                                        <th>Servidor</th>
+                                        <th>Prioridade</th>
+                                        <th>Aberto há</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabela_logs">
-                                    <tr>
-                                        <td>22h</td>
-                                        <td>CPU</td>
-                                        <td>Leitura acima do limite de atenção</td>
-                                        <td><span class="badge atencao">Atenção</span></td>
-                                        <td class="valor-log">72%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>22h</td>
-                                        <td>RAM</td>
-                                        <td>Leitura acima do limite de atenção</td>
-                                        <td><span class="badge atencao">Atenção</span></td>
-                                        <td class="valor-log">78%</td>
-                                    </tr>
+                                    <tr><td colspan="4">Carregando alertas do Jira...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -327,6 +313,7 @@
         var filtroDataFinal = document.getElementById('filtro_data_final');
 
         mostrarPedidoDatas('Selecione o servidor e o período para carregar os dados');
+        carregarAlertasJira();
 
         fetch(`/dashboardSarah/buscarServidoresPorEmpresa/${idEmpresa}/${idUsuario}`, { cache: 'no-store' })
             .then(function (response) {
@@ -426,6 +413,134 @@
             var v = numero(valor);
             if (v === null) return '—';
             return (v > 0 ? '+' : '') + (Math.round(v * 10) / 10);
+        }
+
+        var alertasJira = { carregado: false, erro: false, abertos: [] };
+
+        function prioridadeJira(item) {
+            var nivel = String((item && item.prioridade) || '').toLowerCase();
+            return nivel === 'critico' || nivel === 'atencao' ? nivel : 'normal';
+        }
+
+        function rotuloPrioridadeJira(nivel) {
+            return nivel === 'critico' ? 'Crítico' : nivel === 'atencao' ? 'Atenção' : 'Normal';
+        }
+
+        function duracaoJira(minutos) {
+            var valor = numero(minutos);
+            if (valor === null) return '—';
+            if (valor < 60) return Math.round(valor) + ' min';
+            return Math.floor(valor / 60) + 'h' + String(Math.round(valor) % 60).padStart(2, '0');
+        }
+
+        function contagemPrioridadesJira() {
+            var contagem = { normal: 0, atencao: 0, critico: 0 };
+            alertasJira.abertos.forEach(function (item) { contagem[prioridadeJira(item)]++; });
+            return contagem;
+        }
+
+        function htmlKpiAlertasJira() {
+            if (!alertasJira.carregado) {
+                var texto = alertasJira.erro ? 'Indisponível' : '—';
+                return `
+                <div class="kpi cards" id="kpi_alertas_jira">
+                    <div class="titulo-conteudo">Alertas registrados</div>
+                    <div class="conteudo">${texto}</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">— Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">— Crítico</div>
+                    </div>
+                </div>`;
+            }
+            var contagem = contagemPrioridadesJira();
+            return `
+                <div class="kpi cards" id="kpi_alertas_jira">
+                    <div class="titulo-conteudo">Alertas registrados</div>
+                    <div class="conteudo">${alertasJira.abertos.length}</div>
+                    <div class="especificacao">
+                        <div class="alerta" style="color: #fbbf24;">${contagem.atencao} Atenção</div>
+                        <div class="alerta" style="color: #f04a55;">${contagem.critico} Crítico</div>
+                    </div>
+                </div>`;
+        }
+
+        function htmlLinhasAlertasJira() {
+            if (!alertasJira.carregado) {
+                var mensagem = alertasJira.erro
+                    ? 'Não foi possível carregar os alertas do Jira'
+                    : 'Carregando alertas do Jira...';
+                return `<tr><td colspan="4">${mensagem}</td></tr>`;
+            }
+            if (!alertasJira.abertos.length) {
+                return '<tr><td colspan="4">Nenhum alerta registrado no Jira</td></tr>';
+            }
+            return alertasJira.abertos.slice(0, 20).map(function (item) {
+                var nivel = prioridadeJira(item);
+                return `
+                        <tr>
+                            <td>${escapeHtml(item.id)}</td>
+                            <td>${escapeHtml(item.servidor || '—')}</td>
+                            <td><span class="badge ${nivel}">${rotuloPrioridadeJira(nivel)}</span></td>
+                            <td class="valor-log">${escapeHtml(duracaoJira(item.minutos))}</td>
+                        </tr>`;
+            }).join('');
+        }
+
+        function htmlBlocoAlertasJira() {
+            var total = alertasJira.carregado ? alertasJira.abertos.length : '—';
+            return `
+                    <div class="card-logs cards">
+                        <div class="cabecalho-logs">
+                            <div>
+                                <div class="titulo-card">Alertas registrados</div>
+                            </div>
+                            <div class="contador-logs" id="contador_logs">${total}</div>
+                        </div>
+                        <div class="tabela-wrapper tabela-logs-wrapper">
+                            <table class="tabela-ocorrencias tabela-logs">
+                                <thead>
+                                    <tr>
+                                        <th>Chamado</th>
+                                        <th>Servidor</th>
+                                        <th>Prioridade</th>
+                                        <th>Aberto há</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela_logs">${htmlLinhasAlertasJira()}</tbody>
+                            </table>
+                        </div>
+                    </div>`;
+        }
+
+        function atualizarBlocoAlertasJira() {
+            var kpi = document.getElementById('kpi_alertas_jira');
+            if (kpi) kpi.outerHTML = htmlKpiAlertasJira();
+
+            var tabela = document.getElementById('tabela_logs');
+            if (!tabela) return;
+            tabela.innerHTML = htmlLinhasAlertasJira();
+            var contador = document.getElementById('contador_logs');
+            if (contador) contador.textContent = alertasJira.carregado ? String(alertasJira.abertos.length) : '—';
+            var cabecalho = tabela.closest('table').querySelector('thead');
+            if (cabecalho) {
+                cabecalho.innerHTML = '<tr><th>Chamado</th><th>Servidor</th><th>Prioridade</th><th>Aberto há</th></tr>';
+            }
+        }
+
+        async function carregarAlertasJira() {
+            try {
+                var resposta = await fetch('/dash-geral', { cache: 'no-store' });
+                if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+                var dados = await resposta.json();
+                var abertos = dados && dados.incidentes && Array.isArray(dados.incidentes.abertos)
+                    ? dados.incidentes.abertos
+                    : [];
+                alertasJira = { carregado: true, erro: false, abertos: abertos };
+            } catch (erro) {
+                console.warn('Falha ao carregar alertas do Jira:', erro);
+                alertasJira = { carregado: false, erro: true, abertos: [] };
+            }
+            atualizarBlocoAlertasJira();
         }
 
         function escapeHtml(texto) {
@@ -750,14 +865,7 @@
                     <div class="conteudo ${classeValor(maiorNivel)}">${maior ? escapeHtml(maior.componente.nome) + ' ' + formatarValor(maior.valor) : '—'}</div>
                     <div class="especificacao ${classeValor(maiorNivel)}">${maior ? formatarVariacao(maior.variacao) : '—'}</div>
                 </div>
-                <div class="kpi cards">
-                    <div class="titulo-conteudo">Alertas registrados</div>
-                    <div class="conteudo">${comLimites ? indicadores.totalAlertas : '—'}</div>
-                    <div class="especificacao">
-                        <div class="alerta" style="color: #fbbf24;">${comLimites ? indicadores.atencao : '—'} Atenção</div>
-                        <div class="alerta" style="color: #f04a55;">${comLimites ? indicadores.critico : '—'} Crítico</div>
-                    </div>
-                </div>
+                ${htmlKpiAlertasJira()}
             `;
 
             var ordemRanking = maiores.map(function (item, indice) {
@@ -797,20 +905,6 @@
                     </div>`;
             }).join('');
 
-            var alertas = indicadores.alertas.slice(-20).reverse();
-            var linhasLogs = alertas.length
-                ? alertas.map(function (item) {
-                    return `
-                        <tr>
-                            <td>${escapeHtml(horaDaCaptura(item.captura))}</td>
-                            <td>${item.componente.nome}</td>
-                            <td>Leitura acima do limite de ${item.nivel === 'critico' ? 'crítico' : 'atenção'}</td>
-                            <td><span class="badge ${item.nivel}">${item.nivel === 'critico' ? 'Crítico' : 'Atenção'}</span></td>
-                            <td class="valor-log">${formatarValor(item.valor)}</td>
-                        </tr>`;
-                }).join('')
-                : `<tr><td colspan="5">${comLimites ? 'Nenhum alerta no período' : 'Limites não configurados'}</td></tr>`;
-
             var mapaCalor = calcularMapaCalor(linhas);
             var cabecalhoCalor = `
                 <div class="linha-calor linha-calor-topo">
@@ -846,28 +940,7 @@
                     </div>
                 </div>
                 <div class="dash-parte2 especifica">
-                    <div class="card-logs cards">
-                        <div class="cabecalho-logs">
-                            <div>
-                                <div class="titulo-card">Alertas registrados</div>
-                            </div>
-                            <div class="contador-logs" id="contador_logs">${indicadores.totalAlertas}</div>
-                        </div>
-                        <div class="tabela-wrapper tabela-logs-wrapper">
-                            <table class="tabela-ocorrencias tabela-logs">
-                                <thead>
-                                    <tr>
-                                        <th>Hora</th>
-                                        <th>Recurso</th>
-                                        <th>Evento</th>
-                                        <th>Faixa</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabela_logs">${linhasLogs}</tbody>
-                            </table>
-                        </div>
-                    </div>
+                    ${htmlBlocoAlertasJira()}
                     <div class="card-demanda-mapa-calor cards">
                         <div class="titulo-card">Saúde por Período</div>
                         <div class="mapa-calor">
@@ -1037,12 +1110,14 @@
         }
 
         setInterval(function () {
-            if (document.visibilityState === 'visible' && filtroServidor.value) {
-                atualizarDashboard();
+            if (document.visibilityState === 'visible') {
+                carregarAlertasJira();
+                if (filtroServidor.value) atualizarDashboard();
             }
         }, 60000);
 
         window.addEventListener('focus', function () {
+            carregarAlertasJira();
             if (filtroServidor.value) atualizarDashboard();
         });
 

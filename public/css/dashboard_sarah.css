@@ -223,6 +223,11 @@
     color: #f04a55;
 }
 
+.badge.normal {
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+}
+
 .dash-parte2{
     display: flex;
     flex-direction: row;
